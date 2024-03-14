@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { fetchData } from '../services/api';
 import { useFetch } from '../hooks/useFetch';
 
-function Home() {
+export default function Home() {
   const { data, isLoading, error } = useFetch(fetchData);
 
   return (
@@ -27,5 +27,3 @@ function Home() {
     </div>
   );
 }
-
-export default Home;
