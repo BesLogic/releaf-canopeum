@@ -8,7 +8,7 @@ import Login from './pages/Login';
 
 import Navbar from './components/Navbar';
 
-function App() {
+export default function App() {
     return (
         <>
             <Navbar />
@@ -25,5 +25,3 @@ function App() {
         </>
     );
 }
-
-export default App;

@@ -3,7 +3,7 @@ import { fetchData } from '../services/api';
 import { useFetch } from '../hooks/useFetch';
 
 export default function Home() {
-  const { data, isLoading, error } = useFetch(fetchData);
+  const { data, isLoading, error } = useFetch();
 
   return (
     <div>
@@ -11,12 +11,12 @@ export default function Home() {
       {isLoading ? (
         <p>Loading...</p>
       ) : error ? (
-        <p>Error: {error.message}</p>
+        <p>Error: {error}</p>
       ) : (
         <div>
           <p>Data from API:</p>
           <ul>
-            {Object.keys(data).map(key => (
+            {data && Object.keys(data).map(key => (
               <li key={key}>
                 <strong>{key}:</strong> {data[key]}
               </li>
