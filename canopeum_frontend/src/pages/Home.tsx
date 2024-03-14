@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { fetchData } from '../services/api';
+import React from 'react';
 import { useFetch } from '../hooks/useFetch';
 
 export default function Home() {

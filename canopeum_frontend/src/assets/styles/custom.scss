@@ -1,0 +1,17 @@
+@import 'theme-variables.scss';
+// Override default variables before the import
+$bg-primary: $primary;
+$bg-secondary: $secondary;
+
+.navbar-nav .nav-item .nav-link {
+    color: $secondary-2;
+}
+
+.nav-item {
+    &:hover {
+        border-bottom: 3px solid $secondary-2;
+    }
+}
+
+// Import Bootstrap and its default variables
+@import '~bootstrap/scss/bootstrap.scss';
