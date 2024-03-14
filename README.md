@@ -21,6 +21,7 @@ Follow these instructions to get the project up and running on your local machin
 ```bash
 git clone git@github.com:BesLogic/releaf-canopeum.git
 cd releaf-canopeum
+```
 
 2. Set up Django backend:
 
@@ -31,6 +32,7 @@ source env/scripts/activate
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver
+```
 
 3. Set up React frontend:
 
@@ -38,7 +40,7 @@ python manage.py runserver
 cd canopeum_frontend
 npm install
 npm start
-
+```
 ### Folder Architecture
 
 ```bash
@@ -81,3 +83,4 @@ project_name/
 │   └── ...                    # Other React frontend files
 │
 └── README.md                  # Project documentation
+```
