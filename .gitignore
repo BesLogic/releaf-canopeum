@@ -1,0 +1,23 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/canopeum_frontend/node_modules
+/canopeum_frontend/.pnp
+/canopeum_frontend.pnp.js
+
+# testing
+/canopeum_frontend/coverage
+
+# production
+/canopeum_frontend/build
+
+# misc
+/canopeum_frontend.DS_Store
+/canopeum_frontend.env.local
+/canopeum_frontend.env.development.local
+/canopeum_frontend.env.test.local
+/canopeum_frontend.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
