@@ -1,6 +1,6 @@
 # Canopeum
 
-![Alt text](./canopeum_frontend/public/Canopeum_Logo.png?raw=true "Logo")
+![Alt text](canopeum_frontend/public/Canopeum_Logo.jpg?raw=true "Logo")
 
 This project integrates Django backend with React frontend to create a full-stack web application.
 
