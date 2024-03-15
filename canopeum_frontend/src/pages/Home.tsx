@@ -9,7 +9,7 @@ export default function Home() {
       {isLoading ? (
         <p>Loading...</p>
       ) : error ? (
-        <p>Error: {error}</p>
+        <p>Error: {error.message}</p>
       ) : (
         <div>
           <p>Data from API:</p>
