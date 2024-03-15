@@ -2,7 +2,7 @@
 
 ![Alt text](canopeum_frontend/public/Canopeum_Logo.jpg?raw=true "Logo")
 
-This project integrates Django backend with React frontend to create a full-stack web application.
+This project integrates Django backend with React Vite frontend template to create a full-stack web application.
 
 ## Getting Started
 
@@ -39,31 +39,34 @@ python manage.py runserver
 ```bash
 cd canopeum_frontend
 npm install
-npm start
+npm run dev
 ```
 ### Folder Architecture
 
 ```bash
 project_name/
 │
-├── backend/                   # Django backend
-│   ├── myproject/             # Django project directory
+├── backend/                  # Django backend
+│   ├── myproject/            # Django project directory
 │   │   ├── myapp/            # Django app directory
 │   │   │   ├── migrations/   # Database migrations
 │   │   │   ├── models.py     # Django models
 │   │   │   ├── views.py      # Django views
 │   │   │   └── ...           # Other Django app files
-│   │   ├── myproject/         # Django project settings
+│   │   ├── myproject/        # Django project settings
 │   │   ├── manage.py         # Django management script
 │   │   └── ...               # Other Django project files
 │   └── requirements.txt      # Python dependencies
 │
-├── frontend/                  # React frontend
-│   ├── public/                # Public assets
-│   │   ├── index.html         # HTML entry point
-│   │   └── ...                # Other public files
-│   ├── src/                   # Source code
-│   │   ├── components/        # React components
+├── frontend/                 # React frontend
+│   ├── public/               # Public assets
+│   │   ├── index.html        # HTML entry point
+│   │   └── ...               # Other public files
+│   ├── src/                  # Source code
+│   │   ├── assets/           # React components
+│   │   │   ├── icons/        # Custom icon bank
+│   │   │   └── styles/       # Stylesheets / Bootstrap override / Theme variables
+│   │   ├── components/       # React components
 │   │   │   ├── Component1.js # Sample React component
 │   │   │   └── ...           # Other React components
 │   │   ├── pages/            # Pages
@@ -75,12 +78,12 @@ project_name/
 │   │   ├── services/         # Services
 │   │   │   ├── api.js        # Sample service api
 │   │   │   └── ...           # Other services
-│   │   ├── App.js             # Main React component
-│   │   ├── index.js           # React entry point
-│   │   └── ...                # Other React source files
-│   ├── package.json           # npm package configuration
-│   ├── package-lock.json      # npm package lock
-│   └── ...                    # Other React frontend files
+│   │   ├── App.js            # Main React component
+│   │   ├── main.tsx         # React entry point
+│   │   └── ...               # Other React source files
+│   ├── package.json          # npm package configuration
+│   ├── package-lock.json     # npm package lock
+│   └── ...                   # Other React frontend files
 │
-└── README.md                  # Project documentation
+└── README.md                 # Project documentation
 ```
