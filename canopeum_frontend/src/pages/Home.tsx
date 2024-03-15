@@ -1,5 +1,4 @@
-import React from 'react';
-import { useFetch } from '../hooks/useFetch';
+import { useFetch } from '../hooks/useFetch.ts';
 
 export default function Home() {
   const { data, isLoading, error } = useFetch();

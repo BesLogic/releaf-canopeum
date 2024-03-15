@@ -1,4 +1,4 @@
-import React from 'react';
+import './index.scss';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import Analytics from './pages/Analytics';
@@ -8,11 +8,12 @@ import Login from './pages/Login';
 
 import Navbar from './components/Navbar';
 
+
 export default function App() {
     return (
         <>
-            <Navbar />
             <BrowserRouter>
+            <Navbar />
                 <Routes>
                     <Route path="/home" element={<Home />} />
                     <Route path="/" element={<Home />} />

@@ -8,10 +8,10 @@ $bg-secondary: $secondary;
 }
 
 .nav-item {
+    border-top: 3px solid transparent;
+    border-bottom: 3px solid transparent;
     &:hover {
-        border-bottom: 3px solid $secondary-2;
+        border-bottom-color: $secondary-2;
     }
 }
 
-// Import Bootstrap and its default variables
-@import '~bootstrap/scss/bootstrap.scss';

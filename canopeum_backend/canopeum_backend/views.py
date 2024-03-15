@@ -3,5 +3,5 @@ from rest_framework.views import APIView
 
 class APIData(APIView):
     def get(self, request):
-        data = {'example': 'data'}
+        data = {'cool': 'data'}
         return Response(data)

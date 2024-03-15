@@ -1,12 +1,13 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Navbar() {
     return (
         <nav className="navbar navbar-expand-lg bg-primary">
             <div className="container">
-                <a className="navbar-brand" href="/home">
-                    <img className="navbar-logo" src="/Releaf_Logo.svg" alt="Logo" />
-                </a>
+                <Link to="/home">
+                    <img className="navbar-logo" src="/Releaf_Logo.svg" alt="Logo" style={{ transition: 'all .5s' }} />
+                </Link>
                 <button
                     className="navbar-toggler"
                     type="button"
@@ -21,24 +22,24 @@ export default function Navbar() {
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav ml-auto">
                         <li className="nav-item">
-                            <a className="nav-link" href="/home">
+                            <Link className="nav-link" to="/home">
                                 Home
-                            </a>
+                            </Link>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" href="/analytics">
+                            <Link className="nav-link" to="/analytics">
                                 About
-                            </a>
+                            </Link>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" href="/map">
+                            <Link className="nav-link" to="/map">
                                 Services
-                            </a>
+                            </Link>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" href="/settings">
+                            <Link className="nav-link" to="/settings">
                                 Settings
-                            </a>
+                            </Link>
                         </li>
                     </ul>
                 </div>
