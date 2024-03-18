@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'drf_spectacular',
+    'drf_spectacular_sidecar',
+    'canopeum_backend',
 ]
 
 MIDDLEWARE = [
@@ -76,6 +79,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'canopeum_backend.wsgi.application'
 
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'SWAGGER_UI_DIST': 'SIDECAR',
+    'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
+    'REDOC_DIST': 'SIDECAR',
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
