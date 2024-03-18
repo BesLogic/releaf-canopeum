@@ -15,3 +15,23 @@ $bg-secondary: $secondary;
     }
 }
 
+@import 'bootstrap/scss/bootstrap.scss';
+
+// Override Bootstrap variables
+$primary: $primary;
+$secondary: $secondary;
+
+// Override Bootstrap styles
+.btn-secondary {
+    color: white;
+    &:hover {
+        color: white;
+    }
+  }
+
+.btn-outline-secondary {
+    &:hover {
+        color: white;
+    }
+  }
+
