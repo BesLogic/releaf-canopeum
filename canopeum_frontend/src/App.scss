@@ -10,7 +10,10 @@ body {
     background-image: url('@assets/images/TreeBackground.png');
 }
 
+.material-symbols-outlined {
+    color: map-get($theme-colors, primary);
+}
+
 .fill-icon {
     font-variation-settings: 'FILL' 1, 'wght' 700, 'GRAD' 0, 'opsz' 48;
 }
-

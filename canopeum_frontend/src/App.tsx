@@ -9,6 +9,8 @@ import Login from './pages/Login';
 import Navbar from './components/Navbar';
 import Utilities from './pages/Utilities';
 
+import 'bootstrap/js/index.umd.js';
+
 
 export default function App() {
     return (
