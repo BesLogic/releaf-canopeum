@@ -5,7 +5,10 @@ export default function Utilities() {
         <div>
             <div className="container d-flex flex-column gap-2">    
                 <h1>Utilities</h1>
-                <h2>Bootstrap Button Showcase</h2>
+                <h2>Icons</h2>
+                <span className="material-symbols-outlined fill-icon">home</span>
+                <span className="material-symbols-outlined">home</span>
+                <h2>Bootstrap elements</h2>
                 <div className="d-flex gap-1">
                     <button type="button" className="btn btn-primary">Primary</button>
                     <button type="button" className="btn btn-secondary">Secondary</button>

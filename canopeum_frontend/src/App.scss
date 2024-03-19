@@ -4,9 +4,13 @@
 
 @import '@assets/styles/theme-variables';
 
-@import "node_modules/bootstrap/scss/bootstrap";
-
+@import "bootstrap/scss/bootstrap";
 
 body {
     background-image: url('@assets/images/TreeBackground.png');
 }
+
+.fill-icon {
+    font-variation-settings: 'FILL' 1, 'wght' 700, 'GRAD' 0, 'opsz' 48;
+}
+
