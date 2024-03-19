@@ -87,6 +87,9 @@ SPECTACULAR_SETTINGS = {
     'SWAGGER_UI_DIST': 'SIDECAR',
     'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
     'REDOC_DIST': 'SIDECAR',
+    'TITLE': 'Canopeum API',
+    'DESCRIPTION': 'API for the Canopeum project',
+    'VERSION': '0.0.1',
 }
 
 # Database

@@ -1,8 +1,44 @@
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Site, Post, Batch, Announcement
-from .serializers import UserSerializer, SiteSerializer, PostSerializer, BatchSerializer, AnnouncementSerializer
+from .models import Site, Post, Batch, Announcement, Like, Comment
+from .serializers import AuthUserSerializer, UserSerializer, SiteSerializer, PostSerializer, BatchSerializer, AnnouncementSerializer, LikeSerializer, CommentSerializer
+from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import AllowAny
+
+
+# User Authentication
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def login(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key}, status=status.HTTP_200_OK)
+    else:
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def register(request):
+    serializer = UserSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key}, status=status.HTTP_201_CREATED)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def logout(request):
+    request.user.auth_token.delete()
+    return Response(status=status.HTTP_200_OK)
 
 # CRUD User
 @api_view(['GET', 'POST'])
@@ -71,7 +107,6 @@ def announcement_detail(request, pk):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
     elif request.method == 'DELETE':
         announcement.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -112,6 +147,41 @@ def site_detail(request, pk):
         site.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+# Batch
+@api_view(['GET', 'POST'])
+def batch_list(request):
+    if request.method == 'GET':
+        batches = Batch.objects.all()
+        serializer = BatchSerializer(batches, many=True)
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        serializer = BatchSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def batch_detail(request, pk):
+    try:
+        batch = Batch.objects.get(pk=pk)
+    except Batch.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = BatchSerializer(batch)
+        return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        serializer = BatchSerializer(batch, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        batch.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 # Post
 @api_view(['GET', 'POST'])
@@ -149,39 +219,74 @@ def post_detail(request, pk):
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
-# Batch
+# Like
 @api_view(['GET', 'POST'])
-def batch_list(request):
+def like_list(request):
     if request.method == 'GET':
-        batches = Batch.objects.all()
-        serializer = BatchSerializer(batches, many=True)
+        likes = Like.objects.all()
+        serializer = LikeSerializer(likes, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
-        serializer = BatchSerializer(data=request.data)
+        serializer = LikeSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def batch_detail(request, pk):
+def like_detail(request, pk):
     try:
-        batch = Batch.objects.get(pk=pk)
-    except Batch.DoesNotExist:
+        like = Like.objects.get(pk=pk)
+    except Like.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = BatchSerializer(batch)
+        serializer = LikeSerializer(like)
         return Response(serializer.data)
 
     elif request.method == 'PUT':
-        serializer = BatchSerializer(batch, data=request.data)
+        serializer = LikeSerializer(like, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
-        batch.delete()
+        like.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+# Comment
+@api_view(['GET', 'POST'])
+def comment_list(request):
+    if request.method == 'GET':
+        comments = Comment.objects.all()
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def comment_detail(request, pk):
+    try:
+        comment = Comment.objects.get(pk=pk)
+    except Comment.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = CommentSerializer(comment)
+        return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        serializer = CommentSerializer(comment, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

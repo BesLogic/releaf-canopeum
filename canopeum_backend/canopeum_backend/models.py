@@ -120,3 +120,7 @@ class Widget(models.Model):
     site = models.ForeignKey(Site, models.DO_NOTHING, blank=True, null=True)
     title = models.TextField(blank=True, null=True)
     body = models.TextField(blank=True, null=True)
+
+class Like(models.Model):
+    auth_user = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING, blank=True, null=True)
+    post = models.ForeignKey(Post, models.DO_NOTHING, blank=True, null=True)
