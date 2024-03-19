@@ -1,0 +1,12 @@
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/variables";
+
+@import '@assets/styles/theme-variables';
+
+@import "node_modules/bootstrap/scss/bootstrap";
+
+
+body {
+    background-image: url('@assets/images/TreeBackground.png');
+}

@@ -1,4 +1,4 @@
-import './index.scss';
+import './App.scss';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import Analytics from './pages/Analytics';
@@ -7,6 +7,7 @@ import Settings from './pages/Settings';
 import Login from './pages/Login';
 
 import Navbar from './components/Navbar';
+import Utilities from './pages/Utilities';
 
 
 export default function App() {
@@ -21,6 +22,7 @@ export default function App() {
                     <Route path="/map" element={<Map />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/utilities" element={<Utilities />} />
                 </Routes>
             </BrowserRouter>
         </>

@@ -44,6 +44,11 @@ export default function Navbar() {
                                 <img src={iconUser} alt="iconUser" />
                             </Link>
                         </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/utilities">
+                                Utilities
+                            </Link>
+                        </li>
                     </ul>
                 </div>
             </div>
