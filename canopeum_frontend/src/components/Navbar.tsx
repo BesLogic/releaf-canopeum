@@ -1,8 +1,5 @@
 import { Link } from 'react-router-dom';
-import iconHome from "@assets/icons/home-regular.svg";
-import iconAnalytics from "@assets/icons/analytics-regular.svg";
-import iconMap from "@assets/icons/pin-map-regular.svg";
-import iconUser from "@assets/icons/user-regular.svg";
+
 
 export default function Navbar() {
     return (
@@ -26,27 +23,27 @@ export default function Navbar() {
                     <ul className="navbar-nav ml-auto">
                         <li className="nav-item">
                             <Link className="nav-link" to="/home">
-                                <img src={iconHome} alt="iconHome"/>
+                                <span className="material-symbols-outlined text-light">home</span>
                             </Link>
                         </li>
                         <li className="nav-item">
                             <Link className="nav-link" to="/analytics">
-                                <img src={iconAnalytics} alt="iconAnalytics" />
+                                <span className="material-symbols-outlined text-light">donut_small</span>
                             </Link>
                         </li>
                         <li className="nav-item">
                             <Link className="nav-link" to="/map">
-                                <img src={iconMap} alt="iconMap" />
+                                <span className="material-symbols-outlined text-light">pin_drop</span>
                             </Link>
                         </li>
                         <li className="nav-item">
                             <Link className="nav-link" to="/settings">
-                                <img src={iconUser} alt="iconUser" />
+                                <span className="material-symbols-outlined text-light">account_circle</span>
                             </Link>
                         </li>
                         <li className="nav-item">
                             <Link className="nav-link" to="/utilities">
-                                Utilities
+                                <span className="material-symbols-outlined text-light">style</span>
                             </Link>
                         </li>
                     </ul>

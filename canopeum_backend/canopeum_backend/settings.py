@@ -81,6 +81,12 @@ WSGI_APPLICATION = 'canopeum_backend.wsgi.application'
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+    ]
 }
 
 SPECTACULAR_SETTINGS = {
@@ -90,7 +96,21 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'Canopeum API',
     'DESCRIPTION': 'API for the Canopeum project',
     'VERSION': '0.0.1',
+    'BASE_URL': 'http://localhost:3000',
+    "SWAGGER_UI_SETTINGS": {
+        "deepLinking": True,
+        "persistAuthorization": True,
+        "displayOperationId": True,
+    },
+    # Split components into request and response parts where appropriate
+    'COMPONENT_SPLIT_REQUEST': False,
+    # Aid client generator targets that have trouble with read-only properties.
+    'COMPONENT_NO_READ_ONLY_REQUIRED': False,
+    # Create separate components for PATCH endpoints (without required list)
+    'COMPONENT_SPLIT_PATCH': True,
 }
+
+
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases

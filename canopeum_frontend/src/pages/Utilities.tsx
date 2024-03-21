@@ -1,9 +1,10 @@
 import canopeum_logo from '@assets/images/Canopeum_Logo.jpg';
+import facebook_logo from '@assets/icons/facebook-regular.svg';
 
 export default function Utilities() {
     return (
         <div>
-            <div className="container d-flex flex-column gap-2">    
+            <div className="container mt-2 d-flex flex-column gap-2">    
                 <h1>Utilities</h1>
                 <div className="bg-white rounded-2 px-3 py-2">
                     <h2>Icons</h2>
@@ -51,6 +52,7 @@ export default function Utilities() {
                     <span className="material-symbols-outlined">school</span>
                     <span className="material-symbols-outlined fill-icon">psychiatry</span>
                     <span className="material-symbols-outlined">psychiatry</span>
+                    <img src={facebook_logo} alt="iconHome" className='h-1'/>
                 </div>
                 <div className="bg-white rounded px-3 py-2">
                     <h2>Buttons</h2>

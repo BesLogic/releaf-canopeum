@@ -27,9 +27,9 @@ cd releaf-canopeum
 
 ```bash
 cd canopeum_backend
-python -m venv env
-source env/scripts/activate
-pip install -r requirements.txt
+python -m venv .venv
+source .venv/scripts/activate
+python -m pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver
 ```
