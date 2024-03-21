@@ -71,6 +71,7 @@ class Post(models.Model):
     site = models.ForeignKey('Site', models.DO_NOTHING, blank=True, null=True)
     body = models.TextField(blank=True, null=True)
     like_count = models.IntegerField(blank=True, null=True)
+    share_count = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
 
 class Postimage(models.Model):
@@ -86,6 +87,7 @@ class Site(models.Model):
     size = models.TextField(blank=True, null=True)
     research_partnership = models.BooleanField(blank=True, null=True)
     visible_map = models.BooleanField(blank=True, null=True)
+    visitor_count = models.IntegerField(blank=True, null=True)
     contact = models.ForeignKey(Contact, models.DO_NOTHING, blank=True, null=True)
     announcement = models.ForeignKey(Announcement, models.DO_NOTHING, blank=True, null=True)
 

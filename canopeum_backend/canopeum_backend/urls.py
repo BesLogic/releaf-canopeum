@@ -11,7 +11,7 @@ urlpatterns = [
     path('auth/logout/', views.LogoutAPIView.as_view(), name='logout'),
     path('auth/register/', views.RegisterAPIView.as_view(), name='register'),
     
-    # CRUD User
+    # User
     path('users/', views.UserListAPIView.as_view(), name='user-list'),
     path('users/<int:pk>/', views.UserDetailAPIView.as_view(), name='user-detail'),
 
