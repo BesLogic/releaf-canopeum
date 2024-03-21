@@ -11,19 +11,19 @@ import {
     BatchesClient,
 } from './api'
 
-const baseUrl = "http://localhost:8000";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const api = {
-    announcementsClient: new AnnouncementsClient(baseUrl),
-    commentsClient: new CommentsClient(baseUrl),
-    likesClient: new LikesClient(baseUrl),
-    usersClient: new UsersClient(baseUrl),
-    postsClient: new PostsClient(baseUrl),
-    sitesClient: new SitesClient(baseUrl),
-    loginClient: new LoginClient(baseUrl),
-    logoutClient: new LogoutClient(baseUrl),
-    registerClient: new RegisterClient(baseUrl),
-    batchesClient: new BatchesClient(baseUrl),
+    announcementsClient: new AnnouncementsClient(API_URL),
+    commentsClient: new CommentsClient(API_URL),
+    likesClient: new LikesClient(API_URL),
+    usersClient: new UsersClient(API_URL),
+    postsClient: new PostsClient(API_URL),
+    sitesClient: new SitesClient(API_URL),
+    loginClient: new LoginClient(API_URL),
+    logoutClient: new LogoutClient(API_URL),
+    registerClient: new RegisterClient(API_URL),
+    batchesClient: new BatchesClient(API_URL),
 };
 
 export default api;

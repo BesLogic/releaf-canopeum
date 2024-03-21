@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/node": "^20.11.30",
     "bootstrap": "^5.3.3",
     "material-icons": "^1.13.12",
     "react": "^18.2.0",

@@ -13,7 +13,7 @@ export default function Home() {
     try {
       const response = await api.announcementsClient.all();
       setData(response);
-    } catch (error: any) {
+    } catch (error: Error | undefined) {
       setError(error);
     } finally {
       setIsLoading(false);
