@@ -20,7 +20,7 @@ export default function Navbar() {
                     <span className="navbar-toggler-icon"></span>
                 </button>
                 <div className="collapse navbar-collapse" id="navbarNav">
-                    <ul className="navbar-nav ml-auto">
+                    <ul className="navbar-nav d-flex w-100 ms-3 gap-3 fs-4">
                         <li className="nav-item">
                             <Link className="nav-link" to="/home">
                                 <span className="material-symbols-outlined text-light">home</span>
@@ -37,13 +37,13 @@ export default function Navbar() {
                             </Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/settings">
-                                <span className="material-symbols-outlined text-light">account_circle</span>
-                            </Link>
-                        </li>
-                        <li className="nav-item">
                             <Link className="nav-link" to="/utilities">
                                 <span className="material-symbols-outlined text-light">style</span>
+                            </Link>
+                        </li>
+                        <li className="nav-item ms-auto">
+                            <Link className="nav-link" to="/settings">
+                                <span className="material-symbols-outlined text-light">account_circle</span>
                             </Link>
                         </li>
                     </ul>
