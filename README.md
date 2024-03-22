@@ -10,25 +10,31 @@ Follow these instructions to get the project up and running on your local machin
 
 ### Prerequisites
 
-For frontend
+For frontend:
 
-- Node.js
-- npm (Node Package Manager)
-- Mockoon
+- [Node.js](https://nodejs.org/en/download) (includes npm)
+- [Mockoon](https://mockoon.com/download/#download-section)
+
 For backend
-- Python 3.12
-- Docker
+
+- [Python 3.12](https://www.python.org/downloads/)
+- [Docker](https://www.docker.com/get-started/)
 
 ### Installation
 
-1. Clone the repository:
+1. Fork the project:  
+![Fork](/docs/Fork.png)
+
+2. Clone the repository:  
+From your fork, copy the repo's URL  
+![Clone](/docs/Clone.png)
 
 ```shell
-git clone git@github.com:BesLogic/releaf-canopeum.git
+git clone <the_url_you_copied>
 cd releaf-canopeum
 ```
 
-2. Set up a Python 3.12 virtual environment
+3. Set up a Python 3.12 virtual environment
 
 ```shell
 cd canopeum_backend
@@ -58,7 +64,7 @@ In VSCode (Windows):
 `CTRL+Shift+P` (Open Command Palette) > `Python: Select Interpreter`
 ![VSCode_select_venv](/docs/VSCode_select_venv.png)
 
-3. Set up Django backend and Database: (Skip this section for Frontend only)
+4. Set up Django backend and Database: (Skip this section for Frontend only)
 
 ```shell
 docker compose up
@@ -68,7 +74,7 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-4. Set up React frontend:
+5. Set up React frontend:
 
 ```shell
 cd canopeum_frontend

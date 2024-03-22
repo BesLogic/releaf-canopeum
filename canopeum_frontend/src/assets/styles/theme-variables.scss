@@ -20,16 +20,61 @@ $gray-700: #C4C4C4;
 $gray-800: #343a40;
 $gray-900: #212529;
 $black: #000;
-$grays: (100: $gray-100, 200: $gray-200, 300: $gray-300, 400: $gray-400, 500: $gray-500, 600: $gray-600, 700: $gray-700, 800: $gray-800, 900: $gray-900);
-$theme-colors: (primary:  #007E51, secondary: #F18200, success: $green, info: $cyan, warning: $yellow, danger: $red, light: $gray-100, dark: $gray-800);
-$colors: (blue: $blue, indigo: $indigo, purple: $purple, pink: $pink, red: $red, orange: $orange, yellow: $yellow, green: $green, teal: $teal, cyan: $cyan, white: $white, gray: $gray-600,gray-dark: $gray-800);
+$grays: (
+  100: $gray-100,
+  200: $gray-200,
+  300: $gray-300,
+  400: $gray-400,
+  500: $gray-500,
+  600: $gray-600,
+  700: $gray-700,
+  800: $gray-800,
+  900: $gray-900
+);
+$theme-colors: (
+  primary: #007E51,
+  secondary: #F18200,
+  success: $green,
+  info: $cyan,
+  warning: $yellow,
+  danger: $red,
+  light: $gray-100,
+  dark: $gray-800
+);
+$colors: (
+  blue: $blue,
+  indigo: $indigo,
+  purple: $purple,
+  pink: $pink,
+  red: $red,
+  orange: $orange,
+  yellow: $yellow,
+  green: $green,
+  teal: $teal,
+  cyan: $cyan,
+  white: $white,
+  gray: $gray-600,
+  gray-dark: $gray-800
+);
 $theme-color-interval: 8%;
 
 
 // Spacing
 $spacer: 1rem;
-$spacers: (0: 0, 1: ($spacer * 0.25), 2: ($spacer * 0.5), 3: $spacer, 4: ($spacer * 1.5), 5: ($spacer * 3));
-$sizes: (25: 25%, 50: 50%, 75: 75%, 100: 100%);
+$spacers: (
+  0: 0,
+  1: ($spacer * 0.25),
+  2: ($spacer * 0.5),
+  3: $spacer,
+  4: ($spacer * 1.5),
+  5: ($spacer * 3)
+);
+$sizes: (
+  25: 25%,
+  50: 50%,
+  75: 75%,
+  100: 100%
+);
 
 
 // Options
@@ -55,8 +100,19 @@ $link-hover-decoration: none;
 
 
 // Grid
-$grid-breakpoints: (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px);
-$container-max-widths: (sm: 540px, md: 720px, lg: 960px, xl: 1140px);
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px
+);
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px
+);
 $grid-columns: 12;
 $grid-gutter-width: 30px;
 
@@ -112,7 +168,9 @@ $lead-font-weight: 300;
 $small-font-size: 80%;
 $text-muted: $gray-600;
 $blockquote-small-color: $gray-600;
-$blockquote-font-size: ($font-size-base * 1.25);
+$blockquote-font-size: (
+  $font-size-base * 1.25
+);
 $hr-border-color: rgba($black, 0.1);
 $hr-border-width: $border-width;
 $mark-padding: 0.2em;
@@ -161,11 +219,17 @@ $input-focus-box-shadow: $input-box-shadow, $btn-focus-box-shadow;
 $input-focus-color: $input-color;
 $input-placeholder-color: $gray-600;
 $input-height-border: $input-btn-border-width * 2;
-$input-height-inner: ($font-size-base * $input-btn-line-height) + ($input-btn-padding-y * 2);
+$input-height-inner: (
+  $font-size-base * $input-btn-line-height) + ($input-btn-padding-y * 2
+);
 $input-height: calc(#{$input-height-inner} + #{$input-height-border});
-$input-height-inner-sm: ($font-size-sm * $input-btn-line-height-sm) + ($input-btn-padding-y-sm * 2);
+$input-height-inner-sm: (
+  $font-size-sm * $input-btn-line-height-sm) + ($input-btn-padding-y-sm * 2
+);
 $input-height-sm: calc(#{$input-height-inner-sm} + #{$input-height-border});
-$input-height-inner-lg: ($font-size-sm * $input-btn-line-height-lg) + ($input-btn-padding-y-lg * 2);
+$input-height-inner-lg: (
+  $font-size-sm * $input-btn-line-height-lg) + ($input-btn-padding-y-lg * 2
+);
 $input-height-lg: calc(#{$input-height-inner-lg} + #{$input-height-border});
 $input-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
 $form-text-margin-top: 0.25rem;
@@ -230,7 +294,10 @@ $custom-file-border-radius: $border-radius;
 $custom-file-box-shadow: inset 0 0.2rem 0.4rem rgba($black, 0.05);
 $custom-file-button-color: $custom-file-color;
 $custom-file-button-bg: $gray-200;
-$custom-file-text: (placeholder: (en: 'Choose file...'), button-label: (en: 'Browse'));
+$custom-file-text: (
+  placeholder: (en: 'Choose file...'),
+  button-label: (en: 'Browse')
+);
 $form-feedback-valid-color: theme-color('success');
 $form-feedback-invalid-color: theme-color('danger');
 
@@ -276,7 +343,9 @@ $navbar-padding-y: calc(($spacer / 2));
 $navbar-padding-x: $spacer;
 $navbar-brand-font-size: $font-size-lg;
 $nav-link-height: $navbar-brand-font-size * $line-height-base;
-$navbar-brand-height: ($font-size-base * $line-height-base + $nav-link-padding-y * 2);
+$navbar-brand-height: (
+  $font-size-base * $line-height-base + $nav-link-padding-y * 2
+);
 $navbar-brand-padding-y: calc(($navbar-brand-height - $nav-link-height) / 2);
 $navbar-toggler-padding-y: 0.25rem;
 $navbar-toggler-padding-x: 0.75rem;
@@ -396,7 +465,9 @@ $popover-body-padding-x: 14px;
 $popover-arrow-width: 10px;
 $popover-arrow-height: 5px;
 $popover-arrow-color: $popover-bg;
-$popover-arrow-outer-width: ($popover-arrow-width + 1px);
+$popover-arrow-outer-width: (
+  $popover-arrow-width + 1px
+);
 $popover-arrow-outer-color: fade-in($popover-border-color, 0.05);
 
 
