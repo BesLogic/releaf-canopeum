@@ -3,9 +3,6 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
     hooks:
-      - id: pretty-format-json
-        exclude: ".vscode/.*" # Exclude jsonc
-        args: [--autofix, --no-sort-keys]
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
       - id: end-of-file-fixer
