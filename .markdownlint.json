@@ -1,0 +1,5 @@
+{
+  "default": true,
+  "MD013": false, // Use line-wrap for Markdown
+  "MD029": false // Allow explicit ordered list number for lists split by block codes
+}

@@ -1,0 +1,47 @@
+// Keep in alphabetical order
+{
+  "recommendations": [
+    "bierner.github-markdown-preview",
+    "charliermarsh.ruff",
+    "davidanson.vscode-markdownlint",
+    "eamodio.gitlens",
+    "github.vscode-github-actions",
+    "ms-python.mypy-type-checker",
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    // "ms-vscode.powershell",
+    "pkief.material-icon-theme",
+    // "redhat.vscode-xml",
+    "redhat.vscode-yaml",
+    "tamasfe.even-better-toml",
+  ],
+  "unwantedRecommendations": [
+    // Must disable in this workspace //
+    // https://github.com/microsoft/vscode/issues/40239 //
+    //
+    // even-better-toml has format on save
+    "bungcip.better-toml",
+    // VSCode has implemented an optimized version
+    "coenraads.bracket-pair-colorizer",
+    "coenraads.bracket-pair-colorizer-2",
+    "shardulm94.trailing-spaces",
+    // Don't use two mypy extensions simultaneously
+    "matangover.mypy",
+    // Obsoleted by Pylance
+    "ms-pyright.pyright",
+    //
+    // Don't recommend to autoinstall //
+    //
+    // Use Ruff instead
+    "ms-python.black-formatter",
+    "ms-python.flake8",
+    "ms-python.isort",
+    "ms-python.pylint",
+    // We use autopep8
+    "ms-python.black-formatter",
+    // Not configurable per workspace, tends to conflict with other linters
+    "sonarsource.sonarlint-vscode",
+    // Prefer using VSCode itself as a text editor
+    "vscodevim.vim",
+  ],
+}
