@@ -158,4 +158,3 @@ CREATE TABLE `BatchTreeType` (
   `tree_type_id` integer REFERENCES `TreeType` (`id`),
   `quantity` integer
 );
-

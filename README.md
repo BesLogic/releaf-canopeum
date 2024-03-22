@@ -11,38 +11,66 @@ Follow these instructions to get the project up and running on your local machin
 ### Prerequisites
 
 For frontend
+
 - Node.js
 - npm (Node Package Manager)
 - Mockoon
 For backend
-- Python (3.x recommended)
+- Python 3.12
 - Docker
-
 
 ### Installation
 
 1. Clone the repository:
 
-```bash
+```shell
 git clone git@github.com:BesLogic/releaf-canopeum.git
 cd releaf-canopeum
 ```
 
-2. Set up Django backend and Database: (Skip this section for Frontend only)
+2. Set up a Python 3.12 virtual environment
 
-```bash
+```shell
+cd canopeum_backend
+python3.12 -m venv .venv
+```
+
+or on Windows if "python3.12" is not a recognized command:
+
+```powershell
+cd canopeum_backend
+py -3.12 -m venv .venv
+```
+
+Then activate the environemnt (you need to do this everytime if your editor isn't configured to do so):
+
+```shell
+source .venv/scripts/activate
+```
+
+and on Windows:
+
+```powershell
+.venv/scripts/activate
+```
+
+In VSCode (Windows):
+`CTRL+Shift+P` (Open Command Palette) > `Python: Select Interpreter`
+![VSCode_select_venv](/docs/VSCode_select_venv.png)
+
+3. Set up Django backend and Database: (Skip this section for Frontend only)
+
+```shell
 docker compose up
 cd canopeum_backend
-python -m venv .venv
-source .venv/scripts/activate
-python -m pip install -r requirements.txt
+python -m pip install -r requirements-dev.txt
 python manage.py migrate
 python manage.py runserver
 ```
 
-3. Set up React frontend:
+4. Set up React frontend:
 
-```bash
+```shell
 cd canopeum_frontend
 npm install
 npm run dev
@@ -50,7 +78,7 @@ npm run dev
 
 Run mock data (For Frontend only)
 
-```bash
+```shell
 # In another CLI
 npm install -g @mockoon/cli
 cd releaf-canopeum/canopeum_frontend
@@ -59,7 +87,7 @@ mockoon-cli start --data canopeum-mockoon.json
 
 ### Folder Architecture
 
-```bash
+```ini
 project_name/
 │
 ├── backend/                  # Django backend

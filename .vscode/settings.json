@@ -1,0 +1,118 @@
+{
+  "editor.rulers": [
+    80,
+    120,
+  ],
+  "[git-commit]": {
+    "editor.rulers": [
+      72,
+    ],
+  },
+  "[markdown]": {
+    "files.trimTrailingWhitespace": false,
+  },
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.eol": "\n",
+  "editor.comments.insertSpace": true,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    // Let dedicated linter (Ruff) organize imports
+    "source.organizeImports": "never",
+  },
+  "files.associations": {
+    ".flake8": "properties",
+    "*.qrc": "xml",
+    "*.ui": "xml",
+    ".markdownlint.json": "jsonc",
+  },
+  "search.exclude": {
+    "**/*.code-search": true,
+    "*.lock": true,
+  },
+  // Set the default formatter to help avoid Prettier
+  "[json][jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features",
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.tabSize": 4,
+    "editor.rulers": [
+      72, // PEP8-17 docstrings
+      // 79, // PEP8-17 default max
+      // 88, // Black/Ruff default
+      // 99, // PEP8-17 acceptable max
+      120, // Our hard rule
+    ],
+  },
+  "mypy-type-checker.importStrategy": "fromEnvironment",
+  "mypy-type-checker.args": [
+    // https://github.com/microsoft/vscode-mypy/issues/37#issuecomment-1602702174
+    "--config-file=${workspaceFolder}/canopeum_backend/pyproject.toml",
+  ],
+  "python.terminal.activateEnvironment": true,
+  // python.analysis is Pylance (pyright) configurations
+  "python.analysis.fixAll": [
+    "source.convertImportFormat"
+    // Explicitly omiting "source.unusedImports", can be annoying when commenting code for debugging
+  ],
+  "python.analysis.importFormat": "relative",
+  "python.analysis.diagnosticMode": "workspace",
+  "ruff.importStrategy": "fromEnvironment",
+  // Use the Ruff extension instead
+  "isort.check": false,
+  "powershell.codeFormatting.pipelineIndentationStyle": "IncreaseIndentationForFirstPipeline",
+  "powershell.codeFormatting.autoCorrectAliases": true,
+  "powershell.codeFormatting.trimWhitespaceAroundPipe": true,
+  "powershell.codeFormatting.useConstantStrings": true,
+  "powershell.codeFormatting.useCorrectCasing": true,
+  "powershell.codeFormatting.whitespaceBetweenParameters": true,
+  "powershell.integratedConsole.showOnStartup": false,
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.defaultProfile.linux": "pwsh",
+  "terminal.integrated.defaultProfile.osx": "pwsh",
+  "xml.codeLens.enabled": true,
+  "xml.format.spaceBeforeEmptyCloseTag": false,
+  "xml.format.preserveSpace": [
+    // Default
+    "xsl:text",
+    "xsl:comment",
+    "xsl:processing-instruction",
+    "literallayout",
+    "programlisting",
+    "screen",
+    "synopsis",
+    "pre",
+    "xd:pre",
+    // Custom
+    "string"
+  ],
+  "[toml]": {
+    "editor.defaultFormatter": "tamasfe.even-better-toml"
+  },
+  "evenBetterToml.formatter.alignComments": false,
+  "evenBetterToml.formatter.alignEntries": false,
+  "evenBetterToml.formatter.allowedBlankLines": 1,
+  "evenBetterToml.formatter.arrayAutoCollapse": true,
+  "evenBetterToml.formatter.arrayAutoExpand": true,
+  "evenBetterToml.formatter.arrayTrailingComma": true,
+  "evenBetterToml.formatter.columnWidth": 80,
+  "evenBetterToml.formatter.compactArrays": true,
+  "evenBetterToml.formatter.compactEntries": false,
+  "evenBetterToml.formatter.compactInlineTables": false,
+  "evenBetterToml.formatter.indentEntries": false,
+  "evenBetterToml.formatter.indentTables": false,
+  "evenBetterToml.formatter.inlineTableExpand": false,
+  "evenBetterToml.formatter.reorderArrays": true,
+  "evenBetterToml.formatter.trailingNewline": true,
+  // We like keeping TOML keys in a certain non-alphabetical order that feels more natural
+  "evenBetterToml.formatter.reorderKeys": false,
+}
