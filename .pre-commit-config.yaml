@@ -22,23 +22,24 @@ repos:
       # Run the formatter.
       - id: ruff-format
   # You can run this locally with `npm run lint:fix`
-  - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v8.56.0
-    hooks:
-      - id: eslint
-        files: \.[jt]sx?$ # *.js, *.jsx, *.ts and *.tsx
-        types: [file]
-        additional_dependencies: [
-            # Keep these in sync with canopeum_backend/package.json
-            "eslint-config-beslogic@1.6.5",
-            "eslint-plugin-jsx-a11y@6.8.0",
-            "eslint-plugin-react@7.34.1",
-            "eslint-plugin-react-hooks@4.6.0",
-            "eslint-plugin-react-prefer-function-component@3.3.0",
-            "eslint-plugin-react-redux@4.1.0",
-            "eslint-plugin-react-refresh@0.4.5",
-            "eslint-plugin-total-functions@7.1.0",
-          ]
+  # NOTE: exceeds tier max size 250MiB: 289.9MiB
+  # - repo: https://github.com/pre-commit/mirrors-eslint
+  #   rev: v8.56.0
+  #   hooks:
+  #     - id: eslint
+  #       files: \.[jt]sx?$ # *.js, *.jsx, *.ts and *.tsx
+  #       types: [file]
+  #       additional_dependencies: [
+  #           # Keep these in sync with canopeum_backend/package.json
+  #           "eslint-config-beslogic@1.6.5",
+  #           "eslint-plugin-jsx-a11y@6.8.0",
+  #           "eslint-plugin-react@7.34.1",
+  #           "eslint-plugin-react-hooks@4.6.0",
+  #           "eslint-plugin-react-prefer-function-component@3.3.0",
+  #           "eslint-plugin-react-redux@4.1.0",
+  #           "eslint-plugin-react-refresh@0.4.5",
+  #           "eslint-plugin-total-functions@7.1.0",
+  #         ]
 
 ci:
   autoupdate_schedule: quarterly
