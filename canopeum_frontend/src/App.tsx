@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import Analytics from './pages/Analytics';
 import Map from './pages/Map';
-import Settings from './pages/Settings';
+import UserManagement from './pages/UserManagement';
 import Login from './pages/Login';
 
 import Navbar from './components/Navbar';
@@ -21,7 +21,7 @@ export default function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/analytics" element={<Analytics />} />
                     <Route path="/map" element={<Map />} />
-                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/user-management" element={<UserManagement />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/utilities" element={<Utilities />} />
                 </Routes>

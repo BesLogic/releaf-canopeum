@@ -1,8 +1,8 @@
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Site, Post, Batch, Announcement, Like, Comment
-from .serializers import AuthUserSerializer, UserSerializer, SiteSerializer, PostSerializer, BatchSerializer, AnnouncementSerializer, LikeSerializer, CommentSerializer
+from .models import Contact, Site, Post, Batch, Announcement, Like, Comment
+from .serializers import AuthUserSerializer, ContactSerializer, UserSerializer, SiteSerializer, PostSerializer, BatchSerializer, AnnouncementSerializer, LikeSerializer, CommentSerializer
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
@@ -90,6 +90,12 @@ class UserDetailAPIView(APIView):
 
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class CurrentUserAPIView(APIView):
+    @extend_schema(responses=UserSerializer, operation_id="current_user")
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
 
 class AnnouncementListAPIView(APIView):
     @extend_schema(responses=AnnouncementSerializer(many=True), operation_id="announcements_all")
@@ -377,5 +383,53 @@ class CommentDetailAPIView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         comment.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class ContactListAPIView(APIView):
+    @extend_schema(responses=ContactSerializer(many=True), operation_id="contacts_all")
+    def get(self, request):
+        contacts = Contact.objects.all()
+        serializer = ContactSerializer(contacts, many=True)
+        return Response(serializer.data)
+
+    @extend_schema(request=ContactSerializer, responses=ContactSerializer)
+    def post(self, request):
+        serializer = ContactSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class ContactDetailAPIView(APIView):
+    @extend_schema(request=ContactSerializer, responses=ContactSerializer)
+    def get(self, request, pk):
+        try:
+            contact = Contact.objects.get(pk=pk)
+        except Contact.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ContactSerializer(contact)
+        return Response(serializer.data)
+
+    @extend_schema(request=ContactSerializer, responses=ContactSerializer)
+    def put(self, request, pk):
+        try:
+            contact = Contact.objects.get(pk=pk)
+        except Contact.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ContactSerializer(contact, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        try:
+            contact = Contact.objects.get(pk=pk)
+        except Contact.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        contact.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     

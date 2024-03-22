@@ -1,4 +1,4 @@
-export default function Settings() {
+export default function UserManagement() {
     return (
         <div>
              <div className="container mt-2 d-flex flex-column gap-2">
