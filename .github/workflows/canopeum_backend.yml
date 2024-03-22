@@ -2,6 +2,8 @@ name: canopeum_backend
 
 on:
   push:
+    branches:
+      - main
     paths:
       - "canopeum_backend/**"
       - ".github/workflows/canopeum_backend.yml"
