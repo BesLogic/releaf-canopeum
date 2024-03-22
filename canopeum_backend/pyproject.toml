@@ -83,9 +83,6 @@ allow-multiline = false
 [tool.ruff.lint.isort]
 combine-as-imports = true
 split-on-trailing-comma = false
-# Unlike isort, Ruff only counts relative imports as local-folder by default for know.
-# https://github.com/astral-sh/ruff/issues/3115
-# known-local-folder = []
 
 # https://docs.astral.sh/ruff/settings/#mccabe
 [tool.ruff.lint.mccabe]

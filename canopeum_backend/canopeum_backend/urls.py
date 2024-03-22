@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
-from canopeum_backend.canopeum_backend import views
+from . import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),

@@ -39,6 +39,9 @@
   "[json][jsonc]": {
     "editor.defaultFormatter": "vscode.json-language-features",
   },
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.tabSize": 4,
@@ -61,6 +64,7 @@
     "source.convertImportFormat"
     // Explicitly omiting "source.unusedImports", can be annoying when commenting code for debugging
   ],
+  "python.analysis.importFormat": "relative",
   "python.analysis.diagnosticMode": "workspace",
   "ruff.importStrategy": "fromEnvironment",
   // Use the Ruff extension instead
@@ -110,5 +114,5 @@
   "evenBetterToml.formatter.reorderArrays": true,
   "evenBetterToml.formatter.trailingNewline": true,
   // We like keeping TOML keys in a certain non-alphabetical order that feels more natural
-  "evenBetterToml.formatter.reorderKeys": false
+  "evenBetterToml.formatter.reorderKeys": false,
 }

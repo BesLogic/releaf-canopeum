@@ -9,8 +9,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from canopeum_backend.canopeum_backend.models import Announcement, Batch, Comment, Like, Post, Site
-from canopeum_backend.canopeum_backend.serializers import (
+from .models import Announcement, Batch, Comment, Like, Post, Site
+from .serializers import (
     AnnouncementSerializer,
     AuthUserSerializer,
     BatchSerializer,
