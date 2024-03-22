@@ -1,3 +1,5 @@
+name: canopeum_backend
+
 on:
   push:
   pull_request:
