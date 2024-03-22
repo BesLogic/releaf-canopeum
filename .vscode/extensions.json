@@ -15,22 +15,33 @@
     "pkief.material-icon-theme",
     // "redhat.vscode-xml",
     "redhat.vscode-yaml",
-    "tamasfe.even-better-toml",
+    "tamasfe.even-better-toml"
   ],
   "unwantedRecommendations": [
     // Must disable in this workspace //
     // https://github.com/microsoft/vscode/issues/40239 //
     //
+    // Use workspace version instead
+    "ms-vscode.vscode-typescript-next",
     // even-better-toml has format on save
     "bungcip.better-toml",
     // VSCode has implemented an optimized version
     "coenraads.bracket-pair-colorizer",
     "coenraads.bracket-pair-colorizer-2",
     "shardulm94.trailing-spaces",
+    // Lots of conflicts
+    "esbenp.prettier-vscode",
+    "rvest.vs-code-prettier-eslint",
+    // Not project-configurable. And the ESLint plugin is sufficient in JS/TS projects
+    "sonarsource.sonarlint-vscode",
     // Don't use two mypy extensions simultaneously
     "matangover.mypy",
     // Obsoleted by Pylance
     "ms-pyright.pyright",
+    // These are Deprecated
+    "eg2.tslint",
+    "ms-vscode.vscode-typescript-tslint-plugin",
+    "simonsiefke.prettier-vscode",
     //
     // Don't recommend to autoinstall //
     //
@@ -44,6 +55,6 @@
     // Not configurable per workspace, tends to conflict with other linters
     "sonarsource.sonarlint-vscode",
     // Prefer using VSCode itself as a text editor
-    "vscodevim.vim",
-  ],
+    "vscodevim.vim"
+  ]
 }
