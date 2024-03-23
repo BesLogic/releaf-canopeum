@@ -11,7 +11,6 @@ urlpatterns = [
     path('auth/login/', views.LoginAPIView.as_view(), name='login'),
     path('auth/logout/', views.LogoutAPIView.as_view(), name='logout'),
     path('auth/register/', views.RegisterAPIView.as_view(), name='register'),
-    path('auth/current_user/', views.CurrentUserAPIView.as_view(), name='current-user'),
 
     ### Social
 
@@ -26,7 +25,7 @@ urlpatterns = [
     path('social/posts/<int:postId>/likes/', views.LikeListAPIView.as_view(), name='like-list'),
 
     # Site
-    path('social/sites/', views.SiteListAPIView.as_view(), name='site-list'),
+    path('social/sites/', views.SiteSocialDetailAPIView.as_view(), name='site-list'),
     path('social/sites/<int:siteId>/', views.SiteSocialDetailAPIView.as_view(), name='site-detail'),
 
     # Announcement
@@ -44,8 +43,8 @@ urlpatterns = [
     # Site
     path('analytics/sites/', views.SiteListAPIView.as_view(), name='site-list'),
     path('analytics/sites/<int:siteId>/', views.SiteDetailAPIView.as_view(), name='site-detail'),
-    path('analytics/sites/summary', views.SiteSummaryListAPIView.as_view(), name='site-list'),
-    path('analytics/sites/<int:siteId>/summary', views.SiteSummaryDetailAPIView.as_view(), name='site-detail'),
+    path('analytics/sites/summary', views.SiteSummaryListAPIView.as_view(), name='site-summary-list'),
+    path('analytics/sites/<int:siteId>/summary', views.SiteSummaryDetailAPIView.as_view(), name='site-summary-detail'),
 
     # Batches
     path('analytics/batches/', views.BatchListAPIView.as_view(), name='batch-list'),
@@ -54,11 +53,12 @@ urlpatterns = [
     ## Map
 
     # Coordinate
-    path('map/sites/', views.MapSiteListAPIView.as_view(), name='coordinate-list-sites'),
+    path('map/sites/', views.SiteMapListAPIView.as_view(), name='coordinate-list-sites'),
 
     # User
     path('users/', views.UserListAPIView.as_view(), name='user-list'),
     path('users/<int:userId>/', views.UserDetailAPIView.as_view(), name='user-detail'),
+    path('users/current_user/', views.UserCurrentUserAPIView.as_view(), name='current-user'),
 
     # SWAGGER
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),

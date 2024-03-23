@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react'
 
-import type { Announcement } from '../services/api.ts'
+import type { BatchAnalytics } from '../services/api.ts'
 import api from '../services/apiInterface.ts'
 import { ensureError } from '../services/errors.ts'
 
 const Home = () => {
-  const [data, setData] = useState<Announcement[]>([])
+  const [data, setData] = useState<BatchAnalytics[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<Error | undefined>(undefined)
 
   const fetchData = async () => {
     setIsLoading(true)
     try {
-      const response = await api.announcementsClient.all()
+      const response = await api.batches.all()
       setData(response)
     } catch (error_: unknown) {
       setError(ensureError(error_))
@@ -38,7 +38,7 @@ const Home = () => {
               <div>
                 <p>Exemple request from API:</p>
                 <ul>
-                  {(data).map(item => <li key={item.id}>{item.body}</li>)}
+                  {(data).map(item => <li key={item.id}>{item.name}</li>)}
                 </ul>
               </div>
             )}

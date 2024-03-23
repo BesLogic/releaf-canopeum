@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from rest_framework import serializers
 from .models import BatchSeed, BatchSpecies, BatchSupportedSpecies, Batchfertilizer, Contact, Coordinate, Internationalization, Mulchlayertype, Site, Post, Batch, Announcement, Like, Comment, Sitetreespecies, Sitetype, SitetypeInternationalization, Treetype, Widget
 
 class AuthUserSerializer(serializers.ModelSerializer):
