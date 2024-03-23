@@ -174,7 +174,7 @@ class SiteSocialDetailAPIView(APIView):
 
 class SiteMapListAPIView(APIView):
     @extend_schema(responses=SiteMapSerializer, operation_id="site_map")
-    def get_site_map(self):
+    def get(self, request):
         sites = Site.objects.all()
         serializer = SiteMapSerializer(sites, many=True)
         return Response(serializer.data)
