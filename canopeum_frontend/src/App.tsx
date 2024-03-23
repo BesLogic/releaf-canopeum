@@ -1,17 +1,17 @@
-import 'bootstrap/js/index.umd.js';
-import './App.scss';
+import 'bootstrap/js/index.umd.js'
+import './App.scss'
 
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
-import AuthenticationContextProvider from './components/context/AuthenticationContext';
-import Navbar from './components/Navbar';
-import Analytics from './pages/Analytics';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Map from './pages/Map';
-import MapSite from './pages/MapSite';
-import UserManagement from './pages/UserManagement';
-import Utilities from './pages/Utilities';
+import AuthenticationContextProvider from './components/context/AuthenticationContext'
+import Navbar from './components/Navbar'
+import Analytics from './pages/Analytics'
+import Home from './pages/Home'
+import Login from './pages/Login'
+import Map from './pages/Map'
+import MapSite from './pages/MapSite'
+import UserManagement from './pages/UserManagement'
+import Utilities from './pages/Utilities'
 
 const App = () => (
   <AuthenticationContextProvider>
