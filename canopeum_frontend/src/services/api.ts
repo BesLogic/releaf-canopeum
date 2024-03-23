@@ -8,7 +8,7 @@
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
-export class BatchClient {
+export class Client {
   private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
   private baseUrl: string;
   protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -18,7 +18,7 @@ export class BatchClient {
     this.baseUrl = baseUrl ?? "";
   }
 
-  all(): Promise<BatchAnalytics[]> {
+  batchAll(): Promise<BatchAnalytics[]> {
     let url_ = this.baseUrl + "/analytics/batches/";
     url_ = url_.replace(/[?&]$/, "");
 
@@ -30,11 +30,11 @@ export class BatchClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processAll(_response);
+      return this.processBatchAll(_response);
     });
   }
 
-  protected processAll(response: Response): Promise<BatchAnalytics[]> {
+  protected processBatchAll(response: Response): Promise<BatchAnalytics[]> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -43,7 +43,7 @@ export class BatchClient {
     if (status === 200) {
       return response.text().then((_responseText) => {
         let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText);
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
         if (Array.isArray(resultData200)) {
           result200 = [] as any;
           for (let item of resultData200) result200!.push(BatchAnalytics.fromJS(item));
@@ -60,7 +60,7 @@ export class BatchClient {
     return Promise.resolve<BatchAnalytics[]>(null as any);
   }
 
-  create(body: Batch | undefined): Promise<Batch> {
+  batchCreate(body: Batch | undefined): Promise<Batch> {
     let url_ = this.baseUrl + "/analytics/batches/";
     url_ = url_.replace(/[?&]$/, "");
 
@@ -76,11 +76,11 @@ export class BatchClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processCreate(_response);
+      return this.processBatchCreate(_response);
     });
   }
 
-  protected processCreate(response: Response): Promise<Batch> {
+  protected processBatchCreate(response: Response): Promise<Batch> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -101,7 +101,7 @@ export class BatchClient {
     return Promise.resolve<Batch>(null as any);
   }
 
-  detail(batchId: number, body: Batch | undefined): Promise<Batch> {
+  batchDetail(batchId: number, body: Batch | undefined): Promise<Batch> {
     let url_ = this.baseUrl + "/analytics/batches/{batchId}/";
     if (batchId === undefined || batchId === null) throw new Error("The parameter 'batchId' must be defined.");
     url_ = url_.replace("{batchId}", encodeURIComponent("" + batchId));
@@ -119,11 +119,11 @@ export class BatchClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processDetail(_response);
+      return this.processBatchDetail(_response);
     });
   }
 
-  protected processDetail(response: Response): Promise<Batch> {
+  protected processBatchDetail(response: Response): Promise<Batch> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -147,7 +147,7 @@ export class BatchClient {
   /**
    * @return No response body
    */
-  delete(batchId: number): Promise<void> {
+  batchDelete(batchId: number): Promise<void> {
     let url_ = this.baseUrl + "/analytics/batches/{batchId}/";
     if (batchId === undefined || batchId === null) throw new Error("The parameter 'batchId' must be defined.");
     url_ = url_.replace("{batchId}", encodeURIComponent("" + batchId));
@@ -159,11 +159,11 @@ export class BatchClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processDelete(_response);
+      return this.processBatchDelete(_response);
     });
   }
 
-  protected processDelete(response: Response): Promise<void> {
+  protected processBatchDelete(response: Response): Promise<void> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -180,19 +180,8 @@ export class BatchClient {
     }
     return Promise.resolve<void>(null as any);
   }
-}
 
-export class SiteClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : (window as any);
-    this.baseUrl = baseUrl ?? "";
-  }
-
-  all(): Promise<Site[]> {
+  siteAll(): Promise<Site[]> {
     let url_ = this.baseUrl + "/analytics/sites/";
     url_ = url_.replace(/[?&]$/, "");
 
@@ -204,11 +193,11 @@ export class SiteClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processAll(_response);
+      return this.processSiteAll(_response);
     });
   }
 
-  protected processAll(response: Response): Promise<Site[]> {
+  protected processSiteAll(response: Response): Promise<Site[]> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -234,7 +223,7 @@ export class SiteClient {
     return Promise.resolve<Site[]>(null as any);
   }
 
-  create(body: Site): Promise<Site> {
+  siteCreate(body: Site): Promise<Site> {
     let url_ = this.baseUrl + "/analytics/sites/";
     url_ = url_.replace(/[?&]$/, "");
 
@@ -250,11 +239,11 @@ export class SiteClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processCreate(_response);
+      return this.processSiteCreate(_response);
     });
   }
 
-  protected processCreate(response: Response): Promise<Site> {
+  protected processSiteCreate(response: Response): Promise<Site> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -275,7 +264,7 @@ export class SiteClient {
     return Promise.resolve<Site>(null as any);
   }
 
-  detail(siteId: number): Promise<Site> {
+  siteDetail(siteId: number): Promise<Site> {
     let url_ = this.baseUrl + "/analytics/sites/{siteId}/";
     if (siteId === undefined || siteId === null) throw new Error("The parameter 'siteId' must be defined.");
     url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
@@ -289,11 +278,11 @@ export class SiteClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processDetail(_response);
+      return this.processSiteDetail(_response);
     });
   }
 
-  protected processDetail(response: Response): Promise<Site> {
+  protected processSiteDetail(response: Response): Promise<Site> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -314,7 +303,7 @@ export class SiteClient {
     return Promise.resolve<Site>(null as any);
   }
 
-  update(siteId: number, body: Site): Promise<Site> {
+  siteUpdate(siteId: number, body: Site): Promise<Site> {
     let url_ = this.baseUrl + "/analytics/sites/{siteId}/";
     if (siteId === undefined || siteId === null) throw new Error("The parameter 'siteId' must be defined.");
     url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
@@ -332,11 +321,11 @@ export class SiteClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processUpdate(_response);
+      return this.processSiteUpdate(_response);
     });
   }
 
-  protected processUpdate(response: Response): Promise<Site> {
+  protected processSiteUpdate(response: Response): Promise<Site> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -357,7 +346,7 @@ export class SiteClient {
     return Promise.resolve<Site>(null as any);
   }
 
-  delete(siteId: number): Promise<{ [key: string]: any }> {
+  siteDelete(siteId: number): Promise<{ [key: string]: any }> {
     let url_ = this.baseUrl + "/analytics/sites/{siteId}/";
     if (siteId === undefined || siteId === null) throw new Error("The parameter 'siteId' must be defined.");
     url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
@@ -371,11 +360,11 @@ export class SiteClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processDelete(_response);
+      return this.processSiteDelete(_response);
     });
   }
 
-  protected processDelete(response: Response): Promise<{ [key: string]: any }> {
+  protected processSiteDelete(response: Response): Promise<{ [key: string]: any }> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -404,7 +393,7 @@ export class SiteClient {
     return Promise.resolve<{ [key: string]: any }>(null as any);
   }
 
-  summarydetail(siteId: number): Promise<SiteSummary> {
+  siteSummarydetail(siteId: number): Promise<SiteSummary> {
     let url_ = this.baseUrl + "/analytics/sites/{siteId}/summary";
     if (siteId === undefined || siteId === null) throw new Error("The parameter 'siteId' must be defined.");
     url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
@@ -418,11 +407,11 @@ export class SiteClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processSummarydetail(_response);
+      return this.processSiteSummarydetail(_response);
     });
   }
 
-  protected processSummarydetail(response: Response): Promise<SiteSummary> {
+  protected processSiteSummarydetail(response: Response): Promise<SiteSummary> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -443,7 +432,7 @@ export class SiteClient {
     return Promise.resolve<SiteSummary>(null as any);
   }
 
-  summary(): Promise<SiteSummary[]> {
+  siteSummary(): Promise<SiteSummary[]> {
     let url_ = this.baseUrl + "/analytics/sites/summary";
     url_ = url_.replace(/[?&]$/, "");
 
@@ -455,11 +444,11 @@ export class SiteClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processSummary(_response);
+      return this.processSiteSummary(_response);
     });
   }
 
-  protected processSummary(response: Response): Promise<SiteSummary[]> {
+  protected processSiteSummary(response: Response): Promise<SiteSummary[]> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -485,55 +474,7 @@ export class SiteClient {
     return Promise.resolve<SiteSummary[]>(null as any);
   }
 
-  social(): Promise<SiteSocial> {
-    let url_ = this.baseUrl + "/social/sites/";
-    url_ = url_.replace(/[?&]$/, "");
-
-    let options_: RequestInit = {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processSocial(_response);
-    });
-  }
-
-  protected processSocial(response: Response): Promise<SiteSocial> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = SiteSocial.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<SiteSocial>(null as any);
-  }
-}
-
-export class SchemaClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : (window as any);
-    this.baseUrl = baseUrl ?? "";
-  }
-
-  retrieve(format: Format | undefined, lang: Lang | undefined): Promise<{ [key: string]: any }> {
+  apiSchemaRetrieve(format: Format | undefined, lang: Lang | undefined): Promise<{ [key: string]: any }> {
     let url_ = this.baseUrl + "/api/schema/?";
     if (format === null) throw new Error("The parameter 'format' cannot be null.");
     else if (format !== undefined) url_ += "format=" + encodeURIComponent("" + format) + "&";
@@ -549,11 +490,11 @@ export class SchemaClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processRetrieve(_response);
+      return this.processApiSchemaRetrieve(_response);
     });
   }
 
-  protected processRetrieve(response: Response): Promise<{ [key: string]: any }> {
+  protected processApiSchemaRetrieve(response: Response): Promise<{ [key: string]: any }> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -581,19 +522,8 @@ export class SchemaClient {
     }
     return Promise.resolve<{ [key: string]: any }>(null as any);
   }
-}
 
-export class AuthenticationClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : (window as any);
-    this.baseUrl = baseUrl ?? "";
-  }
-
-  login(body: AuthUser): Promise<User> {
+  authenticationLogin(body: AuthUser): Promise<User> {
     let url_ = this.baseUrl + "/auth/login/";
     url_ = url_.replace(/[?&]$/, "");
 
@@ -609,11 +539,11 @@ export class AuthenticationClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processLogin(_response);
+      return this.processAuthenticationLogin(_response);
     });
   }
 
-  protected processLogin(response: Response): Promise<User> {
+  protected processAuthenticationLogin(response: Response): Promise<User> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -634,7 +564,7 @@ export class AuthenticationClient {
     return Promise.resolve<User>(null as any);
   }
 
-  logout(): Promise<{ [key: string]: any }> {
+  authenticationLogout(): Promise<{ [key: string]: any }> {
     let url_ = this.baseUrl + "/auth/logout/";
     url_ = url_.replace(/[?&]$/, "");
 
@@ -646,11 +576,11 @@ export class AuthenticationClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processLogout(_response);
+      return this.processAuthenticationLogout(_response);
     });
   }
 
-  protected processLogout(response: Response): Promise<{ [key: string]: any }> {
+  protected processAuthenticationLogout(response: Response): Promise<{ [key: string]: any }> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -679,7 +609,7 @@ export class AuthenticationClient {
     return Promise.resolve<{ [key: string]: any }>(null as any);
   }
 
-  register(body: User): Promise<AuthUser> {
+  authenticationRegister(body: User): Promise<AuthUser> {
     let url_ = this.baseUrl + "/auth/register/";
     url_ = url_.replace(/[?&]$/, "");
 
@@ -695,11 +625,11 @@ export class AuthenticationClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processRegister(_response);
+      return this.processAuthenticationRegister(_response);
     });
   }
 
-  protected processRegister(response: Response): Promise<AuthUser> {
+  protected processAuthenticationRegister(response: Response): Promise<AuthUser> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -719,19 +649,45 @@ export class AuthenticationClient {
     }
     return Promise.resolve<AuthUser>(null as any);
   }
-}
 
-export class PostClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+  siteMap(): Promise<SiteMap> {
+    let url_ = this.baseUrl + "/map/sites/";
+    url_ = url_.replace(/[?&]$/, "");
 
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : (window as any);
-    this.baseUrl = baseUrl ?? "";
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processSiteMap(_response);
+    });
   }
 
-  all(): Promise<Post[]> {
+  protected processSiteMap(response: Response): Promise<SiteMap> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = SiteMap.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<SiteMap>(null as any);
+  }
+
+  postAll(): Promise<Post[]> {
     let url_ = this.baseUrl + "/social/posts/";
     url_ = url_.replace(/[?&]$/, "");
 
@@ -743,11 +699,11 @@ export class PostClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processAll(_response);
+      return this.processPostAll(_response);
     });
   }
 
-  protected processAll(response: Response): Promise<Post[]> {
+  protected processPostAll(response: Response): Promise<Post[]> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -773,7 +729,7 @@ export class PostClient {
     return Promise.resolve<Post[]>(null as any);
   }
 
-  create(body: Post): Promise<Post> {
+  postCreate(body: Post): Promise<Post> {
     let url_ = this.baseUrl + "/social/posts/";
     url_ = url_.replace(/[?&]$/, "");
 
@@ -789,11 +745,11 @@ export class PostClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processCreate(_response);
+      return this.processPostCreate(_response);
     });
   }
 
-  protected processCreate(response: Response): Promise<Post> {
+  protected processPostCreate(response: Response): Promise<Post> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -813,19 +769,8 @@ export class PostClient {
     }
     return Promise.resolve<Post>(null as any);
   }
-}
 
-export class CommentClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : (window as any);
-    this.baseUrl = baseUrl ?? "";
-  }
-
-  all(postId: number): Promise<Comment[]> {
+  commentAll(postId: number): Promise<Comment[]> {
     let url_ = this.baseUrl + "/social/posts/{postId}/comments/";
     if (postId === undefined || postId === null) throw new Error("The parameter 'postId' must be defined.");
     url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
@@ -839,11 +784,11 @@ export class CommentClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processAll(_response);
+      return this.processCommentAll(_response);
     });
   }
 
-  protected processAll(response: Response): Promise<Comment[]> {
+  protected processCommentAll(response: Response): Promise<Comment[]> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -869,7 +814,7 @@ export class CommentClient {
     return Promise.resolve<Comment[]>(null as any);
   }
 
-  create(postId: number, body: Comment | undefined): Promise<Comment> {
+  commentCreate(postId: number, body: Comment | undefined): Promise<Comment> {
     let url_ = this.baseUrl + "/social/posts/{postId}/comments/";
     if (postId === undefined || postId === null) throw new Error("The parameter 'postId' must be defined.");
     url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
@@ -887,11 +832,11 @@ export class CommentClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processCreate(_response);
+      return this.processCommentCreate(_response);
     });
   }
 
-  protected processCreate(response: Response): Promise<Comment> {
+  protected processCommentCreate(response: Response): Promise<Comment> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -915,7 +860,7 @@ export class CommentClient {
   /**
    * @return No response body
    */
-  delete(commentId: number, postId: number): Promise<void> {
+  commentDelete(commentId: number, postId: number): Promise<void> {
     let url_ = this.baseUrl + "/social/posts/{postId}/comments/{commentId}/";
     if (commentId === undefined || commentId === null) throw new Error("The parameter 'commentId' must be defined.");
     url_ = url_.replace("{commentId}", encodeURIComponent("" + commentId));
@@ -929,11 +874,11 @@ export class CommentClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processDelete(_response);
+      return this.processCommentDelete(_response);
     });
   }
 
-  protected processDelete(response: Response): Promise<void> {
+  protected processCommentDelete(response: Response): Promise<void> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -950,19 +895,8 @@ export class CommentClient {
     }
     return Promise.resolve<void>(null as any);
   }
-}
 
-export class LikeClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : (window as any);
-    this.baseUrl = baseUrl ?? "";
-  }
-
-  all(postId: number, body: Like | undefined): Promise<Like> {
+  likeAll(postId: number, body: Like | undefined): Promise<Like> {
     let url_ = this.baseUrl + "/social/posts/{postId}/likes/";
     if (postId === undefined || postId === null) throw new Error("The parameter 'postId' must be defined.");
     url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
@@ -980,11 +914,11 @@ export class LikeClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processAll(_response);
+      return this.processLikeAll(_response);
     });
   }
 
-  protected processAll(response: Response): Promise<Like> {
+  protected processLikeAll(response: Response): Promise<Like> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -1004,22 +938,9 @@ export class LikeClient {
     }
     return Promise.resolve<Like>(null as any);
   }
-}
 
-export class SocialClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : (window as any);
-    this.baseUrl = baseUrl ?? "";
-  }
-
-  2(siteId: number): Promise<SiteSocial> {
-    let url_ = this.baseUrl + "/social/sites/{siteId}/";
-    if (siteId === undefined || siteId === null) throw new Error("The parameter 'siteId' must be defined.");
-    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+  siteSocial(): Promise<SiteSocial> {
+    let url_ = this.baseUrl + "/social/sites/";
     url_ = url_.replace(/[?&]$/, "");
 
     let options_: RequestInit = {
@@ -1030,11 +951,11 @@ export class SocialClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.process2(_response);
+      return this.processSiteSocial(_response);
     });
   }
 
-  protected process2(response: Response): Promise<SiteSocial> {
+  protected processSiteSocial(response: Response): Promise<SiteSocial> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -1054,19 +975,47 @@ export class SocialClient {
     }
     return Promise.resolve<SiteSocial>(null as any);
   }
-}
 
-export class AnnouncementClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+  siteSocial2(siteId: number): Promise<SiteSocial> {
+    let url_ = this.baseUrl + "/social/sites/{siteId}/";
+    if (siteId === undefined || siteId === null) throw new Error("The parameter 'siteId' must be defined.");
+    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+    url_ = url_.replace(/[?&]$/, "");
 
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : (window as any);
-    this.baseUrl = baseUrl ?? "";
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+      },
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processSiteSocial2(_response);
+    });
   }
 
-  update(siteId: number, body: Announcement | undefined): Promise<Announcement> {
+  protected processSiteSocial2(response: Response): Promise<SiteSocial> {
+    const status = response.status;
+    let _headers: any = {};
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
+    }
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = SiteSocial.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<SiteSocial>(null as any);
+  }
+
+  announcementUpdate(siteId: number, body: Announcement | undefined): Promise<Announcement> {
     let url_ = this.baseUrl + "/social/sites/{siteId}/announcements/";
     if (siteId === undefined || siteId === null) throw new Error("The parameter 'siteId' must be defined.");
     url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
@@ -1084,11 +1033,11 @@ export class AnnouncementClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processUpdate(_response);
+      return this.processAnnouncementUpdate(_response);
     });
   }
 
-  protected processUpdate(response: Response): Promise<Announcement> {
+  protected processAnnouncementUpdate(response: Response): Promise<Announcement> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -1108,19 +1057,8 @@ export class AnnouncementClient {
     }
     return Promise.resolve<Announcement>(null as any);
   }
-}
 
-export class ContactClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : (window as any);
-    this.baseUrl = baseUrl ?? "";
-  }
-
-  update(contactId: number, siteId: number, body: Contact | undefined): Promise<Contact> {
+  contactUpdate(contactId: number, siteId: number, body: Contact | undefined): Promise<Contact> {
     let url_ = this.baseUrl + "/social/sites/{siteId}/contacts/{contactId}/";
     if (contactId === undefined || contactId === null) throw new Error("The parameter 'contactId' must be defined.");
     url_ = url_.replace("{contactId}", encodeURIComponent("" + contactId));
@@ -1140,11 +1078,11 @@ export class ContactClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processUpdate(_response);
+      return this.processContactUpdate(_response);
     });
   }
 
-  protected processUpdate(response: Response): Promise<Contact> {
+  protected processContactUpdate(response: Response): Promise<Contact> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -1164,19 +1102,8 @@ export class ContactClient {
     }
     return Promise.resolve<Contact>(null as any);
   }
-}
 
-export class WidgetClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : (window as any);
-    this.baseUrl = baseUrl ?? "";
-  }
-
-  all(siteId: number, body: Widget | undefined): Promise<Widget> {
+  widgetAll(siteId: number, body: Widget | undefined): Promise<Widget> {
     let url_ = this.baseUrl + "/social/sites/{siteId}/widgets/";
     if (siteId === undefined || siteId === null) throw new Error("The parameter 'siteId' must be defined.");
     url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
@@ -1194,11 +1121,11 @@ export class WidgetClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processAll(_response);
+      return this.processWidgetAll(_response);
     });
   }
 
-  protected processAll(response: Response): Promise<Widget> {
+  protected processWidgetAll(response: Response): Promise<Widget> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -1219,7 +1146,7 @@ export class WidgetClient {
     return Promise.resolve<Widget>(null as any);
   }
 
-  detail(siteId: number, widgetId: number, body: Widget | undefined): Promise<Widget> {
+  widgetDetail(siteId: number, widgetId: number, body: Widget | undefined): Promise<Widget> {
     let url_ = this.baseUrl + "/social/sites/{siteId}/widgets/{widgetId}/";
     if (siteId === undefined || siteId === null) throw new Error("The parameter 'siteId' must be defined.");
     url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
@@ -1239,11 +1166,11 @@ export class WidgetClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processDetail(_response);
+      return this.processWidgetDetail(_response);
     });
   }
 
-  protected processDetail(response: Response): Promise<Widget> {
+  protected processWidgetDetail(response: Response): Promise<Widget> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -1267,7 +1194,7 @@ export class WidgetClient {
   /**
    * @return No response body
    */
-  delete(siteId: number, widgetId: number): Promise<void> {
+  widgetDelete(siteId: number, widgetId: number): Promise<void> {
     let url_ = this.baseUrl + "/social/sites/{siteId}/widgets/{widgetId}/";
     if (siteId === undefined || siteId === null) throw new Error("The parameter 'siteId' must be defined.");
     url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
@@ -1281,11 +1208,11 @@ export class WidgetClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processDelete(_response);
+      return this.processWidgetDelete(_response);
     });
   }
 
-  protected processDelete(response: Response): Promise<void> {
+  protected processWidgetDelete(response: Response): Promise<void> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -1302,19 +1229,8 @@ export class WidgetClient {
     }
     return Promise.resolve<void>(null as any);
   }
-}
 
-export class UserClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : (window as any);
-    this.baseUrl = baseUrl ?? "";
-  }
-
-  all(body: User): Promise<User> {
+  userAll(body: User): Promise<User> {
     let url_ = this.baseUrl + "/users/";
     url_ = url_.replace(/[?&]$/, "");
 
@@ -1330,11 +1246,11 @@ export class UserClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processAll(_response);
+      return this.processUserAll(_response);
     });
   }
 
-  protected processAll(response: Response): Promise<User> {
+  protected processUserAll(response: Response): Promise<User> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -1355,7 +1271,7 @@ export class UserClient {
     return Promise.resolve<User>(null as any);
   }
 
-  detail(userId: number): Promise<User> {
+  userDetail(userId: number): Promise<User> {
     let url_ = this.baseUrl + "/users/{userId}/";
     if (userId === undefined || userId === null) throw new Error("The parameter 'userId' must be defined.");
     url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
@@ -1369,11 +1285,11 @@ export class UserClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processDetail(_response);
+      return this.processUserDetail(_response);
     });
   }
 
-  protected processDetail(response: Response): Promise<User> {
+  protected processUserDetail(response: Response): Promise<User> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -1394,7 +1310,7 @@ export class UserClient {
     return Promise.resolve<User>(null as any);
   }
 
-  update(userId: number, body: User): Promise<User> {
+  userUpdate(userId: number, body: User): Promise<User> {
     let url_ = this.baseUrl + "/users/{userId}/";
     if (userId === undefined || userId === null) throw new Error("The parameter 'userId' must be defined.");
     url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
@@ -1412,11 +1328,11 @@ export class UserClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processUpdate(_response);
+      return this.processUserUpdate(_response);
     });
   }
 
-  protected processUpdate(response: Response): Promise<User> {
+  protected processUserUpdate(response: Response): Promise<User> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -1440,7 +1356,7 @@ export class UserClient {
   /**
    * @return No response body
    */
-  delete(userId: number): Promise<void> {
+  userDelete(userId: number): Promise<void> {
     let url_ = this.baseUrl + "/users/{userId}/";
     if (userId === undefined || userId === null) throw new Error("The parameter 'userId' must be defined.");
     url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
@@ -1452,11 +1368,11 @@ export class UserClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processDelete(_response);
+      return this.processUserDelete(_response);
     });
   }
 
-  protected processDelete(response: Response): Promise<void> {
+  protected processUserDelete(response: Response): Promise<void> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -1473,19 +1389,8 @@ export class UserClient {
     }
     return Promise.resolve<void>(null as any);
   }
-}
 
-export class CurrentClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : (window as any);
-    this.baseUrl = baseUrl ?? "";
-  }
-
-  user(): Promise<User> {
+  userCurrentUser(): Promise<User> {
     let url_ = this.baseUrl + "/users/current_user/";
     url_ = url_.replace(/[?&]$/, "");
 
@@ -1497,11 +1402,11 @@ export class CurrentClient {
     };
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processUser(_response);
+      return this.processUserCurrentUser(_response);
     });
   }
 
-  protected processUser(response: Response): Promise<User> {
+  protected processUserCurrentUser(response: Response): Promise<User> {
     const status = response.status;
     let _headers: any = {};
     if (response.headers && response.headers.forEach) {
@@ -1637,13 +1542,13 @@ export interface IAuthUser {
 
 export class Batch implements IBatch {
   readonly id!: number;
-  created_at?: Date | undefined;
+  createdAt?: Date | undefined;
   name?: string | undefined;
   sponsor?: string | undefined;
   size?: string | undefined;
-  soil_condition?: string | undefined;
-  total_number_seed?: number | undefined;
-  total_propagation?: number | undefined;
+  soilCondition?: string | undefined;
+  totalNumberSeed?: number | undefined;
+  totalPropagation?: number | undefined;
   site?: number | undefined;
 
   [key: string]: any;
@@ -1662,13 +1567,13 @@ export class Batch implements IBatch {
         if (_data.hasOwnProperty(property)) this[property] = _data[property];
       }
       (<any>this).id = _data["id"];
-      this.created_at = _data["created_at"] ? new Date(_data["created_at"].toString()) : <any>undefined;
+      this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
       this.name = _data["name"];
       this.sponsor = _data["sponsor"];
       this.size = _data["size"];
-      this.soil_condition = _data["soil_condition"];
-      this.total_number_seed = _data["total_number_seed"];
-      this.total_propagation = _data["total_propagation"];
+      this.soilCondition = _data["soilCondition"];
+      this.totalNumberSeed = _data["totalNumberSeed"];
+      this.totalPropagation = _data["totalPropagation"];
       this.site = _data["site"];
     }
   }
@@ -1686,13 +1591,13 @@ export class Batch implements IBatch {
       if (this.hasOwnProperty(property)) data[property] = this[property];
     }
     data["id"] = this.id;
-    data["created_at"] = this.created_at ? this.created_at.toISOString() : <any>undefined;
+    data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
     data["name"] = this.name;
     data["sponsor"] = this.sponsor;
     data["size"] = this.size;
-    data["soil_condition"] = this.soil_condition;
-    data["total_number_seed"] = this.total_number_seed;
-    data["total_propagation"] = this.total_propagation;
+    data["soilCondition"] = this.soilCondition;
+    data["totalNumberSeed"] = this.totalNumberSeed;
+    data["totalPropagation"] = this.totalPropagation;
     data["site"] = this.site;
     return data;
   }
@@ -1700,13 +1605,13 @@ export class Batch implements IBatch {
 
 export interface IBatch {
   id: number;
-  created_at?: Date | undefined;
+  createdAt?: Date | undefined;
   name?: string | undefined;
   sponsor?: string | undefined;
   size?: string | undefined;
-  soil_condition?: string | undefined;
-  total_number_seed?: number | undefined;
-  total_propagation?: number | undefined;
+  soilCondition?: string | undefined;
+  totalNumberSeed?: number | undefined;
+  totalPropagation?: number | undefined;
   site?: number | undefined;
 
   [key: string]: any;
@@ -1716,14 +1621,14 @@ export class BatchAnalytics implements IBatchAnalytics {
   readonly id!: number;
   name?: string | undefined;
   size?: string | undefined;
-  soil_condition?: string | undefined;
+  soilCondition?: string | undefined;
   readonly fertilizers!: string;
-  readonly mulch_layers!: string;
-  readonly supported_species!: string;
-  readonly plant_count!: string;
-  readonly survived_count!: string;
-  readonly replace_count!: string;
-  readonly seed_collected_count!: string;
+  readonly mulchLayers!: string;
+  readonly supportedSpecies!: string;
+  readonly plantCount!: string;
+  readonly survivedCount!: string;
+  readonly replaceCount!: string;
+  readonly seedCollectedCount!: string;
   readonly seeds!: string;
   readonly species!: string;
 
@@ -1745,14 +1650,14 @@ export class BatchAnalytics implements IBatchAnalytics {
       (<any>this).id = _data["id"];
       this.name = _data["name"];
       this.size = _data["size"];
-      this.soil_condition = _data["soil_condition"];
+      this.soilCondition = _data["soilCondition"];
       (<any>this).fertilizers = _data["fertilizers"];
-      (<any>this).mulch_layers = _data["mulch_layers"];
-      (<any>this).supported_species = _data["supported_species"];
-      (<any>this).plant_count = _data["plant_count"];
-      (<any>this).survived_count = _data["survived_count"];
-      (<any>this).replace_count = _data["replace_count"];
-      (<any>this).seed_collected_count = _data["seed_collected_count"];
+      (<any>this).mulchLayers = _data["mulchLayers"];
+      (<any>this).supportedSpecies = _data["supportedSpecies"];
+      (<any>this).plantCount = _data["plantCount"];
+      (<any>this).survivedCount = _data["survivedCount"];
+      (<any>this).replaceCount = _data["replaceCount"];
+      (<any>this).seedCollectedCount = _data["seedCollectedCount"];
       (<any>this).seeds = _data["seeds"];
       (<any>this).species = _data["species"];
     }
@@ -1773,14 +1678,14 @@ export class BatchAnalytics implements IBatchAnalytics {
     data["id"] = this.id;
     data["name"] = this.name;
     data["size"] = this.size;
-    data["soil_condition"] = this.soil_condition;
+    data["soilCondition"] = this.soilCondition;
     data["fertilizers"] = this.fertilizers;
-    data["mulch_layers"] = this.mulch_layers;
-    data["supported_species"] = this.supported_species;
-    data["plant_count"] = this.plant_count;
-    data["survived_count"] = this.survived_count;
-    data["replace_count"] = this.replace_count;
-    data["seed_collected_count"] = this.seed_collected_count;
+    data["mulchLayers"] = this.mulchLayers;
+    data["supportedSpecies"] = this.supportedSpecies;
+    data["plantCount"] = this.plantCount;
+    data["survivedCount"] = this.survivedCount;
+    data["replaceCount"] = this.replaceCount;
+    data["seedCollectedCount"] = this.seedCollectedCount;
     data["seeds"] = this.seeds;
     data["species"] = this.species;
     return data;
@@ -1791,14 +1696,14 @@ export interface IBatchAnalytics {
   id: number;
   name?: string | undefined;
   size?: string | undefined;
-  soil_condition?: string | undefined;
+  soilCondition?: string | undefined;
   fertilizers: string;
-  mulch_layers: string;
-  supported_species: string;
-  plant_count: string;
-  survived_count: string;
-  replace_count: string;
-  seed_collected_count: string;
+  mulchLayers: string;
+  supportedSpecies: string;
+  plantCount: string;
+  survivedCount: string;
+  replaceCount: string;
+  seedCollectedCount: string;
   seeds: string;
   species: string;
 
@@ -1808,8 +1713,8 @@ export interface IBatchAnalytics {
 export class Comment implements IComment {
   readonly id!: number;
   body?: string | undefined;
-  auth_user?: number | undefined;
-  created_at?: Date | undefined;
+  authUser?: number | undefined;
+  createdAt?: Date | undefined;
 
   [key: string]: any;
 
@@ -1828,8 +1733,8 @@ export class Comment implements IComment {
       }
       (<any>this).id = _data["id"];
       this.body = _data["body"];
-      this.auth_user = _data["auth_user"];
-      this.created_at = _data["created_at"] ? new Date(_data["created_at"].toString()) : <any>undefined;
+      this.authUser = _data["authUser"];
+      this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
     }
   }
 
@@ -1847,8 +1752,8 @@ export class Comment implements IComment {
     }
     data["id"] = this.id;
     data["body"] = this.body;
-    data["auth_user"] = this.auth_user;
-    data["created_at"] = this.created_at ? this.created_at.toISOString() : <any>undefined;
+    data["authUser"] = this.authUser;
+    data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
     return data;
   }
 }
@@ -1856,8 +1761,8 @@ export class Comment implements IComment {
 export interface IComment {
   id: number;
   body?: string | undefined;
-  auth_user?: number | undefined;
-  created_at?: Date | undefined;
+  authUser?: number | undefined;
+  createdAt?: Date | undefined;
 
   [key: string]: any;
 }
@@ -1867,10 +1772,10 @@ export class Contact implements IContact {
   address?: string | undefined;
   email?: string | undefined;
   phone?: string | undefined;
-  facebook_link?: string | undefined;
-  x_link?: string | undefined;
-  instagram_link?: string | undefined;
-  linkedin_link?: string | undefined;
+  facebookLink?: string | undefined;
+  xLink?: string | undefined;
+  instagramLink?: string | undefined;
+  linkedinLink?: string | undefined;
 
   [key: string]: any;
 
@@ -1891,10 +1796,10 @@ export class Contact implements IContact {
       this.address = _data["address"];
       this.email = _data["email"];
       this.phone = _data["phone"];
-      this.facebook_link = _data["facebook_link"];
-      this.x_link = _data["x_link"];
-      this.instagram_link = _data["instagram_link"];
-      this.linkedin_link = _data["linkedin_link"];
+      this.facebookLink = _data["facebookLink"];
+      this.xLink = _data["xLink"];
+      this.instagramLink = _data["instagramLink"];
+      this.linkedinLink = _data["linkedinLink"];
     }
   }
 
@@ -1914,10 +1819,10 @@ export class Contact implements IContact {
     data["address"] = this.address;
     data["email"] = this.email;
     data["phone"] = this.phone;
-    data["facebook_link"] = this.facebook_link;
-    data["x_link"] = this.x_link;
-    data["instagram_link"] = this.instagram_link;
-    data["linkedin_link"] = this.linkedin_link;
+    data["facebookLink"] = this.facebookLink;
+    data["xLink"] = this.xLink;
+    data["instagramLink"] = this.instagramLink;
+    data["linkedinLink"] = this.linkedinLink;
     return data;
   }
 }
@@ -1927,20 +1832,18 @@ export interface IContact {
   address?: string | undefined;
   email?: string | undefined;
   phone?: string | undefined;
-  facebook_link?: string | undefined;
-  x_link?: string | undefined;
-  instagram_link?: string | undefined;
-  linkedin_link?: string | undefined;
+  facebookLink?: string | undefined;
+  xLink?: string | undefined;
+  instagramLink?: string | undefined;
+  linkedinLink?: string | undefined;
 
   [key: string]: any;
 }
 
 export class Coordinates implements ICoordinates {
   readonly id!: number;
-  dms_latitude?: string | undefined;
-  dms_longitude?: string | undefined;
-  dd_latitude?: string | undefined;
-  dd_longitude?: string | undefined;
+  latitude?: string | undefined;
+  longitude?: string | undefined;
   address?: string | undefined;
 
   [key: string]: any;
@@ -1959,10 +1862,8 @@ export class Coordinates implements ICoordinates {
         if (_data.hasOwnProperty(property)) this[property] = _data[property];
       }
       (<any>this).id = _data["id"];
-      this.dms_latitude = _data["dms_latitude"];
-      this.dms_longitude = _data["dms_longitude"];
-      this.dd_latitude = _data["dd_latitude"];
-      this.dd_longitude = _data["dd_longitude"];
+      this.latitude = _data["latitude"];
+      this.longitude = _data["longitude"];
       this.address = _data["address"];
     }
   }
@@ -1980,10 +1881,8 @@ export class Coordinates implements ICoordinates {
       if (this.hasOwnProperty(property)) data[property] = this[property];
     }
     data["id"] = this.id;
-    data["dms_latitude"] = this.dms_latitude;
-    data["dms_longitude"] = this.dms_longitude;
-    data["dd_latitude"] = this.dd_latitude;
-    data["dd_longitude"] = this.dd_longitude;
+    data["latitude"] = this.latitude;
+    data["longitude"] = this.longitude;
     data["address"] = this.address;
     return data;
   }
@@ -1991,10 +1890,8 @@ export class Coordinates implements ICoordinates {
 
 export interface ICoordinates {
   id: number;
-  dms_latitude?: string | undefined;
-  dms_longitude?: string | undefined;
-  dd_latitude?: string | undefined;
-  dd_longitude?: string | undefined;
+  latitude?: string | undefined;
+  longitude?: string | undefined;
   address?: string | undefined;
 
   [key: string]: any;
@@ -2002,7 +1899,7 @@ export interface ICoordinates {
 
 export class Like implements ILike {
   readonly id!: number;
-  auth_user?: number | undefined;
+  authUser?: number | undefined;
   post?: number | undefined;
 
   [key: string]: any;
@@ -2021,7 +1918,7 @@ export class Like implements ILike {
         if (_data.hasOwnProperty(property)) this[property] = _data[property];
       }
       (<any>this).id = _data["id"];
-      this.auth_user = _data["auth_user"];
+      this.authUser = _data["authUser"];
       this.post = _data["post"];
     }
   }
@@ -2039,7 +1936,7 @@ export class Like implements ILike {
       if (this.hasOwnProperty(property)) data[property] = this[property];
     }
     data["id"] = this.id;
-    data["auth_user"] = this.auth_user;
+    data["authUser"] = this.authUser;
     data["post"] = this.post;
     return data;
   }
@@ -2047,7 +1944,7 @@ export class Like implements ILike {
 
 export interface ILike {
   id: number;
-  auth_user?: number | undefined;
+  authUser?: number | undefined;
   post?: number | undefined;
 
   [key: string]: any;
@@ -2056,12 +1953,12 @@ export interface ILike {
 export class Post implements IPost {
   readonly id!: number;
   site!: SiteOverview;
-  created_at?: Date | undefined;
+  createdAt?: Date | undefined;
   body?: string | undefined;
-  like_count?: number | undefined;
-  share_count?: number | undefined;
-  readonly comment_count!: string;
-  readonly has_liked!: string;
+  likeCount?: number | undefined;
+  shareCount?: number | undefined;
+  readonly commentCount!: string;
+  readonly hasLiked!: string;
 
   [key: string]: any;
 
@@ -2083,12 +1980,12 @@ export class Post implements IPost {
       }
       (<any>this).id = _data["id"];
       this.site = _data["site"] ? SiteOverview.fromJS(_data["site"]) : new SiteOverview();
-      this.created_at = _data["created_at"] ? new Date(_data["created_at"].toString()) : <any>undefined;
+      this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
       this.body = _data["body"];
-      this.like_count = _data["like_count"];
-      this.share_count = _data["share_count"];
-      (<any>this).comment_count = _data["comment_count"];
-      (<any>this).has_liked = _data["has_liked"];
+      this.likeCount = _data["likeCount"];
+      this.shareCount = _data["shareCount"];
+      (<any>this).commentCount = _data["commentCount"];
+      (<any>this).hasLiked = _data["hasLiked"];
     }
   }
 
@@ -2106,12 +2003,12 @@ export class Post implements IPost {
     }
     data["id"] = this.id;
     data["site"] = this.site ? this.site.toJSON() : <any>undefined;
-    data["created_at"] = this.created_at ? this.created_at.toISOString() : <any>undefined;
+    data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
     data["body"] = this.body;
-    data["like_count"] = this.like_count;
-    data["share_count"] = this.share_count;
-    data["comment_count"] = this.comment_count;
-    data["has_liked"] = this.has_liked;
+    data["likeCount"] = this.likeCount;
+    data["shareCount"] = this.shareCount;
+    data["commentCount"] = this.commentCount;
+    data["hasLiked"] = this.hasLiked;
     return data;
   }
 }
@@ -2119,29 +2016,29 @@ export class Post implements IPost {
 export interface IPost {
   id: number;
   site: SiteOverview;
-  created_at?: Date | undefined;
+  createdAt?: Date | undefined;
   body?: string | undefined;
-  like_count?: number | undefined;
-  share_count?: number | undefined;
-  comment_count: string;
-  has_liked: string;
+  likeCount?: number | undefined;
+  shareCount?: number | undefined;
+  commentCount: string;
+  hasLiked: string;
 
   [key: string]: any;
 }
 
 export class Site implements ISite {
   readonly id!: number;
-  site_type!: SiteType;
+  siteType!: SiteType;
   coordinate!: Coordinates;
-  readonly site_tree_species!: string;
+  readonly siteTreeSpecies!: string;
   contact!: Contact;
   announcement!: Announcement;
   name?: string | undefined;
   description?: string | undefined;
   size?: string | undefined;
-  research_partnership?: boolean | undefined;
-  visible_map?: boolean | undefined;
-  visitor_count?: number | undefined;
+  researchPartnership?: boolean | undefined;
+  visibleMap?: boolean | undefined;
+  visitorCount?: number | undefined;
   image?: number | undefined;
 
   [key: string]: any;
@@ -2153,7 +2050,7 @@ export class Site implements ISite {
       }
     }
     if (!data) {
-      this.site_type = new SiteType();
+      this.siteType = new SiteType();
       this.coordinate = new Coordinates();
       this.contact = new Contact();
       this.announcement = new Announcement();
@@ -2166,17 +2063,17 @@ export class Site implements ISite {
         if (_data.hasOwnProperty(property)) this[property] = _data[property];
       }
       (<any>this).id = _data["id"];
-      this.site_type = _data["site_type"] ? SiteType.fromJS(_data["site_type"]) : new SiteType();
+      this.siteType = _data["siteType"] ? SiteType.fromJS(_data["siteType"]) : new SiteType();
       this.coordinate = _data["coordinate"] ? Coordinates.fromJS(_data["coordinate"]) : new Coordinates();
-      (<any>this).site_tree_species = _data["site_tree_species"];
+      (<any>this).siteTreeSpecies = _data["siteTreeSpecies"];
       this.contact = _data["contact"] ? Contact.fromJS(_data["contact"]) : new Contact();
       this.announcement = _data["announcement"] ? Announcement.fromJS(_data["announcement"]) : new Announcement();
       this.name = _data["name"];
       this.description = _data["description"];
       this.size = _data["size"];
-      this.research_partnership = _data["research_partnership"];
-      this.visible_map = _data["visible_map"];
-      this.visitor_count = _data["visitor_count"];
+      this.researchPartnership = _data["researchPartnership"];
+      this.visibleMap = _data["visibleMap"];
+      this.visitorCount = _data["visitorCount"];
       this.image = _data["image"];
     }
   }
@@ -2194,17 +2091,17 @@ export class Site implements ISite {
       if (this.hasOwnProperty(property)) data[property] = this[property];
     }
     data["id"] = this.id;
-    data["site_type"] = this.site_type ? this.site_type.toJSON() : <any>undefined;
+    data["siteType"] = this.siteType ? this.siteType.toJSON() : <any>undefined;
     data["coordinate"] = this.coordinate ? this.coordinate.toJSON() : <any>undefined;
-    data["site_tree_species"] = this.site_tree_species;
+    data["siteTreeSpecies"] = this.siteTreeSpecies;
     data["contact"] = this.contact ? this.contact.toJSON() : <any>undefined;
     data["announcement"] = this.announcement ? this.announcement.toJSON() : <any>undefined;
     data["name"] = this.name;
     data["description"] = this.description;
     data["size"] = this.size;
-    data["research_partnership"] = this.research_partnership;
-    data["visible_map"] = this.visible_map;
-    data["visitor_count"] = this.visitor_count;
+    data["researchPartnership"] = this.researchPartnership;
+    data["visibleMap"] = this.visibleMap;
+    data["visitorCount"] = this.visitorCount;
     data["image"] = this.image;
     return data;
   }
@@ -2212,17 +2109,82 @@ export class Site implements ISite {
 
 export interface ISite {
   id: number;
-  site_type: SiteType;
+  siteType: SiteType;
   coordinate: Coordinates;
-  site_tree_species: string;
+  siteTreeSpecies: string;
   contact: Contact;
   announcement: Announcement;
   name?: string | undefined;
   description?: string | undefined;
   size?: string | undefined;
-  research_partnership?: boolean | undefined;
-  visible_map?: boolean | undefined;
-  visitor_count?: number | undefined;
+  researchPartnership?: boolean | undefined;
+  visibleMap?: boolean | undefined;
+  visitorCount?: number | undefined;
+  image?: number | undefined;
+
+  [key: string]: any;
+}
+
+export class SiteMap implements ISiteMap {
+  readonly id!: number;
+  name?: string | undefined;
+  siteType!: SiteType;
+  coordinate!: Coordinates;
+  image?: number | undefined;
+
+  [key: string]: any;
+
+  constructor(data?: ISiteMap) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    if (!data) {
+      this.siteType = new SiteType();
+      this.coordinate = new Coordinates();
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      }
+      (<any>this).id = _data["id"];
+      this.name = _data["name"];
+      this.siteType = _data["siteType"] ? SiteType.fromJS(_data["siteType"]) : new SiteType();
+      this.coordinate = _data["coordinate"] ? Coordinates.fromJS(_data["coordinate"]) : new Coordinates();
+      this.image = _data["image"];
+    }
+  }
+
+  static fromJS(data: any): SiteMap {
+    data = typeof data === "object" ? data : {};
+    let result = new SiteMap();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) data[property] = this[property];
+    }
+    data["id"] = this.id;
+    data["name"] = this.name;
+    data["siteType"] = this.siteType ? this.siteType.toJSON() : <any>undefined;
+    data["coordinate"] = this.coordinate ? this.coordinate.toJSON() : <any>undefined;
+    data["image"] = this.image;
+    return data;
+  }
+}
+
+export interface ISiteMap {
+  id: number;
+  name?: string | undefined;
+  siteType: SiteType;
+  coordinate: Coordinates;
   image?: number | undefined;
 
   [key: string]: any;
@@ -2279,7 +2241,7 @@ export interface ISiteOverview {
 
 export class SiteSocial implements ISiteSocial {
   name?: string | undefined;
-  site_type!: SiteType;
+  siteType!: SiteType;
   image?: number | undefined;
   description?: string | undefined;
   contact!: Contact;
@@ -2296,7 +2258,7 @@ export class SiteSocial implements ISiteSocial {
       }
     }
     if (!data) {
-      this.site_type = new SiteType();
+      this.siteType = new SiteType();
       this.contact = new Contact();
       this.announcement = new Announcement();
     }
@@ -2308,7 +2270,7 @@ export class SiteSocial implements ISiteSocial {
         if (_data.hasOwnProperty(property)) this[property] = _data[property];
       }
       this.name = _data["name"];
-      this.site_type = _data["site_type"] ? SiteType.fromJS(_data["site_type"]) : new SiteType();
+      this.siteType = _data["siteType"] ? SiteType.fromJS(_data["siteType"]) : new SiteType();
       this.image = _data["image"];
       this.description = _data["description"];
       this.contact = _data["contact"] ? Contact.fromJS(_data["contact"]) : new Contact();
@@ -2331,7 +2293,7 @@ export class SiteSocial implements ISiteSocial {
       if (this.hasOwnProperty(property)) data[property] = this[property];
     }
     data["name"] = this.name;
-    data["site_type"] = this.site_type ? this.site_type.toJSON() : <any>undefined;
+    data["siteType"] = this.siteType ? this.siteType.toJSON() : <any>undefined;
     data["image"] = this.image;
     data["description"] = this.description;
     data["contact"] = this.contact ? this.contact.toJSON() : <any>undefined;
@@ -2344,7 +2306,7 @@ export class SiteSocial implements ISiteSocial {
 
 export interface ISiteSocial {
   name?: string | undefined;
-  site_type: SiteType;
+  siteType: SiteType;
   image?: number | undefined;
   description?: string | undefined;
   contact: Contact;
@@ -2357,11 +2319,11 @@ export interface ISiteSocial {
 
 export class SiteSummary implements ISiteSummary {
   name?: string | undefined;
-  site_type!: SiteType;
-  readonly plant_count!: string;
-  readonly survived_count!: string;
-  readonly propagation_count!: string;
-  visitor_count?: number | undefined;
+  siteType!: SiteType;
+  readonly plantCount!: string;
+  readonly survivedCount!: string;
+  readonly propagationCount!: string;
+  visitorCount?: number | undefined;
   readonly sponsor!: string;
   readonly progress!: string;
 
@@ -2374,7 +2336,7 @@ export class SiteSummary implements ISiteSummary {
       }
     }
     if (!data) {
-      this.site_type = new SiteType();
+      this.siteType = new SiteType();
     }
   }
 
@@ -2384,11 +2346,11 @@ export class SiteSummary implements ISiteSummary {
         if (_data.hasOwnProperty(property)) this[property] = _data[property];
       }
       this.name = _data["name"];
-      this.site_type = _data["site_type"] ? SiteType.fromJS(_data["site_type"]) : new SiteType();
-      (<any>this).plant_count = _data["plant_count"];
-      (<any>this).survived_count = _data["survived_count"];
-      (<any>this).propagation_count = _data["propagation_count"];
-      this.visitor_count = _data["visitor_count"];
+      this.siteType = _data["siteType"] ? SiteType.fromJS(_data["siteType"]) : new SiteType();
+      (<any>this).plantCount = _data["plantCount"];
+      (<any>this).survivedCount = _data["survivedCount"];
+      (<any>this).propagationCount = _data["propagationCount"];
+      this.visitorCount = _data["visitorCount"];
       (<any>this).sponsor = _data["sponsor"];
       (<any>this).progress = _data["progress"];
     }
@@ -2407,11 +2369,11 @@ export class SiteSummary implements ISiteSummary {
       if (this.hasOwnProperty(property)) data[property] = this[property];
     }
     data["name"] = this.name;
-    data["site_type"] = this.site_type ? this.site_type.toJSON() : <any>undefined;
-    data["plant_count"] = this.plant_count;
-    data["survived_count"] = this.survived_count;
-    data["propagation_count"] = this.propagation_count;
-    data["visitor_count"] = this.visitor_count;
+    data["siteType"] = this.siteType ? this.siteType.toJSON() : <any>undefined;
+    data["plantCount"] = this.plantCount;
+    data["survivedCount"] = this.survivedCount;
+    data["propagationCount"] = this.propagationCount;
+    data["visitorCount"] = this.visitorCount;
     data["sponsor"] = this.sponsor;
     data["progress"] = this.progress;
     return data;
@@ -2420,11 +2382,11 @@ export class SiteSummary implements ISiteSummary {
 
 export interface ISiteSummary {
   name?: string | undefined;
-  site_type: SiteType;
-  plant_count: string;
-  survived_count: string;
-  propagation_count: string;
-  visitor_count?: number | undefined;
+  siteType: SiteType;
+  plantCount: string;
+  survivedCount: string;
+  propagationCount: string;
+  visitorCount?: number | undefined;
   sponsor: string;
   progress: string;
 
@@ -2487,23 +2449,23 @@ export interface ISiteType {
 export class User implements IUser {
   readonly id!: number;
   password!: string;
-  last_login?: Date | undefined;
+  lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
-  is_superuser?: boolean;
+  isSuperuser?: boolean;
   /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
   username!: string;
-  first_name?: string;
-  last_name?: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
   /** Designates whether the user can log into this admin site. */
-  is_staff?: boolean;
+  isStaff?: boolean;
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
-  is_active?: boolean;
-  date_joined?: Date;
+  isActive?: boolean;
+  dateJoined?: Date;
   /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
   groups?: number[];
   /** Specific permissions for this user. */
-  user_permissions?: number[];
+  userPermissions?: number[];
 
   [key: string]: any;
 
@@ -2522,22 +2484,22 @@ export class User implements IUser {
       }
       (<any>this).id = _data["id"];
       this.password = _data["password"];
-      this.last_login = _data["last_login"] ? new Date(_data["last_login"].toString()) : <any>undefined;
-      this.is_superuser = _data["is_superuser"];
+      this.lastLogin = _data["lastLogin"] ? new Date(_data["lastLogin"].toString()) : <any>undefined;
+      this.isSuperuser = _data["isSuperuser"];
       this.username = _data["username"];
-      this.first_name = _data["first_name"];
-      this.last_name = _data["last_name"];
+      this.firstName = _data["firstName"];
+      this.lastName = _data["lastName"];
       this.email = _data["email"];
-      this.is_staff = _data["is_staff"];
-      this.is_active = _data["is_active"];
-      this.date_joined = _data["date_joined"] ? new Date(_data["date_joined"].toString()) : <any>undefined;
+      this.isStaff = _data["isStaff"];
+      this.isActive = _data["isActive"];
+      this.dateJoined = _data["dateJoined"] ? new Date(_data["dateJoined"].toString()) : <any>undefined;
       if (Array.isArray(_data["groups"])) {
         this.groups = [] as any;
         for (let item of _data["groups"]) this.groups!.push(item);
       }
-      if (Array.isArray(_data["user_permissions"])) {
-        this.user_permissions = [] as any;
-        for (let item of _data["user_permissions"]) this.user_permissions!.push(item);
+      if (Array.isArray(_data["userPermissions"])) {
+        this.userPermissions = [] as any;
+        for (let item of _data["userPermissions"]) this.userPermissions!.push(item);
       }
     }
   }
@@ -2556,22 +2518,22 @@ export class User implements IUser {
     }
     data["id"] = this.id;
     data["password"] = this.password;
-    data["last_login"] = this.last_login ? this.last_login.toISOString() : <any>undefined;
-    data["is_superuser"] = this.is_superuser;
+    data["lastLogin"] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined;
+    data["isSuperuser"] = this.isSuperuser;
     data["username"] = this.username;
-    data["first_name"] = this.first_name;
-    data["last_name"] = this.last_name;
+    data["firstName"] = this.firstName;
+    data["lastName"] = this.lastName;
     data["email"] = this.email;
-    data["is_staff"] = this.is_staff;
-    data["is_active"] = this.is_active;
-    data["date_joined"] = this.date_joined ? this.date_joined.toISOString() : <any>undefined;
+    data["isStaff"] = this.isStaff;
+    data["isActive"] = this.isActive;
+    data["dateJoined"] = this.dateJoined ? this.dateJoined.toISOString() : <any>undefined;
     if (Array.isArray(this.groups)) {
       data["groups"] = [];
       for (let item of this.groups) data["groups"].push(item);
     }
-    if (Array.isArray(this.user_permissions)) {
-      data["user_permissions"] = [];
-      for (let item of this.user_permissions) data["user_permissions"].push(item);
+    if (Array.isArray(this.userPermissions)) {
+      data["userPermissions"] = [];
+      for (let item of this.userPermissions) data["userPermissions"].push(item);
     }
     return data;
   }
@@ -2580,23 +2542,23 @@ export class User implements IUser {
 export interface IUser {
   id: number;
   password: string;
-  last_login?: Date | undefined;
+  lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
-  is_superuser?: boolean;
+  isSuperuser?: boolean;
   /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
   username: string;
-  first_name?: string;
-  last_name?: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
   /** Designates whether the user can log into this admin site. */
-  is_staff?: boolean;
+  isStaff?: boolean;
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
-  is_active?: boolean;
-  date_joined?: Date;
+  isActive?: boolean;
+  dateJoined?: Date;
   /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
   groups?: number[];
   /** Specific permissions for this user. */
-  user_permissions?: number[];
+  userPermissions?: number[];
 
   [key: string]: any;
 }
