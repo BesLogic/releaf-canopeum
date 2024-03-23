@@ -25,7 +25,7 @@ const SiteSummaryCard = ({ site }: Props) => (
       <div className="container">
         <div className="row row-cols-5 fw-bold">
           <div className="col"><span className='material-symbols-outlined align-middle'>person</span>Sponsors: </div>
-          {site.sponsors.map((sponsorName, index) => <div className="col" key={index}>{sponsorName}</div>)}
+          {site.sponsors.map((sponsorName) => <div className="col" key={sponsorName}>{sponsorName}</div>)}
         </div>
       </div>
     </div>
