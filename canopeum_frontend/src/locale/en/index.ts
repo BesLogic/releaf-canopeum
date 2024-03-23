@@ -1,7 +1,7 @@
 import homeJSON from './home.json'
 
 const enJSON = {
-    translation: {...homeJSON }
+  translation: {...homeJSON }
 }
 
 export default enJSON
