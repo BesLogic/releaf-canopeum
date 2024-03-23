@@ -1,7 +1,21 @@
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 
+
 const Navbar = () => {
+  const { i18n: {changeLanguage, language} } = useTranslation();
+  const [currentLanguage, setCurrentLanguage] = useState(language)
+
   const location = useLocation();
+
+  const handleChangeLanguage = () => {
+    const newLanguage = currentLanguage === 'en'
+? 'fr'
+: 'en';
+    setCurrentLanguage(newLanguage);
+    void changeLanguage(newLanguage);
+  }
 
   return (
     <nav className="navbar navbar-expand-lg bg-primary">
@@ -60,6 +74,12 @@ const Navbar = () => {
           </ul>
         </div>
       </div>
+      <button 
+        onClick={handleChangeLanguage} 
+        type='button'
+      >
+        {language}
+      </button>
     </nav>
   );
 };
