@@ -59,7 +59,7 @@ class SiteTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sitetype
-        fields = ["id", "en", "fr"]
+        fields = ("id", "en", "fr")
 
     def get_en(self, obj):
         return InternationalizationSerializer(obj.name).data.get("en", None)
@@ -74,7 +74,7 @@ class TreeTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Treetype
-        fields = ["en", "fr"]
+        fields = ("en", "fr")
 
     def get_en(self, obj):
         return InternationalizationSerializer(obj.name).data.get("en", None)
@@ -149,7 +149,7 @@ class BatchfertilizerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Batchfertilizer
-        fields = ["id", "en", "fr"]
+        fields = ("id", "en", "fr")
 
     def get_en(self, obj):
         return InternationalizationSerializer(obj.fertilizer_type).data.get("en", None)
@@ -164,7 +164,7 @@ class BatchMulchLayerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Mulchlayertype
-        fields = ["id", "en", "fr"]
+        fields = ("id", "en", "fr")
 
     def get_en(self, obj):
         return InternationalizationSerializer(obj.mulch_layer_type).data.get("en", None)
@@ -179,7 +179,7 @@ class BatchSupportedSpeciesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BatchSupportedSpecies
-        fields = ["en", "fr"]
+        fields = ("en", "fr")
 
     def get_en(self, obj):
         return InternationalizationSerializer(obj.tree_type).data.get("en", None)
@@ -194,7 +194,7 @@ class BatchSeedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BatchSeed
-        fields = ["quantity", "en", "fr"]
+        fields = ("quantity", "en", "fr")
 
     def get_en(self, obj):
         return InternationalizationSerializer(obj.tree_type).data.get("en", None)
@@ -209,7 +209,7 @@ class BatchSpeciesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BatchSpecies
-        fields = ["quantity", "en", "fr"]
+        fields = ("quantity", "en", "fr")
 
     def get_en(self, obj):
         return InternationalizationSerializer(obj.tree_type).data.get("en", None)
@@ -318,12 +318,31 @@ class SiteSummarySerializer(serializers.ModelSerializer):
         return BatchSerializer(obj).data.get("sponsor", None)
 
 
+class CoordinatesMapSerializer(serializers.ModelSerializer):
+    latitude = serializers.SerializerMethodField()
+    longitude = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Coordinate
+        fields = ("latitude", "longitude", "address")
+
+    def get_latitude(self, obj):
+        return obj.dd_latitude
+
+    def get_longitude(self, obj):
+        return obj.dd_longitude
+
+
 class SiteMapSerializer(serializers.ModelSerializer):
     site_type = SiteTypeSerializer()
+    coordinates = serializers.SerializerMethodField()
 
     class Meta:
         model = Site
-        fields = ("id", "name", "site_type", "coordinate", "image")
+        fields = ("id", "name", "site_type", "coordinates", "image")
+
+    def get_coordinates(self, obj):
+        return CoordinatesMapSerializer(obj.coordinate).data
 
 
 class SiteOverviewSerializer(serializers.ModelSerializer):

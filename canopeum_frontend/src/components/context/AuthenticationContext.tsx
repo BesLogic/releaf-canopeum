@@ -1,4 +1,4 @@
-import type { FunctionComponent, ReactNode } from 'react';
+import type { FunctionComponent, ReactNode } from 'react'
 import { createContext, memo, useCallback, useMemo, useState } from 'react'
 
 export enum UserRole {
@@ -8,28 +8,28 @@ export enum UserRole {
 }
 
 type User = {
-  firstname: string
+  firstname: string,
   lastname: string,
   email: string,
   role: UserRole,
-  image: string
+  image: string,
 }
 
 type IAuthenticationContext = {
-  authenticate: (user: User) => void
-  logout: () => void
-  isAuthenticated: boolean
-  currentUser: User | undefined
+  authenticate: (user: User) => void,
+  logout: () => void,
+  isAuthenticated: boolean,
+  currentUser: User | undefined,
 }
 
 export const AuthenticationContext = createContext<IAuthenticationContext>({
-  authenticate: (_: User) => { /* empty */ },
-  logout: () => { /* empty */ },
+  authenticate: (_: User) => {/* empty */},
+  logout: () => {/* empty */},
   isAuthenticated: false,
-  currentUser: undefined
-});
+  currentUser: undefined,
+})
 
-const AuthenticationContextProvider: FunctionComponent<{ readonly children?: ReactNode }> = memo((props) => {
+const AuthenticationContextProvider: FunctionComponent<{ readonly children?: ReactNode }> = memo(props => {
   const [user, setUser] = useState<User | undefined>(undefined)
 
   const authenticate = useCallback((newUser: User) => setUser(newUser), [setUser])
@@ -41,14 +41,17 @@ const AuthenticationContextProvider: FunctionComponent<{ readonly children?: Rea
       currentUser: user,
       isAuthenticated: user !== undefined,
       authenticate,
-      logout
+      logout,
     }
   ), [authenticate, user, logout])
 
-  return <AuthenticationContext.Provider
-    value={context}>
-    {props.children}
-  </AuthenticationContext.Provider>
+  return (
+    <AuthenticationContext.Provider
+      value={context}
+    >
+      {props.children}
+    </AuthenticationContext.Provider>
+  )
 })
 
 AuthenticationContextProvider.displayName = 'AuthenticationContextProvider'
