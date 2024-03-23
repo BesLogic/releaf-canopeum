@@ -23,6 +23,5 @@ module.exports = {
     'no-autofix/no-relative-import-paths/no-relative-import-paths': 'off',
     // Using Bootraps directly without a React wrapper will cause us to have to add classes to React Components
     'react/forbid-component-props': 'off',
-    "react/display-name": [false, { "ignoreTranspilerName": false, "checkContextObjects": false }]
   },
 }
