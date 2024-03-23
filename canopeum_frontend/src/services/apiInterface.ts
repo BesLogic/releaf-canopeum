@@ -5,7 +5,7 @@ import { getApiBaseUrl } from './apiSettings'
 const api = () => {
   const client = new Client(getApiBaseUrl())
 
-  
+
 return {
     auth: {
       login: (body: AuthUser) => client.authenticationLogin(body),
