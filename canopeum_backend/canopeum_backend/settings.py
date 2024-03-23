@@ -128,7 +128,7 @@ DATABASES = {
         "USER": "root",
         "PASSWORD": "canopeum",
         "HOST": os.environ.get('MYSQL_HOST', "localhost"),
-        "PORT": "3306",
+        "PORT": "3308", # Same as in docker-compose.yaml
     },
 }
 
