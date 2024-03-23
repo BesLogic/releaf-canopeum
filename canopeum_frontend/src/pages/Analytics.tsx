@@ -14,8 +14,8 @@ const Analytics = () => {
     try {
       const response = await api.siteSummary()
       setSiteSummaries(response)
-    } catch (error_: unknown) {
-      setSiteSummariesError(ensureError(error_))
+    } catch (error: unknown) {
+      setSiteSummariesError(ensureError(error))
     } finally {
       setIsLoadingSiteSummaries(false)
     }
