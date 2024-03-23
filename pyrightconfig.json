@@ -1,0 +1,9 @@
+// Must be set at root for pylance to pickup. Can't be in cannopeum_backend/pyproject.toml. bleh
+// https://github.com/microsoft/pyright/blob/main/docs/configuration.md#sample-pyprojecttoml-file
+{
+  "pythonVersion": "3.12",
+  "include": ["canopeum_backend/"],
+  "typeCheckingMode" : "standard",
+  // django-specific mypy plugin does a better job getting serializers data type of dict vs list
+  "reportAttributeAccessIssue" : "none",
+}

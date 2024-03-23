@@ -1,5 +1,4 @@
-from typing import ClassVar
-
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
@@ -28,7 +27,7 @@ from .serializers import (
 
 
 class LoginAPIView(APIView):
-    permission_classes: ClassVar[list[type[AllowAny]]] = [AllowAny]
+    permission_classes = (AllowAny,)
 
     @extend_schema(request=AuthUserSerializer, responses=UserSerializer, operation_id="authentication_login")
     def post(self, request):
@@ -43,7 +42,7 @@ class LoginAPIView(APIView):
 
 
 class RegisterAPIView(APIView):
-    permission_classes: ClassVar[list[type[AllowAny]]] = [AllowAny]
+    permission_classes = (AllowAny,)
 
     @extend_schema(request=UserSerializer, responses=AuthUserSerializer, operation_id="authentication_register")
     def post(self, request):
@@ -189,10 +188,7 @@ class SiteMapListAPIView(APIView):
 class PostListAPIView(APIView):
     @extend_schema(responses=PostSerializer(many=True), operation_id="post_all")
     def get(self, request):
-        try:
-            comment_count = Comment.objects.get(post=request.data.get("id")).count()
-        except Comment.DoesNotExist:
-            comment_count = 0
+        comment_count = Comment.objects.filter(post=request.data.get("id")).count()
         has_liked = 0
         siteId = request.GET.get("siteId", "")
         if siteId != "":
