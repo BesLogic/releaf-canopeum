@@ -3,7 +3,8 @@ import { useParams } from 'react-router-dom'
 import AnnouncementCard from '../components/AnnouncementCard/AnnouncementCard';
 
 const MapSite = () => {
-  const { siteId } = useParams();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- We plan on using it
+  const { siteId } = useParams()
 
   return (
     <div>

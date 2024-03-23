@@ -193,13 +193,6 @@
               "value": "Mega",
               "invert": false,
               "operator": "equals"
-            },
-            {
-              "target": "query",
-              "modifier": "",
-              "value": "",
-              "invert": false,
-              "operator": "equals"
             }
           ],
           "rulesOperator": "OR",
@@ -629,7 +622,7 @@
       "responses": [
         {
           "uuid": "28554ad8-04f5-4513-9d7b-af7f9eb68a9e",
-          "body": "{\n  \"name\": \"{{lorem (int 1 3)}}\",\n  \"type\": {\n    \"id\": {{int 0 6}},\n    \"en\": \"{{lorem (int 1 2)}}\",\n    \"fr\": \"{{lorem (int 1 2)}}\"\n  },\n  \"coordinates\": {\n    \"dmsLatitude\": \"{{int 50 60}} {{int 15 30}} {{int 30 60}} {{int 1000 9999}} N\",\n    \"dmsLongitude\": \"{{int 50 80}} {{int 20 45}} {{int 10 55}} {{int 1000 9999}} W\",\n  },\n  \"description\": \"{{lorem (int 1 150)}}\",\n  \"size\": {{int 1 200}},\n  \"species\": [\n    {{#repeat 1 (int 1 4) comma=true}}\n    {\n      \"id\": {{int 1 9999}},\n      \"en\": \"{{lorem (int 1 2)}}\",\n      \"fr\": \"{{lorem (int 1 2)}}\",\n      \"quantity\": {{int 1 10}}\n    }\n    {{/repeat}}\n  ],\n  \"researchPartnership\": {{boolean}},\n  \"visibleOnMap\": {{boolean}}\n}",
+          "body": "{\n  \"name\": \"{{lorem (int 1 3)}}\",\n  \"type\": {\n    \"id\": {{int 0 6}},\n    \"en\": \"{{lorem (int 1 2)}}\",\n    \"fr\": \"{{lorem (int 1 2)}}\"\n  },\n  \"coordinates\": {\n    \"dmsLatitude\": \"{{int 50 60}} {{int 15 30}} {{int 30 60}} {{int 1000 9999}} N\",\n    \"dmsLongitude\": \"{{int 50 80}} {{int 20 45}} {{int 10 55}} {{int 1000 9999}} W\"\n  },\n  \"description\": \"{{lorem (int 1 150)}}\",\n  \"size\": {{int 1 200}},\n  \"species\": [\n    {{#repeat 1 (int 1 4) comma=true}}\n    {\n      \"id\": {{int 1 9999}},\n      \"en\": \"{{lorem (int 1 2)}}\",\n      \"fr\": \"{{lorem (int 1 2)}}\",\n      \"quantity\": {{int 1 10}}\n    }\n    {{/repeat}}\n  ],\n  \"researchPartnership\": {{boolean}},\n  \"visibleOnMap\": {{boolean}}\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -663,7 +656,7 @@
       "responses": [
         {
           "uuid": "ac5b893d-b30e-43c9-8988-4c13a7e0c819",
-          "body": "{\n  \"name\": \"{{lorem (int 1 3)}}\",\n  \"type\": {\n    \"id\": {{int 0 6}},\n    \"en\": \"{{lorem (int 1 2)}}\",\n    \"fr\": \"{{lorem (int 1 2)}}\"\n  },\n  \"plantCount\": {{int 0 5000}},\n  \"survivedCount\": {{int 0 5000}},\n  \"propagationCount\": {{int 0 500}},\n  \"visitorCount\": {{int 0 500}},\n  \"sponsors\": {{{someOf (array (lorem 2) (lorem 2) (lorem 2) (lorem 2) (lorem 2)) 0 5 true}}},\n  \"progress\": {{float 0 100}}\n}",
+          "body": "[\n  {{#repeat 1 (int 1 14) comma=true}}\n  {\n    \"name\": \"{{lorem (int 1 3)}}\",\n    \"type\": {\n      \"id\": {{int 0 6}},\n      \"en\": \"{{lorem (int 1 2)}}\",\n      \"fr\": \"{{lorem (int 1 2)}}\"\n    },\n    \"plantCount\": {{int 0 5000}},\n    \"survivedCount\": {{int 0 5000}},\n    \"propagationCount\": {{int 0 500}},\n    \"visitorCount\": {{int 0 500}},\n    \"sponsors\": {{{someOf (array (lorem 2) (lorem 2) (lorem 2) (lorem 2) (lorem 2)) 0 5 true}}},\n    \"progress\": {{float 0 100}}\n  }\n  {{/repeat}}\n]",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -1173,7 +1166,7 @@
       "responses": [
         {
           "uuid": "cd930225-c517-4732-bb2d-51836439145a",
-          "body": "{\n  \"firstname\": \"{{firstName}}\",\n  \"lastname\": \"{{lastName}}\",\n  \"email\": \"{{email}}\",\n  \"role\": \"MegaAdmin\"\n  \"image\": \"\"\n}",
+          "body": "{\n  \"firstname\": \"{{firstName}}\",\n  \"lastname\": \"{{lastName}}\",\n  \"email\": \"{{email}}\",\n  \"role\": \"MegaAdmin\",\n  \"image\": \"\"\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "Mega Admin",

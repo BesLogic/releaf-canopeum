@@ -34,7 +34,15 @@ For backend
    cd releaf-canopeum
    ```
 
-3. Set up a Python 3.12 virtual environment
+3. Install recommended Editor Extensions (for VSCode):\
+   When you first open the project in VSCode, you'll get a notification like this.\
+   ![Recommended Popup](/docs/Recommended_Popup.png)
+
+   If you've already dismissed this notification, you can search for `@recommended` in your Extensions tab.
+   Install everything under "**WORKSPACE RECOMMENDATIONS**", you can ignore "other recommendations":\
+   ![Recommended Extensions](/docs/Recommended_Extensions.png)
+
+4. Set up a Python 3.12 virtual environment
 
    ```shell
    cd canopeum_backend
@@ -64,7 +72,7 @@ For backend
    `CTRL+Shift+P` (Open Command Palette) > `Python: Select Interpreter`
    ![VSCode_select_venv](/docs/VSCode_select_venv.png)
 
-4. Set up Django backend and Database: (Skip this section for Frontend only)
+5. Set up Django backend and Database: (Skip this section for Frontend only)
 
    ```shell
    docker compose up
@@ -74,7 +82,7 @@ For backend
    python manage.py runserver
    ```
 
-5. Set up React frontend:
+6. Set up React frontend:
 
    ```shell
    cd canopeum_frontend

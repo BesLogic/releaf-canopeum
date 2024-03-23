@@ -7,6 +7,7 @@ module.exports = {
     'beslogic/dprint',
   ],
   ignorePatterns: [
+    '.eslintrc.cjs',
     // Auto-generated
     'src/services/api.ts',
   ],
