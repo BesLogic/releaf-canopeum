@@ -6,6 +6,7 @@
     "davidanson.vscode-markdownlint",
     "dbaeumer.vscode-eslint",
     "dprint.dprint",
+    "dotenv.dotenv-vscode",
     "eamodio.gitlens",
     "github.vscode-github-actions",
     "meganrogge.template-string-converter",
@@ -29,6 +30,8 @@
     "coenraads.bracket-pair-colorizer",
     "coenraads.bracket-pair-colorizer-2",
     "shardulm94.trailing-spaces",
+    // Use the official plugin instead
+    "mikestead.dotenv",
     // Lots of conflicts
     "esbenp.prettier-vscode",
     "rvest.vs-code-prettier-eslint",
