@@ -1,7 +1,20 @@
-import { Link, useLocation } from 'react-router-dom';
+import { useCallback, useContext } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { AuthenticationContext } from './context/AuthenticationContext';
 
 const Navbar = () => {
   const location = useLocation();
+  const { isAuthenticated, logout } = useContext(AuthenticationContext)
+  const navigate = useNavigate()
+
+  const onLoginLogoutbuttonClick = useCallback(() => {
+    if (!isAuthenticated) {
+      navigate('/login')
+    }
+    else {
+      logout()
+    }
+  }, [isAuthenticated, navigate, logout])
 
   return (
     <nav className="navbar navbar-expand-lg bg-primary">
@@ -23,39 +36,50 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav d-flex w-100 ms-3 gap-3 fs-4">
             <li className={`nav-item ${location.pathname === '/home'
-? 'active'
-: ''}`}>
+              ? 'active'
+              : ''}`}>
               <Link className="nav-link" to="/home">
                 <span className="material-symbols-outlined text-light">home</span>
               </Link>
             </li>
             <li className={`nav-item ${location.pathname === '/analytics'
-? 'active'
-: ''}`}>
+              ? 'active'
+              : ''}`}>
               <Link className="nav-link" to="/analytics">
                 <span className="material-symbols-outlined text-light">donut_small</span>
               </Link>
             </li>
             <li className={`nav-item ${location.pathname === '/map'
-? 'active'
-: ''}`}>
+              ? 'active'
+              : ''}`}>
               <Link className="nav-link" to="/map">
                 <span className="material-symbols-outlined text-light">pin_drop</span>
               </Link>
             </li>
             <li className={`nav-item ${location.pathname === '/utilities'
-? 'active'
-: ''}`}>
+              ? 'active'
+              : ''}`}>
               <Link className="nav-link" to="/utilities">
                 <span className="material-symbols-outlined text-light">style</span>
               </Link>
             </li>
-            <li className={`nav-item ms-auto ${location.pathname === '/user-management'
-? 'active'
-: ''}`}>
-              <Link className="nav-link" to="/user-management">
-                <span className="material-symbols-outlined text-light">account_circle</span>
-              </Link>
+
+          </ul>
+          <ul className="navbar-nav d-flex w-100 ms-3 gap-3 fs-4 justify-content-end">
+            {isAuthenticated &&
+              <li className={`nav-item ${location.pathname === '/user-management'
+                ? 'active'
+                : ''}`}>
+                <Link className="nav-link" to="/user-management">
+                  <span className="material-symbols-outlined text-light">account_circle</span>
+                </Link>
+
+              </li>}
+            <li className='nav-item'>
+              <button type="button" className="btn btn-link nav-link text-light fs-6"
+                onClick={() => onLoginLogoutbuttonClick()}>
+                {!isAuthenticated ? 'Log In' : 'Log out'}
+              </button>
             </li>
           </ul>
         </div>
