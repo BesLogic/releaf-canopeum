@@ -1,12 +1,8 @@
 import type { SiteSocial } from '../services/api'
 
 const CreatePostWidget = (props: { readonly site: SiteSocial }) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- We'll use this eventually
   const { site } = props
-
-  // const [newPost, setNewPost] = useState<Post>(new Post());
-
-  // const createPost = async () => api().social.postCreate(newPost);
 
   return (
     <div className='bg-white rounded-2 px-5 py-4 d-flex flex-column gap-2'>
