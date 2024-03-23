@@ -23,10 +23,19 @@ class Batchmulchlayer(models.Model):
     batch = models.ForeignKey(Batch, models.DO_NOTHING, blank=True, null=True)
     mulch_layer_type = models.ForeignKey('Mulchlayertype', models.DO_NOTHING, blank=True, null=True)
 
-class Batchtreetype(models.Model):
+class BatchSpecies(models.Model):
     batch = models.ForeignKey(Batch, models.DO_NOTHING, blank=True, null=True)
     tree_type = models.ForeignKey('Treetype', models.DO_NOTHING, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
+
+class BatchSeed(models.Model):
+    batch = models.ForeignKey(Batch, models.DO_NOTHING, blank=True, null=True)
+    tree_type = models.ForeignKey('Treetype', models.DO_NOTHING, blank=True, null=True)
+    quantity = models.IntegerField(blank=True, null=True)
+
+class BatchSupportedSpecies(models.Model):
+    batch = models.ForeignKey(Batch, models.DO_NOTHING, blank=True, null=True)
+    tree_type = models.ForeignKey('Treetype', models.DO_NOTHING, blank=True, null=True)
 
 class Comment(models.Model):
     body = models.TextField(blank=True, null=True)
@@ -126,3 +135,7 @@ class Widget(models.Model):
 class Like(models.Model):
     auth_user = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING, blank=True, null=True)
     post = models.ForeignKey(Post, models.DO_NOTHING, blank=True, null=True)
+
+class Internationalization(models.Model):
+    en = models.TextField(db_column='EN', blank=True, null=True)
+    fr = models.TextField(db_column='FR', blank=True, null=True)

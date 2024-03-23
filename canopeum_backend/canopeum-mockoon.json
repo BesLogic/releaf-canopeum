@@ -43,6 +43,10 @@
         },
         {
           "type": "route",
+          "uuid": "025020dd-da7d-49d1-aec8-dc5a73721270"
+        },
+        {
+          "type": "route",
           "uuid": "69b13d5a-14a3-4cb6-bb98-a318bdea980a"
         },
         {
@@ -64,10 +68,6 @@
         {
           "type": "route",
           "uuid": "572cfc45-e80c-41ed-a615-c12f79485c10"
-        },
-        {
-          "type": "route",
-          "uuid": "1e447d88-7709-4e9a-972b-0c0bd042e9ea"
         },
         {
           "type": "route",
@@ -629,7 +629,7 @@
       "responses": [
         {
           "uuid": "28554ad8-04f5-4513-9d7b-af7f9eb68a9e",
-          "body": "{\n  \"name\": \"{{lorem (int 1 3)}}\",\n  \"type\": {\n    \"id\": {{int 0 6}},\n    \"en\": \"{{lorem (int 1 2)}}\",\n    \"fr\": \"{{lorem (int 1 2)}}\"\n  },\n  \"coordinates\": {\n    \"dmsLatitude\": \"{{int 50 60}} {{int 15 30}} {{int 30 60}} {{int 1000 9999}} N\",\n    \"dmsLongitude\": \"{{int 50 80}} {{int 20 45}} {{int 10 55}} {{int 1000 9999}} W\",\n  },\n  \"description\": \"{{lorem (int 1 150)}}\",\n  \"size\": {{int 1 200}},\n  \"species\": [],\n  \"researchPartnership\": {{boolean}},\n  \"visibleOnMap\": {{boolean}}\n}",
+          "body": "{\n  \"name\": \"{{lorem (int 1 3)}}\",\n  \"type\": {\n    \"id\": {{int 0 6}},\n    \"en\": \"{{lorem (int 1 2)}}\",\n    \"fr\": \"{{lorem (int 1 2)}}\"\n  },\n  \"coordinates\": {\n    \"dmsLatitude\": \"{{int 50 60}} {{int 15 30}} {{int 30 60}} {{int 1000 9999}} N\",\n    \"dmsLongitude\": \"{{int 50 80}} {{int 20 45}} {{int 10 55}} {{int 1000 9999}} W\",\n  },\n  \"description\": \"{{lorem (int 1 150)}}\",\n  \"size\": {{int 1 200}},\n  \"species\": [\n    {{#repeat 1 (int 1 4) comma=true}}\n    {\n      \"id\": {{int 1 9999}},\n      \"en\": \"{{lorem (int 1 2)}}\",\n      \"fr\": \"{{lorem (int 1 2)}}\",\n      \"quantity\": {{int 1 10}}\n    }\n    {{/repeat}}\n  ],\n  \"researchPartnership\": {{boolean}},\n  \"visibleOnMap\": {{boolean}}\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -697,7 +697,7 @@
       "responses": [
         {
           "uuid": "9142494b-7b03-4738-a81a-69e49e17d6c0",
-          "body": "[]",
+          "body": "[\n  {{#repeat 1 (int 1 10) comma=true}}\n  {\n    \"id\": {{int 1 9999}},\n    \"name\": \"{{lorem (int 1 2)}}\",\n    \"size\": \"{{int 1 100}}\",\n    \"condition\": {\n      \"id\": {{int 1 9999}},\n      \"en\": \"{{lorem (int 1 2)}}\",\n      \"fr\": \"{{lorem (int 1 2)}}\"\n    },\n    \"fertilizers\": [\n      {{#repeat 1 (int 1 2) comma=true}}\n      {\n        \"id\": {{int 1 9999}},\n        \"en\": \"{{lorem (int 1 2)}}\",\n        \"fr\": \"{{lorem (int 1 2)}}\"\n      }\n      {{/repeat}}\n    ],\n    \"mulchLayers\": [\n      {{#repeat 1 (int 1 2) comma=true}}\n      {\n        \"id\": {{int 1 9999}},\n        \"en\": \"{{lorem (int 1 2)}}\",\n        \"fr\": \"{{lorem (int 1 2)}}\"\n      }\n      {{/repeat}}\n    ],\n    \"supportedSpecies\": [\n      {{#repeat 1 (int 1 4) comma=true}}\n      {\n        \"id\": {{int 1 9999}},\n        \"en\": \"{{lorem (int 1 2)}}\",\n        \"fr\": \"{{lorem (int 1 2)}}\"\n      }\n      {{/repeat}}\n    ],\n    \"plantCount\": {{int 1 100}},\n    \"surviveCount\": {{int 1 100}},\n    \"replaceCount\": {{int 1 100}},\n    \"seedCollectedCount\": {{int 1 100}},\n    \"seeds\": [\n      {{#repeat 1 (int 1 4) comma=true}}\n      {\n        \"id\": {{int 1 9999}},\n        \"en\": \"{{lorem (int 1 2)}}\",\n        \"fr\": \"{{lorem (int 1 2)}}\",\n        \"quantity\": {{int 1 100}}\n      }\n      {{/repeat}}\n    ],\n    \"species\": [\n      {{#repeat 1 (int 1 4) comma=true}}\n      {\n        \"id\": {{int 1 9999}},\n        \"en\": \"{{lorem (int 1 2)}}\",\n        \"fr\": \"{{lorem (int 1 2)}}\",\n        \"quantity\": {{int 1 100}}\n      }\n      {{/repeat}}\n    ],\n  }\n  {{/repeat}}\n]",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -893,40 +893,6 @@
       "responseMode": null
     },
     {
-      "uuid": "1e447d88-7709-4e9a-972b-0c0bd042e9ea",
-      "type": "http",
-      "documentation": "",
-      "method": "get",
-      "endpoint": "social/sites/:siteId/widgets",
-      "responses": [
-        {
-          "uuid": "0e0f07c9-ffda-46a4-b016-4c15bfb7468b",
-          "body": "[\n  {{#repeat 1 (int 1 2) comma=true}}\n  {\n    \"id\": {{int 1 9999}},\n    \"title\": \"{{lorem (int 1 5)}}\",\n    \"body\": \"{{lorem (int 1 150)}}\"\n  }\n  {{/repeat}}\n]",
-          "latency": 0,
-          "statusCode": 200,
-          "label": "",
-          "headers": [
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "bodyType": "INLINE",
-          "filePath": "",
-          "databucketID": "",
-          "sendFileAsBody": false,
-          "rules": [],
-          "rulesOperator": "OR",
-          "disableTemplating": false,
-          "fallbackTo404": false,
-          "default": true,
-          "crudKey": "id",
-          "callbacks": []
-        }
-      ],
-      "responseMode": null
-    },
-    {
       "uuid": "8f37c586-73a0-47a2-b179-e3e2651832c2",
       "type": "http",
       "documentation": "",
@@ -1071,7 +1037,7 @@
       "responses": [
         {
           "uuid": "2d298812-02ea-4391-93fc-0dd874d3f57a",
-          "body": "{\n  \"name\": \"{{lorem (int 1 3)}}\"\n}",
+          "body": "{\n  \"name\": \"{{lorem (int 1 3)}}\",\n  \"type\": {\n    \"id\": {{int 1 9999}},\n    \"en\": \"{{lorem (int 1 3)}}\",\n    \"fr\": \"{{lorem (int 1 3)}}\"\n  },\n  \"description\": \"{{lorem (int 1 150)}}\",\n  \"sponsors\": {{{someOf (array (lorem 2) (lorem 2) (lorem 2) (lorem 2) (lorem 2)) 0 5 true}}},\n  \"announcement\": {\n    \"id\": {{int 1 9999}},\n    \"body\": \"{{lorem (int 1 150)}}\",\n    \"link\": \"https://{{domain}}/\"\n  },\n  \"contact\": {\n    \"id\": {{int 1 9999}},\n    \"address\": \"{{street}}, {{city}}, {{countryCode}} {{postcode}}\",\n    \"email\": \"{{email}}\",\n    \"phone\": \"{{phone}}\",\n    \"facebookLink\": \"\",\n    \"xLink\": \"\",\n    \"instagramLink\": \"\",\n    \"linkedInLink\": \"\"\n  },\n  \"widgets\": [\n    {{#repeat 0 (int 0 2) comma=true}}\n    {\n      \"id\": {{int 1 9999}},\n      \"title\": \"{{lorem (int 1 5)}}\",\n      \"body\": \"{{lorem (int 1 150)}}\"\n    }\n    {{/repeat}}\n  ],\n  \"image\": \"\"\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -1207,14 +1173,18 @@
       "responses": [
         {
           "uuid": "cd930225-c517-4732-bb2d-51836439145a",
-          "body": "{}",
+          "body": "{\n  \"firstname\": \"{{firstName}}\",\n  \"lastname\": \"{{lastName}}\",\n  \"email\": \"{{email}}\",\n  \"role\": \"MegaAdmin\"\n  \"image\": \"\"\n}",
           "latency": 0,
           "statusCode": 200,
-          "label": "",
+          "label": "Mega Admin",
           "headers": [
             {
               "key": "Content-Type",
               "value": "application/json"
+            },
+            {
+              "key": "Authorization",
+              "value": "1"
             }
           ],
           "bodyType": "INLINE",
@@ -1226,6 +1196,62 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "c89d343c-2d56-4caf-b8ac-250834452ffc",
+          "body": "{\n  \"firstname\": \"{{firstName}}\",\n  \"lastname\": \"{{lastName}}\",\n  \"email\": \"{{email}}\",\n  \"role\": \"Admin\"\n  \"image\": \"\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Admin",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Authorization",
+              "value": "2"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "3f314f36-71e4-4840-85a8-7202aaea493b",
+          "body": "{\n  \"firstname\": \"{{firstName}}\",\n  \"lastname\": \"{{lastName}}\",\n  \"email\": \"{{email}}\",\n  \"role\": \"User\"\n  \"image\": \"\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "User",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Authorization",
+              "value": "3"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
           "crudKey": "id",
           "callbacks": []
         }
@@ -1359,6 +1385,40 @@
           "sendFileAsBody": false,
           "rules": [],
           "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    },
+    {
+      "uuid": "025020dd-da7d-49d1-aec8-dc5a73721270",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "social/posts/:postId/like",
+      "responses": [
+        {
+          "uuid": "fd45cf5c-e11d-4c65-8750-b8fecd0a266d",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "AND",
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": true,
