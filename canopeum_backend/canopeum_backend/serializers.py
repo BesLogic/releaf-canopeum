@@ -321,9 +321,10 @@ class SiteSummarySerializer(serializers.ModelSerializer):
 class CoordinatesMapSerializer(serializers.ModelSerializer):
     latitude = serializers.SerializerMethodField()
     longitude = serializers.SerializerMethodField()
+
     class Meta:
         model = Coordinate
-        fields = ('latitude', 'longitude', 'address')
+        fields = ("latitude", "longitude", "address")
 
     def get_latitude(self, obj):
         return obj.dd_latitude
@@ -331,15 +332,18 @@ class CoordinatesMapSerializer(serializers.ModelSerializer):
     def get_longitude(self, obj):
         return obj.dd_longitude
 
+
 class SiteMapSerializer(serializers.ModelSerializer):
     site_type = SiteTypeSerializer()
     coordinates = serializers.SerializerMethodField()
+
     class Meta:
         model = Site
-        fields = ('id', 'name', 'site_type', 'coordinates', 'image')
+        fields = ("id", "name", "site_type", "coordinates", "image")
 
     def get_coordinates(self, obj):
         return CoordinatesMapSerializer(obj.coordinate).data
+
 
 class SiteOverviewSerializer(serializers.ModelSerializer):
     class Meta:
