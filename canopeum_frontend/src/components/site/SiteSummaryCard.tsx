@@ -21,7 +21,7 @@ const SiteSummaryCard = ({ site }: Props) => (
         </div>
         <h4 className='fw-bold text-primary'>{site.type.en}</h4>
       </div>
-      <p>{site.description || ''}</p>
+      <p>{site.description ?? ''}</p>
       <div className="container">
         <div className="row row-cols-5 fw-bold">
           <div className="col"><span className='material-symbols-outlined align-middle'>person</span>Sponsors: </div>
