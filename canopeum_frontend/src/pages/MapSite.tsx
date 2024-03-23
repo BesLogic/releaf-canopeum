@@ -1,7 +1,8 @@
 import { useParams } from 'react-router-dom'
 
 const MapSite = () => {
-  const { siteId } = useParams();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- We plan on using it
+  const { siteId } = useParams()
 
   return (
     <div>
