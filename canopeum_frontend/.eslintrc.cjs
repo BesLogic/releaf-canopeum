@@ -6,6 +6,10 @@ module.exports = {
     'beslogic/typescript',
     'beslogic/dprint',
   ],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    project: ['tsconfig?(.*).json'],
+  },
   ignorePatterns: [
     '.eslintrc.cjs',
     // Auto-generated
@@ -24,5 +28,6 @@ module.exports = {
     'no-autofix/no-relative-import-paths/no-relative-import-paths': 'off',
     // Using Bootraps directly without a React wrapper will cause us to have to add classes to React Components
     'react/forbid-component-props': 'off',
+    '@typescript-eslint/no-unsafe-member-access': 'warn',
   },
 }
