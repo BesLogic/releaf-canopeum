@@ -6,7 +6,8 @@ import { Post } from "../services/api";
 import PostWidget from "../components/PostWidget";
 
 const MapSite = () => {
-  const { siteId } = useParams();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- We plan on using it
+  const { siteId } = useParams()
 
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(false);
