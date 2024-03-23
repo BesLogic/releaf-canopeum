@@ -1,9 +1,5 @@
 from typing import ClassVar
-from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from .models import Contact, Coordinate, Site, Post, Batch, Announcement, Like, Comment, Sitetype, Widget
-from .serializers import AuthUserSerializer, BatchAnalyticsSerializer, ContactSerializer, CoordinatesSerializer, SiteMapSerializer, SiteSocialSerializer, SiteSummarySerializer, SiteTypeSerializer, UserSerializer, SiteSerializer, PostSerializer, BatchSerializer, AnnouncementSerializer, LikeSerializer, CommentSerializer, WidgetSerializer
+
 from django.contrib.auth.models import User
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
@@ -12,17 +8,22 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-
-from .models import Announcement, Batch, Comment, Like, Post, Site
+from .models import Announcement, Batch, Comment, Contact, Post, Site, Widget
 from .serializers import (
     AnnouncementSerializer,
     AuthUserSerializer,
+    BatchAnalyticsSerializer,
     BatchSerializer,
     CommentSerializer,
+    ContactSerializer,
     LikeSerializer,
     PostSerializer,
+    SiteMapSerializer,
     SiteSerializer,
+    SiteSocialSerializer,
+    SiteSummarySerializer,
     UserSerializer,
+    WidgetSerializer,
 )
 
 
@@ -60,13 +61,13 @@ class LogoutAPIView(APIView):
         request.user.auth_token.delete()
         return Response(status=status.HTTP_200_OK)
 
+
 class SiteListAPIView(APIView):
     @extend_schema(responses=SiteSerializer(many=True), operation_id="site_all")
     def get(self, request):
         sites = Site.objects.all()
         serializer = SiteSerializer(sites, many=True)
         return Response(serializer.data)
-
 
     @extend_schema(request=SiteSerializer, responses=SiteSerializer, operation_id="site_create")
     def post(self, request):
@@ -75,6 +76,7 @@ class SiteListAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class SiteDetailAPIView(APIView):
     @extend_schema(request=SiteSerializer, responses=SiteSerializer, operation_id="site_detail")
@@ -119,8 +121,18 @@ class SiteSummaryListAPIView(APIView):
         survived_count = 0
         propagation_count = 0
         progress = 0
-        serializer = SiteSummarySerializer(sites, many=True, context={'plant_count': plant_count, 'survived_count': survived_count, 'progress': progress, 'propagation_count': propagation_count})
+        serializer = SiteSummarySerializer(
+            sites,
+            many=True,
+            context={
+                "plant_count": plant_count,
+                "survived_count": survived_count,
+                "progress": progress,
+                "propagation_count": propagation_count,
+            },
+        )
         return Response(serializer.data)
+
 
 class SiteSummaryDetailAPIView(APIView):
     @extend_schema(responses=SiteSummarySerializer, operation_id="site_summarydetail")
@@ -133,8 +145,17 @@ class SiteSummaryDetailAPIView(APIView):
         survived_count = 0
         propagation_count = 0
         progress = 0
-        serializer = SiteSummarySerializer(site, context={'plant_count': plant_count, 'survived_count': survived_count, 'progress': progress, 'propagation_count': propagation_count})
+        serializer = SiteSummarySerializer(
+            site,
+            context={
+                "plant_count": plant_count,
+                "survived_count": survived_count,
+                "progress": progress,
+                "propagation_count": propagation_count,
+            },
+        )
         return Response(serializer.data)
+
 
 class SiteSocialDetailAPIView(APIView):
     @extend_schema(request=SiteSocialSerializer, responses=SiteSocialSerializer, operation_id="site_social")
@@ -147,8 +168,9 @@ class SiteSocialDetailAPIView(APIView):
         batches = Batch.objects.filter(site=siteId)
         sponsors = [batch.sponsor for batch in batches]
 
-        serializer = SiteSocialSerializer(site, context={'sponsors': sponsors})
+        serializer = SiteSocialSerializer(site, context={"sponsors": sponsors})
         return Response(serializer.data)
+
 
 class SiteMapListAPIView(APIView):
     @extend_schema(responses=SiteMapSerializer, operation_id="site_map")
@@ -157,16 +179,17 @@ class SiteMapListAPIView(APIView):
         serializer = SiteMapSerializer(sites, many=True)
         return Response(serializer.data)
 
+
 class PostListAPIView(APIView):
     @extend_schema(responses=PostSerializer(many=True), operation_id="post_all")
     def get(self, request):
         try:
-            comment_count = Comment.objects.get(post=request.data.get('id')).count()
+            comment_count = Comment.objects.get(post=request.data.get("id")).count()
         except Comment.DoesNotExist:
             comment_count = 0
         has_liked = 0
         posts = Post.objects.all()
-        serializer = PostSerializer(posts, many=True, context={'comment_count': comment_count, 'has_liked': has_liked})
+        serializer = PostSerializer(posts, many=True, context={"comment_count": comment_count, "has_liked": has_liked})
         return Response(serializer.data)
 
     @extend_schema(request=PostSerializer, responses=PostSerializer, operation_id="post_create")
@@ -176,6 +199,7 @@ class PostListAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class CommentListAPIView(APIView):
     @extend_schema(responses=CommentSerializer(many=True), operation_id="comment_all")
@@ -197,6 +221,7 @@ class CommentListAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class CommentDetailAPIView(APIView):
     @extend_schema(operation_id="comment_delete")
     def delete(self, request, pk):
@@ -207,6 +232,7 @@ class CommentDetailAPIView(APIView):
 
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class AnnouncementDetailAPIView(APIView):
     @extend_schema(request=AnnouncementSerializer, responses=AnnouncementSerializer, operation_id="announcement_update")
@@ -222,6 +248,7 @@ class AnnouncementDetailAPIView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class ContactDetailAPIView(APIView):
     @extend_schema(request=ContactSerializer, responses=ContactSerializer, operation_id="contact_update")
     def put(self, request, pk):
@@ -236,6 +263,7 @@ class ContactDetailAPIView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class WidgetListAPIView(APIView):
     @extend_schema(request=WidgetSerializer, responses=WidgetSerializer, operation_id="widget_all")
     def post(self, request):
@@ -244,6 +272,7 @@ class WidgetListAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class WidgetDetailAPIView(APIView):
     @extend_schema(request=WidgetSerializer, responses=WidgetSerializer, operation_id="widget_detail")
@@ -269,6 +298,7 @@ class WidgetDetailAPIView(APIView):
         widget.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 class LikeListAPIView(APIView):
     @extend_schema(request=LikeSerializer, responses=LikeSerializer, operation_id="like_all")
     def post(self, request):
@@ -277,6 +307,7 @@ class LikeListAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class BatchListAPIView(APIView):
     @extend_schema(responses=BatchAnalyticsSerializer(many=True), operation_id="batch_all")
@@ -292,6 +323,7 @@ class BatchListAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class BatchDetailAPIView(APIView):
     @extend_schema(request=BatchSerializer, responses=BatchSerializer, operation_id="batch_detail")
@@ -317,6 +349,7 @@ class BatchDetailAPIView(APIView):
         batch.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 class UserListAPIView(APIView):
     @extend_schema(request=UserSerializer, responses=UserSerializer, operation_id="user_all")
     def post(self, request):
@@ -325,6 +358,7 @@ class UserListAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class UserDetailAPIView(APIView):
     @extend_schema(request=UserSerializer, responses=UserSerializer, operation_id="user_detail")
@@ -359,6 +393,7 @@ class UserDetailAPIView(APIView):
 
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class UserCurrentUserAPIView(APIView):
     @extend_schema(responses=UserSerializer, operation_id="user_current_user")
