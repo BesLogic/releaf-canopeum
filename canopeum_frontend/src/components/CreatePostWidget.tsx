@@ -1,8 +1,10 @@
 import type { SiteSocial } from '../services/api'
 
 const CreatePostWidget = (props: { readonly site: SiteSocial }) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- We'll use this eventually
+  /* eslint-disable @typescript-eslint/no-unused-vars -- We'll use this eventually */
+  // @ts-expect-error: We'll use this eventually
   const { site } = props
+  /* eslint-enable @typescript-eslint/no-unused-vars -- We'll use this eventually */
 
   return (
     <div className='bg-white rounded-2 px-5 py-4 d-flex flex-column gap-2'>
