@@ -1,0 +1,9 @@
+@import '@assets/styles/theme-variables.scss';
+
+
+.card {
+  border-width: $card-border-width;
+  border-radius: $card-border-width;
+  border-color: $card-border-color;
+  background-color: $card-bg;
+}
