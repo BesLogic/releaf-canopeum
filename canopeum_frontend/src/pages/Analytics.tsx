@@ -12,7 +12,7 @@ const Analytics = () => {
   const fetchSites = async () => {
     setIsLoadingSiteSummaries(true)
     try {
-      const response = await api.siteSummary()
+      const response = await api().analytics.siteSummaries()
       setSiteSummaries(response)
     } catch (error: unknown) {
       setSiteSummariesError(ensureError(error))
