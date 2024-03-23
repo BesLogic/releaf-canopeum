@@ -1,6 +1,6 @@
-# Canopeum
+# Carbone Québec
 
-![Alt text](canopeum_frontend/public/Canopeum_Logo.jpg?raw=true "Logo")
+![Alt text](carbone_quebec_frontend/public/Carbone_Quebec_Logo.png?raw=true "Logo")
 
 This project integrates Django backend with React Vite frontend template to create a full-stack web application.
 
@@ -24,15 +24,15 @@ For backend
 1. Clone the repository:
 
 ```bash
-git clone git@github.com:BesLogic/releaf-canopeum.git
-cd releaf-canopeum
+git clone git@github.com:BesLogic/releaf-carbone-quebec.git
+cd releaf-carbone-quebec
 ```
 
 2. Set up Django backend and Database: (Skip this section for Frontend only)
 
 ```bash
 docker compose up
-cd canopeum_backend
+cd carbone_quebec_backend
 python -m venv .venv
 source .venv/scripts/activate
 python -m pip install -r requirements.txt
@@ -43,7 +43,7 @@ python manage.py runserver
 3. Set up React frontend:
 
 ```bash
-cd canopeum_frontend
+cd carbone_quebec_frontend
 npm install
 npm run dev
 ```
@@ -53,8 +53,8 @@ Run mock data (For Frontend only)
 ```bash
 # In another CLI
 npm install -g @mockoon/cli
-cd releaf-canopeum/canopeum_frontend
-mockoon-cli start --data canopeum-mockoon.json
+cd releaf-carbone-quebec/carbone_quebec_frontend
+mockoon-cli start --data carbone-quebec-mockoon.json
 ```
 
 ### Folder Architecture
