@@ -1,6 +1,27 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import BatchSeed, BatchSpecies, BatchSupportedSpecies, Batchfertilizer, Contact, Coordinate, Internationalization, Mulchlayertype, Site, Post, Batch, Announcement, Like, Comment, Sitetreespecies, Sitetype, SitetypeInternationalization, Treetype, Widget
+
+from .models import (
+    Announcement,
+    Batch,
+    Batchfertilizer,
+    BatchSeed,
+    BatchSpecies,
+    BatchSupportedSpecies,
+    Comment,
+    Contact,
+    Coordinate,
+    Internationalization,
+    Like,
+    Mulchlayertype,
+    Post,
+    Site,
+    Sitetreespecies,
+    Sitetype,
+    Treetype,
+    Widget,
+)
+
 
 class AuthUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,17 +38,20 @@ class UserSerializer(serializers.ModelSerializer):
 class CoordinatesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Coordinate
-        fields = '__all__'
+        fields = "__all__"
+
 
 class WidgetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Widget
-        fields = '__all__'
+        fields = "__all__"
+
 
 class InternationalizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Internationalization
-        fields = ('en', 'fr')
+        fields = ("en", "fr")
+
 
 class SiteTypeSerializer(serializers.ModelSerializer):
     en = serializers.SerializerMethodField()
@@ -35,49 +59,56 @@ class SiteTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sitetype
-        fields = ['id', 'en', 'fr']
+        fields = ["id", "en", "fr"]
 
     def get_en(self, obj):
-        return InternationalizationSerializer(obj.name).data.get('en', None)
+        return InternationalizationSerializer(obj.name).data.get("en", None)
 
     def get_fr(self, obj):
-        return InternationalizationSerializer(obj.name).data.get('fr', None)
+        return InternationalizationSerializer(obj.name).data.get("fr", None)
+
 
 class TreeTypeSerializer(serializers.ModelSerializer):
     en = serializers.SerializerMethodField()
     fr = serializers.SerializerMethodField()
+
     class Meta:
         model = Treetype
-        fields = ['en', 'fr']
+        fields = ["en", "fr"]
 
     def get_en(self, obj):
-        return InternationalizationSerializer(obj.name).data.get('en', None)
+        return InternationalizationSerializer(obj.name).data.get("en", None)
 
     def get_fr(self, obj):
-        return InternationalizationSerializer(obj.name).data.get('fr', None)
+        return InternationalizationSerializer(obj.name).data.get("fr", None)
+
 
 class AnnouncementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Announcement
-        fields = '__all__'
+        fields = "__all__"
+
 
 class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
-        fields = '__all__'
+        fields = "__all__"
+
 
 class SitetreespeciesSerializer(serializers.ModelSerializer):
     en = serializers.SerializerMethodField()
     fr = serializers.SerializerMethodField()
+
     class Meta:
         model = Sitetreespecies
-        fields = ('id', 'quantity', 'en', 'fr')
+        fields = ("id", "quantity", "en", "fr")
 
     def get_en(self, obj):
-        return TreeTypeSerializer(obj.tree_type).data.get('en', None)
+        return TreeTypeSerializer(obj.tree_type).data.get("en", None)
 
     def get_fr(self, obj):
-        return TreeTypeSerializer(obj.tree_type).data.get('fr', None)
+        return TreeTypeSerializer(obj.tree_type).data.get("fr", None)
+
 
 class SiteSerializer(serializers.ModelSerializer):
     site_type = SiteTypeSerializer()
@@ -88,10 +119,11 @@ class SiteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Site
-        fields = '__all__'
+        fields = "__all__"
 
     def get_site_tree_species(self, obj):
         return SitetreespeciesSerializer(obj.sitetreespecies_set.all(), many=True).data
+
 
 class SiteSocialSerializer(serializers.ModelSerializer):
     site_type = SiteTypeSerializer()
@@ -102,7 +134,7 @@ class SiteSocialSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Site
-        fields = ('name', 'site_type', 'image', 'description', 'contact', 'announcement', 'sponsors', 'widget')
+        fields = ("name", "site_type", "image", "description", "contact", "announcement", "sponsors", "widget")
 
     def get_sponsors(self, obj):
         return self.context.get("sponsors")
@@ -110,19 +142,21 @@ class SiteSocialSerializer(serializers.ModelSerializer):
     def get_widget(self, obj):
         return WidgetSerializer(obj.widget_set.all(), many=True).data
 
+
 class BatchfertilizerSerializer(serializers.ModelSerializer):
     en = serializers.SerializerMethodField()
     fr = serializers.SerializerMethodField()
 
     class Meta:
         model = Batchfertilizer
-        fields = ['id', 'en', 'fr']
+        fields = ["id", "en", "fr"]
 
     def get_en(self, obj):
-        return InternationalizationSerializer(obj.fertilizer_type).data.get('en', None)
+        return InternationalizationSerializer(obj.fertilizer_type).data.get("en", None)
 
     def get_fr(self, obj):
-        return InternationalizationSerializer(obj.fertilizer_type).data.get('fr', None)
+        return InternationalizationSerializer(obj.fertilizer_type).data.get("fr", None)
+
 
 class BatchMulchLayerSerializer(serializers.ModelSerializer):
     en = serializers.SerializerMethodField()
@@ -130,57 +164,66 @@ class BatchMulchLayerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Mulchlayertype
-        fields = ['id', 'en', 'fr']
+        fields = ["id", "en", "fr"]
 
     def get_en(self, obj):
-        return InternationalizationSerializer(obj.mulch_layer_type).data.get('en', None)
+        return InternationalizationSerializer(obj.mulch_layer_type).data.get("en", None)
 
     def get_fr(self, obj):
-        return InternationalizationSerializer(obj.mulch_layer_type).data.get('fr', None)
+        return InternationalizationSerializer(obj.mulch_layer_type).data.get("fr", None)
+
 
 class BatchSupportedSpeciesSerializer(serializers.ModelSerializer):
     en = serializers.SerializerMethodField()
     fr = serializers.SerializerMethodField()
+
     class Meta:
         model = BatchSupportedSpecies
-        fields = ['en', 'fr']
+        fields = ["en", "fr"]
 
     def get_en(self, obj):
-        return InternationalizationSerializer(obj.tree_type).data.get('en', None)
+        return InternationalizationSerializer(obj.tree_type).data.get("en", None)
 
     def get_fr(self, obj):
-        return InternationalizationSerializer(obj.tree_type).data.get('fr', None)
+        return InternationalizationSerializer(obj.tree_type).data.get("fr", None)
+
 
 class BatchSeedSerializer(serializers.ModelSerializer):
     en = serializers.SerializerMethodField()
     fr = serializers.SerializerMethodField()
+
     class Meta:
         model = BatchSeed
-        fields = ['quantity', 'en', 'fr']
+        fields = ["quantity", "en", "fr"]
 
     def get_en(self, obj):
-        return InternationalizationSerializer(obj.tree_type).data.get('en', None)
+        return InternationalizationSerializer(obj.tree_type).data.get("en", None)
 
     def get_fr(self, obj):
-        return InternationalizationSerializer(obj.tree_type).data.get('fr', None)
+        return InternationalizationSerializer(obj.tree_type).data.get("fr", None)
+
 
 class BatchSpeciesSerializer(serializers.ModelSerializer):
     en = serializers.SerializerMethodField()
     fr = serializers.SerializerMethodField()
+
     class Meta:
         model = BatchSpecies
-        fields = ['quantity', 'en', 'fr']
+        fields = ["quantity", "en", "fr"]
 
     def get_en(self, obj):
-        return InternationalizationSerializer(obj.tree_type).data.get('en', None)
+        return InternationalizationSerializer(obj.tree_type).data.get("en", None)
 
     def get_fr(self, obj):
-        return InternationalizationSerializer(obj.tree_type).data.get('fr', None)
+        return InternationalizationSerializer(obj.tree_type).data.get("fr", None)
+
 
 class BatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Batch
-        fields = '__all__'
+        fields = "__all__"
+
+
 class BatchAnalyticsSerializer(serializers.ModelSerializer):
     fertilizers = serializers.SerializerMethodField()
     mulch_layers = serializers.SerializerMethodField()
@@ -191,9 +234,24 @@ class BatchAnalyticsSerializer(serializers.ModelSerializer):
     seed_collected_count = serializers.SerializerMethodField()
     seeds = serializers.SerializerMethodField()
     species = serializers.SerializerMethodField()
+
     class Meta:
         model = Batch
-        fields = ('id', 'name', 'size', 'soil_condition', 'fertilizers', 'mulch_layers', 'supported_species', 'plant_count', 'survived_count', 'replace_count', 'seed_collected_count', 'seeds', 'species')
+        fields = (
+            "id",
+            "name",
+            "size",
+            "soil_condition",
+            "fertilizers",
+            "mulch_layers",
+            "supported_species",
+            "plant_count",
+            "survived_count",
+            "replace_count",
+            "seed_collected_count",
+            "seeds",
+            "species",
+        )
 
     def get_plant_count(self, obj):
         return self.context.get("plant_count")
@@ -222,6 +280,7 @@ class BatchAnalyticsSerializer(serializers.ModelSerializer):
     def get_species(self, obj):
         return BatchSpeciesSerializer(obj.batchspecies_set.all(), many=True).data
 
+
 class SiteSummarySerializer(serializers.ModelSerializer):
     site_type = SiteTypeSerializer()
     plant_count = serializers.SerializerMethodField()
@@ -229,9 +288,19 @@ class SiteSummarySerializer(serializers.ModelSerializer):
     propagation_count = serializers.SerializerMethodField()
     progress = serializers.SerializerMethodField()
     sponsor = serializers.SerializerMethodField()
+
     class Meta:
         model = Site
-        fields = ('name', 'site_type', 'plant_count', 'survived_count', 'propagation_count', 'visitor_count', 'sponsor', 'progress')
+        fields = (
+            "name",
+            "site_type",
+            "plant_count",
+            "survived_count",
+            "propagation_count",
+            "visitor_count",
+            "sponsor",
+            "progress",
+        )
 
     def get_plant_count(self, obj):
         return self.context.get("plant_count")
@@ -246,26 +315,31 @@ class SiteSummarySerializer(serializers.ModelSerializer):
         return self.context.get("progress")
 
     def get_sponsor(self, obj):
-        return BatchSerializer(obj).data.get('sponsor', None)
+        return BatchSerializer(obj).data.get("sponsor", None)
+
 
 class SiteMapSerializer(serializers.ModelSerializer):
     site_type = SiteTypeSerializer()
+
     class Meta:
         model = Site
-        fields = ('id', 'name', 'site_type', 'coordinate', 'image')
+        fields = ("id", "name", "site_type", "coordinate", "image")
+
 
 class SiteOverviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Site
-        fields = ('id', 'name')
+        fields = ("id", "name")
+
 
 class PostSerializer(serializers.ModelSerializer):
     site = SiteOverviewSerializer()
     comment_count = serializers.SerializerMethodField()
     has_liked = serializers.SerializerMethodField()
+
     class Meta:
         model = Post
-        fields = ('id', 'site', 'created_at', 'body', 'like_count', 'share_count', 'comment_count', 'has_liked')
+        fields = ("id", "site", "created_at", "body", "like_count", "share_count", "comment_count", "has_liked")
 
     def get_comment_count(self, obj):
         return self.context.get("comment_count")
@@ -273,12 +347,14 @@ class PostSerializer(serializers.ModelSerializer):
     def get_has_liked(self, obj):
         return self.context.get("has_liked")
 
+
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ('id', 'body', 'auth_user', 'created_at')
+        fields = ("id", "body", "auth_user", "created_at")
+
 
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
-        fields = '__all__'
+        fields = "__all__"
