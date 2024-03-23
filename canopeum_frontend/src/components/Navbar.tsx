@@ -1,20 +1,19 @@
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Link, useLocation } from 'react-router-dom';
-
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Link, useLocation } from 'react-router-dom'
 
 const Navbar = () => {
-  const { i18n: {changeLanguage, language} } = useTranslation();
+  const { i18n: { changeLanguage, language } } = useTranslation()
   const [currentLanguage, setCurrentLanguage] = useState(language)
 
   const location = useLocation()
 
   const handleChangeLanguage = () => {
     const newLanguage = currentLanguage === 'en'
-? 'fr'
-: 'en';
-    setCurrentLanguage(newLanguage);
-    void changeLanguage(newLanguage);
+      ? 'fr'
+      : 'en'
+    setCurrentLanguage(newLanguage)
+    void changeLanguage(newLanguage)
   }
 
   return (
@@ -95,7 +94,7 @@ const Navbar = () => {
         </div>
       </div>
       <button
-        className="btn btn-primary"
+        className='btn btn-primary'
         onClick={handleChangeLanguage}
         type='button'
       >

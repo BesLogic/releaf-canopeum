@@ -1,16 +1,15 @@
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import type { BatchAnalytics } from '../services/api.ts'
 import api from '../services/apiInterface.ts'
 import { ensureError } from '../services/errors.ts'
 
-
 const Home = () => {
-  const { t } = useTranslation();
-  const [data, setData] = useState<BatchAnalytics[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Error | undefined>(undefined);
+  const { t } = useTranslation()
+  const [data, setData] = useState<BatchAnalytics[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<Error | undefined>(undefined)
 
   const fetchData = async () => {
     setIsLoading(true)
@@ -36,8 +35,8 @@ const Home = () => {
 
   return (
     <div>
-      <div className="container mt-2 d-flex flex-column gap-2">
-        <div className="bg-white rounded-2 px-3 py-2">
+      <div className='container mt-2 d-flex flex-column gap-2'>
+        <div className='bg-white rounded-2 px-3 py-2'>
           <h1>{t('home')}</h1>
           {isLoading
             ? <p>Loading...</p>
