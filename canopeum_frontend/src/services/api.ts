@@ -2848,8 +2848,8 @@ export class SiteSocial implements ISiteSocial {
   description?: string | undefined
   contact!: Contact
   announcement!: Announcement
-  readonly sponsors!: string
-  readonly widget!: string;
+  readonly sponsors!: string[]
+  readonly widget!: Widget[];
 
   [key: string]: any
 
@@ -2865,6 +2865,8 @@ export class SiteSocial implements ISiteSocial {
       this.siteType = new SiteType()
       this.contact = new Contact()
       this.announcement = new Announcement()
+      this.sponsors = []
+      this.widget = []
     }
   }
 
@@ -2881,8 +2883,18 @@ export class SiteSocial implements ISiteSocial {
       this.description = _data['description']
       this.contact = _data['contact'] ? Contact.fromJS(_data['contact']) : new Contact()
       this.announcement = _data['announcement'] ? Announcement.fromJS(_data['announcement']) : new Announcement()
-        ; (<any>this).sponsors = _data['sponsors']
-        ; (<any>this).widget = _data['widget']
+      if (Array.isArray(_data['sponsors'])) {
+        ; (<any>this).sponsors = [] as any
+        for (let item of _data['sponsors']) {
+          ; (<any>this).sponsors!.push(item)
+        }
+      }
+      if (Array.isArray(_data['widget'])) {
+        ; (<any>this).widget = [] as any
+        for (let item of _data['widget']) {
+          ; (<any>this).widget!.push(Widget.fromJS(item))
+        }
+      }
     }
   }
 
@@ -2906,8 +2918,18 @@ export class SiteSocial implements ISiteSocial {
     data['description'] = this.description
     data['contact'] = this.contact ? this.contact.toJSON() : <any>undefined
     data['announcement'] = this.announcement ? this.announcement.toJSON() : <any>undefined
-    data['sponsors'] = this.sponsors
-    data['widget'] = this.widget
+    if (Array.isArray(this.sponsors)) {
+      data['sponsors'] = []
+      for (let item of this.sponsors) {
+        data['sponsors'].push(item)
+      }
+    }
+    if (Array.isArray(this.widget)) {
+      data['widget'] = []
+      for (let item of this.widget) {
+        data['widget'].push(item.toJSON())
+      }
+    }
     return data
   }
 }
@@ -2919,8 +2941,8 @@ export interface ISiteSocial {
   description?: string | undefined
   contact: Contact
   announcement: Announcement
-  sponsors: string
-  widget: string
+  sponsors: string[]
+  widget: Widget[]
 
   [key: string]: any
 }
