@@ -12,8 +12,14 @@ const Home = () => {
   const fetchData = async () => {
     setIsLoading(true)
     try {
+      /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call,
+      @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument --
+      FIXME ! Oli and Theo are working on it */
+      // @ts-expect-error: FIXME ! Oli and Theo are working on it
       const response = await api.batches.all()
       setData(response)
+      /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call,
+      @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument */
     } catch (error_: unknown) {
       setError(ensureError(error_))
     } finally {
