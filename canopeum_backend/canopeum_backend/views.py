@@ -170,12 +170,16 @@ class SiteSocialDetailAPIView(APIView):
         serializer = SiteSocialSerializer(site, context={"sponsors": sponsors})
         return Response(serializer.data)
 
+
 class SiteSocialListAPIView(APIView):
-    @extend_schema(request=SiteSocialSerializer(many=True), responses=SiteSocialSerializer, operation_id="site_social_all")
+    @extend_schema(
+        request=SiteSocialSerializer(many=True), responses=SiteSocialSerializer, operation_id="site_social_all"
+    )
     def get(self, request):
         sites = Site.objects.all()
         serializer = SiteSocialSerializer(sites, many=True)
         return Response(serializer.data)
+
 
 class SiteMapListAPIView(APIView):
     @extend_schema(responses=SiteMapSerializer(many=True), operation_id="site_map")
@@ -395,6 +399,7 @@ class UserDetailAPIView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class UserCurrentUserAPIView(APIView):
     @extend_schema(responses=UserSerializer, operation_id="user_current_user")
