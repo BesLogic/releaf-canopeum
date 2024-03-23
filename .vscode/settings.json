@@ -88,7 +88,7 @@
     "editor.defaultFormatter": "dprint.dprint"
   },
   "[typescriptreact]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
+    "editor.defaultFormatter": "dprint.dprint"
   },
   "[markdown]": {
     "files.trimTrailingWhitespace": false,
