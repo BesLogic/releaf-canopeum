@@ -58,7 +58,6 @@ const api = () => {
     users: {
       all: () => client.userAll(),
       create: (body: User) => client.userCreate(body),
-      delete: (userId: number) => client.userDelete(userId),
       update: (userId: number, body: PatchedUser) => client.userUpdate(userId, body),
     },
   };
