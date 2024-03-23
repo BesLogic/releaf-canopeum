@@ -157,7 +157,4 @@
   "evenBetterToml.formatter.trailingNewline": true,
   // We like keeping TOML keys in a certain non-alphabetical order that feels more natural
   "evenBetterToml.formatter.reorderKeys": false,
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
-  }
 }

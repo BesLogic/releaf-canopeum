@@ -1,16 +1,17 @@
 import { Route, Routes, useLocation } from 'react-router-dom'
-import Navbar from './Navbar'
-import Home from '../pages/Home'
+
 import Analytics from '../pages/Analytics'
+import Home from '../pages/Home'
+import Login from '../pages/Login'
+import Map from '../pages/Map'
 import MapSite from '../pages/MapSite'
 import UserManagement from '../pages/UserManagement'
-import Login from '../pages/Login'
 import Utilities from '../pages/Utilities'
-import Map from '../pages/Map'
+import Navbar from './Navbar'
 
-
-const MainLayout: React.FC = () => {
+const MainLayout = () => {
   const location = useLocation();
+
   return <>
     {location.pathname !== '/login' && <Navbar />}
     <Routes>

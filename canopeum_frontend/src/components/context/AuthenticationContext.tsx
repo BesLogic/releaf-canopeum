@@ -1,5 +1,5 @@
 import type { FunctionComponent, ReactNode } from 'react';
-import { createContext, memo, useState } from 'react'
+import { createContext, memo, useCallback, useMemo, useState } from 'react'
 
 export enum UserRole {
   MegaAdmin = 'MegaAdmin',
@@ -23,8 +23,8 @@ type IAuthenticationContext = {
 }
 
 export const AuthenticationContext = createContext<IAuthenticationContext>({
-  authenticate: (_: User) => { },
-  logout: () => { },
+  authenticate: (_: User) => { /* empty */ },
+  logout: () => { /* empty */ },
   isAuthenticated: false,
   currentUser: undefined
 });
@@ -32,18 +32,24 @@ export const AuthenticationContext = createContext<IAuthenticationContext>({
 const AuthenticationContextProvider: FunctionComponent<{ readonly children?: ReactNode }> = memo((props) => {
   const [user, setUser] = useState<User | undefined>(undefined)
 
-  const authenticate = (user: User) => setUser(user)
-  const logout = () => setUser(undefined)
+  const authenticate = useCallback((newUser: User) => setUser(newUser), [setUser])
 
-  return <AuthenticationContext.Provider
-    value={{
+  const logout = useCallback(() => setUser(undefined), [setUser])
+
+  const context = useMemo<IAuthenticationContext>(() => (
+    {
       currentUser: user,
       isAuthenticated: user !== undefined,
       authenticate,
       logout
-    }}>
+    }
+  ), [authenticate, user, logout])
+
+  return <AuthenticationContext.Provider
+    value={context}>
     {props.children}
   </AuthenticationContext.Provider>
 })
 
+AuthenticationContextProvider.displayName = 'AuthenticationContextProvider'
 export default AuthenticationContextProvider

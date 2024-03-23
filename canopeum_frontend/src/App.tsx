@@ -3,7 +3,6 @@ import 'bootstrap/js/index.umd.js';
 
 import { BrowserRouter } from 'react-router-dom';
 
-
 import AuthenticationContextProvider from './components/context/AuthenticationContext';
 import MainLayout from './components/MainLayout';
 
