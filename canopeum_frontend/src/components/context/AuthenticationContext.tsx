@@ -1,8 +1,18 @@
 import type { FunctionComponent, ReactNode } from 'react';
 import { createContext, memo, useState } from 'react'
 
+export enum UserRole {
+  MegaAdmin = 'MegaAdmin',
+  MiniAdmin = 'MiniAdmin',
+  RegularUser = 'RegularUser',
+}
+
 type User = {
-  name: string
+  firstname: string
+  lastname: string,
+  email: string,
+  role: UserRole,
+  image: string
 }
 
 type IAuthenticationContext = {
