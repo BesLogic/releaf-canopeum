@@ -127,7 +127,7 @@ DATABASES = {
         "USER": "root",
         "PASSWORD": "canopeum",
         "HOST": "localhost",
-        "PORT": "3306",
+        "PORT": "3308",  # Same as in docker-compose.yml
     },
 }
 
