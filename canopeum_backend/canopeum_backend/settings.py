@@ -109,6 +109,11 @@ SPECTACULAR_SETTINGS = {
     "COMPONENT_NO_READ_ONLY_REQUIRED": False,
     # Create separate components for PATCH endpoints (without required list)
     "COMPONENT_SPLIT_PATCH": True,
+    "CAMELIZE_NAMES": True,
+    "POSTPROCESSING_HOOKS": [
+        "drf_spectacular.contrib.djangorestframework_camel_case.camelize_serializer_fields",
+        "drf_spectacular.hooks.postprocess_schema_enums",
+    ],
 }
 
 
@@ -122,7 +127,7 @@ DATABASES = {
         "USER": "root",
         "PASSWORD": "canopeum",
         "HOST": "localhost",
-        "PORT": "3306",
+        "PORT": "3308",  # Same as in docker-compose.yml
     },
 }
 
