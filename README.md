@@ -1,6 +1,6 @@
-# Carbone Québec
+# Canopeum
 
-![Alt text](carbone_quebec_frontend/public/Carbone_Quebec_Logo.png?raw=true "Logo")
+![Alt text](canopeum_frontend/public/Canopeum_Logo.jpg?raw=true "Logo")
 
 This project integrates Django backend with React Vite frontend template to create a full-stack web application.
 
@@ -25,64 +25,29 @@ For backend
 1. Fork the project:\
    ![Fork](/docs/Fork.png)
 
-<<<<<<< HEAD
-```bash
-git clone git@github.com:BesLogic/releaf-carbone-quebec.git
-cd releaf-carbone-quebec
-```
-=======
 2. Clone the repository:\
    From your fork, copy the repo's URL\
    ![Clone](/docs/Clone.png)
->>>>>>> b2e9d88ea7de41b8af810352e94a222581ae365d
 
    ```shell
    git clone <the_url_you_copied>
    cd releaf-canopeum
    ```
 
-<<<<<<< HEAD
-```bash
-docker compose up
-cd carbone_quebec_backend
-python -m venv .venv
-source .venv/scripts/activate
-python -m pip install -r requirements.txt
-python manage.py migrate
-python manage.py runserver
-```
-=======
 3. Set up a Python 3.12 virtual environment
->>>>>>> b2e9d88ea7de41b8af810352e94a222581ae365d
 
    ```shell
    cd canopeum_backend
    python3.12 -m venv .venv
    ```
 
-<<<<<<< HEAD
-```bash
-cd carbone_quebec_frontend
-npm install
-npm run dev
-```
-=======
    or on Windows if "python3.12" is not a recognized command:
->>>>>>> b2e9d88ea7de41b8af810352e94a222581ae365d
 
    ```powershell
    cd canopeum_backend
    py -3.12 -m venv .venv
    ```
 
-<<<<<<< HEAD
-```bash
-# In another CLI
-npm install -g @mockoon/cli
-cd releaf-carbone-quebec/carbone_quebec_frontend
-mockoon-cli start --data carbone-quebec-mockoon.json
-```
-=======
    Then activate the environemnt (you need to do this everytime if your editor isn't configured to do so):
 
    ```shell
@@ -125,7 +90,6 @@ mockoon-cli start --data carbone-quebec-mockoon.json
    cd releaf-canopeum/canopeum_frontend
    mockoon-cli start --data canopeum-mockoon.json
    ```
->>>>>>> b2e9d88ea7de41b8af810352e94a222581ae365d
 
 ### Folder Architecture
 
