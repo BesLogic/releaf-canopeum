@@ -93,23 +93,33 @@ const Navbar = () => {
               </Link>
             </li>
           </ul>
-          <ul className='navbar-nav d-flex ms-3 gap-3 '>
-            <li
-              className={`nav-item ${
-                location.pathname === '/user-management'
-                  ? 'active'
-                  : ''
-              }`}
-            >
-              <Link className='nav-link' to='/user-management'>
-                <span className='material-symbols-outlined text-light'>account_circle</span>
-              </Link>
-            </li>
-            <li className='nav-item'>
-              <button className='btn btn-link text-light' onClick={() => onLoginLogoutbuttonClick()} type='button'>
-                Log In
-              </button>
-            </li>
+          <ul className='navbar-nav ms-3 gap-3'>
+            {isAuthenticated && (
+              <li
+                className={`nav-item ${
+                  location.pathname === '/user-management'
+                    ? 'active'
+                    : ''
+                }`}
+              >
+                <Link className='nav-link' to='/user-management'>
+                  <span className='material-symbols-outlined text-light'>account_circle</span>
+                </Link>
+              </li>
+            )}
+
+            {!isAuthenticated && (
+              <li>
+                <button
+                  className='btn btn-link text-light'
+                  onClick={() => onLoginLogoutbuttonClick()}
+                  style={{ width: 100 }}
+                  type='button'
+                >
+                  Log In
+                </button>
+              </li>
+            )}
           </ul>
         </div>
       </div>
