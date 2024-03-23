@@ -12,7 +12,7 @@ const Home = () => {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const response = await api.batches.all();
+      const response = await api().analytics.batches();
       setData(response);
     } catch (error_: unknown) {
       setError(ensureError(error_));
