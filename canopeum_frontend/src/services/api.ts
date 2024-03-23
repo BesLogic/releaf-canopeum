@@ -43,7 +43,6 @@ export class BatchClient {
     if (status === 200) {
       return response.text().then((_responseText) => {
         let result200: any = null;
-        console.log(_responseText);
         let resultData200 = _responseText === "" ? null : JSON.parse(_responseText);
         if (Array.isArray(resultData200)) {
           result200 = [] as any;
