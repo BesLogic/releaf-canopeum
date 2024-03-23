@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "mockoon": "mockoon-cli start --data canopeum-mockoon.json",
     "build": "tsc && vite build",
     "eslint": "eslint ./ --ignore-path .gitignore",
     "lint": "dprint check && npm run eslint",
@@ -30,6 +31,7 @@
   },
   "// eslint-*": "Keep Keep these in sync with .pre-commit-config.yaml",
   "devDependencies": {
+    "@mockoon/cli": "^7.0.0",
     "@types/react": "^18.2.64",
     "@types/react-dom": "^18.2.21",
     "@typescript-eslint/eslint-plugin": "^7.1.1",
