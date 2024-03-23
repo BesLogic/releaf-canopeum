@@ -1,4 +1,4 @@
-export const FormatDate = (dateIso: string): string => {
+export const formatDate = (dateIso: string): string => {
   const date = new Date(dateIso);
 
   const day = String(date.getDate()).padStart(2, '0');
