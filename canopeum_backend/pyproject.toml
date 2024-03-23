@@ -71,9 +71,8 @@ ignore = [
   ### https://github.com/astral-sh/ruff/issues/1256 & https://github.com/astral-sh/ruff/issues/1774):
   "DJ001", # Avoid using `null=True` on string-based fields
   "DJ008", # Model does not define `__str__` method: https://docs.astral.sh/ruff/rules/django-model-without-dunder-str/
+  "N803", # Different naming convention between js/json and python. A better/configured middleware could take care of that
 ]
-
-[tool.ruff.format]
 
 # https://docs.astral.sh/ruff/settings/#flake8-implicit-str-concat
 [tool.ruff.lint.flake8-implicit-str-concat]
@@ -100,6 +99,8 @@ max-branches = 15
 pythonVersion = "3.12"
 exclude = [".venv/"]
 typeCheckingMode = "standard"
+# django-specific mypy plugin does a better job getting serializers data type of dict vs list
+reportAttributeAccessIssue = "none"
 
 # https://mypy.readthedocs.io/en/stable/config_file.html
 [tool.mypy]
