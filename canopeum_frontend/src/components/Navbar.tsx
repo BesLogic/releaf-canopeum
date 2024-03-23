@@ -74,7 +74,7 @@ const Navbar = () => {
           </ul>
         </div>
       </div>
-      <button 
+      <button
         className="btn btn-primary"
         onClick={handleChangeLanguage}
         type='button'
