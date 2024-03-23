@@ -1,5 +1,6 @@
 import {
   AnnouncementClient,
+  AuthenticationClient,
   BatchClient,
   CommentClient,
   ContactClient,
@@ -8,8 +9,7 @@ import {
   SiteClient,
   UserClient,
   WidgetClient,
-  AuthenticationClient,
-} from "./api";
+} from './api';
 
 const API_URL = String(import.meta.env.VITE_API_URL);
 
