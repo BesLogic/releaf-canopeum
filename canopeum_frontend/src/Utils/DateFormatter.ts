@@ -7,5 +7,5 @@ export const formatDate = (dateIso: string): string => {
   const hours = String(date.getHours()).padStart(2, '0')
   const minutes = String(date.getMinutes()).padStart(2, '0')
 
-  return `${day}-${month}-${year} ${hours}:${minutes}`
+  return `${day}-${month}-${year} ${hours}:${minutes}`;
 }
