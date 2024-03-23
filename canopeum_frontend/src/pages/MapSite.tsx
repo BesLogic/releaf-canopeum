@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+
 import CreatePostWidget from '../components/CreatePostWidget'
 import PostWidget from '../components/PostWidget'
-import type { Post, SiteSocial } from '../services/api'
-import api from '../services/apiInterface'
 import SiteSummaryCard from '../components/site/SiteSummaryCard'
-import type { SiteSocial } from '../services/api'
+import type { Post, SiteSocial } from '../services/api'
 import api from '../services/apiInterface'
 
 const fetchSite = async (siteId: number, setSite: (site: SiteSocial) => void, setPosts: (posts: Post[]) => void) => {
@@ -18,7 +17,6 @@ const fetchSite = async (siteId: number, setSite: (site: SiteSocial) => void, se
     console.error(error)
   }
 }
-
 
 const MapSite = () => {
   const { siteId } = useParams()
@@ -48,16 +46,14 @@ const MapSite = () => {
           </div>
         </div>
       </div>
-      {site &&
-
-        <div className='container mt-2 d-flex flex-column gap-2'>
-
+      {site && (
+        <>
           <CreatePostWidget site={site} />
           <div className='d-flex flex-column gap-2'>
             {posts.map(post => <PostWidget key={post.id} post={post} />)}
           </div>
-        </div>
-      }
+        </>
+      )}
     </div>
   )
 }

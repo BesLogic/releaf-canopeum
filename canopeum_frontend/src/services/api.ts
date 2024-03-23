@@ -48,7 +48,7 @@ export class Client {
             result200!.push(BatchAnalytics.fromJS(item))
           }
         } else {
-          result200 = <any>null
+          result200 = <any> null
         }
         return result200
       })
@@ -209,7 +209,7 @@ export class Client {
             result200!.push(Site.fromJS(item))
           }
         } else {
-          result200 = <any>null
+          result200 = <any> null
         }
         return result200
       })
@@ -374,11 +374,11 @@ export class Client {
           result200 = {} as any
           for (let key in resultData200) {
             if (resultData200.hasOwnProperty(key)) {
-              ; (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null
+              ;(<any> result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any> null
             }
           }
         } else {
-          result200 = <any>null
+          result200 = <any> null
         }
         return result200
       })
@@ -459,7 +459,7 @@ export class Client {
             result200!.push(SiteSummary.fromJS(item))
           }
         } else {
-          result200 = <any>null
+          result200 = <any> null
         }
         return result200
       })
@@ -509,11 +509,11 @@ export class Client {
           result200 = {} as any
           for (let key in resultData200) {
             if (resultData200.hasOwnProperty(key)) {
-              ; (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null
+              ;(<any> result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any> null
             }
           }
         } else {
-          result200 = <any>null
+          result200 = <any> null
         }
         return result200
       })
@@ -592,11 +592,11 @@ export class Client {
           result200 = {} as any
           for (let key in resultData200) {
             if (resultData200.hasOwnProperty(key)) {
-              ; (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null
+              ;(<any> result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any> null
             }
           }
         } else {
-          result200 = <any>null
+          result200 = <any> null
         }
         return result200
       })
@@ -677,7 +677,7 @@ export class Client {
             result200!.push(SiteMap.fromJS(item))
           }
         } else {
-          result200 = <any>null
+          result200 = <any> null
         }
         return result200
       })
@@ -719,7 +719,7 @@ export class Client {
             result200!.push(Post.fromJS(item))
           }
         } else {
-          result200 = <any>null
+          result200 = <any> null
         }
         return result200
       })
@@ -804,7 +804,7 @@ export class Client {
             result200!.push(Comment.fromJS(item))
           }
         } else {
-          result200 = <any>null
+          result200 = <any> null
         }
         return result200
       })
@@ -1268,7 +1268,7 @@ export class Client {
             result200!.push(User.fromJS(item))
           }
         } else {
-          result200 = <any>null
+          result200 = <any> null
         }
         return result200
       })
@@ -1448,7 +1448,7 @@ export class Announcement implements IAnnouncement {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property)) {
-          ; (<any>this)[property] = (<any>data)[property]
+          ;(<any> this)[property] = (<any> data)[property]
         }
       }
     }
@@ -1461,7 +1461,7 @@ export class Announcement implements IAnnouncement {
           this[property] = _data[property]
         }
       }
-      ; (<any>this).id = _data['id']
+      ;(<any> this).id = _data['id']
       this.body = _data['body']
       this.link = _data['link']
     }
@@ -1509,7 +1509,7 @@ export class AuthUser implements IAuthUser {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property)) {
-          ; (<any>this)[property] = (<any>data)[property]
+          ;(<any> this)[property] = (<any> data)[property]
         }
       }
     }
@@ -1522,7 +1522,7 @@ export class AuthUser implements IAuthUser {
           this[property] = _data[property]
         }
       }
-      ; (<any>this).id = _data['id']
+      ;(<any> this).id = _data['id']
       this.username = _data['username']
       this.email = _data['email']
       this.password = _data['password']
@@ -1578,7 +1578,7 @@ export class Batch implements IBatch {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property)) {
-          ; (<any>this)[property] = (<any>data)[property]
+          ;(<any> this)[property] = (<any> data)[property]
         }
       }
     }
@@ -1591,8 +1591,8 @@ export class Batch implements IBatch {
           this[property] = _data[property]
         }
       }
-      ; (<any>this).id = _data['id']
-      this.createdAt = _data['createdAt'] ? new Date(_data['createdAt'].toString()) : <any>undefined
+      ;(<any> this).id = _data['id']
+      this.createdAt = _data['createdAt'] ? new Date(_data['createdAt'].toString()) : <any> undefined
       this.name = _data['name']
       this.sponsor = _data['sponsor']
       this.size = _data['size']
@@ -1618,7 +1618,7 @@ export class Batch implements IBatch {
       }
     }
     data['id'] = this.id
-    data['createdAt'] = this.createdAt ? this.createdAt.toISOString() : <any>undefined
+    data['createdAt'] = this.createdAt ? this.createdAt.toISOString() : <any> undefined
     data['name'] = this.name
     data['sponsor'] = this.sponsor
     data['size'] = this.size
@@ -1665,7 +1665,7 @@ export class BatchAnalytics implements IBatchAnalytics {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property)) {
-          ; (<any>this)[property] = (<any>data)[property]
+          ;(<any> this)[property] = (<any> data)[property]
         }
       }
     }
@@ -1678,19 +1678,19 @@ export class BatchAnalytics implements IBatchAnalytics {
           this[property] = _data[property]
         }
       }
-      ; (<any>this).id = _data['id']
+      ;(<any> this).id = _data['id']
       this.name = _data['name']
       this.size = _data['size']
       this.soilCondition = _data['soilCondition']
-        ; (<any>this).fertilizers = _data['fertilizers']
-        ; (<any>this).mulchLayers = _data['mulchLayers']
-        ; (<any>this).supportedSpecies = _data['supportedSpecies']
-        ; (<any>this).plantCount = _data['plantCount']
-        ; (<any>this).survivedCount = _data['survivedCount']
-        ; (<any>this).replaceCount = _data['replaceCount']
-        ; (<any>this).seedCollectedCount = _data['seedCollectedCount']
-        ; (<any>this).seeds = _data['seeds']
-        ; (<any>this).species = _data['species']
+      ;(<any> this).fertilizers = _data['fertilizers']
+      ;(<any> this).mulchLayers = _data['mulchLayers']
+      ;(<any> this).supportedSpecies = _data['supportedSpecies']
+      ;(<any> this).plantCount = _data['plantCount']
+      ;(<any> this).survivedCount = _data['survivedCount']
+      ;(<any> this).replaceCount = _data['replaceCount']
+      ;(<any> this).seedCollectedCount = _data['seedCollectedCount']
+      ;(<any> this).seeds = _data['seeds']
+      ;(<any> this).species = _data['species']
     }
   }
 
@@ -1755,7 +1755,7 @@ export class Comment implements IComment {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property)) {
-          ; (<any>this)[property] = (<any>data)[property]
+          ;(<any> this)[property] = (<any> data)[property]
         }
       }
     }
@@ -1768,10 +1768,10 @@ export class Comment implements IComment {
           this[property] = _data[property]
         }
       }
-      ; (<any>this).id = _data['id']
+      ;(<any> this).id = _data['id']
       this.body = _data['body']
       this.authUser = _data['authUser']
-      this.createdAt = _data['createdAt'] ? new Date(_data['createdAt'].toString()) : <any>undefined
+      this.createdAt = _data['createdAt'] ? new Date(_data['createdAt'].toString()) : <any> undefined
     }
   }
 
@@ -1792,7 +1792,7 @@ export class Comment implements IComment {
     data['id'] = this.id
     data['body'] = this.body
     data['authUser'] = this.authUser
-    data['createdAt'] = this.createdAt ? this.createdAt.toISOString() : <any>undefined
+    data['createdAt'] = this.createdAt ? this.createdAt.toISOString() : <any> undefined
     return data
   }
 }
@@ -1822,7 +1822,7 @@ export class Contact implements IContact {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property)) {
-          ; (<any>this)[property] = (<any>data)[property]
+          ;(<any> this)[property] = (<any> data)[property]
         }
       }
     }
@@ -1835,7 +1835,7 @@ export class Contact implements IContact {
           this[property] = _data[property]
         }
       }
-      ; (<any>this).id = _data['id']
+      ;(<any> this).id = _data['id']
       this.address = _data['address']
       this.email = _data['email']
       this.phone = _data['phone']
@@ -1899,7 +1899,7 @@ export class Coordinates implements ICoordinates {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property)) {
-          ; (<any>this)[property] = (<any>data)[property]
+          ;(<any> this)[property] = (<any> data)[property]
         }
       }
     }
@@ -1912,7 +1912,7 @@ export class Coordinates implements ICoordinates {
           this[property] = _data[property]
         }
       }
-      ; (<any>this).id = _data['id']
+      ;(<any> this).id = _data['id']
       this.dmsLatitude = _data['dmsLatitude']
       this.dmsLongitude = _data['dmsLongitude']
       this.ddLatitude = _data['ddLatitude']
@@ -1967,7 +1967,7 @@ export class Like implements ILike {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property)) {
-          ; (<any>this)[property] = (<any>data)[property]
+          ;(<any> this)[property] = (<any> data)[property]
         }
       }
     }
@@ -1980,7 +1980,7 @@ export class Like implements ILike {
           this[property] = _data[property]
         }
       }
-      ; (<any>this).id = _data['id']
+      ;(<any> this).id = _data['id']
       this.authUser = _data['authUser']
       this.post = _data['post']
     }
@@ -2026,7 +2026,7 @@ export class PatchedAnnouncement implements IPatchedAnnouncement {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property)) {
-          ; (<any>this)[property] = (<any>data)[property]
+          ;(<any> this)[property] = (<any> data)[property]
         }
       }
     }
@@ -2039,7 +2039,7 @@ export class PatchedAnnouncement implements IPatchedAnnouncement {
           this[property] = _data[property]
         }
       }
-      ; (<any>this).id = _data['id']
+      ;(<any> this).id = _data['id']
       this.body = _data['body']
       this.link = _data['link']
     }
@@ -2091,7 +2091,7 @@ export class PatchedBatch implements IPatchedBatch {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property)) {
-          ; (<any>this)[property] = (<any>data)[property]
+          ;(<any> this)[property] = (<any> data)[property]
         }
       }
     }
@@ -2104,8 +2104,8 @@ export class PatchedBatch implements IPatchedBatch {
           this[property] = _data[property]
         }
       }
-      ; (<any>this).id = _data['id']
-      this.createdAt = _data['createdAt'] ? new Date(_data['createdAt'].toString()) : <any>undefined
+      ;(<any> this).id = _data['id']
+      this.createdAt = _data['createdAt'] ? new Date(_data['createdAt'].toString()) : <any> undefined
       this.name = _data['name']
       this.sponsor = _data['sponsor']
       this.size = _data['size']
@@ -2131,7 +2131,7 @@ export class PatchedBatch implements IPatchedBatch {
       }
     }
     data['id'] = this.id
-    data['createdAt'] = this.createdAt ? this.createdAt.toISOString() : <any>undefined
+    data['createdAt'] = this.createdAt ? this.createdAt.toISOString() : <any> undefined
     data['name'] = this.name
     data['sponsor'] = this.sponsor
     data['size'] = this.size
@@ -2173,7 +2173,7 @@ export class PatchedContact implements IPatchedContact {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property)) {
-          ; (<any>this)[property] = (<any>data)[property]
+          ;(<any> this)[property] = (<any> data)[property]
         }
       }
     }
@@ -2186,7 +2186,7 @@ export class PatchedContact implements IPatchedContact {
           this[property] = _data[property]
         }
       }
-      ; (<any>this).id = _data['id']
+      ;(<any> this).id = _data['id']
       this.address = _data['address']
       this.email = _data['email']
       this.phone = _data['phone']
@@ -2257,7 +2257,7 @@ export class PatchedSite implements IPatchedSite {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property)) {
-          ; (<any>this)[property] = (<any>data)[property]
+          ;(<any> this)[property] = (<any> data)[property]
         }
       }
     }
@@ -2270,12 +2270,12 @@ export class PatchedSite implements IPatchedSite {
           this[property] = _data[property]
         }
       }
-      ; (<any>this).id = _data['id']
-      this.siteType = _data['siteType'] ? SiteType.fromJS(_data['siteType']) : <any>undefined
-      this.coordinate = _data['coordinate'] ? Coordinates.fromJS(_data['coordinate']) : <any>undefined
-        ; (<any>this).siteTreeSpecies = _data['siteTreeSpecies']
-      this.contact = _data['contact'] ? Contact.fromJS(_data['contact']) : <any>undefined
-      this.announcement = _data['announcement'] ? Announcement.fromJS(_data['announcement']) : <any>undefined
+      ;(<any> this).id = _data['id']
+      this.siteType = _data['siteType'] ? SiteType.fromJS(_data['siteType']) : <any> undefined
+      this.coordinate = _data['coordinate'] ? Coordinates.fromJS(_data['coordinate']) : <any> undefined
+      ;(<any> this).siteTreeSpecies = _data['siteTreeSpecies']
+      this.contact = _data['contact'] ? Contact.fromJS(_data['contact']) : <any> undefined
+      this.announcement = _data['announcement'] ? Announcement.fromJS(_data['announcement']) : <any> undefined
       this.name = _data['name']
       this.description = _data['description']
       this.size = _data['size']
@@ -2301,11 +2301,11 @@ export class PatchedSite implements IPatchedSite {
       }
     }
     data['id'] = this.id
-    data['siteType'] = this.siteType ? this.siteType.toJSON() : <any>undefined
-    data['coordinate'] = this.coordinate ? this.coordinate.toJSON() : <any>undefined
+    data['siteType'] = this.siteType ? this.siteType.toJSON() : <any> undefined
+    data['coordinate'] = this.coordinate ? this.coordinate.toJSON() : <any> undefined
     data['siteTreeSpecies'] = this.siteTreeSpecies
-    data['contact'] = this.contact ? this.contact.toJSON() : <any>undefined
-    data['announcement'] = this.announcement ? this.announcement.toJSON() : <any>undefined
+    data['contact'] = this.contact ? this.contact.toJSON() : <any> undefined
+    data['announcement'] = this.announcement ? this.announcement.toJSON() : <any> undefined
     data['name'] = this.name
     data['description'] = this.description
     data['size'] = this.size
@@ -2362,7 +2362,7 @@ export class PatchedUser implements IPatchedUser {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property)) {
-          ; (<any>this)[property] = (<any>data)[property]
+          ;(<any> this)[property] = (<any> data)[property]
         }
       }
     }
@@ -2375,9 +2375,9 @@ export class PatchedUser implements IPatchedUser {
           this[property] = _data[property]
         }
       }
-      ; (<any>this).id = _data['id']
+      ;(<any> this).id = _data['id']
       this.password = _data['password']
-      this.lastLogin = _data['lastLogin'] ? new Date(_data['lastLogin'].toString()) : <any>undefined
+      this.lastLogin = _data['lastLogin'] ? new Date(_data['lastLogin'].toString()) : <any> undefined
       this.isSuperuser = _data['isSuperuser']
       this.username = _data['username']
       this.firstName = _data['firstName']
@@ -2385,7 +2385,7 @@ export class PatchedUser implements IPatchedUser {
       this.email = _data['email']
       this.isStaff = _data['isStaff']
       this.isActive = _data['isActive']
-      this.dateJoined = _data['dateJoined'] ? new Date(_data['dateJoined'].toString()) : <any>undefined
+      this.dateJoined = _data['dateJoined'] ? new Date(_data['dateJoined'].toString()) : <any> undefined
       if (Array.isArray(_data['groups'])) {
         this.groups = [] as any
         for (let item of _data['groups']) {
@@ -2417,7 +2417,7 @@ export class PatchedUser implements IPatchedUser {
     }
     data['id'] = this.id
     data['password'] = this.password
-    data['lastLogin'] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined
+    data['lastLogin'] = this.lastLogin ? this.lastLogin.toISOString() : <any> undefined
     data['isSuperuser'] = this.isSuperuser
     data['username'] = this.username
     data['firstName'] = this.firstName
@@ -2425,7 +2425,7 @@ export class PatchedUser implements IPatchedUser {
     data['email'] = this.email
     data['isStaff'] = this.isStaff
     data['isActive'] = this.isActive
-    data['dateJoined'] = this.dateJoined ? this.dateJoined.toISOString() : <any>undefined
+    data['dateJoined'] = this.dateJoined ? this.dateJoined.toISOString() : <any> undefined
     if (Array.isArray(this.groups)) {
       data['groups'] = []
       for (let item of this.groups) {
@@ -2478,7 +2478,7 @@ export class PatchedWidget implements IPatchedWidget {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property)) {
-          ; (<any>this)[property] = (<any>data)[property]
+          ;(<any> this)[property] = (<any> data)[property]
         }
       }
     }
@@ -2491,7 +2491,7 @@ export class PatchedWidget implements IPatchedWidget {
           this[property] = _data[property]
         }
       }
-      ; (<any>this).id = _data['id']
+      ;(<any> this).id = _data['id']
       this.title = _data['title']
       this.body = _data['body']
       this.site = _data['site']
@@ -2545,7 +2545,7 @@ export class Post implements IPost {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property)) {
-          ; (<any>this)[property] = (<any>data)[property]
+          ;(<any> this)[property] = (<any> data)[property]
         }
       }
     }
@@ -2561,14 +2561,14 @@ export class Post implements IPost {
           this[property] = _data[property]
         }
       }
-      ; (<any>this).id = _data['id']
+      ;(<any> this).id = _data['id']
       this.site = _data['site'] ? SiteOverview.fromJS(_data['site']) : new SiteOverview()
-      this.createdAt = _data['createdAt'] ? new Date(_data['createdAt'].toString()) : <any>undefined
+      this.createdAt = _data['createdAt'] ? new Date(_data['createdAt'].toString()) : <any> undefined
       this.body = _data['body']
       this.likeCount = _data['likeCount']
       this.shareCount = _data['shareCount']
-        ; (<any>this).commentCount = _data['commentCount']
-        ; (<any>this).hasLiked = _data['hasLiked']
+      ;(<any> this).commentCount = _data['commentCount']
+      ;(<any> this).hasLiked = _data['hasLiked']
     }
   }
 
@@ -2587,8 +2587,8 @@ export class Post implements IPost {
       }
     }
     data['id'] = this.id
-    data['site'] = this.site ? this.site.toJSON() : <any>undefined
-    data['createdAt'] = this.createdAt ? this.createdAt.toISOString() : <any>undefined
+    data['site'] = this.site ? this.site.toJSON() : <any> undefined
+    data['createdAt'] = this.createdAt ? this.createdAt.toISOString() : <any> undefined
     data['body'] = this.body
     data['likeCount'] = this.likeCount
     data['shareCount'] = this.shareCount
@@ -2632,7 +2632,7 @@ export class Site implements ISite {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property)) {
-          ; (<any>this)[property] = (<any>data)[property]
+          ;(<any> this)[property] = (<any> data)[property]
         }
       }
     }
@@ -2651,10 +2651,10 @@ export class Site implements ISite {
           this[property] = _data[property]
         }
       }
-      ; (<any>this).id = _data['id']
+      ;(<any> this).id = _data['id']
       this.siteType = _data['siteType'] ? SiteType.fromJS(_data['siteType']) : new SiteType()
       this.coordinate = _data['coordinate'] ? Coordinates.fromJS(_data['coordinate']) : new Coordinates()
-        ; (<any>this).siteTreeSpecies = _data['siteTreeSpecies']
+      ;(<any> this).siteTreeSpecies = _data['siteTreeSpecies']
       this.contact = _data['contact'] ? Contact.fromJS(_data['contact']) : new Contact()
       this.announcement = _data['announcement'] ? Announcement.fromJS(_data['announcement']) : new Announcement()
       this.name = _data['name']
@@ -2682,11 +2682,11 @@ export class Site implements ISite {
       }
     }
     data['id'] = this.id
-    data['siteType'] = this.siteType ? this.siteType.toJSON() : <any>undefined
-    data['coordinate'] = this.coordinate ? this.coordinate.toJSON() : <any>undefined
+    data['siteType'] = this.siteType ? this.siteType.toJSON() : <any> undefined
+    data['coordinate'] = this.coordinate ? this.coordinate.toJSON() : <any> undefined
     data['siteTreeSpecies'] = this.siteTreeSpecies
-    data['contact'] = this.contact ? this.contact.toJSON() : <any>undefined
-    data['announcement'] = this.announcement ? this.announcement.toJSON() : <any>undefined
+    data['contact'] = this.contact ? this.contact.toJSON() : <any> undefined
+    data['announcement'] = this.announcement ? this.announcement.toJSON() : <any> undefined
     data['name'] = this.name
     data['description'] = this.description
     data['size'] = this.size
@@ -2729,7 +2729,7 @@ export class SiteMap implements ISiteMap {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property)) {
-          ; (<any>this)[property] = (<any>data)[property]
+          ;(<any> this)[property] = (<any> data)[property]
         }
       }
     }
@@ -2745,10 +2745,10 @@ export class SiteMap implements ISiteMap {
           this[property] = _data[property]
         }
       }
-      ; (<any>this).id = _data['id']
+      ;(<any> this).id = _data['id']
       this.name = _data['name']
       this.siteType = _data['siteType'] ? SiteType.fromJS(_data['siteType']) : new SiteType()
-        ; (<any>this).coordinates = _data['coordinates']
+      ;(<any> this).coordinates = _data['coordinates']
       this.image = _data['image']
     }
   }
@@ -2769,7 +2769,7 @@ export class SiteMap implements ISiteMap {
     }
     data['id'] = this.id
     data['name'] = this.name
-    data['siteType'] = this.siteType ? this.siteType.toJSON() : <any>undefined
+    data['siteType'] = this.siteType ? this.siteType.toJSON() : <any> undefined
     data['coordinates'] = this.coordinates
     data['image'] = this.image
     return data
@@ -2796,7 +2796,7 @@ export class SiteOverview implements ISiteOverview {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property)) {
-          ; (<any>this)[property] = (<any>data)[property]
+          ;(<any> this)[property] = (<any> data)[property]
         }
       }
     }
@@ -2809,7 +2809,7 @@ export class SiteOverview implements ISiteOverview {
           this[property] = _data[property]
         }
       }
-      ; (<any>this).id = _data['id']
+      ;(<any> this).id = _data['id']
       this.name = _data['name']
     }
   }
@@ -2857,7 +2857,7 @@ export class SiteSocial implements ISiteSocial {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property)) {
-          ; (<any>this)[property] = (<any>data)[property]
+          ;(<any> this)[property] = (<any> data)[property]
         }
       }
     }
@@ -2884,15 +2884,15 @@ export class SiteSocial implements ISiteSocial {
       this.contact = _data['contact'] ? Contact.fromJS(_data['contact']) : new Contact()
       this.announcement = _data['announcement'] ? Announcement.fromJS(_data['announcement']) : new Announcement()
       if (Array.isArray(_data['sponsors'])) {
-        ; (<any>this).sponsors = [] as any
+        ;(<any> this).sponsors = [] as any
         for (let item of _data['sponsors']) {
-          ; (<any>this).sponsors!.push(item)
+          ;(<any> this).sponsors!.push(item)
         }
       }
       if (Array.isArray(_data['widget'])) {
-        ; (<any>this).widget = [] as any
+        ;(<any> this).widget = [] as any
         for (let item of _data['widget']) {
-          ; (<any>this).widget!.push(Widget.fromJS(item))
+          ;(<any> this).widget!.push(Widget.fromJS(item))
         }
       }
     }
@@ -2913,11 +2913,11 @@ export class SiteSocial implements ISiteSocial {
       }
     }
     data['name'] = this.name
-    data['siteType'] = this.siteType ? this.siteType.toJSON() : <any>undefined
+    data['siteType'] = this.siteType ? this.siteType.toJSON() : <any> undefined
     data['image'] = this.image
     data['description'] = this.description
-    data['contact'] = this.contact ? this.contact.toJSON() : <any>undefined
-    data['announcement'] = this.announcement ? this.announcement.toJSON() : <any>undefined
+    data['contact'] = this.contact ? this.contact.toJSON() : <any> undefined
+    data['announcement'] = this.announcement ? this.announcement.toJSON() : <any> undefined
     if (Array.isArray(this.sponsors)) {
       data['sponsors'] = []
       for (let item of this.sponsors) {
@@ -2963,7 +2963,7 @@ export class SiteSummary implements ISiteSummary {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property)) {
-          ; (<any>this)[property] = (<any>data)[property]
+          ;(<any> this)[property] = (<any> data)[property]
         }
       }
     }
@@ -2981,12 +2981,12 @@ export class SiteSummary implements ISiteSummary {
       }
       this.name = _data['name']
       this.siteType = _data['siteType'] ? SiteType.fromJS(_data['siteType']) : new SiteType()
-        ; (<any>this).plantCount = _data['plantCount']
-        ; (<any>this).survivedCount = _data['survivedCount']
-        ; (<any>this).propagationCount = _data['propagationCount']
+      ;(<any> this).plantCount = _data['plantCount']
+      ;(<any> this).survivedCount = _data['survivedCount']
+      ;(<any> this).propagationCount = _data['propagationCount']
       this.visitorCount = _data['visitorCount']
-        ; (<any>this).sponsor = _data['sponsor']
-        ; (<any>this).progress = _data['progress']
+      ;(<any> this).sponsor = _data['sponsor']
+      ;(<any> this).progress = _data['progress']
     }
   }
 
@@ -3005,7 +3005,7 @@ export class SiteSummary implements ISiteSummary {
       }
     }
     data['name'] = this.name
-    data['siteType'] = this.siteType ? this.siteType.toJSON() : <any>undefined
+    data['siteType'] = this.siteType ? this.siteType.toJSON() : <any> undefined
     data['plantCount'] = this.plantCount
     data['survivedCount'] = this.survivedCount
     data['propagationCount'] = this.propagationCount
@@ -3040,7 +3040,7 @@ export class SiteType implements ISiteType {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property)) {
-          ; (<any>this)[property] = (<any>data)[property]
+          ;(<any> this)[property] = (<any> data)[property]
         }
       }
     }
@@ -3053,9 +3053,9 @@ export class SiteType implements ISiteType {
           this[property] = _data[property]
         }
       }
-      ; (<any>this).id = _data['id']
-        ; (<any>this).en = _data['en']
-        ; (<any>this).fr = _data['fr']
+      ;(<any> this).id = _data['id']
+      ;(<any> this).en = _data['en']
+      ;(<any> this).fr = _data['fr']
     }
   }
 
@@ -3115,7 +3115,7 @@ export class User implements IUser {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property)) {
-          ; (<any>this)[property] = (<any>data)[property]
+          ;(<any> this)[property] = (<any> data)[property]
         }
       }
     }
@@ -3128,9 +3128,9 @@ export class User implements IUser {
           this[property] = _data[property]
         }
       }
-      ; (<any>this).id = _data['id']
+      ;(<any> this).id = _data['id']
       this.password = _data['password']
-      this.lastLogin = _data['lastLogin'] ? new Date(_data['lastLogin'].toString()) : <any>undefined
+      this.lastLogin = _data['lastLogin'] ? new Date(_data['lastLogin'].toString()) : <any> undefined
       this.isSuperuser = _data['isSuperuser']
       this.username = _data['username']
       this.firstName = _data['firstName']
@@ -3138,7 +3138,7 @@ export class User implements IUser {
       this.email = _data['email']
       this.isStaff = _data['isStaff']
       this.isActive = _data['isActive']
-      this.dateJoined = _data['dateJoined'] ? new Date(_data['dateJoined'].toString()) : <any>undefined
+      this.dateJoined = _data['dateJoined'] ? new Date(_data['dateJoined'].toString()) : <any> undefined
       if (Array.isArray(_data['groups'])) {
         this.groups = [] as any
         for (let item of _data['groups']) {
@@ -3170,7 +3170,7 @@ export class User implements IUser {
     }
     data['id'] = this.id
     data['password'] = this.password
-    data['lastLogin'] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined
+    data['lastLogin'] = this.lastLogin ? this.lastLogin.toISOString() : <any> undefined
     data['isSuperuser'] = this.isSuperuser
     data['username'] = this.username
     data['firstName'] = this.firstName
@@ -3178,7 +3178,7 @@ export class User implements IUser {
     data['email'] = this.email
     data['isStaff'] = this.isStaff
     data['isActive'] = this.isActive
-    data['dateJoined'] = this.dateJoined ? this.dateJoined.toISOString() : <any>undefined
+    data['dateJoined'] = this.dateJoined ? this.dateJoined.toISOString() : <any> undefined
     if (Array.isArray(this.groups)) {
       data['groups'] = []
       for (let item of this.groups) {
@@ -3231,7 +3231,7 @@ export class Widget implements IWidget {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property)) {
-          ; (<any>this)[property] = (<any>data)[property]
+          ;(<any> this)[property] = (<any> data)[property]
         }
       }
     }
@@ -3244,7 +3244,7 @@ export class Widget implements IWidget {
           this[property] = _data[property]
         }
       }
-      ; (<any>this).id = _data['id']
+      ;(<any> this).id = _data['id']
       this.title = _data['title']
       this.body = _data['body']
       this.site = _data['site']

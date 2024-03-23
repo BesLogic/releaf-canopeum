@@ -1,9 +1,8 @@
-
-import type { SiteSocial } from '../services/api';
+import type { SiteSocial } from '../services/api'
 
 const CreatePostWidget = (props: { readonly site: SiteSocial }) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { site } = props;
+  const { site } = props
 
   // const [newPost, setNewPost] = useState<Post>(new Post());
 
@@ -24,7 +23,7 @@ const CreatePostWidget = (props: { readonly site: SiteSocial }) => {
 
       <textarea className='form-control' id='exampleFormControlTextarea1' placeholder='Post a New Message...' />
     </div>
-  );
-};
+  )
+}
 
-export default CreatePostWidget;
+export default CreatePostWidget
