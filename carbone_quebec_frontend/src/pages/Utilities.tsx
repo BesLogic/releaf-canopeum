@@ -1,11 +1,10 @@
-<<<<<<< HEAD:carbone_quebec_frontend/src/pages/Utilities.tsx
 import carbone_quebec_logo from '@assets/images/Carbone_Quebec_Logo.png';
 import footprintIcon from '@assets/icons/footprint-regular.svg';
 
 export default function Utilities() {
     return (
         <div>
-            <div className="container mt-2 d-flex flex-column gap-2">    
+            <div className="container mt-2 d-flex flex-column gap-2">
                 <h1>Utilities</h1>
                 <div className="bg-white rounded-2 px-3 py-2">
                     <h2>Icons</h2>
@@ -56,7 +55,7 @@ export default function Utilities() {
                     </div>
                     <div className="alert alert-secondary" role="alert">
                         A simple secondary alert—check it out!
-                    </div>      
+                    </div>
                 </div>
                 <div className="bg-white rounded px-3 py-2">
                     <h2>Cards</h2>
@@ -149,7 +148,7 @@ export default function Utilities() {
                                 </div>
                             </div>
                         </div>
-                    </div>    
+                    </div>
                 </div>
                 <div className="bg-white rounded px-3 py-2">
                     <div className="accordion" id="accordionPanelsStayOpenExample">
@@ -192,7 +191,6 @@ export default function Utilities() {
                     </div>
                 </div>
             </div>
-=======
 import facebookLogo from '@assets/icons/facebook-regular.svg'
 import canopeumLogo from '@assets/images/Canopeum_Logo.jpg'
 
@@ -260,7 +258,6 @@ const Utilities = () => (
           <button className='btn btn-light' type='button'>Light</button>
           <button className='btn btn-dark' type='button'>Dark</button>
           <button className='btn btn-link' type='button'>Link</button>
->>>>>>> b2e9d88ea7de41b8af810352e94a222581ae365d:canopeum_frontend/src/pages/Utilities.tsx
         </div>
         <div className='d-flex gap-1 my-2'>
           <button className='btn btn-outline-primary' type='button'>Primary</button>
@@ -475,6 +472,6 @@ const Utilities = () => (
       </div>
     </div>
   </div>
-)
+  </div>
 
-export default Utilities
+)}
