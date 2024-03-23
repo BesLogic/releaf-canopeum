@@ -1,0 +1,160 @@
+{
+  "editor.rulers": [
+    80,
+    120
+  ],
+  "[git-commit]": {
+    "editor.rulers": [
+      72
+    ]
+  },
+  "[markdown]": {
+    "files.trimTrailingWhitespace": false
+  },
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.eol": "\n",
+  "editor.comments.insertSpace": true,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    // "source.*Imports": https://github.com/microsoft/TypeScript/pull/50931#issuecomment-1416288712
+    // Let dedicated imports tool deal with it
+    "source.organizeImports": "never",
+    "source.sortImports": "never",
+    // IDEM, but also it's annoying to remove imports because of commented code while testing
+    "source.removeUnusedImports": "never"
+  },
+  "files.associations": {
+    ".flake8": "properties",
+    "*.qrc": "xml",
+    "*.ui": "xml",
+    ".markdownlint.json": "jsonc",
+    ".eslintrc*.json": "jsonc",
+    "dprint*.json": "jsonc"
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/*.code-search": true,
+    "package-lock.json": true,
+    "*.lock": true
+  },
+
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  /*
+  * CSS-specific settings
+  */
+  // TODO: Configure stylelint or dprint-prettier so I can recommend it
+  "[css][scss][postcss][less]": {
+    "editor.defaultFormatter": "vscode.css-language-features"
+  },
+  "less.format.spaceAroundSelectorSeparator": true,
+  "css.format.spaceAroundSelectorSeparator": true,
+  "scss.format.spaceAroundSelectorSeparator": true,
+  /*
+  * JavasScript-specific settings
+  */
+  // Set the default formatter to help avoid Prettier
+  "[json][jsonc][javascript][javascriptreact][typescript][typescriptreact][markdown][dockerfile]": {
+    "editor.defaultFormatter": "dprint.dprint"
+  },
+  "typescript.tsdk": "canopeum_frontend/node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "js/ts.implicitProjectConfig.checkJs": true,
+  "javascript.preferences.quoteStyle": "single",
+  "typescript.preferences.quoteStyle": "single",
+  "javascript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
+  "eslint.codeActionsOnSave.rules": [
+    // Clearing imports and unused vars because of commented code while testing is annoying
+    "!unused-imports/no-unused-imports",
+    "!autofix/no-debugger",
+    "!autofix/no-unused-vars",
+    "*"
+  ],
+  "eslint.rules.customizations": [
+    {
+      "rule": "*",
+      "severity": "downgrade"
+    }
+  ],
+  /*
+  * HTML-specific settings
+  */
+  // Specify the formatter in case other formatters are also installed (ie: Prettier)
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "html.format.wrapAttributes": "force-expand-multiline",
+  /*
+  * Python-specific settings
+  */
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.tabSize": 4,
+    "editor.rulers": [
+      72, // PEP8-17 docstrings
+      // 79, // PEP8-17 default max
+      // 88, // Black/Ruff default
+      // 99, // PEP8-17 acceptable max
+      120 // Our hard rule
+    ]
+  },
+  "mypy-type-checker.importStrategy": "fromEnvironment",
+  "mypy-type-checker.args": [
+    // https://github.com/microsoft/vscode-mypy/issues/37#issuecomment-1602702174
+    "--config-file=${workspaceFolder}/canopeum_backend/pyproject.toml"
+  ],
+  "python.terminal.activateEnvironment": true,
+  // python.analysis is Pylance (pyright) configurations
+  "python.analysis.fixAll": [
+    "source.convertImportFormat"
+    // Explicitly omiting "source.unusedImports", can be annoying when commenting code for debugging
+  ],
+  "python.analysis.importFormat": "relative",
+  "python.analysis.diagnosticMode": "workspace",
+  "ruff.importStrategy": "fromEnvironment",
+  // Use the Ruff extension instead
+  "isort.check": false,
+  /*
+  * TOML-specific settings
+  */
+  "[toml]": {
+    "editor.defaultFormatter": "tamasfe.even-better-toml"
+  },
+  "evenBetterToml.formatter.alignComments": false,
+  "evenBetterToml.formatter.alignEntries": false,
+  "evenBetterToml.formatter.allowedBlankLines": 1,
+  "evenBetterToml.formatter.arrayAutoCollapse": true,
+  "evenBetterToml.formatter.arrayAutoExpand": true,
+  "evenBetterToml.formatter.arrayTrailingComma": true,
+  "evenBetterToml.formatter.columnWidth": 80,
+  "evenBetterToml.formatter.compactArrays": true,
+  "evenBetterToml.formatter.compactEntries": false,
+  "evenBetterToml.formatter.compactInlineTables": false,
+  "evenBetterToml.formatter.indentEntries": false,
+  "evenBetterToml.formatter.indentTables": false,
+  "evenBetterToml.formatter.inlineTableExpand": false,
+  "evenBetterToml.formatter.reorderArrays": true,
+  "evenBetterToml.formatter.trailingNewline": true,
+  // We like keeping TOML keys in a certain non-alphabetical order that feels more natural
+  "evenBetterToml.formatter.reorderKeys": false
+}

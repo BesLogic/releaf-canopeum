@@ -4,28 +4,43 @@ from rest_framework.response import Response
 from .models import Contact, Coordinate, Site, Post, Batch, Announcement, Like, Comment, Sitetype
 from .serializers import AuthUserSerializer, BatchAnalyticsSerializer, ContactSerializer, CoordinatesSerializer, SiteMapSerializer, SiteSocialSerializer, SiteSummarySerializer, SiteTypeSerializer, UserSerializer, SiteSerializer, PostSerializer, BatchSerializer, AnnouncementSerializer, LikeSerializer, CommentSerializer, WidgetSerializer
 from django.contrib.auth.models import User
+from drf_spectacular.utils import extend_schema
+from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
-from drf_spectacular.utils import extend_schema
-from django.contrib.auth import authenticate
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from .models import Announcement, Batch, Comment, Like, Post, Site
+from .serializers import (
+    AnnouncementSerializer,
+    AuthUserSerializer,
+    BatchSerializer,
+    CommentSerializer,
+    LikeSerializer,
+    PostSerializer,
+    SiteSerializer,
+    UserSerializer,
+)
+
 
 class LoginAPIView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes: ClassVar[list[type[AllowAny]]] = [AllowAny]
 
     @extend_schema(request=AuthUserSerializer, responses=UserSerializer)
     def post(self, request):
-        username = request.data.get('username')
-        password = request.data.get('password')
+        username = request.data.get("username")
+        password = request.data.get("password")
 
         user = authenticate(username=username, password=password)
         if user is not None:
             token, _ = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key}, status=status.HTTP_200_OK)
-        else:
-            return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"token": token.key}, status=status.HTTP_200_OK)
+        return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 class RegisterAPIView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes: ClassVar[list[type[AllowAny]]] = [AllowAny]
 
     @extend_schema(request=UserSerializer, responses=AuthUserSerializer)
     def post(self, request):
@@ -33,9 +48,9 @@ class RegisterAPIView(APIView):
         if serializer.is_valid():
             user = serializer.save()
             token, _ = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key}, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"token": token.key}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class LogoutAPIView(APIView):
     @extend_schema(responses=status.HTTP_200_OK)
@@ -50,7 +65,7 @@ class SiteListAPIView(APIView):
         serializer = SiteSerializer(sites, many=True)
         return Response(serializer.data)
 
-    
+
     @extend_schema(request=SiteSerializer, responses=SiteSerializer)
     def post(self, request):
         serializer = SiteSerializer(data=request.data)
@@ -58,7 +73,7 @@ class SiteListAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 class SiteDetailAPIView(APIView):
     @extend_schema(request=SiteSerializer, responses=SiteSerializer)
     def get(self, request, siteId):
@@ -69,7 +84,7 @@ class SiteDetailAPIView(APIView):
 
         serializer = SiteSerializer(site)
         return Response(serializer.data)
-    
+
     @extend_schema(request=SiteSocialSerializer, responses=SiteSocialSerializer, operation_id="site_social")
     def get_social_site(self, request, siteId):
         try:
@@ -79,7 +94,7 @@ class SiteDetailAPIView(APIView):
 
         serializer = SiteSocialSerializer(site)
         return Response(serializer.data)
-    
+
 
     @extend_schema(request=SiteSerializer, responses=SiteSerializer)
     def put(self, request, siteId):
@@ -102,7 +117,7 @@ class SiteDetailAPIView(APIView):
 
         site.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-class SiteSummaryListAPIView(APIView): 
+class SiteSummaryListAPIView(APIView):
     @extend_schema(responses=SiteSummarySerializer(many=True), operation_id="sites_all_summary")
     def get(self, request):
         sites = Site.objects.all()
@@ -112,8 +127,8 @@ class SiteSummaryListAPIView(APIView):
         progress = 0
         serializer = SiteSummarySerializer(sites, many=True, context={'plant_count': plant_count, 'survived_count': survived_count, 'progress': progress, 'propagation_count': propagation_count})
         return Response(serializer.data)
-    
-class SiteSummaryDetailAPIView(APIView): 
+
+class SiteSummaryDetailAPIView(APIView):
     @extend_schema(responses=SiteSummarySerializer)
     def get(self, request, siteId):
         try:
@@ -126,7 +141,7 @@ class SiteSummaryDetailAPIView(APIView):
         progress = 0
         serializer = SiteSummarySerializer(site, context={'plant_count': plant_count, 'survived_count': survived_count, 'progress': progress, 'propagation_count': propagation_count})
         return Response(serializer.data)
-    
+
 class SiteSocialDetailAPIView(APIView):
     @extend_schema(request=SiteSocialSerializer, responses=SiteSocialSerializer)
     def get(self, request, siteId):
@@ -134,13 +149,13 @@ class SiteSocialDetailAPIView(APIView):
             site = Site.objects.get(pk=siteId)
         except Site.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        
+
         batches = Batch.objects.filter(site=siteId)
         sponsors = [batch.sponsor for batch in batches]
 
         serializer = SiteSocialSerializer(site, context={'sponsors': sponsors})
         return Response(serializer.data)
-    
+
 class MapSiteListAPIView(APIView):
     @extend_schema(responses=SiteMapSerializer)
     def get(self):
@@ -167,7 +182,7 @@ class PostListAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 class CommentListAPIView(APIView):
     @extend_schema(responses=CommentSerializer(many=True), operation_id="comments_all")
     def get(self, request, postId):
@@ -187,7 +202,7 @@ class CommentListAPIView(APIView):
             serializer.save(post=post)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 class CommentDetailAPIView(APIView):
     def delete(self, request, pk):
         try:
@@ -266,7 +281,7 @@ class LikeListAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 class BatchListAPIView(APIView):
     @extend_schema(responses=BatchAnalyticsSerializer(many=True), operation_id="batches_all")
     def get(self, request):
@@ -281,7 +296,7 @@ class BatchListAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 class BatchDetailAPIView(APIView):
     @extend_schema(request=BatchSerializer, responses=BatchSerializer)
     def put(self, request, batchId):
@@ -304,7 +319,7 @@ class BatchDetailAPIView(APIView):
 
         batch.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
+
 class UserListAPIView(APIView):
     @extend_schema(request=UserSerializer, responses=UserSerializer)
     def post(self, request):
@@ -313,7 +328,7 @@ class UserListAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 class UserDetailAPIView(APIView):
     @extend_schema(request=UserSerializer, responses=UserSerializer)
     def get(self, request, pk):
@@ -346,7 +361,7 @@ class UserDetailAPIView(APIView):
 
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
+
 class CurrentUserAPIView(APIView):
     @extend_schema(responses=UserSerializer, operation_id="current_user")
     def get(self, request):
@@ -381,7 +396,7 @@ class CurrentUserAPIView(APIView):
 
 #         serializer = PostSerializer(post)
 #         return Response(serializer.data)
-    
+
 #     @extend_schema(request=PostSerializer, responses=PostSerializer)
 #     def put(self, request, pk):
 #         try:
@@ -418,7 +433,7 @@ class CurrentUserAPIView(APIView):
 # # ------------------------------------------------------------
 
 
-    
+
 
 #     def delete(self, request, pk):
 #         try:
@@ -443,7 +458,7 @@ class CurrentUserAPIView(APIView):
 #             serializer.save()
 #             return Response(serializer.data, status=status.HTTP_201_CREATED)
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 # class BatchListAPIView(APIView):
 #     @extend_schema(responses=BatchSerializer(many=True), operation_id="batches_all")
 #     def get(self, request):
@@ -469,7 +484,7 @@ class CurrentUserAPIView(APIView):
 
 #         serializer = BatchSerializer(batch)
 #         return Response(serializer.data)
-    
+
 #     @extend_schema(request=BatchSerializer, responses=BatchSerializer)
 #     def put(self, request, pk):
 #         try:
@@ -491,7 +506,7 @@ class CurrentUserAPIView(APIView):
 
 #         batch.delete()
 #         return Response(status=status.HTTP_204_NO_CONTENT)
-    
+
 
 
 # class LikeDetailAPIView(APIView):
@@ -504,7 +519,7 @@ class CurrentUserAPIView(APIView):
 
 #         serializer = LikeSerializer(like)
 #         return Response(serializer.data)
-    
+
 #     @extend_schema(request=LikeSerializer, responses=LikeSerializer)
 #     def put(self, request, pk):
 #         try:
@@ -526,7 +541,7 @@ class CurrentUserAPIView(APIView):
 
 #         like.delete()
 #         return Response(status=status.HTTP_204_NO_CONTENT)
-    
+
 # class CommentListAPIView(APIView):
 #     @extend_schema(responses=CommentSerializer(many=True), operation_id="comments_all")
 #     def get(self, request, postId):
@@ -546,7 +561,7 @@ class CurrentUserAPIView(APIView):
 #             serializer.save(post=post)
 #             return Response(serializer.data, status=status.HTTP_201_CREATED)
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 # class CommentDetailAPIView(APIView):
 #     @extend_schema(request=CommentSerializer, responses=CommentSerializer)
 #     def get(self, request, pk):
@@ -579,7 +594,7 @@ class CurrentUserAPIView(APIView):
 
 #         comment.delete()
 #         return Response(status=status.HTTP_204_NO_CONTENT)
-    
+
 # class ContactListAPIView(APIView):
 #     @extend_schema(responses=ContactSerializer(many=True), operation_id="contacts_all")
 #     def get(self, request):
@@ -594,7 +609,7 @@ class CurrentUserAPIView(APIView):
 #             serializer.save()
 #             return Response(serializer.data, status=status.HTTP_201_CREATED)
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 
 #     def delete(self, request, pk):
 #         try:
@@ -604,7 +619,7 @@ class CurrentUserAPIView(APIView):
 
 #         contact.delete()
 #         return Response(status=status.HTTP_204_NO_CONTENT)
-    
+
 # class WidgetListAPIView(APIView):
 #     @extend_schema(responses=SiteSerializer(many=True), operation_id="widgets_all")
 #     def get(self, request):
@@ -619,8 +634,8 @@ class CurrentUserAPIView(APIView):
 #             serializer.save()
 #             return Response(serializer.data, status=status.HTTP_201_CREATED)
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    
+
+
 # class CoordinateListAPIView(APIView):
 #     @extend_schema(responses=CoordinatesSerializer(many=True), operation_id="coordinates_all")
 #     def get(self, request):
@@ -668,4 +683,3 @@ class CurrentUserAPIView(APIView):
 
 #         coordinate.delete()
 #         return Response(status=status.HTTP_204_NO_CONTENT)
-    
