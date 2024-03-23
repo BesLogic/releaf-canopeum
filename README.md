@@ -6,9 +6,9 @@ This project integrates Django backend with React Vite frontend template to crea
 
 ## Getting Started
 
-This project has been configured to run in VsCode dev container with all 
-necessary tools to run the front-end and backend from within the environment or 
-follow these instructions to get the project up and running on your local machine 
+This project has been configured to run in VsCode dev container with all
+necessary tools to run the front-end and backend from within the environment or
+follow these instructions to get the project up and running on your local machine
 without dev container.
 
 Note: If you choose to develop from within the dev container, you still need to

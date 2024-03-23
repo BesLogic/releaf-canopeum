@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
-from rest_framework import serializers
 from drf_spectacular.utils import extend_schema_field
+from rest_framework import serializers
 
 from .models import (
     Announcement,
@@ -125,6 +125,7 @@ class SiteSerializer(serializers.ModelSerializer):
     def get_site_tree_species(self, obj):
         return SitetreespeciesSerializer(obj.sitetreespecies_set.all(), many=True).data
 
+
 class SiteSocialSerializer(serializers.ModelSerializer):
     site_type = SiteTypeSerializer()
     contact = ContactSerializer()
@@ -138,7 +139,7 @@ class SiteSocialSerializer(serializers.ModelSerializer):
 
     # Bug in the extend_schema_field type annotation, they should allow
     # base python types supported by open api specs
-    @extend_schema_field(list[str]) # pyright: ignore[reportArgumentType]
+    @extend_schema_field(list[str])  # pyright: ignore[reportArgumentType]
     def get_sponsors(self, obj):
         return self.context.get("sponsors")
 
