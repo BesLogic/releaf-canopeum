@@ -6,19 +6,18 @@ import { ensureError } from '../services/errors';
 
 const Analytics = () => {
   const [siteSummaries, setSiteSummaries] = useState<SiteSummary[]>([]);
-  // TODO(NicolasDontigny): Handle site summaries loading & error
-  const [isLoadingSites, setIsLoadingSites] = useState(false);
-  const [error, setError] = useState<Error | undefined>(undefined);
+  const [isLoadingSiteSummaries, setIsLoadingSiteSummaries] = useState(false);
+  const [siteSummariesError, setSiteSummariesError] = useState<Error | undefined>(undefined);
 
   const fetchSites = async () => {
-    setIsLoadingSites(true);
+    setIsLoadingSiteSummaries(true);
     try {
       const response = await api.sites.summary();
       setSiteSummaries(response);
     } catch (error_: unknown) {
-      setError(ensureError(error_));
+      setSiteSummariesError(ensureError(error_));
     } finally {
-      setIsLoadingSites(false);
+      setIsLoadingSiteSummaries(false);
     }
   };
 
@@ -26,8 +25,16 @@ const Analytics = () => {
     void fetchSites();
   }, []);
 
-  const renderSiteCards = () =>
-    siteSummaries.map(site => (
+  const renderSiteCards = () => {
+    if (isLoadingSiteSummaries) {
+      return <p>Loading...</p>
+    }
+
+    if (siteSummariesError) {
+      return <p>Error: {siteSummariesError.message}</p>
+    }
+
+    return siteSummaries.map(site => (
       <div
         className='col-12 col-md-6 col-lg-3'
         key={site.name}
@@ -42,6 +49,8 @@ const Analytics = () => {
         </div>
       </div>
     ))
+  }
+
 
   const renderSuccessRatesChart = () => (
     <div>
