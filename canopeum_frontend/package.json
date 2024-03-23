@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "mockoon": "mockoon-cli start --data canopeum-mockoon.json",
     "build": "tsc && vite build",
     "eslint": "eslint ./ --ignore-path .gitignore",
     "lint": "dprint check && npm run eslint",
@@ -18,15 +19,19 @@
     "@mui/x-charts": "^7.0.0",
     "@types/node": "^20.11.30",
     "bootstrap": "^5.3.3",
+    "i18next": "^23.10.1",
+    "i18next-http-backend": "^2.5.0",
     "maplibre-gl": "^4.1.1",
     "material-icons": "^1.13.12",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-i18next": "^14.1.0",
     "react-map-gl": "^7.1.7",
     "react-router-dom": "^6.22.3"
   },
   "// eslint-*": "Keep Keep these in sync with .pre-commit-config.yaml",
   "devDependencies": {
+    "@mockoon/cli": "^7.0.0",
     "@types/react": "^18.2.64",
     "@types/react-dom": "^18.2.21",
     "@typescript-eslint/eslint-plugin": "^7.1.1",

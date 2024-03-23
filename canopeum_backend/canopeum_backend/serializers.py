@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 from .models import (
@@ -59,7 +60,7 @@ class SiteTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sitetype
-        fields = ["id", "en", "fr"]
+        fields = ("id", "en", "fr")
 
     def get_en(self, obj):
         return InternationalizationSerializer(obj.name).data.get("en", None)
@@ -74,7 +75,7 @@ class TreeTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Treetype
-        fields = ["en", "fr"]
+        fields = ("en", "fr")
 
     def get_en(self, obj):
         return InternationalizationSerializer(obj.name).data.get("en", None)
@@ -136,9 +137,13 @@ class SiteSocialSerializer(serializers.ModelSerializer):
         model = Site
         fields = ("name", "site_type", "image", "description", "contact", "announcement", "sponsors", "widget")
 
+    # Bug in the extend_schema_field type annotation, they should allow
+    # base python types supported by open api specs
+    @extend_schema_field(list[str])  # pyright: ignore[reportArgumentType]
     def get_sponsors(self, obj):
         return self.context.get("sponsors")
 
+    @extend_schema_field(WidgetSerializer(many=True))
     def get_widget(self, obj):
         return WidgetSerializer(obj.widget_set.all(), many=True).data
 
@@ -149,7 +154,7 @@ class BatchfertilizerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Batchfertilizer
-        fields = ["id", "en", "fr"]
+        fields = ("id", "en", "fr")
 
     def get_en(self, obj):
         return InternationalizationSerializer(obj.fertilizer_type).data.get("en", None)
@@ -164,7 +169,7 @@ class BatchMulchLayerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Mulchlayertype
-        fields = ["id", "en", "fr"]
+        fields = ("id", "en", "fr")
 
     def get_en(self, obj):
         return InternationalizationSerializer(obj.mulch_layer_type).data.get("en", None)
@@ -179,7 +184,7 @@ class BatchSupportedSpeciesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BatchSupportedSpecies
-        fields = ["en", "fr"]
+        fields = ("en", "fr")
 
     def get_en(self, obj):
         return InternationalizationSerializer(obj.tree_type).data.get("en", None)
@@ -194,7 +199,7 @@ class BatchSeedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BatchSeed
-        fields = ["quantity", "en", "fr"]
+        fields = ("quantity", "en", "fr")
 
     def get_en(self, obj):
         return InternationalizationSerializer(obj.tree_type).data.get("en", None)
@@ -209,7 +214,7 @@ class BatchSpeciesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BatchSpecies
-        fields = ["quantity", "en", "fr"]
+        fields = ("quantity", "en", "fr")
 
     def get_en(self, obj):
         return InternationalizationSerializer(obj.tree_type).data.get("en", None)

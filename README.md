@@ -6,7 +6,15 @@ This project integrates Django backend with React Vite frontend template to crea
 
 ## Getting Started
 
-Follow these instructions to get the project up and running on your local machine.
+This project has been configured to run in VsCode dev container with all
+necessary tools to run the front-end and backend from within the environment or
+follow these instructions to get the project up and running on your local machine
+without dev container.
+
+Note: If you choose to develop from within the dev container, you still need to
+have your mysql database available accessible from your app. We've pre-configured
+the dev container to try reaching the default mysql database container created
+with the docker-compose.yml from this repository.
 
 ### Prerequisites
 
@@ -34,7 +42,15 @@ For backend
    cd releaf-canopeum
    ```
 
-3. Set up a Python 3.12 virtual environment
+3. Install recommended Editor Extensions (for VSCode):\
+   When you first open the project in VSCode, you'll get a notification like this.\
+   ![Recommended Popup](/docs/Recommended_Popup.png)
+
+   If you've already dismissed this notification, you can search for `@recommended` in your Extensions tab.
+   Install everything under "**WORKSPACE RECOMMENDATIONS**", you can ignore "other recommendations":\
+   ![Recommended Extensions](/docs/Recommended_Extensions.png)
+
+4. Set up a Python 3.12 virtual environment
 
    ```shell
    cd canopeum_backend
@@ -64,7 +80,7 @@ For backend
    `CTRL+Shift+P` (Open Command Palette) > `Python: Select Interpreter`
    ![VSCode_select_venv](/docs/VSCode_select_venv.png)
 
-4. Set up Django backend and Database: (Skip this section for Frontend only)
+5. Set up Django backend and Database: (Skip this section for Frontend only)
 
    ```shell
    docker compose up
@@ -74,7 +90,7 @@ For backend
    python manage.py runserver
    ```
 
-5. Set up React frontend:
+6. Set up React frontend:
 
    ```shell
    cd canopeum_frontend

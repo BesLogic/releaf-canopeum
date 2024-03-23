@@ -1,29 +1,29 @@
 import { useEffect, useState } from 'react'
 
-import type { SiteSummary } from '../services/api';
-import api from '../services/apiInterface';
-import { ensureError } from '../services/errors';
+import type { SiteSummary } from '../services/api'
+import api from '../services/apiInterface'
+import { ensureError } from '../services/errors'
 
 const Analytics = () => {
-  const [siteSummaries, setSiteSummaries] = useState<SiteSummary[]>([]);
-  const [isLoadingSiteSummaries, setIsLoadingSiteSummaries] = useState(false);
-  const [siteSummariesError, setSiteSummariesError] = useState<Error | undefined>(undefined);
+  const [siteSummaries, setSiteSummaries] = useState<SiteSummary[]>([])
+  const [isLoadingSiteSummaries, setIsLoadingSiteSummaries] = useState(false)
+  const [siteSummariesError, setSiteSummariesError] = useState<Error | undefined>(undefined)
 
   const fetchSites = async () => {
-    setIsLoadingSiteSummaries(true);
+    setIsLoadingSiteSummaries(true)
     try {
-      const response = await api.siteSummary();
-      setSiteSummaries(response);
-    } catch (error_: unknown) {
-      setSiteSummariesError(ensureError(error_));
+      const response = await api().analytics.siteSummaries()
+      setSiteSummaries(response)
+    } catch (error: unknown) {
+      setSiteSummariesError(ensureError(error))
     } finally {
-      setIsLoadingSiteSummaries(false);
+      setIsLoadingSiteSummaries(false)
     }
-  };
+  }
 
   useEffect((): void => {
-    void fetchSites();
-  }, []);
+    void fetchSites()
+  }, [])
 
   const renderSiteCards = () => {
     if (isLoadingSiteSummaries) {
@@ -107,7 +107,6 @@ const Analytics = () => {
     ))
   }
 
-
   const renderSuccessRatesChart = () => (
     <div>
       <span>Chart to be rendered here</span>
@@ -123,16 +122,16 @@ const Analytics = () => {
           <button className='btn btn-secondary' type='button'>Create a New Site</button>
         </div>
 
-        <div className="mt-2 row gx-3 gy-3">
+        <div className='mt-2 row gx-3 gy-3'>
           {renderSiteCards()}
         </div>
 
-        <div className='mt-4 bg-white rounded p-3' >
+        <div className='mt-4 bg-white rounded p-3'>
           <h2>Average Annual Success Rate Per Site</h2>
           {renderSuccessRatesChart()}
         </div>
 
-        <div className='mt-4 bg-white rounded p-3' >
+        <div className='mt-4 bg-white rounded p-3'>
           <div className='d-flex justify-content-between'>
             <h2>Batch Tracking</h2>
             <div>
