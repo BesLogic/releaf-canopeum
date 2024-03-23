@@ -10,16 +10,16 @@ const fetchSite = async (siteId: number, setSite: (site: SiteSocial) => void) =>
     const site = await api().social.site(siteId)
     setSite(site)
   } catch (error) {
-    console.log(error)
+    console.error(error)
   }
 }
 const MapSite = () => {
   const { siteId } = useParams()
   const [site, setSite] = useState<SiteSocial>()
 
-  useEffect(() => {
-    fetchSite(Number(siteId) ?? 1, setSite)
-  }, [setSite])
+  useEffect((): void => {
+    void fetchSite(Number(siteId) || 1, setSite)
+  }, [setSite, siteId])
 
   return (
     <div className='container mt-2 d-flex flex-column gap-2'>
