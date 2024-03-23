@@ -1,10 +1,10 @@
-import canopeumLogo from '@assets/images/Canopeum_Logo.jpg';
+import canopeumLogo from '@assets/images/Canopeum_Logo.jpg'
 
-import type { Post } from '../services/api';
-import { formatDate } from '../utils/dateFormatter';
+import type { Post } from '../services/api'
+import { formatDate } from '../utils/dateFormatter'
 
 const PostWidget = (props: { readonly post: Post }) => {
-  const { post } = props;
+  const { post } = props
 
   return (
     <div className='bg-white rounded-2 px-5 py-4 d-flex flex-column gap-3'>
@@ -34,7 +34,7 @@ const PostWidget = (props: { readonly post: Post }) => {
         <div />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PostWidget;
+export default PostWidget
