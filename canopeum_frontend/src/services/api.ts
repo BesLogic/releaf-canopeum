@@ -8,1519 +8,1365 @@
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
-export class BatchClient {
+export class Client {
   private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
   private baseUrl: string;
   protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
   constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : (window as any);
-    this.baseUrl = baseUrl ?? "";
+      this.http = http ? http : window as any;
+      this.baseUrl = baseUrl ?? "";
   }
 
-  all(): Promise<BatchAnalytics[]> {
-    let url_ = this.baseUrl + "/analytics/batches/";
-    url_ = url_.replace(/[?&]$/, "");
+  batchAll(): Promise<BatchAnalytics[]> {
+      let url_ = this.baseUrl + "/analytics/batches/";
+      url_ = url_.replace(/[?&]$/, "");
 
-    let options_: RequestInit = {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processAll(_response);
-    });
-  }
-
-  protected processAll(response: Response): Promise<BatchAnalytics[]> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        console.log(_responseText);
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText);
-        if (Array.isArray(resultData200)) {
-          result200 = [] as any;
-          for (let item of resultData200) result200!.push(BatchAnalytics.fromJS(item));
-        } else {
-          result200 = <any>null;
-        }
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<BatchAnalytics[]>(null as any);
-  }
-
-  create(body: Batch | undefined): Promise<Batch> {
-    let url_ = this.baseUrl + "/analytics/batches/";
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(body);
-
-    let options_: RequestInit = {
-      body: content_,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processCreate(_response);
-    });
-  }
-
-  protected processCreate(response: Response): Promise<Batch> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = Batch.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<Batch>(null as any);
-  }
-
-  detail(batchId: number, body: Batch | undefined): Promise<Batch> {
-    let url_ = this.baseUrl + "/analytics/batches/{batchId}/";
-    if (batchId === undefined || batchId === null) throw new Error("The parameter 'batchId' must be defined.");
-    url_ = url_.replace("{batchId}", encodeURIComponent("" + batchId));
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(body);
-
-    let options_: RequestInit = {
-      body: content_,
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processDetail(_response);
-    });
-  }
-
-  protected processDetail(response: Response): Promise<Batch> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = Batch.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<Batch>(null as any);
-  }
-
-  /**
-   * @return No response body
-   */
-  delete(batchId: number): Promise<void> {
-    let url_ = this.baseUrl + "/analytics/batches/{batchId}/";
-    if (batchId === undefined || batchId === null) throw new Error("The parameter 'batchId' must be defined.");
-    url_ = url_.replace("{batchId}", encodeURIComponent("" + batchId));
-    url_ = url_.replace(/[?&]$/, "");
-
-    let options_: RequestInit = {
-      method: "DELETE",
-      headers: {},
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processDelete(_response);
-    });
-  }
-
-  protected processDelete(response: Response): Promise<void> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 204) {
-      return response.text().then((_responseText) => {
-        return;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<void>(null as any);
-  }
-}
-
-export class SiteClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : (window as any);
-    this.baseUrl = baseUrl ?? "";
-  }
-
-  all(): Promise<Site[]> {
-    let url_ = this.baseUrl + "/analytics/sites/";
-    url_ = url_.replace(/[?&]$/, "");
-
-    let options_: RequestInit = {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processAll(_response);
-    });
-  }
-
-  protected processAll(response: Response): Promise<Site[]> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        if (Array.isArray(resultData200)) {
-          result200 = [] as any;
-          for (let item of resultData200) result200!.push(Site.fromJS(item));
-        } else {
-          result200 = <any>null;
-        }
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<Site[]>(null as any);
-  }
-
-  create(body: Site): Promise<Site> {
-    let url_ = this.baseUrl + "/analytics/sites/";
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(body);
-
-    let options_: RequestInit = {
-      body: content_,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processCreate(_response);
-    });
-  }
-
-  protected processCreate(response: Response): Promise<Site> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = Site.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<Site>(null as any);
-  }
-
-  detail(siteId: number): Promise<Site> {
-    let url_ = this.baseUrl + "/analytics/sites/{siteId}/";
-    if (siteId === undefined || siteId === null) throw new Error("The parameter 'siteId' must be defined.");
-    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
-    url_ = url_.replace(/[?&]$/, "");
-
-    let options_: RequestInit = {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processDetail(_response);
-    });
-  }
-
-  protected processDetail(response: Response): Promise<Site> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = Site.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<Site>(null as any);
-  }
-
-  update(siteId: number, body: Site): Promise<Site> {
-    let url_ = this.baseUrl + "/analytics/sites/{siteId}/";
-    if (siteId === undefined || siteId === null) throw new Error("The parameter 'siteId' must be defined.");
-    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(body);
-
-    let options_: RequestInit = {
-      body: content_,
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processUpdate(_response);
-    });
-  }
-
-  protected processUpdate(response: Response): Promise<Site> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = Site.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<Site>(null as any);
-  }
-
-  delete(siteId: number): Promise<{ [key: string]: any }> {
-    let url_ = this.baseUrl + "/analytics/sites/{siteId}/";
-    if (siteId === undefined || siteId === null) throw new Error("The parameter 'siteId' must be defined.");
-    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
-    url_ = url_.replace(/[?&]$/, "");
-
-    let options_: RequestInit = {
-      method: "DELETE",
-      headers: {
-        Accept: "application/json",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processDelete(_response);
-    });
-  }
-
-  protected processDelete(response: Response): Promise<{ [key: string]: any }> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        if (resultData200) {
-          result200 = {} as any;
-          for (let key in resultData200) {
-            if (resultData200.hasOwnProperty(key))
-              (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/json"
           }
-        } else {
-          result200 = <any>null;
-        }
-        return result200;
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processBatchAll(_response);
       });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<{ [key: string]: any }>(null as any);
   }
 
-  summarydetail(siteId: number): Promise<SiteSummary> {
-    let url_ = this.baseUrl + "/analytics/sites/{siteId}/summary";
-    if (siteId === undefined || siteId === null) throw new Error("The parameter 'siteId' must be defined.");
-    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
-    url_ = url_.replace(/[?&]$/, "");
-
-    let options_: RequestInit = {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processSummarydetail(_response);
-    });
-  }
-
-  protected processSummarydetail(response: Response): Promise<SiteSummary> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = SiteSummary.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<SiteSummary>(null as any);
-  }
-
-  summary(): Promise<SiteSummary[]> {
-    let url_ = this.baseUrl + "/analytics/sites/summary";
-    url_ = url_.replace(/[?&]$/, "");
-
-    let options_: RequestInit = {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processSummary(_response);
-    });
-  }
-
-  protected processSummary(response: Response): Promise<SiteSummary[]> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        if (Array.isArray(resultData200)) {
-          result200 = [] as any;
-          for (let item of resultData200) result200!.push(SiteSummary.fromJS(item));
-        } else {
-          result200 = <any>null;
-        }
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<SiteSummary[]>(null as any);
-  }
-
-  social(): Promise<SiteSocial> {
-    let url_ = this.baseUrl + "/social/sites/";
-    url_ = url_.replace(/[?&]$/, "");
-
-    let options_: RequestInit = {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processSocial(_response);
-    });
-  }
-
-  protected processSocial(response: Response): Promise<SiteSocial> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = SiteSocial.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<SiteSocial>(null as any);
-  }
-}
-
-export class SchemaClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : (window as any);
-    this.baseUrl = baseUrl ?? "";
-  }
-
-  retrieve(format: Format | undefined, lang: Lang | undefined): Promise<{ [key: string]: any }> {
-    let url_ = this.baseUrl + "/api/schema/?";
-    if (format === null) throw new Error("The parameter 'format' cannot be null.");
-    else if (format !== undefined) url_ += "format=" + encodeURIComponent("" + format) + "&";
-    if (lang === null) throw new Error("The parameter 'lang' cannot be null.");
-    else if (lang !== undefined) url_ += "lang=" + encodeURIComponent("" + lang) + "&";
-    url_ = url_.replace(/[?&]$/, "");
-
-    let options_: RequestInit = {
-      method: "GET",
-      headers: {
-        Accept: "application/vnd.oai.openapi",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processRetrieve(_response);
-    });
-  }
-
-  protected processRetrieve(response: Response): Promise<{ [key: string]: any }> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        if (resultData200) {
-          result200 = {} as any;
-          for (let key in resultData200) {
-            if (resultData200.hasOwnProperty(key))
-              (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+  protected processBatchAll(response: Response): Promise<BatchAnalytics[]> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          if (Array.isArray(resultData200)) {
+              result200 = [] as any;
+              for (let item of resultData200)
+                  result200!.push(BatchAnalytics.fromJS(item));
           }
-        } else {
-          result200 = <any>null;
-        }
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<{ [key: string]: any }>(null as any);
-  }
-}
-
-export class AuthenticationClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : (window as any);
-    this.baseUrl = baseUrl ?? "";
-  }
-
-  login(body: AuthUser): Promise<User> {
-    let url_ = this.baseUrl + "/auth/login/";
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(body);
-
-    let options_: RequestInit = {
-      body: content_,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processLogin(_response);
-    });
-  }
-
-  protected processLogin(response: Response): Promise<User> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = User.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<User>(null as any);
-  }
-
-  logout(): Promise<{ [key: string]: any }> {
-    let url_ = this.baseUrl + "/auth/logout/";
-    url_ = url_.replace(/[?&]$/, "");
-
-    let options_: RequestInit = {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processLogout(_response);
-    });
-  }
-
-  protected processLogout(response: Response): Promise<{ [key: string]: any }> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        if (resultData200) {
-          result200 = {} as any;
-          for (let key in resultData200) {
-            if (resultData200.hasOwnProperty(key))
-              (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+          else {
+              result200 = <any>null;
           }
-        } else {
-          result200 = <any>null;
-        }
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<{ [key: string]: any }>(null as any);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<BatchAnalytics[]>(null as any);
   }
 
-  register(body: User): Promise<AuthUser> {
-    let url_ = this.baseUrl + "/auth/register/";
-    url_ = url_.replace(/[?&]$/, "");
+  batchCreate(body: Batch | undefined): Promise<Batch> {
+      let url_ = this.baseUrl + "/analytics/batches/";
+      url_ = url_.replace(/[?&]$/, "");
 
-    const content_ = JSON.stringify(body);
+      const content_ = JSON.stringify(body);
 
-    let options_: RequestInit = {
-      body: content_,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    };
+      let options_: RequestInit = {
+          body: content_,
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+          }
+      };
 
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processRegister(_response);
-    });
-  }
-
-  protected processRegister(response: Response): Promise<AuthUser> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = AuthUser.fromJS(resultData200);
-        return result200;
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processBatchCreate(_response);
       });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+  }
+
+  protected processBatchCreate(response: Response): Promise<Batch> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Batch.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<Batch>(null as any);
+  }
+
+  batchDetail(batchId: number, body: Batch | undefined): Promise<Batch> {
+      let url_ = this.baseUrl + "/analytics/batches/{batchId}/";
+      if (batchId === undefined || batchId === null)
+          throw new Error("The parameter 'batchId' must be defined.");
+      url_ = url_.replace("{batchId}", encodeURIComponent("" + batchId));
+      url_ = url_.replace(/[?&]$/, "");
+
+      const content_ = JSON.stringify(body);
+
+      let options_: RequestInit = {
+          body: content_,
+          method: "PUT",
+          headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processBatchDetail(_response);
       });
-    }
-    return Promise.resolve<AuthUser>(null as any);
-  }
-}
-
-export class PostClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : (window as any);
-    this.baseUrl = baseUrl ?? "";
   }
 
-  all(): Promise<Post[]> {
-    let url_ = this.baseUrl + "/social/posts/";
-    url_ = url_.replace(/[?&]$/, "");
-
-    let options_: RequestInit = {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processAll(_response);
-    });
-  }
-
-  protected processAll(response: Response): Promise<Post[]> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        if (Array.isArray(resultData200)) {
-          result200 = [] as any;
-          for (let item of resultData200) result200!.push(Post.fromJS(item));
-        } else {
-          result200 = <any>null;
-        }
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<Post[]>(null as any);
-  }
-
-  create(body: Post): Promise<Post> {
-    let url_ = this.baseUrl + "/social/posts/";
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(body);
-
-    let options_: RequestInit = {
-      body: content_,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processCreate(_response);
-    });
-  }
-
-  protected processCreate(response: Response): Promise<Post> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = Post.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<Post>(null as any);
-  }
-}
-
-export class CommentClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : (window as any);
-    this.baseUrl = baseUrl ?? "";
-  }
-
-  all(postId: number): Promise<Comment[]> {
-    let url_ = this.baseUrl + "/social/posts/{postId}/comments/";
-    if (postId === undefined || postId === null) throw new Error("The parameter 'postId' must be defined.");
-    url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
-    url_ = url_.replace(/[?&]$/, "");
-
-    let options_: RequestInit = {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processAll(_response);
-    });
-  }
-
-  protected processAll(response: Response): Promise<Comment[]> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        if (Array.isArray(resultData200)) {
-          result200 = [] as any;
-          for (let item of resultData200) result200!.push(Comment.fromJS(item));
-        } else {
-          result200 = <any>null;
-        }
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<Comment[]>(null as any);
-  }
-
-  create(postId: number, body: Comment | undefined): Promise<Comment> {
-    let url_ = this.baseUrl + "/social/posts/{postId}/comments/";
-    if (postId === undefined || postId === null) throw new Error("The parameter 'postId' must be defined.");
-    url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(body);
-
-    let options_: RequestInit = {
-      body: content_,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processCreate(_response);
-    });
-  }
-
-  protected processCreate(response: Response): Promise<Comment> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = Comment.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<Comment>(null as any);
+  protected processBatchDetail(response: Response): Promise<Batch> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Batch.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<Batch>(null as any);
   }
 
   /**
    * @return No response body
    */
-  delete(commentId: number, postId: number): Promise<void> {
-    let url_ = this.baseUrl + "/social/posts/{postId}/comments/{commentId}/";
-    if (commentId === undefined || commentId === null) throw new Error("The parameter 'commentId' must be defined.");
-    url_ = url_.replace("{commentId}", encodeURIComponent("" + commentId));
-    if (postId === undefined || postId === null) throw new Error("The parameter 'postId' must be defined.");
-    url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
-    url_ = url_.replace(/[?&]$/, "");
+  batchDelete(batchId: number): Promise<void> {
+      let url_ = this.baseUrl + "/analytics/batches/{batchId}/";
+      if (batchId === undefined || batchId === null)
+          throw new Error("The parameter 'batchId' must be defined.");
+      url_ = url_.replace("{batchId}", encodeURIComponent("" + batchId));
+      url_ = url_.replace(/[?&]$/, "");
 
-    let options_: RequestInit = {
-      method: "DELETE",
-      headers: {},
-    };
+      let options_: RequestInit = {
+          method: "DELETE",
+          headers: {
+          }
+      };
 
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processDelete(_response);
-    });
-  }
-
-  protected processDelete(response: Response): Promise<void> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 204) {
-      return response.text().then((_responseText) => {
-        return;
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processBatchDelete(_response);
       });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+  }
+
+  protected processBatchDelete(response: Response): Promise<void> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 204) {
+          return response.text().then((_responseText) => {
+          return;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<void>(null as any);
+  }
+
+  siteAll(): Promise<Site[]> {
+      let url_ = this.baseUrl + "/analytics/sites/";
+      url_ = url_.replace(/[?&]$/, "");
+
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processSiteAll(_response);
       });
-    }
-    return Promise.resolve<void>(null as any);
-  }
-}
-
-export class LikeClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : (window as any);
-    this.baseUrl = baseUrl ?? "";
   }
 
-  all(postId: number, body: Like | undefined): Promise<Like> {
-    let url_ = this.baseUrl + "/social/posts/{postId}/likes/";
-    if (postId === undefined || postId === null) throw new Error("The parameter 'postId' must be defined.");
-    url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(body);
-
-    let options_: RequestInit = {
-      body: content_,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processAll(_response);
-    });
+  protected processSiteAll(response: Response): Promise<Site[]> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          if (Array.isArray(resultData200)) {
+              result200 = [] as any;
+              for (let item of resultData200)
+                  result200!.push(Site.fromJS(item));
+          }
+          else {
+              result200 = <any>null;
+          }
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<Site[]>(null as any);
   }
 
-  protected processAll(response: Response): Promise<Like> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = Like.fromJS(resultData200);
-        return result200;
+  siteCreate(body: Site): Promise<Site> {
+      let url_ = this.baseUrl + "/analytics/sites/";
+      url_ = url_.replace(/[?&]$/, "");
+
+      const content_ = JSON.stringify(body);
+
+      let options_: RequestInit = {
+          body: content_,
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processSiteCreate(_response);
       });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+  }
+
+  protected processSiteCreate(response: Response): Promise<Site> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Site.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<Site>(null as any);
+  }
+
+  siteDetail(siteId: number): Promise<Site> {
+      let url_ = this.baseUrl + "/analytics/sites/{siteId}/";
+      if (siteId === undefined || siteId === null)
+          throw new Error("The parameter 'siteId' must be defined.");
+      url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+      url_ = url_.replace(/[?&]$/, "");
+
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processSiteDetail(_response);
       });
-    }
-    return Promise.resolve<Like>(null as any);
-  }
-}
-
-export class SocialClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : (window as any);
-    this.baseUrl = baseUrl ?? "";
   }
 
-  2(siteId: number): Promise<SiteSocial> {
-    let url_ = this.baseUrl + "/social/sites/{siteId}/";
-    if (siteId === undefined || siteId === null) throw new Error("The parameter 'siteId' must be defined.");
-    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
-    url_ = url_.replace(/[?&]$/, "");
-
-    let options_: RequestInit = {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.process2(_response);
-    });
+  protected processSiteDetail(response: Response): Promise<Site> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Site.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<Site>(null as any);
   }
 
-  protected process2(response: Response): Promise<SiteSocial> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = SiteSocial.fromJS(resultData200);
-        return result200;
+  siteUpdate(siteId: number, body: Site): Promise<Site> {
+      let url_ = this.baseUrl + "/analytics/sites/{siteId}/";
+      if (siteId === undefined || siteId === null)
+          throw new Error("The parameter 'siteId' must be defined.");
+      url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+      url_ = url_.replace(/[?&]$/, "");
+
+      const content_ = JSON.stringify(body);
+
+      let options_: RequestInit = {
+          body: content_,
+          method: "PUT",
+          headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processSiteUpdate(_response);
       });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+  }
+
+  protected processSiteUpdate(response: Response): Promise<Site> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Site.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<Site>(null as any);
+  }
+
+  siteDelete(siteId: number): Promise<{ [key: string]: any; }> {
+      let url_ = this.baseUrl + "/analytics/sites/{siteId}/";
+      if (siteId === undefined || siteId === null)
+          throw new Error("The parameter 'siteId' must be defined.");
+      url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+      url_ = url_.replace(/[?&]$/, "");
+
+      let options_: RequestInit = {
+          method: "DELETE",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processSiteDelete(_response);
       });
-    }
-    return Promise.resolve<SiteSocial>(null as any);
-  }
-}
-
-export class AnnouncementClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : (window as any);
-    this.baseUrl = baseUrl ?? "";
   }
 
-  update(siteId: number, body: Announcement | undefined): Promise<Announcement> {
-    let url_ = this.baseUrl + "/social/sites/{siteId}/announcements/";
-    if (siteId === undefined || siteId === null) throw new Error("The parameter 'siteId' must be defined.");
-    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(body);
-
-    let options_: RequestInit = {
-      body: content_,
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processUpdate(_response);
-    });
+  protected processSiteDelete(response: Response): Promise<{ [key: string]: any; }> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          if (resultData200) {
+              result200 = {} as any;
+              for (let key in resultData200) {
+                  if (resultData200.hasOwnProperty(key))
+                      (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+              }
+          }
+          else {
+              result200 = <any>null;
+          }
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<{ [key: string]: any; }>(null as any);
   }
 
-  protected processUpdate(response: Response): Promise<Announcement> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = Announcement.fromJS(resultData200);
-        return result200;
+  siteSummarydetail(siteId: number): Promise<SiteSummary> {
+      let url_ = this.baseUrl + "/analytics/sites/{siteId}/summary";
+      if (siteId === undefined || siteId === null)
+          throw new Error("The parameter 'siteId' must be defined.");
+      url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+      url_ = url_.replace(/[?&]$/, "");
+
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processSiteSummarydetail(_response);
       });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+  }
+
+  protected processSiteSummarydetail(response: Response): Promise<SiteSummary> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = SiteSummary.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<SiteSummary>(null as any);
+  }
+
+  siteSummary(): Promise<SiteSummary[]> {
+      let url_ = this.baseUrl + "/analytics/sites/summary";
+      url_ = url_.replace(/[?&]$/, "");
+
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processSiteSummary(_response);
       });
-    }
-    return Promise.resolve<Announcement>(null as any);
-  }
-}
-
-export class ContactClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : (window as any);
-    this.baseUrl = baseUrl ?? "";
   }
 
-  update(contactId: number, siteId: number, body: Contact | undefined): Promise<Contact> {
-    let url_ = this.baseUrl + "/social/sites/{siteId}/contacts/{contactId}/";
-    if (contactId === undefined || contactId === null) throw new Error("The parameter 'contactId' must be defined.");
-    url_ = url_.replace("{contactId}", encodeURIComponent("" + contactId));
-    if (siteId === undefined || siteId === null) throw new Error("The parameter 'siteId' must be defined.");
-    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(body);
-
-    let options_: RequestInit = {
-      body: content_,
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processUpdate(_response);
-    });
+  protected processSiteSummary(response: Response): Promise<SiteSummary[]> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          if (Array.isArray(resultData200)) {
+              result200 = [] as any;
+              for (let item of resultData200)
+                  result200!.push(SiteSummary.fromJS(item));
+          }
+          else {
+              result200 = <any>null;
+          }
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<SiteSummary[]>(null as any);
   }
 
-  protected processUpdate(response: Response): Promise<Contact> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = Contact.fromJS(resultData200);
-        return result200;
+  apiSchemaRetrieve(format: Format | undefined, lang: Lang | undefined): Promise<{ [key: string]: any; }> {
+      let url_ = this.baseUrl + "/api/schema/?";
+      if (format === null)
+          throw new Error("The parameter 'format' cannot be null.");
+      else if (format !== undefined)
+          url_ += "format=" + encodeURIComponent("" + format) + "&";
+      if (lang === null)
+          throw new Error("The parameter 'lang' cannot be null.");
+      else if (lang !== undefined)
+          url_ += "lang=" + encodeURIComponent("" + lang) + "&";
+      url_ = url_.replace(/[?&]$/, "");
+
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/vnd.oai.openapi"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processApiSchemaRetrieve(_response);
       });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<Contact>(null as any);
-  }
-}
-
-export class WidgetClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : (window as any);
-    this.baseUrl = baseUrl ?? "";
   }
 
-  all(siteId: number, body: Widget | undefined): Promise<Widget> {
-    let url_ = this.baseUrl + "/social/sites/{siteId}/widgets/";
-    if (siteId === undefined || siteId === null) throw new Error("The parameter 'siteId' must be defined.");
-    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(body);
-
-    let options_: RequestInit = {
-      body: content_,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processAll(_response);
-    });
+  protected processApiSchemaRetrieve(response: Response): Promise<{ [key: string]: any; }> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          if (resultData200) {
+              result200 = {} as any;
+              for (let key in resultData200) {
+                  if (resultData200.hasOwnProperty(key))
+                      (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+              }
+          }
+          else {
+              result200 = <any>null;
+          }
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<{ [key: string]: any; }>(null as any);
   }
 
-  protected processAll(response: Response): Promise<Widget> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = Widget.fromJS(resultData200);
-        return result200;
+  authenticationLogin(body: AuthUser): Promise<User> {
+      let url_ = this.baseUrl + "/auth/login/";
+      url_ = url_.replace(/[?&]$/, "");
+
+      const content_ = JSON.stringify(body);
+
+      let options_: RequestInit = {
+          body: content_,
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processAuthenticationLogin(_response);
       });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<Widget>(null as any);
   }
 
-  detail(siteId: number, widgetId: number, body: Widget | undefined): Promise<Widget> {
-    let url_ = this.baseUrl + "/social/sites/{siteId}/widgets/{widgetId}/";
-    if (siteId === undefined || siteId === null) throw new Error("The parameter 'siteId' must be defined.");
-    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
-    if (widgetId === undefined || widgetId === null) throw new Error("The parameter 'widgetId' must be defined.");
-    url_ = url_.replace("{widgetId}", encodeURIComponent("" + widgetId));
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(body);
-
-    let options_: RequestInit = {
-      body: content_,
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processDetail(_response);
-    });
+  protected processAuthenticationLogin(response: Response): Promise<User> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = User.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<User>(null as any);
   }
 
-  protected processDetail(response: Response): Promise<Widget> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = Widget.fromJS(resultData200);
-        return result200;
+  authenticationLogout(): Promise<{ [key: string]: any; }> {
+      let url_ = this.baseUrl + "/auth/logout/";
+      url_ = url_.replace(/[?&]$/, "");
+
+      let options_: RequestInit = {
+          method: "POST",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processAuthenticationLogout(_response);
       });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+  }
+
+  protected processAuthenticationLogout(response: Response): Promise<{ [key: string]: any; }> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          if (resultData200) {
+              result200 = {} as any;
+              for (let key in resultData200) {
+                  if (resultData200.hasOwnProperty(key))
+                      (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+              }
+          }
+          else {
+              result200 = <any>null;
+          }
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<{ [key: string]: any; }>(null as any);
+  }
+
+  authenticationRegister(body: User): Promise<AuthUser> {
+      let url_ = this.baseUrl + "/auth/register/";
+      url_ = url_.replace(/[?&]$/, "");
+
+      const content_ = JSON.stringify(body);
+
+      let options_: RequestInit = {
+          body: content_,
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processAuthenticationRegister(_response);
       });
-    }
-    return Promise.resolve<Widget>(null as any);
+  }
+
+  protected processAuthenticationRegister(response: Response): Promise<AuthUser> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = AuthUser.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<AuthUser>(null as any);
+  }
+
+  siteMap(): Promise<SiteMap> {
+      let url_ = this.baseUrl + "/map/sites/";
+      url_ = url_.replace(/[?&]$/, "");
+
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processSiteMap(_response);
+      });
+  }
+
+  protected processSiteMap(response: Response): Promise<SiteMap> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = SiteMap.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<SiteMap>(null as any);
+  }
+
+  postAll(): Promise<Post[]> {
+      let url_ = this.baseUrl + "/social/posts/";
+      url_ = url_.replace(/[?&]$/, "");
+
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processPostAll(_response);
+      });
+  }
+
+  protected processPostAll(response: Response): Promise<Post[]> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          if (Array.isArray(resultData200)) {
+              result200 = [] as any;
+              for (let item of resultData200)
+                  result200!.push(Post.fromJS(item));
+          }
+          else {
+              result200 = <any>null;
+          }
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<Post[]>(null as any);
+  }
+
+  postCreate(body: Post): Promise<Post> {
+      let url_ = this.baseUrl + "/social/posts/";
+      url_ = url_.replace(/[?&]$/, "");
+
+      const content_ = JSON.stringify(body);
+
+      let options_: RequestInit = {
+          body: content_,
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processPostCreate(_response);
+      });
+  }
+
+  protected processPostCreate(response: Response): Promise<Post> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Post.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<Post>(null as any);
+  }
+
+  commentAll(postId: number): Promise<Comment[]> {
+      let url_ = this.baseUrl + "/social/posts/{postId}/comments/";
+      if (postId === undefined || postId === null)
+          throw new Error("The parameter 'postId' must be defined.");
+      url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
+      url_ = url_.replace(/[?&]$/, "");
+
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processCommentAll(_response);
+      });
+  }
+
+  protected processCommentAll(response: Response): Promise<Comment[]> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          if (Array.isArray(resultData200)) {
+              result200 = [] as any;
+              for (let item of resultData200)
+                  result200!.push(Comment.fromJS(item));
+          }
+          else {
+              result200 = <any>null;
+          }
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<Comment[]>(null as any);
+  }
+
+  commentCreate(postId: number, body: Comment | undefined): Promise<Comment> {
+      let url_ = this.baseUrl + "/social/posts/{postId}/comments/";
+      if (postId === undefined || postId === null)
+          throw new Error("The parameter 'postId' must be defined.");
+      url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
+      url_ = url_.replace(/[?&]$/, "");
+
+      const content_ = JSON.stringify(body);
+
+      let options_: RequestInit = {
+          body: content_,
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processCommentCreate(_response);
+      });
+  }
+
+  protected processCommentCreate(response: Response): Promise<Comment> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Comment.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<Comment>(null as any);
   }
 
   /**
    * @return No response body
    */
-  delete(siteId: number, widgetId: number): Promise<void> {
-    let url_ = this.baseUrl + "/social/sites/{siteId}/widgets/{widgetId}/";
-    if (siteId === undefined || siteId === null) throw new Error("The parameter 'siteId' must be defined.");
-    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
-    if (widgetId === undefined || widgetId === null) throw new Error("The parameter 'widgetId' must be defined.");
-    url_ = url_.replace("{widgetId}", encodeURIComponent("" + widgetId));
-    url_ = url_.replace(/[?&]$/, "");
+  commentDelete(commentId: number, postId: number): Promise<void> {
+      let url_ = this.baseUrl + "/social/posts/{postId}/comments/{commentId}/";
+      if (commentId === undefined || commentId === null)
+          throw new Error("The parameter 'commentId' must be defined.");
+      url_ = url_.replace("{commentId}", encodeURIComponent("" + commentId));
+      if (postId === undefined || postId === null)
+          throw new Error("The parameter 'postId' must be defined.");
+      url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
+      url_ = url_.replace(/[?&]$/, "");
 
-    let options_: RequestInit = {
-      method: "DELETE",
-      headers: {},
-    };
+      let options_: RequestInit = {
+          method: "DELETE",
+          headers: {
+          }
+      };
 
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processDelete(_response);
-    });
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processCommentDelete(_response);
+      });
   }
 
-  protected processDelete(response: Response): Promise<void> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 204) {
-      return response.text().then((_responseText) => {
-        return;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<void>(null as any);
-  }
-}
-
-export class UserClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : (window as any);
-    this.baseUrl = baseUrl ?? "";
+  protected processCommentDelete(response: Response): Promise<void> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 204) {
+          return response.text().then((_responseText) => {
+          return;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<void>(null as any);
   }
 
-  all(body: User): Promise<User> {
-    let url_ = this.baseUrl + "/users/";
-    url_ = url_.replace(/[?&]$/, "");
+  likeAll(postId: number, body: Like | undefined): Promise<Like> {
+      let url_ = this.baseUrl + "/social/posts/{postId}/likes/";
+      if (postId === undefined || postId === null)
+          throw new Error("The parameter 'postId' must be defined.");
+      url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
+      url_ = url_.replace(/[?&]$/, "");
 
-    const content_ = JSON.stringify(body);
+      const content_ = JSON.stringify(body);
 
-    let options_: RequestInit = {
-      body: content_,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    };
+      let options_: RequestInit = {
+          body: content_,
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+          }
+      };
 
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processAll(_response);
-    });
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processLikeAll(_response);
+      });
   }
 
-  protected processAll(response: Response): Promise<User> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = User.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<User>(null as any);
+  protected processLikeAll(response: Response): Promise<Like> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Like.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<Like>(null as any);
   }
 
-  detail(userId: number): Promise<User> {
-    let url_ = this.baseUrl + "/users/{userId}/";
-    if (userId === undefined || userId === null) throw new Error("The parameter 'userId' must be defined.");
-    url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
-    url_ = url_.replace(/[?&]$/, "");
+  siteSocial(): Promise<SiteSocial> {
+      let url_ = this.baseUrl + "/social/sites/";
+      url_ = url_.replace(/[?&]$/, "");
 
-    let options_: RequestInit = {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-    };
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
 
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processDetail(_response);
-    });
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processSiteSocial(_response);
+      });
   }
 
-  protected processDetail(response: Response): Promise<User> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = User.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<User>(null as any);
+  protected processSiteSocial(response: Response): Promise<SiteSocial> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = SiteSocial.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<SiteSocial>(null as any);
   }
 
-  update(userId: number, body: User): Promise<User> {
-    let url_ = this.baseUrl + "/users/{userId}/";
-    if (userId === undefined || userId === null) throw new Error("The parameter 'userId' must be defined.");
-    url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
-    url_ = url_.replace(/[?&]$/, "");
+  siteSocial2(siteId: number): Promise<SiteSocial> {
+      let url_ = this.baseUrl + "/social/sites/{siteId}/";
+      if (siteId === undefined || siteId === null)
+          throw new Error("The parameter 'siteId' must be defined.");
+      url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+      url_ = url_.replace(/[?&]$/, "");
 
-    const content_ = JSON.stringify(body);
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
 
-    let options_: RequestInit = {
-      body: content_,
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processUpdate(_response);
-    });
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processSiteSocial2(_response);
+      });
   }
 
-  protected processUpdate(response: Response): Promise<User> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = User.fromJS(resultData200);
-        return result200;
+  protected processSiteSocial2(response: Response): Promise<SiteSocial> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = SiteSocial.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<SiteSocial>(null as any);
+  }
+
+  announcementUpdate(siteId: number, body: Announcement | undefined): Promise<Announcement> {
+      let url_ = this.baseUrl + "/social/sites/{siteId}/announcements/";
+      if (siteId === undefined || siteId === null)
+          throw new Error("The parameter 'siteId' must be defined.");
+      url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+      url_ = url_.replace(/[?&]$/, "");
+
+      const content_ = JSON.stringify(body);
+
+      let options_: RequestInit = {
+          body: content_,
+          method: "PUT",
+          headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processAnnouncementUpdate(_response);
       });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+  }
+
+  protected processAnnouncementUpdate(response: Response): Promise<Announcement> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Announcement.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<Announcement>(null as any);
+  }
+
+  contactUpdate(contactId: number, siteId: number, body: Contact | undefined): Promise<Contact> {
+      let url_ = this.baseUrl + "/social/sites/{siteId}/contacts/{contactId}/";
+      if (contactId === undefined || contactId === null)
+          throw new Error("The parameter 'contactId' must be defined.");
+      url_ = url_.replace("{contactId}", encodeURIComponent("" + contactId));
+      if (siteId === undefined || siteId === null)
+          throw new Error("The parameter 'siteId' must be defined.");
+      url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+      url_ = url_.replace(/[?&]$/, "");
+
+      const content_ = JSON.stringify(body);
+
+      let options_: RequestInit = {
+          body: content_,
+          method: "PUT",
+          headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processContactUpdate(_response);
       });
-    }
-    return Promise.resolve<User>(null as any);
+  }
+
+  protected processContactUpdate(response: Response): Promise<Contact> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Contact.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<Contact>(null as any);
+  }
+
+  widgetAll(siteId: number, body: Widget | undefined): Promise<Widget> {
+      let url_ = this.baseUrl + "/social/sites/{siteId}/widgets/";
+      if (siteId === undefined || siteId === null)
+          throw new Error("The parameter 'siteId' must be defined.");
+      url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+      url_ = url_.replace(/[?&]$/, "");
+
+      const content_ = JSON.stringify(body);
+
+      let options_: RequestInit = {
+          body: content_,
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processWidgetAll(_response);
+      });
+  }
+
+  protected processWidgetAll(response: Response): Promise<Widget> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Widget.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<Widget>(null as any);
+  }
+
+  widgetDetail(siteId: number, widgetId: number, body: Widget | undefined): Promise<Widget> {
+      let url_ = this.baseUrl + "/social/sites/{siteId}/widgets/{widgetId}/";
+      if (siteId === undefined || siteId === null)
+          throw new Error("The parameter 'siteId' must be defined.");
+      url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+      if (widgetId === undefined || widgetId === null)
+          throw new Error("The parameter 'widgetId' must be defined.");
+      url_ = url_.replace("{widgetId}", encodeURIComponent("" + widgetId));
+      url_ = url_.replace(/[?&]$/, "");
+
+      const content_ = JSON.stringify(body);
+
+      let options_: RequestInit = {
+          body: content_,
+          method: "PUT",
+          headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processWidgetDetail(_response);
+      });
+  }
+
+  protected processWidgetDetail(response: Response): Promise<Widget> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Widget.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<Widget>(null as any);
   }
 
   /**
    * @return No response body
    */
-  delete(userId: number): Promise<void> {
-    let url_ = this.baseUrl + "/users/{userId}/";
-    if (userId === undefined || userId === null) throw new Error("The parameter 'userId' must be defined.");
-    url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
-    url_ = url_.replace(/[?&]$/, "");
+  widgetDelete(siteId: number, widgetId: number): Promise<void> {
+      let url_ = this.baseUrl + "/social/sites/{siteId}/widgets/{widgetId}/";
+      if (siteId === undefined || siteId === null)
+          throw new Error("The parameter 'siteId' must be defined.");
+      url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+      if (widgetId === undefined || widgetId === null)
+          throw new Error("The parameter 'widgetId' must be defined.");
+      url_ = url_.replace("{widgetId}", encodeURIComponent("" + widgetId));
+      url_ = url_.replace(/[?&]$/, "");
 
-    let options_: RequestInit = {
-      method: "DELETE",
-      headers: {},
-    };
+      let options_: RequestInit = {
+          method: "DELETE",
+          headers: {
+          }
+      };
 
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processDelete(_response);
-    });
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processWidgetDelete(_response);
+      });
   }
 
-  protected processDelete(response: Response): Promise<void> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 204) {
-      return response.text().then((_responseText) => {
-        return;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<void>(null as any);
-  }
-}
-
-export class CurrentClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : (window as any);
-    this.baseUrl = baseUrl ?? "";
+  protected processWidgetDelete(response: Response): Promise<void> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 204) {
+          return response.text().then((_responseText) => {
+          return;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<void>(null as any);
   }
 
-  user(): Promise<User> {
-    let url_ = this.baseUrl + "/users/current_user/";
-    url_ = url_.replace(/[?&]$/, "");
+  userAll(body: User): Promise<User> {
+      let url_ = this.baseUrl + "/users/";
+      url_ = url_.replace(/[?&]$/, "");
 
-    let options_: RequestInit = {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-    };
+      const content_ = JSON.stringify(body);
 
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processUser(_response);
-    });
+      let options_: RequestInit = {
+          body: content_,
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processUserAll(_response);
+      });
   }
 
-  protected processUser(response: Response): Promise<User> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = User.fromJS(resultData200);
-        return result200;
+  protected processUserAll(response: Response): Promise<User> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = User.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<User>(null as any);
+  }
+
+  userDetail(userId: number): Promise<User> {
+      let url_ = this.baseUrl + "/users/{userId}/";
+      if (userId === undefined || userId === null)
+          throw new Error("The parameter 'userId' must be defined.");
+      url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
+      url_ = url_.replace(/[?&]$/, "");
+
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processUserDetail(_response);
       });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+  }
+
+  protected processUserDetail(response: Response): Promise<User> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = User.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<User>(null as any);
+  }
+
+  userUpdate(userId: number, body: User): Promise<User> {
+      let url_ = this.baseUrl + "/users/{userId}/";
+      if (userId === undefined || userId === null)
+          throw new Error("The parameter 'userId' must be defined.");
+      url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
+      url_ = url_.replace(/[?&]$/, "");
+
+      const content_ = JSON.stringify(body);
+
+      let options_: RequestInit = {
+          body: content_,
+          method: "PUT",
+          headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processUserUpdate(_response);
       });
-    }
-    return Promise.resolve<User>(null as any);
+  }
+
+  protected processUserUpdate(response: Response): Promise<User> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = User.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<User>(null as any);
+  }
+
+  /**
+   * @return No response body
+   */
+  userDelete(userId: number): Promise<void> {
+      let url_ = this.baseUrl + "/users/{userId}/";
+      if (userId === undefined || userId === null)
+          throw new Error("The parameter 'userId' must be defined.");
+      url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
+      url_ = url_.replace(/[?&]$/, "");
+
+      let options_: RequestInit = {
+          method: "DELETE",
+          headers: {
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processUserDelete(_response);
+      });
+  }
+
+  protected processUserDelete(response: Response): Promise<void> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 204) {
+          return response.text().then((_responseText) => {
+          return;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<void>(null as any);
+  }
+
+  userCurrentUser(): Promise<User> {
+      let url_ = this.baseUrl + "/users/current_user/";
+      url_ = url_.replace(/[?&]$/, "");
+
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processUserCurrentUser(_response);
+      });
+  }
+
+  protected processUserCurrentUser(response: Response): Promise<User> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = User.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<User>(null as any);
   }
 }
 
@@ -1532,40 +1378,43 @@ export class Announcement implements IAnnouncement {
   [key: string]: any;
 
   constructor(data?: IAnnouncement) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
       }
-    }
   }
 
   init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          this.body = _data["body"];
+          this.link = _data["link"];
       }
-      (<any>this).id = _data["id"];
-      this.body = _data["body"];
-      this.link = _data["link"];
-    }
   }
 
   static fromJS(data: any): Announcement {
-    data = typeof data === "object" ? data : {};
-    let result = new Announcement();
-    result.init(data);
-    return result;
+      data = typeof data === 'object' ? data : {};
+      let result = new Announcement();
+      result.init(data);
+      return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) data[property] = this[property];
-    }
-    data["id"] = this.id;
-    data["body"] = this.body;
-    data["link"] = this.link;
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["body"] = this.body;
+      data["link"] = this.link;
+      return data;
   }
 }
 
@@ -1587,42 +1436,45 @@ export class AuthUser implements IAuthUser {
   [key: string]: any;
 
   constructor(data?: IAuthUser) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
       }
-    }
   }
 
   init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          this.username = _data["username"];
+          this.email = _data["email"];
+          this.password = _data["password"];
       }
-      (<any>this).id = _data["id"];
-      this.username = _data["username"];
-      this.email = _data["email"];
-      this.password = _data["password"];
-    }
   }
 
   static fromJS(data: any): AuthUser {
-    data = typeof data === "object" ? data : {};
-    let result = new AuthUser();
-    result.init(data);
-    return result;
+      data = typeof data === 'object' ? data : {};
+      let result = new AuthUser();
+      result.init(data);
+      return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) data[property] = this[property];
-    }
-    data["id"] = this.id;
-    data["username"] = this.username;
-    data["email"] = this.email;
-    data["password"] = this.password;
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["username"] = this.username;
+      data["email"] = this.email;
+      data["password"] = this.password;
+      return data;
   }
 }
 
@@ -1638,76 +1490,79 @@ export interface IAuthUser {
 
 export class Batch implements IBatch {
   readonly id!: number;
-  created_at?: Date | undefined;
+  createdAt?: Date | undefined;
   name?: string | undefined;
   sponsor?: string | undefined;
   size?: string | undefined;
-  soil_condition?: string | undefined;
-  total_number_seed?: number | undefined;
-  total_propagation?: number | undefined;
+  soilCondition?: string | undefined;
+  totalNumberSeed?: number | undefined;
+  totalPropagation?: number | undefined;
   site?: number | undefined;
 
   [key: string]: any;
 
   constructor(data?: IBatch) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
       }
-    }
   }
 
   init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+          this.name = _data["name"];
+          this.sponsor = _data["sponsor"];
+          this.size = _data["size"];
+          this.soilCondition = _data["soilCondition"];
+          this.totalNumberSeed = _data["totalNumberSeed"];
+          this.totalPropagation = _data["totalPropagation"];
+          this.site = _data["site"];
       }
-      (<any>this).id = _data["id"];
-      this.created_at = _data["created_at"] ? new Date(_data["created_at"].toString()) : <any>undefined;
-      this.name = _data["name"];
-      this.sponsor = _data["sponsor"];
-      this.size = _data["size"];
-      this.soil_condition = _data["soil_condition"];
-      this.total_number_seed = _data["total_number_seed"];
-      this.total_propagation = _data["total_propagation"];
-      this.site = _data["site"];
-    }
   }
 
   static fromJS(data: any): Batch {
-    data = typeof data === "object" ? data : {};
-    let result = new Batch();
-    result.init(data);
-    return result;
+      data = typeof data === 'object' ? data : {};
+      let result = new Batch();
+      result.init(data);
+      return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) data[property] = this[property];
-    }
-    data["id"] = this.id;
-    data["created_at"] = this.created_at ? this.created_at.toISOString() : <any>undefined;
-    data["name"] = this.name;
-    data["sponsor"] = this.sponsor;
-    data["size"] = this.size;
-    data["soil_condition"] = this.soil_condition;
-    data["total_number_seed"] = this.total_number_seed;
-    data["total_propagation"] = this.total_propagation;
-    data["site"] = this.site;
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+      data["name"] = this.name;
+      data["sponsor"] = this.sponsor;
+      data["size"] = this.size;
+      data["soilCondition"] = this.soilCondition;
+      data["totalNumberSeed"] = this.totalNumberSeed;
+      data["totalPropagation"] = this.totalPropagation;
+      data["site"] = this.site;
+      return data;
   }
 }
 
 export interface IBatch {
   id: number;
-  created_at?: Date | undefined;
+  createdAt?: Date | undefined;
   name?: string | undefined;
   sponsor?: string | undefined;
   size?: string | undefined;
-  soil_condition?: string | undefined;
-  total_number_seed?: number | undefined;
-  total_propagation?: number | undefined;
+  soilCondition?: string | undefined;
+  totalNumberSeed?: number | undefined;
+  totalPropagation?: number | undefined;
   site?: number | undefined;
 
   [key: string]: any;
@@ -1717,74 +1572,77 @@ export class BatchAnalytics implements IBatchAnalytics {
   readonly id!: number;
   name?: string | undefined;
   size?: string | undefined;
-  soil_condition?: string | undefined;
+  soilCondition?: string | undefined;
   readonly fertilizers!: string;
-  readonly mulch_layers!: string;
-  readonly supported_species!: string;
-  readonly plant_count!: string;
-  readonly survived_count!: string;
-  readonly replace_count!: string;
-  readonly seed_collected_count!: string;
+  readonly mulchLayers!: string;
+  readonly supportedSpecies!: string;
+  readonly plantCount!: string;
+  readonly survivedCount!: string;
+  readonly replaceCount!: string;
+  readonly seedCollectedCount!: string;
   readonly seeds!: string;
   readonly species!: string;
 
   [key: string]: any;
 
   constructor(data?: IBatchAnalytics) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
       }
-    }
   }
 
   init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          this.name = _data["name"];
+          this.size = _data["size"];
+          this.soilCondition = _data["soilCondition"];
+          (<any>this).fertilizers = _data["fertilizers"];
+          (<any>this).mulchLayers = _data["mulchLayers"];
+          (<any>this).supportedSpecies = _data["supportedSpecies"];
+          (<any>this).plantCount = _data["plantCount"];
+          (<any>this).survivedCount = _data["survivedCount"];
+          (<any>this).replaceCount = _data["replaceCount"];
+          (<any>this).seedCollectedCount = _data["seedCollectedCount"];
+          (<any>this).seeds = _data["seeds"];
+          (<any>this).species = _data["species"];
       }
-      (<any>this).id = _data["id"];
-      this.name = _data["name"];
-      this.size = _data["size"];
-      this.soil_condition = _data["soil_condition"];
-      (<any>this).fertilizers = _data["fertilizers"];
-      (<any>this).mulch_layers = _data["mulch_layers"];
-      (<any>this).supported_species = _data["supported_species"];
-      (<any>this).plant_count = _data["plant_count"];
-      (<any>this).survived_count = _data["survived_count"];
-      (<any>this).replace_count = _data["replace_count"];
-      (<any>this).seed_collected_count = _data["seed_collected_count"];
-      (<any>this).seeds = _data["seeds"];
-      (<any>this).species = _data["species"];
-    }
   }
 
   static fromJS(data: any): BatchAnalytics {
-    data = typeof data === "object" ? data : {};
-    let result = new BatchAnalytics();
-    result.init(data);
-    return result;
+      data = typeof data === 'object' ? data : {};
+      let result = new BatchAnalytics();
+      result.init(data);
+      return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) data[property] = this[property];
-    }
-    data["id"] = this.id;
-    data["name"] = this.name;
-    data["size"] = this.size;
-    data["soil_condition"] = this.soil_condition;
-    data["fertilizers"] = this.fertilizers;
-    data["mulch_layers"] = this.mulch_layers;
-    data["supported_species"] = this.supported_species;
-    data["plant_count"] = this.plant_count;
-    data["survived_count"] = this.survived_count;
-    data["replace_count"] = this.replace_count;
-    data["seed_collected_count"] = this.seed_collected_count;
-    data["seeds"] = this.seeds;
-    data["species"] = this.species;
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["name"] = this.name;
+      data["size"] = this.size;
+      data["soilCondition"] = this.soilCondition;
+      data["fertilizers"] = this.fertilizers;
+      data["mulchLayers"] = this.mulchLayers;
+      data["supportedSpecies"] = this.supportedSpecies;
+      data["plantCount"] = this.plantCount;
+      data["survivedCount"] = this.survivedCount;
+      data["replaceCount"] = this.replaceCount;
+      data["seedCollectedCount"] = this.seedCollectedCount;
+      data["seeds"] = this.seeds;
+      data["species"] = this.species;
+      return data;
   }
 }
 
@@ -1792,14 +1650,14 @@ export interface IBatchAnalytics {
   id: number;
   name?: string | undefined;
   size?: string | undefined;
-  soil_condition?: string | undefined;
+  soilCondition?: string | undefined;
   fertilizers: string;
-  mulch_layers: string;
-  supported_species: string;
-  plant_count: string;
-  survived_count: string;
-  replace_count: string;
-  seed_collected_count: string;
+  mulchLayers: string;
+  supportedSpecies: string;
+  plantCount: string;
+  survivedCount: string;
+  replaceCount: string;
+  seedCollectedCount: string;
   seeds: string;
   species: string;
 
@@ -1809,56 +1667,59 @@ export interface IBatchAnalytics {
 export class Comment implements IComment {
   readonly id!: number;
   body?: string | undefined;
-  auth_user?: number | undefined;
-  created_at?: Date | undefined;
+  authUser?: number | undefined;
+  createdAt?: Date | undefined;
 
   [key: string]: any;
 
   constructor(data?: IComment) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
       }
-    }
   }
 
   init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          this.body = _data["body"];
+          this.authUser = _data["authUser"];
+          this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
       }
-      (<any>this).id = _data["id"];
-      this.body = _data["body"];
-      this.auth_user = _data["auth_user"];
-      this.created_at = _data["created_at"] ? new Date(_data["created_at"].toString()) : <any>undefined;
-    }
   }
 
   static fromJS(data: any): Comment {
-    data = typeof data === "object" ? data : {};
-    let result = new Comment();
-    result.init(data);
-    return result;
+      data = typeof data === 'object' ? data : {};
+      let result = new Comment();
+      result.init(data);
+      return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) data[property] = this[property];
-    }
-    data["id"] = this.id;
-    data["body"] = this.body;
-    data["auth_user"] = this.auth_user;
-    data["created_at"] = this.created_at ? this.created_at.toISOString() : <any>undefined;
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["body"] = this.body;
+      data["authUser"] = this.authUser;
+      data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+      return data;
   }
 }
 
 export interface IComment {
   id: number;
   body?: string | undefined;
-  auth_user?: number | undefined;
-  created_at?: Date | undefined;
+  authUser?: number | undefined;
+  createdAt?: Date | undefined;
 
   [key: string]: any;
 }
@@ -1868,58 +1729,61 @@ export class Contact implements IContact {
   address?: string | undefined;
   email?: string | undefined;
   phone?: string | undefined;
-  facebook_link?: string | undefined;
-  x_link?: string | undefined;
-  instagram_link?: string | undefined;
-  linkedin_link?: string | undefined;
+  facebookLink?: string | undefined;
+  xLink?: string | undefined;
+  instagramLink?: string | undefined;
+  linkedinLink?: string | undefined;
 
   [key: string]: any;
 
   constructor(data?: IContact) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
       }
-    }
   }
 
   init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          this.address = _data["address"];
+          this.email = _data["email"];
+          this.phone = _data["phone"];
+          this.facebookLink = _data["facebookLink"];
+          this.xLink = _data["xLink"];
+          this.instagramLink = _data["instagramLink"];
+          this.linkedinLink = _data["linkedinLink"];
       }
-      (<any>this).id = _data["id"];
-      this.address = _data["address"];
-      this.email = _data["email"];
-      this.phone = _data["phone"];
-      this.facebook_link = _data["facebook_link"];
-      this.x_link = _data["x_link"];
-      this.instagram_link = _data["instagram_link"];
-      this.linkedin_link = _data["linkedin_link"];
-    }
   }
 
   static fromJS(data: any): Contact {
-    data = typeof data === "object" ? data : {};
-    let result = new Contact();
-    result.init(data);
-    return result;
+      data = typeof data === 'object' ? data : {};
+      let result = new Contact();
+      result.init(data);
+      return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) data[property] = this[property];
-    }
-    data["id"] = this.id;
-    data["address"] = this.address;
-    data["email"] = this.email;
-    data["phone"] = this.phone;
-    data["facebook_link"] = this.facebook_link;
-    data["x_link"] = this.x_link;
-    data["instagram_link"] = this.instagram_link;
-    data["linkedin_link"] = this.linkedin_link;
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["address"] = this.address;
+      data["email"] = this.email;
+      data["phone"] = this.phone;
+      data["facebookLink"] = this.facebookLink;
+      data["xLink"] = this.xLink;
+      data["instagramLink"] = this.instagramLink;
+      data["linkedinLink"] = this.linkedinLink;
+      return data;
   }
 }
 
@@ -1928,74 +1792,69 @@ export interface IContact {
   address?: string | undefined;
   email?: string | undefined;
   phone?: string | undefined;
-  facebook_link?: string | undefined;
-  x_link?: string | undefined;
-  instagram_link?: string | undefined;
-  linkedin_link?: string | undefined;
+  facebookLink?: string | undefined;
+  xLink?: string | undefined;
+  instagramLink?: string | undefined;
+  linkedinLink?: string | undefined;
 
   [key: string]: any;
 }
 
 export class Coordinates implements ICoordinates {
   readonly id!: number;
-  dms_latitude?: string | undefined;
-  dms_longitude?: string | undefined;
-  dd_latitude?: string | undefined;
-  dd_longitude?: string | undefined;
+  latitude?: string | undefined;
+  longitude?: string | undefined;
   address?: string | undefined;
 
   [key: string]: any;
 
   constructor(data?: ICoordinates) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
       }
-    }
   }
 
   init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          this.latitude = _data["latitude"];
+          this.longitude = _data["longitude"];
+          this.address = _data["address"];
       }
-      (<any>this).id = _data["id"];
-      this.dms_latitude = _data["dms_latitude"];
-      this.dms_longitude = _data["dms_longitude"];
-      this.dd_latitude = _data["dd_latitude"];
-      this.dd_longitude = _data["dd_longitude"];
-      this.address = _data["address"];
-    }
   }
 
   static fromJS(data: any): Coordinates {
-    data = typeof data === "object" ? data : {};
-    let result = new Coordinates();
-    result.init(data);
-    return result;
+      data = typeof data === 'object' ? data : {};
+      let result = new Coordinates();
+      result.init(data);
+      return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) data[property] = this[property];
-    }
-    data["id"] = this.id;
-    data["dms_latitude"] = this.dms_latitude;
-    data["dms_longitude"] = this.dms_longitude;
-    data["dd_latitude"] = this.dd_latitude;
-    data["dd_longitude"] = this.dd_longitude;
-    data["address"] = this.address;
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["latitude"] = this.latitude;
+      data["longitude"] = this.longitude;
+      data["address"] = this.address;
+      return data;
   }
 }
 
 export interface ICoordinates {
   id: number;
-  dms_latitude?: string | undefined;
-  dms_longitude?: string | undefined;
-  dd_latitude?: string | undefined;
-  dd_longitude?: string | undefined;
+  latitude?: string | undefined;
+  longitude?: string | undefined;
   address?: string | undefined;
 
   [key: string]: any;
@@ -2003,52 +1862,55 @@ export interface ICoordinates {
 
 export class Like implements ILike {
   readonly id!: number;
-  auth_user?: number | undefined;
+  authUser?: number | undefined;
   post?: number | undefined;
 
   [key: string]: any;
 
   constructor(data?: ILike) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
       }
-    }
   }
 
   init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          this.authUser = _data["authUser"];
+          this.post = _data["post"];
       }
-      (<any>this).id = _data["id"];
-      this.auth_user = _data["auth_user"];
-      this.post = _data["post"];
-    }
   }
 
   static fromJS(data: any): Like {
-    data = typeof data === "object" ? data : {};
-    let result = new Like();
-    result.init(data);
-    return result;
+      data = typeof data === 'object' ? data : {};
+      let result = new Like();
+      result.init(data);
+      return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) data[property] = this[property];
-    }
-    data["id"] = this.id;
-    data["auth_user"] = this.auth_user;
-    data["post"] = this.post;
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["authUser"] = this.authUser;
+      data["post"] = this.post;
+      return data;
   }
 }
 
 export interface ILike {
   id: number;
-  auth_user?: number | undefined;
+  authUser?: number | undefined;
   post?: number | undefined;
 
   [key: string]: any;
@@ -2057,173 +1919,247 @@ export interface ILike {
 export class Post implements IPost {
   readonly id!: number;
   site!: SiteOverview;
-  created_at?: Date | undefined;
+  createdAt?: Date | undefined;
   body?: string | undefined;
-  like_count?: number | undefined;
-  share_count?: number | undefined;
-  readonly comment_count!: string;
-  readonly has_liked!: string;
+  likeCount?: number | undefined;
+  shareCount?: number | undefined;
+  readonly commentCount!: string;
+  readonly hasLiked!: string;
 
   [key: string]: any;
 
   constructor(data?: IPost) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
       }
-    }
-    if (!data) {
-      this.site = new SiteOverview();
-    }
+      if (!data) {
+          this.site = new SiteOverview();
+      }
   }
 
   init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          this.site = _data["site"] ? SiteOverview.fromJS(_data["site"]) : new SiteOverview();
+          this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+          this.body = _data["body"];
+          this.likeCount = _data["likeCount"];
+          this.shareCount = _data["shareCount"];
+          (<any>this).commentCount = _data["commentCount"];
+          (<any>this).hasLiked = _data["hasLiked"];
       }
-      (<any>this).id = _data["id"];
-      this.site = _data["site"] ? SiteOverview.fromJS(_data["site"]) : new SiteOverview();
-      this.created_at = _data["created_at"] ? new Date(_data["created_at"].toString()) : <any>undefined;
-      this.body = _data["body"];
-      this.like_count = _data["like_count"];
-      this.share_count = _data["share_count"];
-      (<any>this).comment_count = _data["comment_count"];
-      (<any>this).has_liked = _data["has_liked"];
-    }
   }
 
   static fromJS(data: any): Post {
-    data = typeof data === "object" ? data : {};
-    let result = new Post();
-    result.init(data);
-    return result;
+      data = typeof data === 'object' ? data : {};
+      let result = new Post();
+      result.init(data);
+      return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) data[property] = this[property];
-    }
-    data["id"] = this.id;
-    data["site"] = this.site ? this.site.toJSON() : <any>undefined;
-    data["created_at"] = this.created_at ? this.created_at.toISOString() : <any>undefined;
-    data["body"] = this.body;
-    data["like_count"] = this.like_count;
-    data["share_count"] = this.share_count;
-    data["comment_count"] = this.comment_count;
-    data["has_liked"] = this.has_liked;
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["site"] = this.site ? this.site.toJSON() : <any>undefined;
+      data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+      data["body"] = this.body;
+      data["likeCount"] = this.likeCount;
+      data["shareCount"] = this.shareCount;
+      data["commentCount"] = this.commentCount;
+      data["hasLiked"] = this.hasLiked;
+      return data;
   }
 }
 
 export interface IPost {
   id: number;
   site: SiteOverview;
-  created_at?: Date | undefined;
+  createdAt?: Date | undefined;
   body?: string | undefined;
-  like_count?: number | undefined;
-  share_count?: number | undefined;
-  comment_count: string;
-  has_liked: string;
+  likeCount?: number | undefined;
+  shareCount?: number | undefined;
+  commentCount: string;
+  hasLiked: string;
 
   [key: string]: any;
 }
 
 export class Site implements ISite {
   readonly id!: number;
-  site_type!: SiteType;
+  siteType!: SiteType;
   coordinate!: Coordinates;
-  readonly site_tree_species!: string;
+  readonly siteTreeSpecies!: string;
   contact!: Contact;
   announcement!: Announcement;
   name?: string | undefined;
   description?: string | undefined;
   size?: string | undefined;
-  research_partnership?: boolean | undefined;
-  visible_map?: boolean | undefined;
-  visitor_count?: number | undefined;
+  researchPartnership?: boolean | undefined;
+  visibleMap?: boolean | undefined;
+  visitorCount?: number | undefined;
   image?: number | undefined;
 
   [key: string]: any;
 
   constructor(data?: ISite) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
       }
-    }
-    if (!data) {
-      this.site_type = new SiteType();
-      this.coordinate = new Coordinates();
-      this.contact = new Contact();
-      this.announcement = new Announcement();
-    }
+      if (!data) {
+          this.siteType = new SiteType();
+          this.coordinate = new Coordinates();
+          this.contact = new Contact();
+          this.announcement = new Announcement();
+      }
   }
 
   init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          this.siteType = _data["siteType"] ? SiteType.fromJS(_data["siteType"]) : new SiteType();
+          this.coordinate = _data["coordinate"] ? Coordinates.fromJS(_data["coordinate"]) : new Coordinates();
+          (<any>this).siteTreeSpecies = _data["siteTreeSpecies"];
+          this.contact = _data["contact"] ? Contact.fromJS(_data["contact"]) : new Contact();
+          this.announcement = _data["announcement"] ? Announcement.fromJS(_data["announcement"]) : new Announcement();
+          this.name = _data["name"];
+          this.description = _data["description"];
+          this.size = _data["size"];
+          this.researchPartnership = _data["researchPartnership"];
+          this.visibleMap = _data["visibleMap"];
+          this.visitorCount = _data["visitorCount"];
+          this.image = _data["image"];
       }
-      (<any>this).id = _data["id"];
-      this.site_type = _data["site_type"] ? SiteType.fromJS(_data["site_type"]) : new SiteType();
-      this.coordinate = _data["coordinate"] ? Coordinates.fromJS(_data["coordinate"]) : new Coordinates();
-      (<any>this).site_tree_species = _data["site_tree_species"];
-      this.contact = _data["contact"] ? Contact.fromJS(_data["contact"]) : new Contact();
-      this.announcement = _data["announcement"] ? Announcement.fromJS(_data["announcement"]) : new Announcement();
-      this.name = _data["name"];
-      this.description = _data["description"];
-      this.size = _data["size"];
-      this.research_partnership = _data["research_partnership"];
-      this.visible_map = _data["visible_map"];
-      this.visitor_count = _data["visitor_count"];
-      this.image = _data["image"];
-    }
   }
 
   static fromJS(data: any): Site {
-    data = typeof data === "object" ? data : {};
-    let result = new Site();
-    result.init(data);
-    return result;
+      data = typeof data === 'object' ? data : {};
+      let result = new Site();
+      result.init(data);
+      return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) data[property] = this[property];
-    }
-    data["id"] = this.id;
-    data["site_type"] = this.site_type ? this.site_type.toJSON() : <any>undefined;
-    data["coordinate"] = this.coordinate ? this.coordinate.toJSON() : <any>undefined;
-    data["site_tree_species"] = this.site_tree_species;
-    data["contact"] = this.contact ? this.contact.toJSON() : <any>undefined;
-    data["announcement"] = this.announcement ? this.announcement.toJSON() : <any>undefined;
-    data["name"] = this.name;
-    data["description"] = this.description;
-    data["size"] = this.size;
-    data["research_partnership"] = this.research_partnership;
-    data["visible_map"] = this.visible_map;
-    data["visitor_count"] = this.visitor_count;
-    data["image"] = this.image;
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["siteType"] = this.siteType ? this.siteType.toJSON() : <any>undefined;
+      data["coordinate"] = this.coordinate ? this.coordinate.toJSON() : <any>undefined;
+      data["siteTreeSpecies"] = this.siteTreeSpecies;
+      data["contact"] = this.contact ? this.contact.toJSON() : <any>undefined;
+      data["announcement"] = this.announcement ? this.announcement.toJSON() : <any>undefined;
+      data["name"] = this.name;
+      data["description"] = this.description;
+      data["size"] = this.size;
+      data["researchPartnership"] = this.researchPartnership;
+      data["visibleMap"] = this.visibleMap;
+      data["visitorCount"] = this.visitorCount;
+      data["image"] = this.image;
+      return data;
   }
 }
 
 export interface ISite {
   id: number;
-  site_type: SiteType;
+  siteType: SiteType;
   coordinate: Coordinates;
-  site_tree_species: string;
+  siteTreeSpecies: string;
   contact: Contact;
   announcement: Announcement;
   name?: string | undefined;
   description?: string | undefined;
   size?: string | undefined;
-  research_partnership?: boolean | undefined;
-  visible_map?: boolean | undefined;
-  visitor_count?: number | undefined;
+  researchPartnership?: boolean | undefined;
+  visibleMap?: boolean | undefined;
+  visitorCount?: number | undefined;
+  image?: number | undefined;
+
+  [key: string]: any;
+}
+
+export class SiteMap implements ISiteMap {
+  readonly id!: number;
+  name?: string | undefined;
+  siteType!: SiteType;
+  coordinate!: Coordinates;
+  image?: number | undefined;
+
+  [key: string]: any;
+
+  constructor(data?: ISiteMap) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+      if (!data) {
+          this.siteType = new SiteType();
+          this.coordinate = new Coordinates();
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          this.name = _data["name"];
+          this.siteType = _data["siteType"] ? SiteType.fromJS(_data["siteType"]) : new SiteType();
+          this.coordinate = _data["coordinate"] ? Coordinates.fromJS(_data["coordinate"]) : new Coordinates();
+          this.image = _data["image"];
+      }
+  }
+
+  static fromJS(data: any): SiteMap {
+      data = typeof data === 'object' ? data : {};
+      let result = new SiteMap();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["name"] = this.name;
+      data["siteType"] = this.siteType ? this.siteType.toJSON() : <any>undefined;
+      data["coordinate"] = this.coordinate ? this.coordinate.toJSON() : <any>undefined;
+      data["image"] = this.image;
+      return data;
+  }
+}
+
+export interface ISiteMap {
+  id: number;
+  name?: string | undefined;
+  siteType: SiteType;
+  coordinate: Coordinates;
   image?: number | undefined;
 
   [key: string]: any;
@@ -2236,38 +2172,41 @@ export class SiteOverview implements ISiteOverview {
   [key: string]: any;
 
   constructor(data?: ISiteOverview) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
       }
-    }
   }
 
   init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          this.name = _data["name"];
       }
-      (<any>this).id = _data["id"];
-      this.name = _data["name"];
-    }
   }
 
   static fromJS(data: any): SiteOverview {
-    data = typeof data === "object" ? data : {};
-    let result = new SiteOverview();
-    result.init(data);
-    return result;
+      data = typeof data === 'object' ? data : {};
+      let result = new SiteOverview();
+      result.init(data);
+      return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) data[property] = this[property];
-    }
-    data["id"] = this.id;
-    data["name"] = this.name;
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["name"] = this.name;
+      return data;
   }
 }
 
@@ -2280,7 +2219,7 @@ export interface ISiteOverview {
 
 export class SiteSocial implements ISiteSocial {
   name?: string | undefined;
-  site_type!: SiteType;
+  siteType!: SiteType;
   image?: number | undefined;
   description?: string | undefined;
   contact!: Contact;
@@ -2291,61 +2230,64 @@ export class SiteSocial implements ISiteSocial {
   [key: string]: any;
 
   constructor(data?: ISiteSocial) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
       }
-    }
-    if (!data) {
-      this.site_type = new SiteType();
-      this.contact = new Contact();
-      this.announcement = new Announcement();
-    }
+      if (!data) {
+          this.siteType = new SiteType();
+          this.contact = new Contact();
+          this.announcement = new Announcement();
+      }
   }
 
   init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          this.name = _data["name"];
+          this.siteType = _data["siteType"] ? SiteType.fromJS(_data["siteType"]) : new SiteType();
+          this.image = _data["image"];
+          this.description = _data["description"];
+          this.contact = _data["contact"] ? Contact.fromJS(_data["contact"]) : new Contact();
+          this.announcement = _data["announcement"] ? Announcement.fromJS(_data["announcement"]) : new Announcement();
+          (<any>this).sponsors = _data["sponsors"];
+          (<any>this).widget = _data["widget"];
       }
-      this.name = _data["name"];
-      this.site_type = _data["site_type"] ? SiteType.fromJS(_data["site_type"]) : new SiteType();
-      this.image = _data["image"];
-      this.description = _data["description"];
-      this.contact = _data["contact"] ? Contact.fromJS(_data["contact"]) : new Contact();
-      this.announcement = _data["announcement"] ? Announcement.fromJS(_data["announcement"]) : new Announcement();
-      (<any>this).sponsors = _data["sponsors"];
-      (<any>this).widget = _data["widget"];
-    }
   }
 
   static fromJS(data: any): SiteSocial {
-    data = typeof data === "object" ? data : {};
-    let result = new SiteSocial();
-    result.init(data);
-    return result;
+      data = typeof data === 'object' ? data : {};
+      let result = new SiteSocial();
+      result.init(data);
+      return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) data[property] = this[property];
-    }
-    data["name"] = this.name;
-    data["site_type"] = this.site_type ? this.site_type.toJSON() : <any>undefined;
-    data["image"] = this.image;
-    data["description"] = this.description;
-    data["contact"] = this.contact ? this.contact.toJSON() : <any>undefined;
-    data["announcement"] = this.announcement ? this.announcement.toJSON() : <any>undefined;
-    data["sponsors"] = this.sponsors;
-    data["widget"] = this.widget;
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["name"] = this.name;
+      data["siteType"] = this.siteType ? this.siteType.toJSON() : <any>undefined;
+      data["image"] = this.image;
+      data["description"] = this.description;
+      data["contact"] = this.contact ? this.contact.toJSON() : <any>undefined;
+      data["announcement"] = this.announcement ? this.announcement.toJSON() : <any>undefined;
+      data["sponsors"] = this.sponsors;
+      data["widget"] = this.widget;
+      return data;
   }
 }
 
 export interface ISiteSocial {
   name?: string | undefined;
-  site_type: SiteType;
+  siteType: SiteType;
   image?: number | undefined;
   description?: string | undefined;
   contact: Contact;
@@ -2358,74 +2300,77 @@ export interface ISiteSocial {
 
 export class SiteSummary implements ISiteSummary {
   name?: string | undefined;
-  site_type!: SiteType;
-  readonly plant_count!: string;
-  readonly survived_count!: string;
-  readonly propagation_count!: string;
-  visitor_count?: number | undefined;
+  siteType!: SiteType;
+  readonly plantCount!: string;
+  readonly survivedCount!: string;
+  readonly propagationCount!: string;
+  visitorCount?: number | undefined;
   readonly sponsor!: string;
   readonly progress!: string;
 
   [key: string]: any;
 
   constructor(data?: ISiteSummary) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
       }
-    }
-    if (!data) {
-      this.site_type = new SiteType();
-    }
+      if (!data) {
+          this.siteType = new SiteType();
+      }
   }
 
   init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          this.name = _data["name"];
+          this.siteType = _data["siteType"] ? SiteType.fromJS(_data["siteType"]) : new SiteType();
+          (<any>this).plantCount = _data["plantCount"];
+          (<any>this).survivedCount = _data["survivedCount"];
+          (<any>this).propagationCount = _data["propagationCount"];
+          this.visitorCount = _data["visitorCount"];
+          (<any>this).sponsor = _data["sponsor"];
+          (<any>this).progress = _data["progress"];
       }
-      this.name = _data["name"];
-      this.site_type = _data["site_type"] ? SiteType.fromJS(_data["site_type"]) : new SiteType();
-      (<any>this).plant_count = _data["plant_count"];
-      (<any>this).survived_count = _data["survived_count"];
-      (<any>this).propagation_count = _data["propagation_count"];
-      this.visitor_count = _data["visitor_count"];
-      (<any>this).sponsor = _data["sponsor"];
-      (<any>this).progress = _data["progress"];
-    }
   }
 
   static fromJS(data: any): SiteSummary {
-    data = typeof data === "object" ? data : {};
-    let result = new SiteSummary();
-    result.init(data);
-    return result;
+      data = typeof data === 'object' ? data : {};
+      let result = new SiteSummary();
+      result.init(data);
+      return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) data[property] = this[property];
-    }
-    data["name"] = this.name;
-    data["site_type"] = this.site_type ? this.site_type.toJSON() : <any>undefined;
-    data["plant_count"] = this.plant_count;
-    data["survived_count"] = this.survived_count;
-    data["propagation_count"] = this.propagation_count;
-    data["visitor_count"] = this.visitor_count;
-    data["sponsor"] = this.sponsor;
-    data["progress"] = this.progress;
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["name"] = this.name;
+      data["siteType"] = this.siteType ? this.siteType.toJSON() : <any>undefined;
+      data["plantCount"] = this.plantCount;
+      data["survivedCount"] = this.survivedCount;
+      data["propagationCount"] = this.propagationCount;
+      data["visitorCount"] = this.visitorCount;
+      data["sponsor"] = this.sponsor;
+      data["progress"] = this.progress;
+      return data;
   }
 }
 
 export interface ISiteSummary {
   name?: string | undefined;
-  site_type: SiteType;
-  plant_count: string;
-  survived_count: string;
-  propagation_count: string;
-  visitor_count?: number | undefined;
+  siteType: SiteType;
+  plantCount: string;
+  survivedCount: string;
+  propagationCount: string;
+  visitorCount?: number | undefined;
   sponsor: string;
   progress: string;
 
@@ -2440,40 +2385,43 @@ export class SiteType implements ISiteType {
   [key: string]: any;
 
   constructor(data?: ISiteType) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
       }
-    }
   }
 
   init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          (<any>this).en = _data["en"];
+          (<any>this).fr = _data["fr"];
       }
-      (<any>this).id = _data["id"];
-      (<any>this).en = _data["en"];
-      (<any>this).fr = _data["fr"];
-    }
   }
 
   static fromJS(data: any): SiteType {
-    data = typeof data === "object" ? data : {};
-    let result = new SiteType();
-    result.init(data);
-    return result;
+      data = typeof data === 'object' ? data : {};
+      let result = new SiteType();
+      result.init(data);
+      return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) data[property] = this[property];
-    }
-    data["id"] = this.id;
-    data["en"] = this.en;
-    data["fr"] = this.fr;
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["en"] = this.en;
+      data["fr"] = this.fr;
+      return data;
   }
 }
 
@@ -2488,116 +2436,123 @@ export interface ISiteType {
 export class User implements IUser {
   readonly id!: number;
   password!: string;
-  last_login?: Date | undefined;
+  lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
-  is_superuser?: boolean;
+  isSuperuser?: boolean;
   /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
   username!: string;
-  first_name?: string;
-  last_name?: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
   /** Designates whether the user can log into this admin site. */
-  is_staff?: boolean;
+  isStaff?: boolean;
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
-  is_active?: boolean;
-  date_joined?: Date;
+  isActive?: boolean;
+  dateJoined?: Date;
   /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
   groups?: number[];
   /** Specific permissions for this user. */
-  user_permissions?: number[];
+  userPermissions?: number[];
 
   [key: string]: any;
 
   constructor(data?: IUser) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
       }
-    }
   }
 
   init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          this.password = _data["password"];
+          this.lastLogin = _data["lastLogin"] ? new Date(_data["lastLogin"].toString()) : <any>undefined;
+          this.isSuperuser = _data["isSuperuser"];
+          this.username = _data["username"];
+          this.firstName = _data["firstName"];
+          this.lastName = _data["lastName"];
+          this.email = _data["email"];
+          this.isStaff = _data["isStaff"];
+          this.isActive = _data["isActive"];
+          this.dateJoined = _data["dateJoined"] ? new Date(_data["dateJoined"].toString()) : <any>undefined;
+          if (Array.isArray(_data["groups"])) {
+              this.groups = [] as any;
+              for (let item of _data["groups"])
+                  this.groups!.push(item);
+          }
+          if (Array.isArray(_data["userPermissions"])) {
+              this.userPermissions = [] as any;
+              for (let item of _data["userPermissions"])
+                  this.userPermissions!.push(item);
+          }
       }
-      (<any>this).id = _data["id"];
-      this.password = _data["password"];
-      this.last_login = _data["last_login"] ? new Date(_data["last_login"].toString()) : <any>undefined;
-      this.is_superuser = _data["is_superuser"];
-      this.username = _data["username"];
-      this.first_name = _data["first_name"];
-      this.last_name = _data["last_name"];
-      this.email = _data["email"];
-      this.is_staff = _data["is_staff"];
-      this.is_active = _data["is_active"];
-      this.date_joined = _data["date_joined"] ? new Date(_data["date_joined"].toString()) : <any>undefined;
-      if (Array.isArray(_data["groups"])) {
-        this.groups = [] as any;
-        for (let item of _data["groups"]) this.groups!.push(item);
-      }
-      if (Array.isArray(_data["user_permissions"])) {
-        this.user_permissions = [] as any;
-        for (let item of _data["user_permissions"]) this.user_permissions!.push(item);
-      }
-    }
   }
 
   static fromJS(data: any): User {
-    data = typeof data === "object" ? data : {};
-    let result = new User();
-    result.init(data);
-    return result;
+      data = typeof data === 'object' ? data : {};
+      let result = new User();
+      result.init(data);
+      return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) data[property] = this[property];
-    }
-    data["id"] = this.id;
-    data["password"] = this.password;
-    data["last_login"] = this.last_login ? this.last_login.toISOString() : <any>undefined;
-    data["is_superuser"] = this.is_superuser;
-    data["username"] = this.username;
-    data["first_name"] = this.first_name;
-    data["last_name"] = this.last_name;
-    data["email"] = this.email;
-    data["is_staff"] = this.is_staff;
-    data["is_active"] = this.is_active;
-    data["date_joined"] = this.date_joined ? this.date_joined.toISOString() : <any>undefined;
-    if (Array.isArray(this.groups)) {
-      data["groups"] = [];
-      for (let item of this.groups) data["groups"].push(item);
-    }
-    if (Array.isArray(this.user_permissions)) {
-      data["user_permissions"] = [];
-      for (let item of this.user_permissions) data["user_permissions"].push(item);
-    }
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["password"] = this.password;
+      data["lastLogin"] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined;
+      data["isSuperuser"] = this.isSuperuser;
+      data["username"] = this.username;
+      data["firstName"] = this.firstName;
+      data["lastName"] = this.lastName;
+      data["email"] = this.email;
+      data["isStaff"] = this.isStaff;
+      data["isActive"] = this.isActive;
+      data["dateJoined"] = this.dateJoined ? this.dateJoined.toISOString() : <any>undefined;
+      if (Array.isArray(this.groups)) {
+          data["groups"] = [];
+          for (let item of this.groups)
+              data["groups"].push(item);
+      }
+      if (Array.isArray(this.userPermissions)) {
+          data["userPermissions"] = [];
+          for (let item of this.userPermissions)
+              data["userPermissions"].push(item);
+      }
+      return data;
   }
 }
 
 export interface IUser {
   id: number;
   password: string;
-  last_login?: Date | undefined;
+  lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
-  is_superuser?: boolean;
+  isSuperuser?: boolean;
   /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
   username: string;
-  first_name?: string;
-  last_name?: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
   /** Designates whether the user can log into this admin site. */
-  is_staff?: boolean;
+  isStaff?: boolean;
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
-  is_active?: boolean;
-  date_joined?: Date;
+  isActive?: boolean;
+  dateJoined?: Date;
   /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
   groups?: number[];
   /** Specific permissions for this user. */
-  user_permissions?: number[];
+  userPermissions?: number[];
 
   [key: string]: any;
 }
@@ -2611,42 +2566,45 @@ export class Widget implements IWidget {
   [key: string]: any;
 
   constructor(data?: IWidget) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property];
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
       }
-    }
   }
 
   init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) this[property] = _data[property];
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          this.title = _data["title"];
+          this.body = _data["body"];
+          this.site = _data["site"];
       }
-      (<any>this).id = _data["id"];
-      this.title = _data["title"];
-      this.body = _data["body"];
-      this.site = _data["site"];
-    }
   }
 
   static fromJS(data: any): Widget {
-    data = typeof data === "object" ? data : {};
-    let result = new Widget();
-    result.init(data);
-    return result;
+      data = typeof data === 'object' ? data : {};
+      let result = new Widget();
+      result.init(data);
+      return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === "object" ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) data[property] = this[property];
-    }
-    data["id"] = this.id;
-    data["title"] = this.title;
-    data["body"] = this.body;
-    data["site"] = this.site;
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["title"] = this.title;
+      data["body"] = this.body;
+      data["site"] = this.site;
+      return data;
   }
 }
 
@@ -2770,33 +2728,29 @@ export class ApiException extends Error {
   message: string;
   status: number;
   response: string;
-  headers: { [key: string]: any };
+  headers: { [key: string]: any; };
   result: any;
 
-  constructor(message: string, status: number, response: string, headers: { [key: string]: any }, result: any) {
-    super();
+  constructor(message: string, status: number, response: string, headers: { [key: string]: any; }, result: any) {
+      super();
 
-    this.message = message;
-    this.status = status;
-    this.response = response;
-    this.headers = headers;
-    this.result = result;
+      this.message = message;
+      this.status = status;
+      this.response = response;
+      this.headers = headers;
+      this.result = result;
   }
 
   protected isApiException = true;
 
   static isApiException(obj: any): obj is ApiException {
-    return obj.isApiException === true;
+      return obj.isApiException === true;
   }
 }
 
-function throwException(
-  message: string,
-  status: number,
-  response: string,
-  headers: { [key: string]: any },
-  result?: any
-): any {
-  if (result !== null && result !== undefined) throw result;
-  else throw new ApiException(message, status, response, headers, null);
+function throwException(message: string, status: number, response: string, headers: { [key: string]: any; }, result?: any): any {
+  if (result !== null && result !== undefined)
+      throw result;
+  else
+      throw new ApiException(message, status, response, headers, null);
 }
