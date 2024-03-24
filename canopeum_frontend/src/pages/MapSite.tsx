@@ -29,10 +29,12 @@ const MapSite = () => {
       <div className='container px-0'>
         <div className='row'>
           <div className='col-4'>
-            <div className='bg-white rounded-2 2 py-2'>
-              <h1>Left</h1>
+            <div className='d-flex flex-column gap-2'>
+              <div className='bg-white rounded-2 2 py-2'>
+                <h1>Left</h1>
+              </div>
+              { site?.announcement && <AnnouncementCard announcement={site.announcement} />}
             </div>
-            <AnnouncementCard siteId={ Number(siteId) } />
           </div>
           <div className='col-8'>
             <div className='bg-white rounded-2 px-3 py-2'>
