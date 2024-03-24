@@ -21,6 +21,8 @@ $gray-700: #C4C4C4;
 $gray-800: #343a40;
 $gray-900: #212529;
 $black: #000;
+$default-text-color: #433A2E;
+$cream: #FFFAF5;
 $grays: (
   100: $gray-100,
   200: $gray-200,
@@ -57,7 +59,8 @@ $colors: (
   cyan: $cyan,
   white: $white,
   gray: $gray-600,
-  gray-dark: $gray-800
+  gray-dark: $gray-800,
+  cream: $cream
 );
 $theme-color-interval: 8%;
 
@@ -92,7 +95,7 @@ $enable-print-styles: true;
 
 // Body
 $body-bg: $white;
-$body-color: $gray-900;
+$body-color: $default-text-color;
 
 
 // Links
@@ -114,7 +117,7 @@ $container-max-widths: (
   sm: 540px,
   md: 720px,
   lg: 960px,
-  xl: 1140px
+  xl: 1664px
 );
 $grid-columns: 12;
 $grid-gutter-width: 30px;
@@ -156,7 +159,7 @@ $headings-margin-bottom: calc(($spacer / 2));
 $headings-font-family: Lato;
 $headings-font-weight: 500;
 $headings-line-height: 1.1;
-$headings-color: inherit;
+$headings-color: $default-text-color;
 $display1-size: 6rem;
 $display2-size: 5.5rem;
 $display3-size: 4.5rem;
