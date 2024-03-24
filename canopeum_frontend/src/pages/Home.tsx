@@ -14,8 +14,8 @@ const Home = () => {
   const fetchData = async () => {
     setIsLoading(true)
     try {
-      const response = await api().analytics.batches()
-      setData(response)
+      const response = await api().analytics.batches();
+      setData(response);
     } catch (error_: unknown) {
       setError(ensureError(error_))
     } finally {
@@ -31,7 +31,7 @@ const Home = () => {
     <div>
       <div className='container mt-2 d-flex flex-column gap-2'>
         <div className='bg-white rounded-2 px-3 py-2'>
-          <h1>{t('home')}</h1>
+          <h1>{t('home.home')}</h1>
           {isLoading
             ? <p>Loading...</p>
             : error

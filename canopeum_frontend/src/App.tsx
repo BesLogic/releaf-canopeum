@@ -1,5 +1,5 @@
-import './App.scss'
 import 'bootstrap/js/index.umd.js'
+import './App.scss'
 
 import { BrowserRouter } from 'react-router-dom'
 
