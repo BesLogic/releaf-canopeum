@@ -259,19 +259,19 @@ class BatchAnalyticsSerializer(serializers.ModelSerializer):
             "species",
         )
 
-    @extend_schema_field(int) # pyright: ignore[reportArgumentType]
+    @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_plant_count(self, obj):
         return self.context.get("plant_count")
 
-    @extend_schema_field(int) # pyright: ignore[reportArgumentType]
+    @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_survived_count(self, obj):
         return self.context.get("survived_count")
 
-    @extend_schema_field(int) # pyright: ignore[reportArgumentType]
+    @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_replace_count(self, obj):
         return self.context.get("replace_count")
 
-    @extend_schema_field(int) # pyright: ignore[reportArgumentType]
+    @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_seed_collected_count(self, obj):
         return self.context.get("seed_collected_count")
 
@@ -317,19 +317,19 @@ class SiteSummarySerializer(serializers.ModelSerializer):
             "progress",
         )
 
-    @extend_schema_field(int) # pyright: ignore[reportArgumentType]
+    @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_plant_count(self, obj):
         return self.context.get("plant_count")
 
-    @extend_schema_field(int) # pyright: ignore[reportArgumentType]
+    @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_survived_count(self, obj):
         return self.context.get("survived_count")
 
-    @extend_schema_field(int) # pyright: ignore[reportArgumentType]
+    @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_propagation_count(self, obj):
         return self.context.get("propagation_count")
 
-    @extend_schema_field(float) # pyright: ignore[reportArgumentType]
+    @extend_schema_field(float)  # pyright: ignore[reportArgumentType]
     def get_progress(self, obj):
         return self.context.get("progress")
 
@@ -381,11 +381,11 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ("id", "site", "created_at", "body", "like_count", "share_count", "comment_count", "has_liked")
 
-    @extend_schema_field(int) # pyright: ignore[reportArgumentType]
+    @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_comment_count(self, obj):
         return self.context.get("comment_count")
 
-    @extend_schema_field(bool) # pyright: ignore[reportArgumentType]
+    @extend_schema_field(bool)  # pyright: ignore[reportArgumentType]
     def get_has_liked(self, obj):
         return self.context.get("has_liked")
 
