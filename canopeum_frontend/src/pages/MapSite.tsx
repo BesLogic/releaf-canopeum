@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
+import AnnouncementCard from '../components/AnnouncementCard/AnnouncementCard';
 import SiteSummaryCard from '../components/site/SiteSummaryCard'
 import type { SiteSocial } from '../services/api'
 import api from '../services/apiInterface'
@@ -28,8 +29,11 @@ const MapSite = () => {
       <div className='container px-0'>
         <div className='row'>
           <div className='col-4'>
-            <div className='bg-white rounded-2 2 py-2'>
-              <h1>Left</h1>
+            <div className='d-flex flex-column gap-2'>
+              <div className='bg-white rounded-2 2 py-2'>
+                <h1>Left</h1>
+              </div>
+              { site?.announcement && <AnnouncementCard announcement={site.announcement} />}
             </div>
           </div>
           <div className='col-8'>
