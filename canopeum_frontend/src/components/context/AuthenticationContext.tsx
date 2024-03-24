@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react'
-import { createContext, memo, useState } from 'react'
+import type { FunctionComponent, ReactNode } from 'react'
+import { createContext, memo, useCallback, useMemo, useState } from 'react'
 
 export enum UserRole {
   MegaAdmin = 'MegaAdmin',
@@ -17,34 +17,42 @@ type User = {
 
 type IAuthenticationContext = {
   authenticate: (user: User) => void,
+  logout: () => void,
   isAuthenticated: boolean,
   currentUser: User | undefined,
 }
 
 export const AuthenticationContext = createContext<IAuthenticationContext>({
-  authenticate: (_: User) => {/* do nothing by default */},
+  authenticate: (_: User) => {/* empty */},
+  logout: () => {/* empty */},
   isAuthenticated: false,
   currentUser: undefined,
 })
 
-const AuthenticationContextProvider = memo((props: { readonly children?: ReactNode }) => {
+const AuthenticationContextProvider: FunctionComponent<{ readonly children?: ReactNode }> = memo(props => {
   const [user, setUser] = useState<User | undefined>(undefined)
 
-  const authenticate = (newUser: User) => setUser(newUser)
+  const authenticate = useCallback((newUser: User) => setUser(newUser), [setUser])
+
+  const logout = useCallback(() => setUser(undefined), [setUser])
+
+  const context = useMemo<IAuthenticationContext>(() => (
+    {
+      currentUser: user,
+      isAuthenticated: user !== undefined,
+      authenticate,
+      logout,
+    }
+  ), [authenticate, user, logout])
 
   return (
     <AuthenticationContext.Provider
-      /* eslint-disable-next-line react/jsx-no-constructed-context-values --
-      FIXME: Vincent shold have this fixed in his branch already */
-      value={{
-        currentUser: user,
-        isAuthenticated: user !== undefined,
-        authenticate,
-      }}
+      value={context}
     >
       {props.children}
     </AuthenticationContext.Provider>
   )
 })
+
 AuthenticationContextProvider.displayName = 'AuthenticationContextProvider'
 export default AuthenticationContextProvider
