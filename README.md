@@ -102,9 +102,8 @@ For backend
 
    ```shell
    # In another CLI
-   npm install -g @mockoon/cli
-   cd releaf-canopeum/canopeum_frontend
-   mockoon-cli start --data canopeum-mockoon.json
+   cd canopeum_frontend
+   npm run mockoon
    ```
 
 ### Folder Architecture
