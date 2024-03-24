@@ -1,7 +1,11 @@
+import analyticsJSON from './analytics.json'
 import homeJSON from './home.json'
 
 const enJSON = {
-  translation: { ...homeJSON },
+  translation: {
+    home: { ...homeJSON },
+    analytics: { ...analyticsJSON },
+  },
 }
 
 export default enJSON
