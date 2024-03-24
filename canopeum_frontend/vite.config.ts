@@ -9,7 +9,14 @@ export default ({ mode }: { mode: string }) => {
     resolve: {
       alias: {
         '@assets': '/src/assets',
+        '@components': '/src/components',
+        '@services': '/src/services',
       },
     },
+    server: {
+      watch: {
+        usePolling: true
+      }
+    }
   })
 }

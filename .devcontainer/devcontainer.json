@@ -16,7 +16,17 @@
 	"features": {
 		"ghcr.io/devcontainers/features/node:1": {}
 	},
-  "runArgs": ["--env-file",".devcontainer/devcontainer.env"]
+"runArgs": [
+	"--env-file",
+	".devcontainer/devcontainer.env"
+],
+"customizations": {
+	"vscode": {
+		"extensions": [
+			"dprint.dprint"
+		]
+	}
+}
 	// Configure tool-specific properties.
 	// "customizations": {},
 
