@@ -97,7 +97,7 @@
   "[dockerfile]": {
     "editor.defaultFormatter": "dprint.dprint"
   },
-  "dprint.path": "canopeum_frontend/node_modules/dprint/dprint.exe",
+  "dprint.path": "canopeum_frontend/node_modules/dprint/dprint",
   "typescript.tsdk": "canopeum_frontend/node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "js/ts.implicitProjectConfig.checkJs": true,

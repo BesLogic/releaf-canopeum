@@ -1,5 +1,6 @@
 import facebookLogo from '@assets/icons/facebook-regular.svg'
 import canopeumLogo from '@assets/images/Canopeum_Logo.jpg'
+import PrimaryIconBadge from '@components/PrimaryIconBadge'
 
 const Utilities = () => (
   <div>
@@ -52,6 +53,15 @@ const Utilities = () => (
         <span className='material-symbols-outlined fill-icon'>psychiatry</span>
         <span className='material-symbols-outlined'>psychiatry</span>
         <img alt='iconHome' className='h-1' src={facebookLogo} />
+      </div>
+      <div className='bg-white rounded-2 px-3 py-2'>
+        <h2>Badges</h2>
+        <div className='d-flex gap-1'>
+          <PrimaryIconBadge type="school" />
+          <PrimaryIconBadge type="forest" />
+          <PrimaryIconBadge type="workspaces" />
+          <PrimaryIconBadge type="person" />
+        </div>
       </div>
       <div className='bg-white rounded px-3 py-2'>
         <h2>Buttons</h2>
