@@ -27,7 +27,7 @@ const SiteSummaryCard = ({ site }: Props) => (
               <span>Sponsors:</span>
             </div>
             <div className='row'>
-              {[...site.sponsors, ...site.sponsors, ...site.sponsors, ...site.sponsors].map(sponsorName => (
+              {site.sponsors.map(sponsorName => (
                 <div className='col-12 col-sm-6 col-md-4 col-lg-3 mb-3' key={sponsorName}>{sponsorName}</div>
               ))}
             </div>
