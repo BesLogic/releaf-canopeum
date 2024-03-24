@@ -1,11 +1,16 @@
-const News = () => (
-  <div>
-    <div className='container mt-2 d-flex flex-column gap-2'>
-      <div className='bg-white rounded-2 px-3 py-2'>
-        <h1>News</h1>
+import { useTranslation } from 'react-i18next'
+
+const News = () => {
+  const { t } = useTranslation()
+
+  return (
+    <div>
+      <div className='container mt-2 d-flex flex-column gap-2'>
+        <h1 className='text-light'>{t('news.title')}</h1>
+        <h2 className='text-light'>{t('news.subTitle')}</h2>
       </div>
     </div>
-  </div>
-)
+  )
+}
 
 export default News
