@@ -17,7 +17,7 @@ import { ensureError } from '../../services/errors';
 const ContactCard = ({ contact }:{readonly contact: Contact}) => {
 
   const renderContactCard = () => (
-      <div className='card my-2 rounded px-3 py-2'>
+      <div className='card rounded px-3 py-2'>
         <div className='card-body'>
             <div className='d-flex justify-content-between align-items-center pb-3'>
               <h2 className='card-title'>Contact</h2>
