@@ -135,6 +135,7 @@ class SiteSerializer(serializers.ModelSerializer):
     site_tree_species = serializers.SerializerMethodField()
     contact = ContactSerializer()
     announcement = AnnouncementSerializer()
+    image = AssetSerializer()
 
     class Meta:
         model = Site
@@ -142,8 +143,6 @@ class SiteSerializer(serializers.ModelSerializer):
 
     def get_site_tree_species(self, obj):
         return SitetreespeciesSerializer(obj.sitetreespecies_set.all(), many=True).data
-
-
 
 class SiteSocialSerializer(serializers.ModelSerializer):
     site_type = SiteTypeSerializer()
@@ -267,6 +266,7 @@ class BatchAnalyticsSerializer(serializers.ModelSerializer):
             "name",
             "size",
             "soil_condition",
+            "sponsor",
             "fertilizers",
             "mulch_layers",
             "supported_species",
@@ -370,16 +370,24 @@ class SiteMapSerializer(serializers.ModelSerializer):
         return CoordinatesMapSerializer(obj.coordinate).data
 
 class SiteOverviewSerializer(serializers.ModelSerializer):
+    image = AssetSerializer()
     class Meta:
         model = Site
-        fields = ("id", "name")
+        fields = ("id", "name", "image")
 
+
+
+class PostPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ("site", "body")
 
 class PostSerializer(serializers.ModelSerializer):
     site = SiteOverviewSerializer()
     comment_count = serializers.SerializerMethodField()
     has_liked = serializers.SerializerMethodField()
-    media =
+    media = AssetSerializer(many=True)
+
     class Meta:
         model = Post
         fields = ("id", "site", "created_at", "body", "like_count", "share_count", "comment_count", "has_liked", "media")
@@ -389,7 +397,6 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_has_liked(self, obj):
         return self.context.get("has_liked")
-
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:

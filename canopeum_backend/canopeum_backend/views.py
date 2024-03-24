@@ -20,6 +20,7 @@ from .serializers import (
     CommentSerializer,
     ContactSerializer,
     LikeSerializer,
+    PostPostSerializer,
     PostSerializer,
     SiteMapSerializer,
     SitePostSerializer,
@@ -93,7 +94,7 @@ class SiteDetailAPIView(APIView):
     @extend_schema(request=SiteSerializer, responses=SiteSerializer, operation_id="site_detail")
     def get(self, request, siteId):
         try:
-            site = Site.objects.get(pk=siteId)
+            site = Site.objects.prefetch_related('image').get(pk=siteId)
         except Site.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -212,10 +213,10 @@ class PostListAPIView(APIView):
         return Response(serializer.data)
 
     parser_classes = (MultiPartParser, FormParser)
-    @extend_schema(request=PostSerializer, responses=PostSerializer, operation_id="post_create")
+    @extend_schema(request=PostPostSerializer, responses=PostSerializer, operation_id="post_create")
     def post(self, request):
         assets = request.data.getlist("media")
-        print(assets)
+        saved_assets = []
         for asset in assets:
             q = QueryDict("", mutable=True)
             q.update({"image": asset})
@@ -226,9 +227,12 @@ class PostListAPIView(APIView):
                     status=status.HTTP_400_BAD_REQUEST
                 )
             asset.save()
-        serializer = PostSerializer(data=request.data)
+            saved_assets.append(asset)
+        serializer = PostPostSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(media=assets)
+            post = serializer.save()
+            for asset in saved_assets:
+                post.media.add(asset.instance)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

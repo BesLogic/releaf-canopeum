@@ -61,7 +61,7 @@ class Contact(models.Model):
     facebook_link = models.URLField(blank=True, null=True)
     x_link = models.URLField(blank=True, null=True)
     instagram_link = models.URLField(blank=True, null=True)
-    linkedin_link = models.URLField(blank=True, null=True)
+    linkedIn_link = models.URLField(blank=True, null=True)
 
 
 class Coordinate(models.Model):
@@ -102,6 +102,7 @@ class Post(models.Model):
     like_count = models.IntegerField(blank=True, null=True)
     share_count = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
+    media = models.ManyToManyField(Asset, through='PostAsset')
 
 class PostAsset(models.Model):
     post = models.ForeignKey(Post, models.DO_NOTHING, null=False)
