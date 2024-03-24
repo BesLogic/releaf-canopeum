@@ -6,6 +6,7 @@ import instagramLogo from '@assets/icons/instagram-contact-logo.svg';
 import linkedinLogo from '@assets/icons/linkedin-contact-logo.svg';
 import xLogo from '@assets/icons/x-contact-logo.svg';
 import { useEffect,useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import type { Contact } from '../../services/api'
 import api from '../../services/apiInterface'
@@ -37,18 +38,18 @@ const ContactCard = ({ contact }:{readonly contact: Contact}) => {
               </div>
             </div>
             <div className='social-icons d-flex flex-row-reverse pt-3'>
-              <a href={contact.linkedinLink}>
+            {contact.linkedInLink && <Link to={contact.linkedInLink} >
                 <img alt='linkedin-logo' className="px-2" src={linkedinLogo} />
-              </a>
-              <a href={contact.instagramLink}>
+              </Link>}
+              {contact.instagramLink && <Link to={contact.instagramLink}>
                 <img alt="instagram-logo" className="px-2" src={instagramLogo} />
-              </a>
-              <a href={contact.xLink}>
+                </Link>}
+                {contact.xLink && <Link to={contact.xLink}>
                 <img alt="x-logo" className="px-2" src={xLogo} />
-              </a>
-              <a href={contact.facebookLink}>
+                </Link>}
+                {contact.facebookLink && <Link to={contact.facebookLink}>
                 <img alt='facebook-logo' className="px-2" src={facebookLogo}/>
-              </a>
+                </Link>}
             </div>
           </div>
       </div>
