@@ -4,6 +4,7 @@ from rest_framework import serializers
 
 from .models import (
     Announcement,
+    Asset,
     Batch,
     Batchfertilizer,
     BatchSeed,
@@ -110,6 +111,23 @@ class SitetreespeciesSerializer(serializers.ModelSerializer):
     def get_fr(self, obj):
         return TreeTypeSerializer(obj.tree_type).data.get("fr", None)
 
+class AssetSerializer(serializers.ModelSerializer):
+    asset = serializers.FileField()
+    class Meta:
+        model = Asset
+        fields = ("asset",)
+
+    def to_internal_value(self, data):
+        # Map 'image' field to 'asset' field in incoming data
+        if 'image' in data:
+            data['asset'] = data['image']
+            del data['image']
+        return super().to_internal_value(data)
+
+class SitePostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Site
+        fields = ("id", "name", "description", "image")
 
 class SiteSerializer(serializers.ModelSerializer):
     site_type = SiteTypeSerializer()
@@ -126,12 +144,14 @@ class SiteSerializer(serializers.ModelSerializer):
         return SitetreespeciesSerializer(obj.sitetreespecies_set.all(), many=True).data
 
 
+
 class SiteSocialSerializer(serializers.ModelSerializer):
     site_type = SiteTypeSerializer()
     contact = ContactSerializer()
     announcement = AnnouncementSerializer()
     widget = serializers.SerializerMethodField()
     sponsors = serializers.SerializerMethodField()
+    image = AssetSerializer()
 
     class Meta:
         model = Site
@@ -337,10 +357,10 @@ class CoordinatesMapSerializer(serializers.ModelSerializer):
     def get_longitude(self, obj):
         return obj.dd_longitude
 
-
 class SiteMapSerializer(serializers.ModelSerializer):
     site_type = SiteTypeSerializer()
     coordinates = serializers.SerializerMethodField()
+    image = AssetSerializer()
 
     class Meta:
         model = Site
@@ -348,7 +368,6 @@ class SiteMapSerializer(serializers.ModelSerializer):
 
     def get_coordinates(self, obj):
         return CoordinatesMapSerializer(obj.coordinate).data
-
 
 class SiteOverviewSerializer(serializers.ModelSerializer):
     class Meta:
@@ -360,10 +379,10 @@ class PostSerializer(serializers.ModelSerializer):
     site = SiteOverviewSerializer()
     comment_count = serializers.SerializerMethodField()
     has_liked = serializers.SerializerMethodField()
-
+    media =
     class Meta:
         model = Post
-        fields = ("id", "site", "created_at", "body", "like_count", "share_count", "comment_count", "has_liked")
+        fields = ("id", "site", "created_at", "body", "like_count", "share_count", "comment_count", "has_liked", "media")
 
     def get_comment_count(self, obj):
         return self.context.get("comment_count")

@@ -3390,7 +3390,7 @@ export enum Lang {
 }
 
 export class ApiException extends Error {
-  override message: string
+  message: string
   status: number
   response: string
   headers: { [key: string]: any }
