@@ -1,10 +1,23 @@
-import type { AuthUser, Batch, Comment, PatchedAnnouncement, PatchedBatch, PatchedContact, PatchedSite, PatchedUser, PatchedWidget, Post, Site, User, Widget } from './api'
-import { Client } from './api'
-import { getApiBaseUrl } from './apiSettings'
+import {
+  AuthUser,
+  Batch,
+  Client,
+  Comment,
+  PatchedAnnouncement,
+  PatchedBatch,
+  PatchedContact,
+  PatchedSite,
+  PatchedUser,
+  PatchedWidget,
+  Post,
+  Site,
+  User,
+  Widget,
+} from "./api";
+import { getApiBaseUrl } from "./apiSettings";
 
 const api = () => {
-  const client = new Client(getApiBaseUrl())
-
+  const client = new Client(getApiBaseUrl());
   return {
     auth: {
       login: (body: AuthUser) => client.authenticationLogin(body),
@@ -47,7 +60,7 @@ const api = () => {
       create: (body: User) => client.userCreate(body),
       update: (userId: number, body: PatchedUser) => client.userUpdate(userId, body),
     },
-  }
-}
+  };
+};
 
 export default api
