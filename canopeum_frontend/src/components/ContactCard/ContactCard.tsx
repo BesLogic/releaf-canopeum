@@ -21,19 +21,19 @@ const ContactCard = ({ contact }:{readonly contact: Contact}) => {
         <div className='card-body'>
             <div className='d-flex justify-content-between align-items-center pb-3'>
               <h2 className='card-title'>Contact</h2>
-              <span className='material-symbols-outlined edit-btn'>edit_square</span>
+              <span className='material-symbols-outlined edit-btn fs-2'>edit_square</span>
             </div>
             <div className='info-section d-flex flex-column'>
               <div className='card-text adress d-flex align-items-center pb-3'>
-                <span className='material-symbols-outlined'>home_work</span>
+                <span className='material-symbols-outlined fs-4'>home_work</span>
                 <p className='mb-0'>{contact.address}</p>
               </div>
               <div className='email d-flex align-items-center pb-3'>
-                <span className='material-symbols-outlined'>mail</span>
+                <span className='material-symbols-outlined fs-4'>mail</span>
                 <p className='mb-0'>{contact.email}</p>
               </div>
               <div className='phone d-flex align-items-center pb-3'>
-                <span className='material-symbols-outlined'>perm_phone_msg</span>
+                <span className='material-symbols-outlined fs-4'>perm_phone_msg</span>
                 <p className='mb-0'>{contact.phone}</p>
               </div>
             </div>
