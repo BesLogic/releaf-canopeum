@@ -30,18 +30,18 @@ const MapSite = () => {
   return (
     <div className='container mt-2 d-flex flex-column gap-2'>
       {isLoadingSite
-        ?
-        <div className='bg-white rounded-2 2 py-2'>
-          <p>Loading...</p>
-        </div>
+        ? (
+          <div className='bg-white rounded-2 2 py-2'>
+            <p>Loading...</p>
+          </div>
+        )
         : error
-          ?
+        ? (
           <div className='bg-white rounded-2 2 py-2'>
             <p>{error.message}</p>
           </div>
-
-          : (site && <SiteSummaryCard site={site} />)
-      }
+        )
+        : (site && <SiteSummaryCard site={site} />)}
 
       <div className='container px-0'>
         <div className='row'>
