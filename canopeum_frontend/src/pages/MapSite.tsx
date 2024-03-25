@@ -1,15 +1,22 @@
+import { AuthenticationContext, UserRole } from '@components/context/AuthenticationContext'
 import SiteSummaryCard from '@components/site/SiteSummaryCard'
 import type { SiteSocial } from '@services/api'
 import api from '@services/apiInterface'
 import { ensureError } from '@services/errors'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 const MapSite = () => {
   const { siteId } = useParams()
+  const { currentUser } = useContext(AuthenticationContext)
   const [isLoadingSite, setIsLoadingSite] = useState(true)
   const [error, setError] = useState<Error | undefined>(undefined)
   const [site, setSite] = useState<SiteSocial>()
+  const viewMode = currentUser
+    ? currentUser.role === UserRole.RegularUser
+      ? 'user'
+      : 'admin'
+    : 'visitor'
 
   const fetchSiteData = async (parsedSiteId: number) => {
     setIsLoadingSite(true)
@@ -41,7 +48,7 @@ const MapSite = () => {
             <p>{error.message}</p>
           </div>
         )
-        : (site && <SiteSummaryCard site={site} />)}
+        : (site && <SiteSummaryCard site={site} viewMode={viewMode} />)}
 
       <div className='container px-0'>
         <div className='row'>
