@@ -1,8 +1,7 @@
+import { AuthenticationContext, UserRole } from '@components/context/AuthenticationContext'
+import { AuthUser } from '@services/api'
+import api from '@services/apiInterface'
 import { useContext, useEffect, useState } from 'react'
-
-import { AuthenticationContext, UserRole } from '../components/context/AuthenticationContext'
-import { AuthUser } from '../services/api'
-import api from '../services/apiInterface'
 import { useNavigate } from 'react-router-dom'
 
 const isLoginEntryValide = (entry: string | undefined) => entry !== undefined && entry !== ''
@@ -25,7 +24,7 @@ const Login = () => {
     }
   }, [isAuthenticated, navigate])
 
-  const onLoginClick = () => {
+  const onLoginClick = async () => {
     if (!userName) {
       setUserNameInError(true)
     }
@@ -35,13 +34,14 @@ const Login = () => {
     }
 
     if (isLoginEntryValide(userName) && isLoginEntryValide(password)) {
-      api().auth.login(
-        new AuthUser({
-          username: userName,
-          password,
-          id: 1,
-        }),
-      ).then(response =>
+      try {
+        const response = await api().auth.login(
+          new AuthUser({
+            username: userName,
+            password,
+            id: 1,
+          }),
+        )
         authenticate({
           email: response.email ?? '',
           firstname: response.firstName ?? '',
@@ -49,9 +49,9 @@ const Login = () => {
           lastname: response.lastName ?? '',
           role: UserRole.MegaAdmin, // TODO (Vincent) set the user role
         })
-      ).catch(_ => {
+      } catch {
         setLoginError('Error while login')
-      })
+      }
     }
   }
 
@@ -95,7 +95,7 @@ const Login = () => {
           {loginError && <span className='help-block text-danger'>{loginError}</span>}
           <button
             className='btn btn-primary'
-            onClick={() => onLoginClick()}
+            onClick={onLoginClick}
             style={{ margin: '40px 0px 10px' }}
             type='submit'
           >

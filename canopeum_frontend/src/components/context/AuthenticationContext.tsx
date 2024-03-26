@@ -30,7 +30,7 @@ export const AuthenticationContext = createContext<IAuthenticationContext>({
 })
 
 const AuthenticationContextProvider: FunctionComponent<{ readonly children?: ReactNode }> = memo(props => {
-  const [user, setUser] = useState<User | undefined>(undefined)
+  const [user, setUser] = useState<User>()
 
   const authenticate = useCallback((newUser: User) => setUser(newUser), [setUser])
 
