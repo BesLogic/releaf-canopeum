@@ -1,11 +1,7 @@
 import type { FunctionComponent, ReactNode } from 'react'
 import { createContext, memo, useCallback, useMemo, useState } from 'react'
 
-export enum UserRole {
-  MegaAdmin = 'MegaAdmin',
-  MiniAdmin = 'MiniAdmin',
-  RegularUser = 'RegularUser',
-}
+export type UserRole = 'MegaAdmin' | 'MiniAdmin' | 'RegularUser'
 
 type User = {
   firstname: string,

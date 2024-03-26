@@ -1,4 +1,4 @@
-import { AuthenticationContext, UserRole } from '@components/context/AuthenticationContext'
+import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import SiteSummaryCard from '@components/site/SiteSummaryCard'
 import type { SiteSocial } from '@services/api'
 import api from '@services/apiInterface'
@@ -13,7 +13,7 @@ const MapSite = () => {
   const [error, setError] = useState<Error | undefined>(undefined)
   const [site, setSite] = useState<SiteSocial>()
   const viewMode = currentUser
-    ? currentUser.role === UserRole.RegularUser
+    ? currentUser.role === 'RegularUser'
       ? 'user'
       : 'admin'
     : 'visitor'
