@@ -15,8 +15,8 @@ export default ({ mode }: { mode: string }) => {
     },
     server: {
       watch: {
-        usePolling: true
-      }
-    }
+        usePolling: true,
+      },
+    },
   })
 }

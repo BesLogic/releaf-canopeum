@@ -1,11 +1,7 @@
 import type { FunctionComponent, ReactNode } from 'react'
 import { createContext, memo, useCallback, useMemo, useState } from 'react'
 
-export enum UserRole {
-  MegaAdmin = 'MegaAdmin',
-  MiniAdmin = 'MiniAdmin',
-  RegularUser = 'RegularUser',
-}
+export type UserRole = 'MegaAdmin' | 'MiniAdmin' | 'RegularUser'
 
 type User = {
   firstname: string,
@@ -30,7 +26,7 @@ export const AuthenticationContext = createContext<IAuthenticationContext>({
 })
 
 const AuthenticationContextProvider: FunctionComponent<{ readonly children?: ReactNode }> = memo(props => {
-  const [user, setUser] = useState<User | undefined>(undefined)
+  const [user, setUser] = useState<User>()
 
   const authenticate = useCallback((newUser: User) => setUser(newUser), [setUser])
 

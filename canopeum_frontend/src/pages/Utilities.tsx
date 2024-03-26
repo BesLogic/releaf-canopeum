@@ -57,10 +57,10 @@ const Utilities = () => (
       <div className='bg-white rounded-2 px-3 py-2'>
         <h2>Badges</h2>
         <div className='d-flex gap-1'>
-          <PrimaryIconBadge type="school" />
-          <PrimaryIconBadge type="forest" />
-          <PrimaryIconBadge type="workspaces" />
-          <PrimaryIconBadge type="person" />
+          <PrimaryIconBadge type='school' />
+          <PrimaryIconBadge type='forest' />
+          <PrimaryIconBadge type='workspaces' />
+          <PrimaryIconBadge type='person' />
         </div>
       </div>
       <div className='bg-white rounded px-3 py-2'>
