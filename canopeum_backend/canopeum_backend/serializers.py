@@ -122,6 +122,7 @@ class SiteSerializer(serializers.ModelSerializer):
         model = Site
         fields = "__all__"
 
+    @extend_schema_field(SitetreespeciesSerializer(many=True))
     def get_site_tree_species(self, obj):
         return SitetreespeciesSerializer(obj.sitetreespecies_set.all(), many=True).data
 
@@ -258,30 +259,39 @@ class BatchAnalyticsSerializer(serializers.ModelSerializer):
             "species",
         )
 
+    @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_plant_count(self, obj):
         return self.context.get("plant_count")
 
+    @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_survived_count(self, obj):
         return self.context.get("survived_count")
 
+    @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_replace_count(self, obj):
         return self.context.get("replace_count")
 
+    @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_seed_collected_count(self, obj):
         return self.context.get("seed_collected_count")
 
+    @extend_schema_field(BatchfertilizerSerializer(many=True))
     def get_fertilizers(self, obj):
         return BatchfertilizerSerializer(obj.batchfertilizer_set.all(), many=True).data
 
+    @extend_schema_field(BatchMulchLayerSerializer(many=True))
     def get_mulch_layers(self, obj):
         return BatchMulchLayerSerializer(obj.batchmulchlayer_set.all(), many=True).data
 
+    @extend_schema_field(BatchSupportedSpeciesSerializer(many=True))
     def get_supported_species(self, obj):
         return BatchSupportedSpeciesSerializer(obj.batchsupportedspecies_set.all(), many=True).data
 
+    @extend_schema_field(BatchSeedSerializer(many=True))
     def get_seeds(self, obj):
         return BatchSeedSerializer(obj.batchseed_set.all(), many=True).data
 
+    @extend_schema_field(BatchSpeciesSerializer(many=True))
     def get_species(self, obj):
         return BatchSpeciesSerializer(obj.batchspecies_set.all(), many=True).data
 
@@ -307,18 +317,23 @@ class SiteSummarySerializer(serializers.ModelSerializer):
             "progress",
         )
 
+    @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_plant_count(self, obj):
         return self.context.get("plant_count")
 
+    @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_survived_count(self, obj):
         return self.context.get("survived_count")
 
+    @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_propagation_count(self, obj):
         return self.context.get("propagation_count")
 
+    @extend_schema_field(float)  # pyright: ignore[reportArgumentType]
     def get_progress(self, obj):
         return self.context.get("progress")
 
+    @extend_schema_field(BatchSerializer(many=True))
     def get_sponsor(self, obj):
         return BatchSerializer(obj).data.get("sponsor", None)
 
@@ -346,6 +361,7 @@ class SiteMapSerializer(serializers.ModelSerializer):
         model = Site
         fields = ("id", "name", "site_type", "coordinates", "image")
 
+    @extend_schema_field(CoordinatesMapSerializer)
     def get_coordinates(self, obj):
         return CoordinatesMapSerializer(obj.coordinate).data
 
@@ -365,9 +381,11 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ("id", "site", "created_at", "body", "like_count", "share_count", "comment_count", "has_liked")
 
+    @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_comment_count(self, obj):
         return self.context.get("comment_count")
 
+    @extend_schema_field(bool)  # pyright: ignore[reportArgumentType]
     def get_has_liked(self, obj):
         return self.context.get("has_liked")
 
