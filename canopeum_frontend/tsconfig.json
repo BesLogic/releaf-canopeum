@@ -9,6 +9,12 @@
     "paths": {
       "@assets/*": [
         "./src/assets/*"
+      ],
+      "@components/*": [
+        "./src/components/*"
+      ],
+      "@services/*": [
+        "./src/services/*"
       ]
     },
     /* Bundler mode */

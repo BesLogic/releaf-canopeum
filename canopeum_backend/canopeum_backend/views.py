@@ -11,6 +11,7 @@ from rest_framework.views import APIView
 
 from .models import Announcement, Batch, Comment, Contact, Post, Site, Widget
 from rest_framework.parsers import FileUploadParser
+from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, Widget
 from .serializers import (
     AnnouncementSerializer,
     AssetSerializer,
@@ -206,7 +207,7 @@ class PostListAPIView(APIView):
     @extend_schema(responses=PostSerializer(many=True), operation_id="post_all")
     def get(self, request):
         comment_count = Comment.objects.filter(post=request.data.get("id")).count()
-        has_liked = 0
+        has_liked = Like.objects.filter(post=request.data.get("id"), user=request.user).exists()
         site_id = request.GET.get("siteId", "")
         posts = Post.objects.filter(site=site_id) if not site_id else Post.objects.all()
         serializer = PostSerializer(posts, many=True, context={"comment_count": comment_count, "has_liked": has_liked})

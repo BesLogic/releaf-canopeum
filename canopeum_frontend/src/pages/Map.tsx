@@ -4,20 +4,20 @@ import EducationalFacilityPin from '@assets/icons/pins/educational-facility-pin.
 import FarmsLandPin from '@assets/icons/pins/farms-land-pin.svg'
 import IndegeniousCommunityPin from '@assets/icons/pins/indegenious-community-pin.svg'
 import ParkPin from '@assets/icons/pins/park-pin.svg'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import ReactMap, { GeolocateControl, Marker, NavigationControl, ScaleControl, type ViewState } from 'react-map-gl/maplibre'
 import { Link } from 'react-router-dom'
 
 import type { SiteMap } from '../services/api'
 import api from '../services/apiInterface'
 
-const pinMap = {
-  '1': CanopeumPin,
-  '2': ParkPin,
-  '3': IndegeniousCommunityPin,
-  '4': EducationalFacilityPin,
-  '5': FarmsLandPin,
-  '6': CorporateLotPin,
+const pinMap: Record<number, string> = {
+  1: CanopeumPin,
+  2: ParkPin,
+  3: IndegeniousCommunityPin,
+  4: EducationalFacilityPin,
+  5: FarmsLandPin,
+  6: CorporateLotPin,
 }
 
 type MarkerEvent = {
@@ -44,11 +44,11 @@ const Map = () => {
     setSites(response)
   }
 
-  const getBrowserLocation = () =>
+  const getBrowserLocation = useCallback(() =>
     navigator.geolocation.getCurrentPosition(position => {
       const { latitude, longitude } = position.coords
       setMapViewState({ ...mapViewState, latitude, longitude })
-    })
+    }), [mapViewState])
 
   const onMarkerClick = (event: MarkerEvent, site: SiteMap) => {
     const { lat, lng } = event.target._lngLat
@@ -69,7 +69,7 @@ const Map = () => {
   useEffect(() => {
     void fetchData()
     getBrowserLocation()
-  }, [])
+  }, [getBrowserLocation])
 
   return (
     <div className='container-fluid p-0'>
@@ -118,8 +118,8 @@ const Map = () => {
               <Marker
                 anchor='bottom'
                 key={`${site.id}-${site.coordinates.latitude}-${site.coordinates.longitude}`}
-                latitude={site.coordinates.latitude}
-                longitude={site.coordinates.longitude}
+                latitude={Number(site.coordinates.latitude)}
+                longitude={Number(site.coordinates.longitude)}
                 onClick={event => onMarkerClick(event, site)}
                 style={{ cursor: 'pointer' }}
               >
