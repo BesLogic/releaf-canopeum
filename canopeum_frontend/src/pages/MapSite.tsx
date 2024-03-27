@@ -60,12 +60,12 @@ const MapSite = () => {
             </div>
           </div>
           <div className='col-8'>
-            <div className='rounded-2 px-3 py-2 d-flex flex-column gap-2'>
+            <div className='rounded-2 d-flex flex-column gap-2'>
               {site && (
                 <>
                   <CreatePostWidget site={site} />
                   <div className='d-flex flex-column gap-2'>
-                    {site.posts.map((post: Post) => <PostWidget key={post.id} post={post} />)}
+                    {site.posts?.map((post: Post) => <PostWidget key={post.id} post={post} />)}
                   </div>
                 </>
               )}
