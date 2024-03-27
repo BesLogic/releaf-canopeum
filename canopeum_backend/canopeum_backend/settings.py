@@ -169,8 +169,8 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'canopeum_backend/media'
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "canopeum_backend/media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

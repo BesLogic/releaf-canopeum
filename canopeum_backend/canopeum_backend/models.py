@@ -1,7 +1,7 @@
-import os
+from datetime import datetime
+
 from django.conf import settings
 from django.db import models
-from datetime import datetime
 
 
 class Announcement(models.Model):
@@ -84,17 +84,20 @@ class FertilizertypeInternationalization(models.Model):
 class Mulchlayertype(models.Model):
     name = models.ForeignKey("MulchlayertypeInternationalization", models.DO_NOTHING, blank=True, null=True)
 
+
 class MulchlayertypeInternationalization(models.Model):
     en = models.TextField(db_column="EN", blank=True, null=True)
     fr = models.TextField(db_column="FR", blank=True, null=True)
 
 
 def upload_to(instance, filename):
-    now = datetime.now().strftime('%Y%m%d%H%M%S%f')
-    return f'{now}{filename}'
+    now = datetime.now().strftime("%Y%m%d%H%M%S%f")
+    return f"{now}{filename}"
+
 
 class Asset(models.Model):
     asset = models.FileField(upload_to=upload_to, null=False)
+
 
 class Post(models.Model):
     site = models.ForeignKey("Site", models.DO_NOTHING, blank=True, null=True)
@@ -102,11 +105,13 @@ class Post(models.Model):
     like_count = models.IntegerField(blank=True, null=True)
     share_count = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
-    media = models.ManyToManyField(Asset, through='PostAsset')
+    media = models.ManyToManyField(Asset, through="PostAsset")
+
 
 class PostAsset(models.Model):
     post = models.ForeignKey(Post, models.DO_NOTHING, null=False)
     asset = models.ForeignKey(Asset, models.DO_NOTHING, null=False)
+
 
 class Site(models.Model):
     name = models.TextField(blank=True, null=True)
@@ -121,9 +126,11 @@ class Site(models.Model):
     announcement = models.ForeignKey(Announcement, models.DO_NOTHING, blank=True, null=True)
     image = models.ForeignKey(Asset, models.DO_NOTHING, blank=True, null=True)
 
+
 class Siteadmin(models.Model):
     auth_user = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING, blank=True, null=True)
     site = models.ForeignKey(Site, models.DO_NOTHING, blank=True, null=True)
+
 
 class Sitetreespecies(models.Model):
     site = models.ForeignKey(Site, models.DO_NOTHING, blank=True, null=True)
