@@ -1,5 +1,4 @@
-from typing import ClassVar
-
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
@@ -8,7 +7,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Announcement, Batch, Comment, Contact, Post, Site, Widget
+from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, Widget
 from .serializers import (
     AnnouncementSerializer,
     AuthUserSerializer,
@@ -28,7 +27,7 @@ from .serializers import (
 
 
 class LoginAPIView(APIView):
-    permission_classes: ClassVar[list[type[AllowAny]]] = [AllowAny]
+    permission_classes = (AllowAny,)
 
     @extend_schema(request=AuthUserSerializer, responses=UserSerializer, operation_id="authentication_login")
     def post(self, request):
@@ -43,7 +42,7 @@ class LoginAPIView(APIView):
 
 
 class RegisterAPIView(APIView):
-    permission_classes: ClassVar[list[type[AllowAny]]] = [AllowAny]
+    permission_classes = (AllowAny,)
 
     @extend_schema(request=UserSerializer, responses=AuthUserSerializer, operation_id="authentication_register")
     def post(self, request):
@@ -90,7 +89,7 @@ class SiteDetailAPIView(APIView):
         return Response(serializer.data)
 
     @extend_schema(request=SiteSerializer, responses=SiteSerializer, operation_id="site_update")
-    def put(self, request, siteId):
+    def patch(self, request, siteId):
         try:
             site = Site.objects.get(pk=siteId)
         except Site.DoesNotExist:
@@ -114,7 +113,7 @@ class SiteDetailAPIView(APIView):
 
 
 class SiteSummaryListAPIView(APIView):
-    @extend_schema(responses=SiteSummarySerializer(many=True), operation_id="site_summary")
+    @extend_schema(responses=SiteSummarySerializer(many=True), operation_id="site_summary_all")
     def get(self, request):
         sites = Site.objects.all()
         plant_count = 0
@@ -135,7 +134,7 @@ class SiteSummaryListAPIView(APIView):
 
 
 class SiteSummaryDetailAPIView(APIView):
-    @extend_schema(responses=SiteSummarySerializer, operation_id="site_summarydetail")
+    @extend_schema(responses=SiteSummarySerializer, operation_id="site_summary")
     def get(self, request, siteId):
         try:
             site = Site.objects.get(pk=siteId)
@@ -172,9 +171,19 @@ class SiteSocialDetailAPIView(APIView):
         return Response(serializer.data)
 
 
+class SiteSocialListAPIView(APIView):
+    @extend_schema(
+        request=SiteSocialSerializer(many=True), responses=SiteSocialSerializer, operation_id="site_social_all"
+    )
+    def get(self, request):
+        sites = Site.objects.all()
+        serializer = SiteSocialSerializer(sites, many=True)
+        return Response(serializer.data)
+
+
 class SiteMapListAPIView(APIView):
-    @extend_schema(responses=SiteMapSerializer, operation_id="site_map")
-    def get_site_map(self):
+    @extend_schema(responses=SiteMapSerializer(many=True), operation_id="site_map")
+    def get(self, request):
         sites = Site.objects.all()
         serializer = SiteMapSerializer(sites, many=True)
         return Response(serializer.data)
@@ -183,12 +192,10 @@ class SiteMapListAPIView(APIView):
 class PostListAPIView(APIView):
     @extend_schema(responses=PostSerializer(many=True), operation_id="post_all")
     def get(self, request):
-        try:
-            comment_count = Comment.objects.get(post=request.data.get("id")).count()
-        except Comment.DoesNotExist:
-            comment_count = 0
-        has_liked = 0
-        posts = Post.objects.all()
+        comment_count = Comment.objects.filter(post=request.data.get("id")).count()
+        has_liked = Like.objects.filter(post=request.data.get("id"), user=request.user).exists()
+        site_id = request.GET.get("siteId", "")
+        posts = Post.objects.filter(site=site_id) if not site_id else Post.objects.all()
         serializer = PostSerializer(posts, many=True, context={"comment_count": comment_count, "has_liked": has_liked})
         return Response(serializer.data)
 
@@ -236,7 +243,7 @@ class CommentDetailAPIView(APIView):
 
 class AnnouncementDetailAPIView(APIView):
     @extend_schema(request=AnnouncementSerializer, responses=AnnouncementSerializer, operation_id="announcement_update")
-    def put(self, request, siteId):
+    def patch(self, request, siteId):
         try:
             announcement = Announcement.objects.get(site=siteId)
         except Announcement.DoesNotExist:
@@ -251,7 +258,7 @@ class AnnouncementDetailAPIView(APIView):
 
 class ContactDetailAPIView(APIView):
     @extend_schema(request=ContactSerializer, responses=ContactSerializer, operation_id="contact_update")
-    def put(self, request, pk):
+    def patch(self, request, pk):
         try:
             contact = Contact.objects.get(pk=pk)
         except Contact.DoesNotExist:
@@ -265,7 +272,7 @@ class ContactDetailAPIView(APIView):
 
 
 class WidgetListAPIView(APIView):
-    @extend_schema(request=WidgetSerializer, responses=WidgetSerializer, operation_id="widget_all")
+    @extend_schema(request=WidgetSerializer, responses=WidgetSerializer, operation_id="widget-create")
     def post(self, request):
         serializer = WidgetSerializer(data=request.data)
         if serializer.is_valid():
@@ -275,8 +282,8 @@ class WidgetListAPIView(APIView):
 
 
 class WidgetDetailAPIView(APIView):
-    @extend_schema(request=WidgetSerializer, responses=WidgetSerializer, operation_id="widget_detail")
-    def put(self, request, pk):
+    @extend_schema(request=WidgetSerializer, responses=WidgetSerializer, operation_id="widget_update")
+    def patch(self, request, pk):
         try:
             widget = Widget.objects.get(pk=pk)
         except Widget.DoesNotExist:
@@ -326,8 +333,8 @@ class BatchListAPIView(APIView):
 
 
 class BatchDetailAPIView(APIView):
-    @extend_schema(request=BatchSerializer, responses=BatchSerializer, operation_id="batch_detail")
-    def put(self, request, batchId):
+    @extend_schema(request=BatchSerializer, responses=BatchSerializer, operation_id="batch_update")
+    def patch(self, request, batchId):
         try:
             batch = Batch.objects.get(pk=batchId)
         except Batch.DoesNotExist:
@@ -351,7 +358,13 @@ class BatchDetailAPIView(APIView):
 
 
 class UserListAPIView(APIView):
-    @extend_schema(request=UserSerializer, responses=UserSerializer, operation_id="user_all")
+    @extend_schema(responses=UserSerializer(many=True), operation_id="user_all")
+    def get(self, request):
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
+
+    @extend_schema(request=UserSerializer, responses=UserSerializer, operation_id="user_create")
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
@@ -372,7 +385,7 @@ class UserDetailAPIView(APIView):
         return Response(serializer.data)
 
     @extend_schema(request=UserSerializer, responses=UserSerializer, operation_id="user_update")
-    def put(self, request, pk):
+    def patch(self, request, pk):
         try:
             user = User.objects.get(pk=pk)
         except User.DoesNotExist:
@@ -383,16 +396,6 @@ class UserDetailAPIView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    @extend_schema(operation_id="user_delete")
-    def delete(self, request, pk):
-        try:
-            user = User.objects.get(pk=pk)
-        except User.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        user.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class UserCurrentUserAPIView(APIView):

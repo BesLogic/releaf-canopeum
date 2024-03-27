@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -109,6 +110,11 @@ SPECTACULAR_SETTINGS = {
     "COMPONENT_NO_READ_ONLY_REQUIRED": False,
     # Create separate components for PATCH endpoints (without required list)
     "COMPONENT_SPLIT_PATCH": True,
+    "CAMELIZE_NAMES": True,
+    "POSTPROCESSING_HOOKS": [
+        "drf_spectacular.contrib.djangorestframework_camel_case.camelize_serializer_fields",
+        "drf_spectacular.hooks.postprocess_schema_enums",
+    ],
 }
 
 
@@ -121,8 +127,8 @@ DATABASES = {
         "NAME": "canopeum_db",
         "USER": "root",
         "PASSWORD": "canopeum",
-        "HOST": "localhost",
-        "PORT": "3306",
+        "HOST": os.environ.get("MYSQL_HOST", "localhost"),
+        "PORT": "3308",  # Same as in docker-compose.yaml
     },
 }
 

@@ -6,12 +6,26 @@
 
 @import "bootstrap/scss/bootstrap";
 
+// ::-webkit-scrollbar {
+//   width: 10px;
+// }
+
+// ::-webkit-scrollbar-track {
+//   background-color: transparent;
+// }
+
+// ::-webkit-scrollbar-thumb {
+//   background-color: #f8f9fa;
+//   border-radius: 5px;
+// }
+
 body {
   background-image: url('@assets/images/TreeBackground.png');
 }
 
 .material-symbols-outlined {
-  color: map-get($theme-colors, primary);
+  color: inherit;
+  font-size: inherit;
 }
 
 .navbar {

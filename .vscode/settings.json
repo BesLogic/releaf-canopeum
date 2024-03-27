@@ -8,9 +8,6 @@
       72
     ]
   },
-  "[markdown]": {
-    "files.trimTrailingWhitespace": false
-  },
   "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
@@ -52,7 +49,18 @@
   * CSS-specific settings
   */
   // TODO: Configure stylelint or dprint-prettier so I can recommend it
-  "[css][scss][postcss][less]": {
+  // NOTE: due to a bug in VSCode, we have to specify these individually to ensure it overrides user settings
+  // Please upvote: https://github.com/microsoft/vscode/issues/168411
+  "[css]": {
+    "editor.defaultFormatter": "vscode.css-language-features"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "vscode.css-language-features"
+  },
+  "[postcss]": {
+    "editor.defaultFormatter": "vscode.css-language-features"
+  },
+  "[less]": {
     "editor.defaultFormatter": "vscode.css-language-features"
   },
   "less.format.spaceAroundSelectorSeparator": true,
@@ -62,9 +70,34 @@
   * JavasScript-specific settings
   */
   // Set the default formatter to help avoid Prettier
-  "[json][jsonc][javascript][javascriptreact][typescript][typescriptreact][markdown][dockerfile]": {
+  // NOTE: due to a bug in VSCode, we have to specify these individually to ensure it overrides user settings
+  // Please upvote: https://github.com/microsoft/vscode/issues/168411
+  "[json]": {
     "editor.defaultFormatter": "dprint.dprint"
   },
+  "[jsonc]": {
+    "editor.defaultFormatter": "dprint.dprint"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "dprint.dprint"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "dprint.dprint"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "dprint.dprint"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "dprint.dprint"
+  },
+  "[markdown]": {
+    "files.trimTrailingWhitespace": false,
+    "editor.defaultFormatter": "dprint.dprint"
+  },
+  "[dockerfile]": {
+    "editor.defaultFormatter": "dprint.dprint"
+  },
+  "dprint.path": "canopeum_frontend/node_modules/dprint/dprint",
   "typescript.tsdk": "canopeum_frontend/node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "js/ts.implicitProjectConfig.checkJs": true,
