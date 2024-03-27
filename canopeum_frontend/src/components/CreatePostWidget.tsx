@@ -14,12 +14,15 @@ const CreatePostWidget = (props: { readonly site: SiteSocial }) => {
           Publish
         </button>
       </div>
-
-      <div className='d-flex justify-content-start'>
-        <span className='material-symbols-outlined fill-icon'>add_a_photo</span>
+      <div className='position-relative'>
+        <div className='position-absolute top-0 left-0 m-3 d-flex gap-3'>
+          <span className='material-symbols-outlined'>mood</span>
+          <span className='material-symbols-outlined'>add_a_photo</span>
+          <span className='material-symbols-outlined'>smart_display</span>
+        </div>
+        <textarea className='form-control pt-5' id='exampleFormControlTextarea1' placeholder='Post a New Message...'>
+        </textarea>
       </div>
-
-      <textarea className='form-control' id='exampleFormControlTextarea1' placeholder='Post a New Message...' />
     </div>
   )
 }
