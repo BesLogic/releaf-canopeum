@@ -43,7 +43,8 @@ $theme-colors: (
   warning: $yellow,
   danger: $red,
   light: $gray-100,
-  dark: $gray-800
+  dark: $gray-800,
+  light-gray: #818181,
 );
 $colors: (
   blue: $blue,
@@ -59,7 +60,7 @@ $colors: (
   white: $white,
   gray: $gray-600,
   gray-dark: $gray-800,
-  cream: $cream
+  cream: $cream,
 );
 $theme-color-interval: 8%;
 $table-variants: (

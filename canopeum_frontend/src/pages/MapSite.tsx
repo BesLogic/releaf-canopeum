@@ -1,10 +1,12 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import SiteSummaryCard from '@components/site/SiteSummaryCard'
-import type { SiteSocial } from '@services/api'
+import type { Post, SiteSocial } from '@services/api'
 import api from '@services/apiInterface'
 import { ensureError } from '@services/errors'
 import { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import CreatePostWidget from '../components/CreatePostWidget'
+import PostWidget from '../components/PostWidget'
 
 const MapSite = () => {
   const { siteId } = useParams()
@@ -58,8 +60,15 @@ const MapSite = () => {
             </div>
           </div>
           <div className='col-8'>
-            <div className='bg-white rounded-2 px-3 py-2'>
-              <h1>Right</h1>
+            <div className='rounded-2 d-flex flex-column gap-2'>
+              {site && (
+                <>
+                  <CreatePostWidget site={site} />
+                  <div className='d-flex flex-column gap-2'>
+                    {site.posts?.map((post: Post) => <PostWidget key={post.id} post={post} />)}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
