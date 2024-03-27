@@ -3895,11 +3895,11 @@ export enum Lang {
 }
 
 export class ApiException extends Error {
-  message: string
-  status: number
-  response: string
-  headers: { [key: string]: any }
-  result: any
+  override message: string;
+  status: number;
+  response: string;
+  headers: { [key: string]: any; };
+  result: any;
 
   constructor(message: string, status: number, response: string, headers: { [key: string]: any }, result: any) {
     super()
