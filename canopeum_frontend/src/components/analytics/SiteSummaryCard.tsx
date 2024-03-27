@@ -7,7 +7,7 @@ type Props = {
 }
 
 const SiteSummaryCard = ({ site }: Props) => {
-  const { t } = useTranslation()
+  const { t: translate } = useTranslation()
 
   return (
     <div
@@ -42,7 +42,7 @@ const SiteSummaryCard = ({ site }: Props) => {
                     <span className='material-symbols-outlined text-light'>psychiatry</span>
                   </div>
                   <span>{site.plantCount}</span>
-                  <span className='text-muted'>Planted</span>
+                  <span className='text-muted'>{translate('analytics.site-summary.planted')}</span>
                 </div>
 
                 <div className='col-4 d-flex flex-column align-items-center'>
@@ -50,7 +50,7 @@ const SiteSummaryCard = ({ site }: Props) => {
                     <span className='material-symbols-outlined text-light'>forest</span>
                   </div>
                   <span>{site.survivedCount}</span>
-                  <span className='text-muted'>Survived</span>
+                  <span className='text-muted'>{translate('analytics.site-summary.survived')}</span>
                 </div>
 
                 <div className='col-4 d-flex flex-column align-items-center'>
@@ -58,7 +58,7 @@ const SiteSummaryCard = ({ site }: Props) => {
                     <span className='material-symbols-outlined text-light'>forest</span>
                   </div>
                   <span>{site.propagationCount}</span>
-                  <span className='text-muted'>Propagation</span>
+                  <span className='text-muted'>{translate('analytics.site-summary.propagation')}</span>
                 </div>
               </div>
 
@@ -74,7 +74,9 @@ const SiteSummaryCard = ({ site }: Props) => {
                   />
                 </div>
 
-                <span className='text-primary ms-2'>{Math.round(site.progress)}% Sponsored</span>
+                <span className='text-primary ms-2'>
+                  {Math.round(site.progress)}% {translate('analytics.site-summary.sponsored')}
+                </span>
               </div>
             </div>
           </div>
