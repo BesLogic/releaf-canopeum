@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+
+import { AuthenticationContext } from './context/AuthenticationContext'
 
 const Navbar = () => {
   const { i18n: { changeLanguage, language } } = useTranslation()
@@ -15,6 +17,17 @@ const Navbar = () => {
     setCurrentLanguage(newLanguage)
     void changeLanguage(newLanguage)
   }
+
+  const { isAuthenticated, logout } = useContext(AuthenticationContext)
+  const navigate = useNavigate()
+
+  const onLoginLogoutbuttonClick = useCallback(() => {
+    if (isAuthenticated) {
+      logout()
+    } else {
+      navigate('/login')
+    }
+  }, [isAuthenticated, navigate, logout])
 
   return (
     <nav className='navbar navbar-expand-lg bg-primary'>
@@ -79,17 +92,34 @@ const Navbar = () => {
                 <span className='material-symbols-outlined text-light'>style</span>
               </Link>
             </li>
-            <li
-              className={`nav-item ms-auto ${
-                location.pathname === '/user-management'
-                  ? 'active'
-                  : ''
-              }`}
-            >
-              <Link className='nav-link' to='/user-management'>
-                <span className='material-symbols-outlined text-light'>account_circle</span>
-              </Link>
-            </li>
+          </ul>
+          <ul className='navbar-nav ms-3 gap-3'>
+            {isAuthenticated && (
+              <li
+                className={`nav-item ${
+                  location.pathname === '/user-management'
+                    ? 'active'
+                    : ''
+                }`}
+              >
+                <Link className='nav-link' to='/user-management'>
+                  <span className='material-symbols-outlined text-light'>account_circle</span>
+                </Link>
+              </li>
+            )}
+
+            {!isAuthenticated && (
+              <li>
+                <button
+                  className='btn btn-link text-light'
+                  onClick={() => onLoginLogoutbuttonClick()}
+                  style={{ width: 100 }}
+                  type='button'
+                >
+                  Log In
+                </button>
+              </li>
+            )}
           </ul>
         </div>
       </div>
