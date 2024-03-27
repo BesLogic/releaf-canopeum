@@ -70,4 +70,5 @@ const SiteSummaryCard = ({ site, viewMode }: Props) => {
     </div>
   )
 }
+
 export default SiteSummaryCard
