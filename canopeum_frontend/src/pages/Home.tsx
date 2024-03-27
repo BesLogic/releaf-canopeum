@@ -14,8 +14,8 @@ const Home = () => {
   const fetchData = async () => {
     setIsLoading(true)
     try {
-      const response = await api().analytics.batches();
-      setData(response);
+      const response = await api().analytics.batches()
+      setData(response)
     } catch (error_: unknown) {
       setError(ensureError(error_))
     } finally {

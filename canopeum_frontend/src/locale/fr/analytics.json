@@ -1,5 +1,20 @@
 {
   "average": "moyenne",
+  "batches": "lots",
   "sufficient": "suffisant",
-  "insufficient": "insuffisant"
+  "insufficient": "insuffisant",
+  "table-row-1": "nom du lot / ID",
+  "table-row-2": "sponsor",
+  "table-row-3": "espèces",
+  "table-row-4": "taille du terrain planté",
+  "table-row-5": "état du sol",
+  "table-row-6": "engrais",
+  "table-row-7": "couches de paillis",
+  "table-row-8": "espèces supportées",
+  "table-row-9": "nombre de plants",
+  "table-row-10": "combien ont survécu",
+  "table-row-11": "combien ont été remplacés",
+  "table-row-12": "quantité de graines collectées dans la zone",
+  "table-row-13": "types de graines collectées",
+  "last-update": "dernière mise à jour"
 }

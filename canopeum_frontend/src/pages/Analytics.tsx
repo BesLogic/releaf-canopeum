@@ -1,12 +1,13 @@
-/* eslint-disable jsx-a11y/prefer-tag-over-role -- required for bs style of progress */
+import BatchTable from '@components/analytics/BatchTable'
+import SiteSummaryCard from '@components/analytics/SiteSummaryCard'
+import { LanguageContext } from '@components/context/LanguageContext'
 import type { ChartsAxisContentProps } from '@mui/x-charts'
 import { BarChart, type BarChartProps } from '@mui/x-charts/BarChart'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import type { SiteSummary } from '../services/api'
+import type { BatchAnalytics, SiteSummary } from '../services/api'
 import api from '../services/apiInterface'
-import { ensureError } from '../services/errors'
 
 type SiteSummaryChartOptions = { groups: string[], series: BarChartProps['series'], colors: string[], average: number }
 
@@ -49,24 +50,17 @@ const buildChartOptions = (siteSummaries: SiteSummary[]) => {
 
 const Analytics = () => {
   const { t } = useTranslation()
+  const { formatDate } = useContext(LanguageContext)
   const [siteSummaries, setSiteSummaries] = useState<SiteSummary[]>([])
-  const [isLoadingSiteSummaries, setIsLoadingSiteSummaries] = useState(false)
-  const [siteSummariesError, setSiteSummariesError] = useState<Error | undefined>(undefined)
+  const [batches, setBatches] = useState<BatchAnalytics[]>([])
 
-  const fetchSites = async () => {
-    setIsLoadingSiteSummaries(true)
-    try {
-      const response = await api().analytics.siteSummaries()
-      setSiteSummaries(response)
-    } catch (error: unknown) {
-      setSiteSummariesError(ensureError(error))
-    } finally {
-      setIsLoadingSiteSummaries(false)
-    }
-  }
+  const fetchSites = async () => setSiteSummaries(await api().analytics.siteSummaries())
+
+  const fetchBatches = async () => setBatches(await api().analytics.batches())
 
   useEffect((): void => {
     void fetchSites()
+    void fetchBatches()
   }, [])
 
   const renderChartTooltip = (props: ChartsAxisContentProps) => {
@@ -91,7 +85,7 @@ const Analytics = () => {
 
     return (
       <div>
-        <h5 className='text-capitalize'>{t('analytics.average')} : {options.average.toFixed(1)} %</h5>
+        <h6 className='text-capitalize'>{t('analytics.average')} : {options.average.toFixed(1)} %</h6>
         <BarChart
           colors={options.colors}
           grid={{ horizontal: true, vertical: true }}
@@ -137,82 +131,42 @@ const Analytics = () => {
     )
   }
 
-  const renderSiteCards = () => {
-    if (isLoadingSiteSummaries) {
-      return <p>Loading...</p>
-    }
-
-    if (siteSummariesError) {
-      return <p>Error: {siteSummariesError.message}</p>
+  const renderBatches = () => {
+    const mappedBatchesPerSite = new Map<number, BatchAnalytics[]>()
+    for (const batch of batches) {
+      mappedBatchesPerSite.set(batch.siteId, [...mappedBatchesPerSite.get(batch.siteId) ?? [], batch])
     }
 
     return siteSummaries.map(site => (
-      <div
-        className='col-3'
-        key={site.name}
-      >
-        <div className='card h-100 py-3'>
-          <div className='card-body d-flex flex-column h-100'>
-            <div className='d-flex align-items-center card-title'>
-              <div className='bg-primary rounded-circle d-flex justify-content-center align-items-center p-1 me-2'>
-                <span className='material-symbols-outlined text-light'>school</span>
-              </div>
-              <h5 className='mb-0'>{site.name ?? 'Unnamed site'}</h5>
+      <div className='accordion-item mb-3 rounded' key={site.id}>
+        <h2 className='accordion-header rounded' id={`heading-${site.id}`}>
+          <button
+            aria-controls={`collapse-${site.id}`}
+            aria-expanded='true'
+            className='accordion-button collapsed rounded'
+            data-bs-target={`#collapse-${site.id}`}
+            data-bs-toggle='collapse'
+            type='button'
+          >
+            <div className='d-flex justify-content-between w-100 pe-3 fs-5'>
+              <span>{site.name}</span>
+              <span className='text-capitalize' style={{ opacity: .5 }}>
+                {t('analytics.last-update')}: {formatDate(new Date())}
+              </span>
+              <span className='text-capitalize'>
+                {mappedBatchesPerSite.get(site.id)?.length ?? 0} {t('analytics.batches')}
+              </span>
             </div>
-
-            <div className='card-subtitle my-1'>
-              <div className='d-flex align-items-center text-muted'>
-                <span className='material-symbols-outlined fill-icon text-muted me-1'>location_on</span>
-                <span>Missing Location</span>
-              </div>
-              <div className='d-flex align-items-center text-muted'>
-                <span className='material-symbols-outlined fill-icon text-muted me-1'>person</span>
-                <span>Missing Owner</span>
-              </div>
-            </div>
-
-            <div className='card-text mt-2'>
-              <div className='row my-2'>
-                <div className='col-4 d-flex flex-column align-items-center'>
-                  <div className='bg-primary rounded-circle d-flex justify-content-center align-items-center p-2'>
-                    <span className='material-symbols-outlined text-light'>psychiatry</span>
-                  </div>
-                  <span>{site.plantCount}</span>
-                  <span className='text-muted'>Planted</span>
-                </div>
-
-                <div className='col-4 d-flex flex-column align-items-center'>
-                  <div className='bg-primary rounded-circle d-flex justify-content-center align-items-center p-2'>
-                    <span className='material-symbols-outlined text-light'>forest</span>
-                  </div>
-                  <span>{site.survivedCount}</span>
-                  <span className='text-muted'>Survived</span>
-                </div>
-
-                <div className='col-4 d-flex flex-column align-items-center'>
-                  <div className='bg-primary rounded-circle d-flex justify-content-center align-items-center p-2'>
-                    <span className='material-symbols-outlined text-light'>forest</span>
-                  </div>
-                  <span>{site.propagationCount}</span>
-                  <span className='text-muted'>Propagation</span>
-                </div>
-              </div>
-
-              <div className='mt-4 d-flex align-items-center'>
-                <div className='flex-grow-1 progress'>
-                  <div
-                    aria-valuemax={100}
-                    aria-valuemin={0}
-                    aria-valuenow={site.progress}
-                    className='progress-bar'
-                    role='progressbar'
-                    style={{ width: `${site.progress}%` }}
-                  />
-                </div>
-
-                <span className='text-primary ms-2'>{Math.round(site.progress)}% Sponsored</span>
-              </div>
-            </div>
+          </button>
+        </h2>
+        <div
+          aria-labelledby={`heading-${site.id}`}
+          className='accordion-collapse collapse'
+          data-bs-parent='#accordion-batches'
+          id={`collapse-${site.id}`}
+        >
+          <div className='accordion-body'>
+            <BatchTable batches={batches} />
           </div>
         </div>
       </div>
@@ -229,22 +183,26 @@ const Analytics = () => {
         </div>
 
         <div className='mt-2 row gx-3 gy-3 pb-3 overflow-auto' style={{ maxHeight: '62rem' }}>
-          {renderSiteCards()}
+          {siteSummaries.map(site => <SiteSummaryCard key={`site-${site.id}-card`} site={site} />)}
         </div>
 
         <div className='mt-4 bg-white rounded p-3'>
-          <h2>Average Annual Success Rate Per Site</h2>
+          <h5>Average Annual Success Rate Per Site</h5>
           {renderSuccessRatesChart(siteSummaries)}
         </div>
 
-        <div className='mt-4 bg-white rounded p-3'>
-          <div className='d-flex justify-content-between'>
-            <h2>Batch Tracking</h2>
-            <div>
-              <span>Filters Go Here</span>
+        <div className='mt-4'>
+          <div className='bg-white rounded p-3 px-4'>
+            <div className='d-flex justify-content-between'>
+              <div className='fs-5'>Batch Tracking</div>
+              <div>
+                <span>Filters Go Here</span>
+              </div>
             </div>
           </div>
-          {renderSuccessRatesChart(siteSummaries)}
+          <div className='accordion mt-4' id='accordion-batches'>
+            {renderBatches()}
+          </div>
         </div>
       </div>
     </div>

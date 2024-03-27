@@ -1,5 +1,20 @@
 {
   "average": "average",
+  "batches": "batches",
   "sufficient": "sufficient",
-  "insufficient": "insufficient"
+  "insufficient": "insufficient",
+  "table-row-1": "batch name / ID",
+  "table-row-2": "sponsor",
+  "table-row-3": "species",
+  "table-row-4": "size of land planted",
+  "table-row-5": "soil condition",
+  "table-row-6": "fertilizers",
+  "table-row-7": "mulch layers",
+  "table-row-8": "supported species",
+  "table-row-9": "number of plants",
+  "table-row-10": "how many survived",
+  "table-row-11": "how many replaced",
+  "table-row-12": "amount of seeds collected in area",
+  "table-row-13": "types of seeds collected",
+  "last-update": "last update"
 }
