@@ -62,9 +62,11 @@ const Map = () => {
 
   useEffect(() => {
     void fetchData()
+
     navigator.geolocation.getCurrentPosition(position => {
-    const { latitude, longitude } = position.coords
-    setMapViewState(m => ({ ...m, latitude, longitude }))})
+      const { latitude, longitude } = position.coords
+      setMapViewState(mvs => ({ ...mvs, latitude, longitude }))
+    })
   }, [])
 
   return (
