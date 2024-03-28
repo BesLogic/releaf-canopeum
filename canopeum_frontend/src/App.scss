@@ -25,7 +25,39 @@ body {
 
 .material-symbols-outlined {
   color: inherit;
-  font-size: inherit;
+  font-size: 24px;
+
+  &.icon-2xs {
+    font-size: 12px;
+  }
+
+  &.icon-xs {
+    font-size: 16px;
+  }
+
+  &.icon-sm {
+    font-size: 20px;
+  }
+
+  &.icon-lg {
+    font-size: 28px;
+  }
+
+  &.icon-xl {
+    font-size: 32px;
+  }
+
+  &.icon-2xl {
+    font-size: 36px;
+  }
+
+  &.icon-3xl {
+    font-size: 40px;
+  }
+
+  &.icon-4xl {
+    font-size: 44px;
+  }
 }
 
 .navbar {
