@@ -14,15 +14,15 @@ const ContactCard = ({ contact }: { readonly contact: Contact }) => {
           <span className='material-symbols-outlined text-primary fs-2'>edit_square</span>
         </div>
         <div className='info-section d-flex flex-column'>
-          <div className='card-text adress d-flex align-items-center pb-3'>
+          <div className='card-text adress d-flex align-items-center pb-3 gap-2'>
             <span className='material-symbols-outlined fs-4'>home_work</span>
             <p className='mb-0'>{contact.address}</p>
           </div>
-          <div className='email d-flex align-items-center pb-3'>
+          <div className='email d-flex align-items-center pb-3 gap-2'>
             <span className='material-symbols-outlined fs-4'>mail</span>
             <p className='mb-0'>{contact.email}</p>
           </div>
-          <div className='phone d-flex align-items-center pb-3'>
+          <div className='phone d-flex align-items-center pb-3 gap-2'>
             <span className='material-symbols-outlined fs-4'>perm_phone_msg</span>
             <p className='mb-0'>{contact.phone}</p>
           </div>

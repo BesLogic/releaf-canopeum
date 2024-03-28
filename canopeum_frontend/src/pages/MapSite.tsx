@@ -39,7 +39,7 @@ const MapSite = () => {
   }, [siteId])
 
   return (
-    <div className='container mt-2 d-flex flex-column gap-2'>
+    <div className='container mt-2 d-flex flex-column gap-4' style={{ padding: '1rem 10rem' }}>
       {isLoadingSite
         ? (
           <div className='bg-white rounded-2 2 py-2'>
@@ -56,17 +56,17 @@ const MapSite = () => {
       <div className='container px-0'>
         <div className='row'>
           <div className='col-4'>
-            <div className='d-flex flex-column gap-2'>
-              { site?.announcement && <AnnouncementCard announcement={site.announcement} />}
-              { site?.contact && <ContactCard contact={site.contact} />}
+            <div className='d-flex flex-column gap-4'>
+              {site?.announcement && <AnnouncementCard announcement={site.announcement} />}
+              {site?.contact && <ContactCard contact={site.contact} />}
             </div>
           </div>
           <div className='col-8'>
-            <div className='rounded-2 d-flex flex-column gap-2'>
+            <div className='rounded-2 d-flex flex-column gap-4'>
               {site && (
                 <>
                   <CreatePostWidget site={site} />
-                  <div className='d-flex flex-column gap-2'>
+                  <div className='d-flex flex-column gap-4'>
                     {site.posts?.map((post: Post) => <PostWidget key={post.id} post={post} />)}
                   </div>
                 </>

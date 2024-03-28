@@ -6,7 +6,7 @@ const AnnouncementCard = ({ announcement }: { readonly announcement: Announcemen
     <div className='card-body'>
       <div className='d-flex justify-content-between align-items-center'>
         <h2 className='card-title'>Announcement</h2>
-        <span className='material-symbols-outlined'>edit_square</span>
+        <span className='material-symbols-outlined text-primary fs-2'>edit_square</span>
       </div>
       <p className='card-text text-justify'>
         {announcement.body}
