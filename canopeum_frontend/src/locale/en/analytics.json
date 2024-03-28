@@ -16,5 +16,11 @@
   "table-row-11": "how many replaced",
   "table-row-12": "amount of seeds collected in area",
   "table-row-13": "types of seeds collected",
-  "last-update": "last update"
+  "last-update": "last update",
+  "site-summary": {
+    "planted": "Planted",
+    "survived": "Survived",
+    "propagation": "Propagation",
+    "sponsored": "Sponsored"
+  }
 }

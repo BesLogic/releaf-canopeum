@@ -1507,7 +1507,7 @@
       "id": "m32b",
       "name": "Site",
       "documentation": "",
-      "value": "{\n  \"name\": \"{{lorem (int 1 3)}}\",\n  \"contact\": {\n    \"address\": \"{{street}}, {{city}}, {{countryCode}} {{postcode}}\",\n    \"email\": \"{{email}}\",\n    \"phone\": \"{{phone}}\",\n    \"facebookLink\": \"\",\n    \"xLink\": \"\",\n    \"instagramLink\": \"\",\n    \"linkedInLink\": \"\"\n  },\n  \n}"
+      "value": "{\n  \"name\": \"{{lorem (int 1 3)}}\",\n  \"contact\": {\n    \"address\": \"{{street}}, {{city}}, {{countryCode}} {{postcode}}\",\n    \"email\": \"{{email}}\",\n    \"phone\": \"{{phone}}\",\n    \"facebookLink\": \"https://beslogic.com\",\n    \"xLink\": \"https://beslogic.com\",\n    \"instagramLink\": \"https://beslogic.com\",\n    \"linkedInLink\": \"https://beslogic.com\"\n  },\n  \n}"
     },
     {
       "uuid": "c6fae7ec-3df3-465d-9a91-8a677aead682",
@@ -1535,7 +1535,7 @@
       "id": "r9jy",
       "name": "Contact",
       "documentation": "",
-      "value": "{\n  \"address\": \"{{street}}, {{city}}, {{countryCode}} {{postcode}}\",\n  \"email\": \"{{email}}\",\n  \"phone\": \"{{phone}}\",\n  \"facebookLink\": \"\",\n  \"xLink\": \"\",\n  \"instagramLink\": \"\",\n  \"linkedInLink\": \"\"\n}"
+      "value": "{\n  \"address\": \"{{street}}, {{city}}, {{countryCode}} {{postcode}}\",\n  \"email\": \"{{email}}\",\n  \"phone\": \"{{phone}}\",\n  \"facebookLink\": \"https://beslogic.com\",\n  \"xLink\": \"https://beslogic.com\",\n  \"instagramLink\": \"https://beslogic.com\",\n  \"linkedInLink\": \"https://beslogic.com\"\n}"
     }
   ],
   "callbacks": []
