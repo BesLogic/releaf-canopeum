@@ -5,15 +5,11 @@ import api from '@services/apiInterface'
 import { ensureError } from '@services/errors'
 import { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+
+import AnnouncementCard from '../components/AnnouncementCard/AnnouncementCard'
+import ContactCard from '../components/ContactCard/ContactCard'
 import CreatePostWidget from '../components/CreatePostWidget'
 import PostWidget from '../components/PostWidget'
-import AnnouncementCard from '../components/AnnouncementCard/AnnouncementCard';
-
-
-import ContactCard  from '../components/ContactCard/ContactCard';
-import SiteSummaryCard from '../components/site/SiteSummaryCard'
-import type { SiteSocial } from '../services/api'
-import api from '../services/apiInterface'
 
 const fetchSite = async (siteId: number, setSite: (site: SiteSocial) => void) => {
   try {
@@ -71,8 +67,8 @@ const MapSite = () => {
         <div className='row'>
           <div className='col-4'>
             <div className='d-flex flex-column gap-2'>
-              { site?.announcement && <AnnouncementCard announcement={site.announcement} />}
-              { site?.contact && <ContactCard contact={site.contact} />}
+              {site?.announcement && <AnnouncementCard announcement={site.announcement} />}
+              {site?.contact && <ContactCard contact={site.contact} />}
             </div>
           </div>
           <div className='col-8'>

@@ -124,7 +124,7 @@ const Navbar = () => {
         </div>
       </div>
       <button
-        className='btn btn-primary'
+        className='btn btn-primary text-uppercase'
         onClick={handleChangeLanguage}
         type='button'
       >

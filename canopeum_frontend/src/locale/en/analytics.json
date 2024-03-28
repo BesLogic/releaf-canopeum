@@ -22,5 +22,16 @@
     "survived": "Survived",
     "propagation": "Propagation",
     "sponsored": "Sponsored"
+  },
+  "site-modal": {
+    "create-site": "create site",
+    "site-name": "site name",
+    "site-type": "site type",
+    "site-image": "project image or enterprise logo",
+    "site-image-upload": "or drop an image to upload",
+    "site-gps-coordinates": "GPS coordinates",
+    "site-dms-latitude": "DMS latitude",
+    "site-dms-longitude": "DMS longitude",
+    "site-presentation": "brief presentation"
   }
 }

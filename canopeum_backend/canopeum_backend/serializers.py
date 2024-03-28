@@ -346,9 +346,11 @@ class CoordinatesMapSerializer(serializers.ModelSerializer):
         model = Coordinate
         fields = ("latitude", "longitude", "address")
 
+    @extend_schema_field(float) # pyright: ignore[reportArgumentType]
     def get_latitude(self, obj):
         return obj.dd_latitude
 
+    @extend_schema_field(float) # pyright: ignore[reportArgumentType]
     def get_longitude(self, obj):
         return obj.dd_longitude
 

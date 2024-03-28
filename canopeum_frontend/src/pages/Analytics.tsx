@@ -1,4 +1,5 @@
 import BatchTable from '@components/analytics/BatchTable'
+import SiteModal from '@components/analytics/SiteModal'
 import SiteSummaryCard from '@components/analytics/SiteSummaryCard'
 import { LanguageContext } from '@components/context/LanguageContext'
 import type { ChartsAxisContentProps } from '@mui/x-charts'
@@ -175,11 +176,14 @@ const Analytics = () => {
 
   return (
     <div>
-      <div className='container d-flex flex-column gap-2' style={{ padding: '1rem 10rem' }}>
+      <div className='container d-flex flex-column gap-2 mt-3'>
         <div className='d-flex justify-content-between'>
           <h1 className='text-light'>Manage my Sites</h1>
 
-          <button className='btn btn-secondary' type='button'>Create a New Site</button>
+          <button className='btn btn-secondary' data-bs-target='#site-modal' data-bs-toggle='modal' type='button'>
+            Create a New Site
+          </button>
+          <SiteModal modalId='site-modal' siteId={undefined} />
         </div>
 
         <div className='mt-2 row gx-3 gy-3 pb-3 overflow-auto' style={{ maxHeight: '62rem' }}>

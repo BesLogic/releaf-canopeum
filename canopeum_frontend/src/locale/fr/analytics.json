@@ -22,5 +22,8 @@
     "survived": "Survécu",
     "propagation": "Propagation",
     "sponsored": "Sponsorisé"
+  },
+  "site-modal": {
+    "create-site": "créer un site"
   }
 }
