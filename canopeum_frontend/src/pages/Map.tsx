@@ -44,12 +44,6 @@ const Map = () => {
     setSites(response)
   }
 
-  const getBrowserLocation = useCallback(() =>
-    navigator.geolocation.getCurrentPosition(position => {
-      const { latitude, longitude } = position.coords
-      setMapViewState({ ...mapViewState, latitude, longitude })
-    }), [mapViewState])
-
   const onMarkerClick = (event: MarkerEvent, site: SiteMap) => {
     const { lat, lng } = event.target._lngLat
     setMapViewState({
@@ -68,8 +62,10 @@ const Map = () => {
 
   useEffect(() => {
     void fetchData()
-    getBrowserLocation()
-  }, [getBrowserLocation])
+    navigator.geolocation.getCurrentPosition(position => {
+    const { latitude, longitude } = position.coords
+    setMapViewState(m => ({ ...m, latitude, longitude }))})
+  }, [])
 
   return (
     <div className='container-fluid p-0'>

@@ -7,22 +7,8 @@ import { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import CreatePostWidget from '../components/CreatePostWidget'
 import PostWidget from '../components/PostWidget'
-import AnnouncementCard from '../components/AnnouncementCard/AnnouncementCard';
-
-
-import ContactCard  from '../components/ContactCard/ContactCard';
-import SiteSummaryCard from '../components/site/SiteSummaryCard'
-import type { SiteSocial } from '../services/api'
-import api from '../services/apiInterface'
-
-const fetchSite = async (siteId: number, setSite: (site: SiteSocial) => void) => {
-  try {
-    const site = await api().social.site(siteId)
-    setSite(site)
-  } catch (error) {
-    console.error(error)
-  }
-}
+import AnnouncementCard from '../components/AnnouncementCard'
+import ContactCard from '../components/ContactCard'
 
 const MapSite = () => {
   const { siteId } = useParams()
