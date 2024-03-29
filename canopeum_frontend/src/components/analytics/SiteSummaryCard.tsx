@@ -2,6 +2,8 @@ import type { SiteSummary } from '@services/api'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
+import { Icon } from '../icons/Icon'
+
 type Props = {
   readonly site: SiteSummary,
 }
@@ -38,24 +40,24 @@ const SiteSummaryCard = ({ site }: Props) => {
             <div className='card-text mt-2'>
               <div className='row my-2'>
                 <div className='col-4 d-flex flex-column align-items-center'>
-                  <div className='bg-primary rounded-circle d-flex justify-content-center align-items-center p-2'>
-                    <span className='material-symbols-outlined text-light'>psychiatry</span>
+                  <div className='bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'>
+                    <Icon icon='sitePlantedIcon' size='xl' />
                   </div>
                   <span>{site.plantCount}</span>
                   <span className='text-muted'>{translate('analytics.site-summary.planted')}</span>
                 </div>
 
                 <div className='col-4 d-flex flex-column align-items-center'>
-                  <div className='bg-primary rounded-circle d-flex justify-content-center align-items-center p-2'>
-                    <span className='material-symbols-outlined text-light'>forest</span>
+                  <div className='bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'>
+                    <Icon icon='siteSurvivedIcon' size='xl' />
                   </div>
                   <span>{site.survivedCount}</span>
                   <span className='text-muted'>{translate('analytics.site-summary.survived')}</span>
                 </div>
 
                 <div className='col-4 d-flex flex-column align-items-center'>
-                  <div className='bg-primary rounded-circle d-flex justify-content-center align-items-center p-2'>
-                    <span className='material-symbols-outlined text-light'>forest</span>
+                  <div className='bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'>
+                    <Icon icon='sitePropagationIcon' size='xl' />
                   </div>
                   <span>{site.propagationCount}</span>
                   <span className='text-muted'>{translate('analytics.site-summary.propagation')}</span>
