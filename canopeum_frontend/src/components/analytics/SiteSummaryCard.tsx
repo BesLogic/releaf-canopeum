@@ -27,7 +27,7 @@ const SiteSummaryCard = ({ site }: Props) => {
               <div className='bg-primary rounded-circle d-flex justify-content-center align-items-center p-1 me-2'>
                 <span className='material-symbols-outlined text-light'>school</span>
               </div>
-              <h5 className='mb-0'>{site.name ?? translate('analytics.site-summary.unnamed-site')}</h5>
+              <h5 className='mb-0 text-ellipsis'>{site.name ?? translate('analytics.site-summary.unnamed-site')}</h5>
             </div>
 
             <div className='card-subtitle my-1'>
@@ -49,7 +49,7 @@ const SiteSummaryCard = ({ site }: Props) => {
                   <div className='bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'>
                     <Icon icon='sitePlantedIcon' size='xl' />
                   </div>
-                  <span>{site.plantCount}</span>
+                  <span className='text-primary fs-4 fw-bold'>{site.plantCount}</span>
                   <span className='text-muted'>{translate('analytics.site-summary.planted')}</span>
                 </div>
 
@@ -57,7 +57,7 @@ const SiteSummaryCard = ({ site }: Props) => {
                   <div className='bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'>
                     <Icon icon='siteSurvivedIcon' size='xl' />
                   </div>
-                  <span>{site.survivedCount}</span>
+                  <span className='text-primary fs-4 fw-bold'>{site.survivedCount}</span>
                   <span className='text-muted'>{translate('analytics.site-summary.survived')}</span>
                 </div>
 
@@ -65,7 +65,7 @@ const SiteSummaryCard = ({ site }: Props) => {
                   <div className='bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'>
                     <Icon icon='sitePropagationIcon' size='xl' />
                   </div>
-                  <span>{site.propagationCount}</span>
+                  <span className='text-primary fs-4 fw-bold'>{site.propagationCount}</span>
                   <span className='text-muted'>{translate('analytics.site-summary.propagation')}</span>
                 </div>
               </div>
@@ -82,7 +82,7 @@ const SiteSummaryCard = ({ site }: Props) => {
                   />
                 </div>
 
-                <span className='text-primary ms-2'>
+                <span className='text-primary ms-2 fw-bold'>
                   {Math.round(site.progress)}% {translate('analytics.site-summary.sponsored')}
                 </span>
               </div>

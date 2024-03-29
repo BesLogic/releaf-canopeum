@@ -104,6 +104,24 @@ body {
       height: 44px;
     }
   }
+
+  &.icon-5xl {
+    font-size: 48px;
+
+    &.custom-icon {
+      width: 48px;
+      height: 48px;
+    }
+  }
+
+  &.icon-6xl {
+    font-size: 52px;
+
+    &.custom-icon {
+      width: 52px;
+      height: 52px;
+    }
+  }
 }
 
 .navbar {
