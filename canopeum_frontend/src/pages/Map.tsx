@@ -4,7 +4,7 @@ import EducationalFacilityPin from '@assets/icons/pins/educational-facility-pin.
 import FarmsLandPin from '@assets/icons/pins/farms-land-pin.svg'
 import IndegeniousCommunityPin from '@assets/icons/pins/indegenious-community-pin.svg'
 import ParkPin from '@assets/icons/pins/park-pin.svg'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import ReactMap, { GeolocateControl, Marker, NavigationControl, ScaleControl, type ViewState } from 'react-map-gl/maplibre'
 import { Link } from 'react-router-dom'
 
