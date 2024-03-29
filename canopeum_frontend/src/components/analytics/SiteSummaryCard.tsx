@@ -1,8 +1,9 @@
+import SiteSponsorProgress from '@components/analytics/SiteSponsorProgress'
 import type { SiteSummary } from '@services/api'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
-import { Icon } from '../icons/Icon'
+import CustomIcon from '../icons/CustomIcon'
 
 type Props = {
   readonly site: SiteSummary,
@@ -47,7 +48,7 @@ const SiteSummaryCard = ({ site }: Props) => {
               <div className='row my-2'>
                 <div className='col-4 d-flex flex-column align-items-center'>
                   <div className='bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'>
-                    <Icon icon='sitePlantedIcon' size='xl' />
+                    <CustomIcon icon='sitePlantedIcon' size='xl' />
                   </div>
                   <span className='text-primary fs-4 fw-bold'>{site.plantCount}</span>
                   <span className='text-muted'>{translate('analytics.site-summary.planted')}</span>
@@ -55,7 +56,7 @@ const SiteSummaryCard = ({ site }: Props) => {
 
                 <div className='col-4 d-flex flex-column align-items-center'>
                   <div className='bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'>
-                    <Icon icon='siteSurvivedIcon' size='xl' />
+                    <CustomIcon icon='siteSurvivedIcon' size='xl' />
                   </div>
                   <span className='text-primary fs-4 fw-bold'>{site.survivedCount}</span>
                   <span className='text-muted'>{translate('analytics.site-summary.survived')}</span>
@@ -63,28 +64,15 @@ const SiteSummaryCard = ({ site }: Props) => {
 
                 <div className='col-4 d-flex flex-column align-items-center'>
                   <div className='bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'>
-                    <Icon icon='sitePropagationIcon' size='xl' />
+                    <CustomIcon icon='sitePropagationIcon' size='xl' />
                   </div>
                   <span className='text-primary fs-4 fw-bold'>{site.propagationCount}</span>
                   <span className='text-muted'>{translate('analytics.site-summary.propagation')}</span>
                 </div>
               </div>
 
-              <div className='mt-4 d-flex align-items-center'>
-                <div className='flex-grow-1 progress'>
-                  <div
-                    aria-valuemax={100}
-                    aria-valuemin={0}
-                    aria-valuenow={site.progress}
-                    className='progress-bar'
-                    role='progressbar'
-                    style={{ width: `${site.progress}%` }}
-                  />
-                </div>
-
-                <span className='text-primary ms-2 fw-bold'>
-                  {Math.round(site.progress)}% {translate('analytics.site-summary.sponsored')}
-                </span>
+              <div className='mt-4'>
+                <SiteSponsorProgress progress={site.progress} />
               </div>
             </div>
           </div>

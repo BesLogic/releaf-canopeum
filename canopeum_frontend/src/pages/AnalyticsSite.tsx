@@ -1,15 +1,19 @@
+import SiteSponsorProgress from '@components/analytics/SiteSponsorProgress'
+import { LanguageContext } from '@components/context/LanguageContext'
+import CustomIconBadge from '@components/CustomIconBadge'
 import type { SiteSummary } from '@services/api'
 import api from '@services/apiInterface'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
-import { Icon } from '../components/icons/Icon'
+import CustomIcon from '../components/icons/CustomIcon'
 import classes from './AnalyticsSite.module.scss'
 
 const AnalyticsSite = () => {
   const { t: translate } = useTranslation<'analytics'>()
   const { siteId: siteIdFromParams } = useParams()
+  const { translateValue } = useContext(LanguageContext)
 
   const [site, setSite] = useState<SiteSummary | undefined>()
 
@@ -35,19 +39,25 @@ const AnalyticsSite = () => {
           <span>{translate('analyticsSite.location')}</span>
         </div>
 
-        <div className='site-info-container py-4 px-5 flex-grow-1'>
-          <div className='d-flex justify-content-between'>
+        <div className='site-info-container pb-4 pt-5 px-5 flex-grow-1'>
+          <div className='d-flex justify-content-between align-items-start'>
             <div>
               <h2>{site.name}</h2>
+              <div className='d-flex align-items-center'>
+                <CustomIconBadge icon='siteTypeCanopeumIcon' />
+                <span className='ms-2'>{translateValue(site.siteType)}</span>
+              </div>
             </div>
 
-            <button className='btn btn-primary' type='button'>{translate('analyticsSite.social-page')}</button>
+            <Link className='nav-link' to={`/map/${site.id}`}>
+              <button className='btn btn-primary' type='button'>{translate('analyticsSite.social-page')}</button>
+            </Link>
           </div>
 
           <div className={`d-flex justify-content-between mt-4 ${classes.analyticsCountsContainer}`}>
             <div className='d-flex align-items-center gap-2 me-5'>
               <div className='bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'>
-                <Icon icon='sitePlantedIcon' size='5xl' />
+                <CustomIcon icon='sitePlantedIcon' size='5xl' />
               </div>
               <div className='d-flex flex-column'>
                 <span className='text-primary fs-4 fw-bold'>{site.plantCount}</span>
@@ -57,7 +67,7 @@ const AnalyticsSite = () => {
 
             <div className='d-flex align-items-center gap-2 me-5'>
               <div className='bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'>
-                <Icon icon='siteSurvivedIcon' size='5xl' />
+                <CustomIcon icon='siteSurvivedIcon' size='5xl' />
               </div>
               <div className='d-flex flex-column'>
                 <span className='text-primary fs-4 fw-bold'>{site.survivedCount}</span>
@@ -67,7 +77,7 @@ const AnalyticsSite = () => {
 
             <div className='d-flex align-items-center gap-2 me-5'>
               <div className='bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'>
-                <Icon icon='sitePropagationIcon' size='5xl' />
+                <CustomIcon icon='sitePropagationIcon' size='5xl' />
               </div>
               <div className='d-flex flex-column'>
                 <span className='text-primary fs-4 fw-bold'>{site.propagationCount}</span>
@@ -77,7 +87,7 @@ const AnalyticsSite = () => {
 
             <div className='d-flex align-items-center gap-2 me-5'>
               <div className='bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'>
-                <Icon icon='siteVisitorsIcon' size='5xl' />
+                <CustomIcon icon='siteVisitorsIcon' size='5xl' />
               </div>
               <div className='d-flex flex-column'>
                 <span className='text-primary fs-4 fw-bold'>{site.visitorCount}</span>
@@ -86,12 +96,16 @@ const AnalyticsSite = () => {
             </div>
           </div>
 
-          <div className='mt-3'>
+          <div className='mt-4'>
             <div className='d-flex align-items-flex-end fw-bold'>
               <span className='material-symbols-outlined'>group</span>
               <span className='ms-1 me-2'>{translate('analyticsSite.sponsors')}:</span>
               {site.sponsors.map(sponsor => <span className='me-4' key={sponsor}>{sponsor}</span>)}
             </div>
+          </div>
+
+          <div className='mt-1'>
+            <SiteSponsorProgress progress={site.progress} />
           </div>
         </div>
       </div>
