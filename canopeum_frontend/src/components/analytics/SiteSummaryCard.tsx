@@ -11,6 +11,10 @@ type Props = {
 const SiteSummaryCard = ({ site }: Props) => {
   const { t: translate } = useTranslation()
 
+  const siteAdminsDisplay = site.admins.length > 0
+    ? site.admins.map(admin => admin.username).join(', ')
+    : translate('analytics.site-summary.no-amins')
+
   return (
     <div
       className='col-3'
@@ -23,17 +27,19 @@ const SiteSummaryCard = ({ site }: Props) => {
               <div className='bg-primary rounded-circle d-flex justify-content-center align-items-center p-1 me-2'>
                 <span className='material-symbols-outlined text-light'>school</span>
               </div>
-              <h5 className='mb-0'>{site.name ?? 'Unnamed site'}</h5>
+              <h5 className='mb-0'>{site.name ?? translate('analytics.site-summary.unnamed-site')}</h5>
             </div>
 
             <div className='card-subtitle my-1'>
               <div className='d-flex align-items-center text-muted'>
                 <span className='material-symbols-outlined fill-icon text-muted me-1'>location_on</span>
-                <span>Missing Location</span>
+                <span className='text-ellipsis'>
+                  {site.coordinate.address ?? translate('analytics.site-summary.unknown')}
+                </span>
               </div>
               <div className='d-flex align-items-center text-muted'>
                 <span className='material-symbols-outlined fill-icon text-muted me-1'>person</span>
-                <span>Missing Owner</span>
+                <span className='text-ellipsis'>{siteAdminsDisplay}</span>
               </div>
             </div>
 

@@ -316,6 +316,7 @@ class SiteAdminSerializer(serializers.ModelSerializer):
 
 class SiteSummarySerializer(serializers.ModelSerializer):
     site_type = SiteTypeSerializer()
+    coordinate = CoordinatesSerializer()
     plant_count = serializers.SerializerMethodField()
     survived_count = serializers.SerializerMethodField()
     propagation_count = serializers.SerializerMethodField()
@@ -328,6 +329,7 @@ class SiteSummarySerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "name",
+            "coordinate",
             "site_type",
             "plant_count",
             "survived_count",

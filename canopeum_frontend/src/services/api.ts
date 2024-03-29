@@ -3283,6 +3283,7 @@ export interface ISiteSocial {
 export class SiteSummary implements ISiteSummary {
   readonly id!: number;
   name?: string | undefined;
+  coordinate!: Coordinates;
   siteType!: SiteType;
   readonly plantCount!: number;
   readonly survivedCount!: number;
@@ -3302,6 +3303,7 @@ export class SiteSummary implements ISiteSummary {
           }
       }
       if (!data) {
+          this.coordinate = new Coordinates();
           this.siteType = new SiteType();
           this.sponsors = [];
           this.admins = [];
@@ -3316,6 +3318,7 @@ export class SiteSummary implements ISiteSummary {
           }
           (<any>this).id = _data["id"];
           this.name = _data["name"];
+          this.coordinate = _data["coordinate"] ? Coordinates.fromJS(_data["coordinate"]) : new Coordinates();
           this.siteType = _data["siteType"] ? SiteType.fromJS(_data["siteType"]) : new SiteType();
           (<any>this).plantCount = _data["plantCount"];
           (<any>this).survivedCount = _data["survivedCount"];
@@ -3350,6 +3353,7 @@ export class SiteSummary implements ISiteSummary {
       }
       data["id"] = this.id;
       data["name"] = this.name;
+      data["coordinate"] = this.coordinate ? this.coordinate.toJSON() : <any>undefined;
       data["siteType"] = this.siteType ? this.siteType.toJSON() : <any>undefined;
       data["plantCount"] = this.plantCount;
       data["survivedCount"] = this.survivedCount;
@@ -3373,6 +3377,7 @@ export class SiteSummary implements ISiteSummary {
 export interface ISiteSummary {
   id: number;
   name?: string | undefined;
+  coordinate: Coordinates;
   siteType: SiteType;
   plantCount: number;
   survivedCount: number;
@@ -3793,7 +3798,7 @@ export enum Lang {
 }
 
 export class ApiException extends Error {
-  message: string;
+  override message: string;
   status: number;
   response: string;
   headers: { [key: string]: any; };
