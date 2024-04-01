@@ -21,6 +21,10 @@
     "planted": "Planted",
     "survived": "Survived",
     "propagation": "Propagation",
-    "sponsored": "Sponsored"
+    "visitors": "Visitors",
+    "sponsored": "Sponsored",
+    "no-admins": "No Admins",
+    "unknown": "Unknown",
+    "unnamed-site": "Unnamed site"
   }
 }
