@@ -4,6 +4,7 @@ from rest_framework import serializers
 
 from .models import (
     Announcement,
+    Asset,
     Batch,
     Batchfertilizer,
     BatchSeed,
@@ -112,12 +113,34 @@ class SitetreespeciesSerializer(serializers.ModelSerializer):
         return TreeTypeSerializer(obj.tree_type).data.get("fr", None)
 
 
+class AssetSerializer(serializers.ModelSerializer):
+    asset = serializers.FileField()
+
+    class Meta:
+        model = Asset
+        fields = ("asset",)
+
+    def to_internal_value(self, data):
+        # Map 'image' field to 'asset' field in incoming data
+        if "image" in data:
+            data["asset"] = data["image"]
+            del data["image"]
+        return super().to_internal_value(data)
+
+
+class SitePostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Site
+        fields = ("id", "name", "description", "image")
+
+
 class SiteSerializer(serializers.ModelSerializer):
     site_type = SiteTypeSerializer()
     coordinate = CoordinatesSerializer()
     site_tree_species = serializers.SerializerMethodField()
     contact = ContactSerializer()
     announcement = AnnouncementSerializer()
+    image = AssetSerializer()
 
     class Meta:
         model = Site
@@ -134,6 +157,7 @@ class SiteSocialSerializer(serializers.ModelSerializer):
     announcement = AnnouncementSerializer()
     widget = serializers.SerializerMethodField()
     sponsors = serializers.SerializerMethodField()
+    image = AssetSerializer()
 
     class Meta:
         model = Site
@@ -249,6 +273,7 @@ class BatchAnalyticsSerializer(serializers.ModelSerializer):
             "name",
             "size",
             "soil_condition",
+            "sponsor",
             "fertilizers",
             "mulch_layers",
             "supported_species",
@@ -384,6 +409,7 @@ class CoordinatesMapSerializer(serializers.ModelSerializer):
 class SiteMapSerializer(serializers.ModelSerializer):
     site_type = SiteTypeSerializer()
     coordinates = serializers.SerializerMethodField()
+    image = AssetSerializer()
 
     class Meta:
         model = Site
@@ -395,19 +421,38 @@ class SiteMapSerializer(serializers.ModelSerializer):
 
 
 class SiteOverviewSerializer(serializers.ModelSerializer):
+    image = AssetSerializer()
+
     class Meta:
         model = Site
-        fields = ("id", "name")
+        fields = ("id", "name", "image")
+
+
+class PostPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ("site", "body")
 
 
 class PostSerializer(serializers.ModelSerializer):
     site = SiteOverviewSerializer()
     comment_count = serializers.SerializerMethodField()
     has_liked = serializers.SerializerMethodField()
+    media = AssetSerializer(many=True)
 
     class Meta:
         model = Post
-        fields = ("id", "site", "created_at", "body", "like_count", "share_count", "comment_count", "has_liked")
+        fields = (
+            "id",
+            "site",
+            "created_at",
+            "body",
+            "like_count",
+            "share_count",
+            "comment_count",
+            "has_liked",
+            "media",
+        )
 
     @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_comment_count(self, obj):

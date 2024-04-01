@@ -1,8 +1,10 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.http import QueryDict
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.authtoken.models import Token
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -10,14 +12,17 @@ from rest_framework.views import APIView
 from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, Widget
 from .serializers import (
     AnnouncementSerializer,
+    AssetSerializer,
     AuthUserSerializer,
     BatchAnalyticsSerializer,
     BatchSerializer,
     CommentSerializer,
     ContactSerializer,
     LikeSerializer,
+    PostPostSerializer,
     PostSerializer,
     SiteMapSerializer,
+    SitePostSerializer,
     SiteSerializer,
     SiteSocialSerializer,
     SiteSummarySerializer,
@@ -68,11 +73,17 @@ class SiteListAPIView(APIView):
         serializer = SiteSerializer(sites, many=True)
         return Response(serializer.data)
 
+    parser_classes = (MultiPartParser, FormParser)
+
     @extend_schema(request=SiteSerializer, responses=SiteSerializer, operation_id="site_create")
     def post(self, request):
-        serializer = SiteSerializer(data=request.data)
+        asset = AssetSerializer(data=request.data)
+        if not asset.is_valid():
+            return Response(data=asset.errors, status=status.HTTP_400_BAD_REQUEST)
+        asset = asset.save()
+        serializer = SitePostSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            post = serializer.save(image=asset)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -81,7 +92,7 @@ class SiteDetailAPIView(APIView):
     @extend_schema(request=SiteSerializer, responses=SiteSerializer, operation_id="site_detail")
     def get(self, request, siteId):
         try:
-            site = Site.objects.get(pk=siteId)
+            site = Site.objects.prefetch_related("image").get(pk=siteId)
         except Site.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -199,11 +210,25 @@ class PostListAPIView(APIView):
         serializer = PostSerializer(posts, many=True, context={"comment_count": comment_count, "has_liked": has_liked})
         return Response(serializer.data)
 
-    @extend_schema(request=PostSerializer, responses=PostSerializer, operation_id="post_create")
+    parser_classes = (MultiPartParser, FormParser)
+
+    @extend_schema(request=PostPostSerializer, responses=PostSerializer, operation_id="post_create")
     def post(self, request):
-        serializer = PostSerializer(data=request.data)
+        assets = request.data.getlist("media")
+        saved_assets = []
+        for asset in assets:
+            q = QueryDict("", mutable=True)
+            q.update({"image": asset})
+            asset = AssetSerializer(data=q)
+            if not asset.is_valid():
+                return Response(data=asset.errors, status=status.HTTP_400_BAD_REQUEST)
+            asset.save()
+            saved_assets.append(asset)
+        serializer = PostPostSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            post = serializer.save()
+            for asset in saved_assets:
+                post.media.add(asset.instance)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
