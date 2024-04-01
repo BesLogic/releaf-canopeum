@@ -4,7 +4,7 @@ import EducationalFacilityPin from '@assets/icons/pins/educational-facility-pin.
 import FarmsLandPin from '@assets/icons/pins/farms-land-pin.svg'
 import IndegeniousCommunityPin from '@assets/icons/pins/indegenious-community-pin.svg'
 import ParkPin from '@assets/icons/pins/park-pin.svg'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import ReactMap, { GeolocateControl, Marker, NavigationControl, ScaleControl, type ViewState } from 'react-map-gl/maplibre'
 import { Link } from 'react-router-dom'
 
@@ -44,12 +44,6 @@ const Map = () => {
     setSites(response)
   }
 
-  const getBrowserLocation = useCallback(() =>
-    navigator.geolocation.getCurrentPosition(position => {
-      const { latitude, longitude } = position.coords
-      setMapViewState({ ...mapViewState, latitude, longitude })
-    }), [mapViewState])
-
   const onMarkerClick = (event: MarkerEvent, site: SiteMap) => {
     const { lat, lng } = event.target._lngLat
     setMapViewState({
@@ -68,8 +62,12 @@ const Map = () => {
 
   useEffect(() => {
     void fetchData()
-    getBrowserLocation()
-  }, [getBrowserLocation])
+
+    navigator.geolocation.getCurrentPosition(position => {
+      const { latitude, longitude } = position.coords
+      setMapViewState(mvs => ({ ...mvs, latitude, longitude }))
+    })
+  }, [])
 
   return (
     <div className='container-fluid p-0'>

@@ -588,7 +588,7 @@
       "responses": [
         {
           "uuid": "e2a65576-e324-4689-9d73-45df19729b05",
-          "body": "{\n  \"name\": \"{{lorem (int 1 3)}}\",\n  \"type\": {\n    \"id\": {{int 0 6}},\n    \"en\": \"{{lorem (int 1 2)}}\",\n    \"fr\": \"{{lorem (int 1 2)}}\"\n  },\n  \"plantCount\": {{int 0 5000}},\n  \"survivedCount\": {{int 0 5000}},\n  \"propagationCount\": {{int 0 500}},\n  \"visitorCount\": {{int 0 500}},\n  \"sponsors\": {{{someOf (array (lorem 2) (lorem 2) (lorem 2) (lorem 2) (lorem 2)) 0 5 true}}},\n  \"progress\": {{float 0 100}},\n  \"image\": \"\"\n}",
+          "body": "{\n    \"id\": \"{{int (int 1 9999)}}\",\n    \"name\": \"{{lorem (int 1 3)}}\",\n    \"siteType\": {\n      \"id\": {{int 0 6}},\n      \"en\": \"{{lorem (int 1 2)}}\",\n      \"fr\": \"{{lorem (int 1 2)}}\"\n    },\n    \"coordinate\": {\n      \"id\": {{int 1 9999}},\n      \"dmsLatitude\": \"{{int 50 60}} {{int 15 30}} {{int 30 60}} {{int 1000 9999}} N\",\n      \"dmsLongitude\": \"{{int 50 80}} {{int 20 45}} {{int 10 55}} {{int 1000 9999}} W\",\n      \"address\": \"{{faker 'location.city'}}\"\n    },\n    \"plantCount\": {{int 0 5000}},\n    \"survivedCount\": {{int 0 5000}},\n    \"propagationCount\": {{int 0 500}},\n    \"visitorCount\": {{int 0 500}},\n    \"sponsors\": {{{someOf (array (faker 'company.name') (faker 'company.name') (faker 'company.name') (faker 'company.name') (faker 'company.name')) 0 5 true}}},\n    \"progress\": {{float 0 100}},\n    \"admins\": [\n      {{#repeat 1 (int 1 3) comma=true}}\n      {\n        \"id\": {{int 1 9999}},\n        \"userId\": \"{{int 1 9999}}\",\n        \"username\": \"{{faker 'person.fullName'}}\"\n      }\n      {{/repeat}}\n    ]\n  }",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -622,7 +622,7 @@
       "responses": [
         {
           "uuid": "28554ad8-04f5-4513-9d7b-af7f9eb68a9e",
-          "body": "{\n  \"name\": \"{{lorem (int 1 3)}}\",\n  \"type\": {\n    \"id\": {{int 0 6}},\n    \"en\": \"{{lorem (int 1 2)}}\",\n    \"fr\": \"{{lorem (int 1 2)}}\"\n  },\n  \"coordinates\": {\n    \"dmsLatitude\": \"{{int 50 60}} {{int 15 30}} {{int 30 60}} {{int 1000 9999}} N\",\n    \"dmsLongitude\": \"{{int 50 80}} {{int 20 45}} {{int 10 55}} {{int 1000 9999}} W\"\n  },\n  \"description\": \"{{lorem (int 1 150)}}\",\n  \"size\": {{int 1 200}},\n  \"species\": [\n    {{#repeat 1 (int 1 4) comma=true}}\n    {\n      \"id\": {{int 1 9999}},\n      \"en\": \"{{lorem (int 1 2)}}\",\n      \"fr\": \"{{lorem (int 1 2)}}\",\n      \"quantity\": {{int 1 10}}\n    }\n    {{/repeat}}\n  ],\n  \"researchPartnership\": {{boolean}},\n  \"visibleOnMap\": {{boolean}}\n}",
+          "body": "{\n  \"name\": \"{{lorem (int 1 3)}}\",\n  \"siteType\": {\n    \"id\": {{int 0 6}},\n    \"en\": \"{{lorem (int 1 2)}}\",\n    \"fr\": \"{{lorem (int 1 2)}}\"\n  },\n  \"coordinates\": {\n    \"dmsLatitude\": \"{{int 50 60}} {{int 15 30}} {{int 30 60}} {{int 1000 9999}} N\",\n    \"dmsLongitude\": \"{{int 50 80}} {{int 20 45}} {{int 10 55}} {{int 1000 9999}} W\"\n  },\n  \"description\": \"{{lorem (int 1 150)}}\",\n  \"size\": {{int 1 200}},\n  \"species\": [\n    {{#repeat 1 (int 1 4) comma=true}}\n    {\n      \"id\": {{int 1 9999}},\n      \"en\": \"{{lorem (int 1 2)}}\",\n      \"fr\": \"{{lorem (int 1 2)}}\",\n      \"quantity\": {{int 1 10}}\n    }\n    {{/repeat}}\n  ],\n  \"researchPartnership\": {{boolean}},\n  \"visibleOnMap\": {{boolean}}\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -656,7 +656,7 @@
       "responses": [
         {
           "uuid": "ac5b893d-b30e-43c9-8988-4c13a7e0c819",
-          "body": "[\n  {{#repeat 1 (int 1 14) comma=true}}\n  {\n    \"id\": \"{{int (int 1 9999)}}\", \"name\": \"{{lorem (int 1 3)}}\", \n    \"type\": {\n      \"id\": {{int 0 6}},\n      \"en\": \"{{lorem (int 1 2)}}\",\n      \"fr\": \"{{lorem (int 1 2)}}\"\n    },\n    \"plantCount\": {{int 0 5000}},\n    \"survivedCount\": {{int 0 5000}},\n    \"propagationCount\": {{int 0 500}},\n    \"visitorCount\": {{int 0 500}},\n    \"sponsors\": {{{someOf (array (lorem 2) (lorem 2) (lorem 2) (lorem 2) (lorem 2)) 0 5 true}}},\n    \"progress\": {{float 0 100}}\n  }\n  {{/repeat}}\n]",
+          "body": "[\n  {{#repeat 1 (int 1 14) comma=true}}\n  {\n    \"id\": \"{{int (int 1 9999)}}\",\n    \"name\": \"{{lorem (int 1 3)}}\",\n    \"siteType\": {\n      \"id\": {{int 0 6}},\n      \"en\": \"{{lorem (int 1 2)}}\",\n      \"fr\": \"{{lorem (int 1 2)}}\"\n    },\n    \"coordinate\": {\n      \"id\": {{int 1 9999}},\n      \"dmsLatitude\": \"{{int 50 60}} {{int 15 30}} {{int 30 60}} {{int 1000 9999}} N\",\n      \"dmsLongitude\": \"{{int 50 80}} {{int 20 45}} {{int 10 55}} {{int 1000 9999}} W\",\n      \"address\": \"{{faker 'location.city'}}\"\n    },\n    \"plantCount\": {{int 0 5000}},\n    \"survivedCount\": {{int 0 5000}},\n    \"propagationCount\": {{int 0 500}},\n    \"visitorCount\": {{int 0 500}},\n    \"sponsors\": {{{someOf (array (faker 'company.name') (faker 'company.name') (faker 'company.name') (faker 'company.name') (faker 'company.name')) 0 5 true}}},\n    \"progress\": {{float 0 100}},\n    \"admins\": [\n      {{#repeat 1 (int 1 3) comma=true}}\n      {\n        \"id\": {{int 1 9999}},\n        \"userId\": \"{{int 1 9999}}\",\n        \"username\": \"{{faker 'person.fullName'}}\"\n      }\n      {{/repeat}}\n    ]\n  }\n  {{/repeat}}\n]",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -690,7 +690,7 @@
       "responses": [
         {
           "uuid": "9142494b-7b03-4738-a81a-69e49e17d6c0",
-          "body": "[\n  {{#repeat 1 (int 1 10) comma=true}}\n  {\n    \"id\": {{int 1 9999}},\n    \"name\": \"{{lorem (int 1 2)}}\",\n    \"size\": \"{{int 1 100}}\",\n    \"condition\": {\n      \"id\": {{int 1 9999}},\n      \"en\": \"{{lorem (int 1 2)}}\",\n      \"fr\": \"{{lorem (int 1 2)}}\"\n    },\n    \"fertilizers\": [\n      {{#repeat 1 (int 1 2) comma=true}}\n      {\n        \"id\": {{int 1 9999}},\n        \"en\": \"{{lorem (int 1 2)}}\",\n        \"fr\": \"{{lorem (int 1 2)}}\"\n      }\n      {{/repeat}}\n    ],\n    \"mulchLayers\": [\n      {{#repeat 1 (int 1 2) comma=true}}\n      {\n        \"id\": {{int 1 9999}},\n        \"en\": \"{{lorem (int 1 2)}}\",\n        \"fr\": \"{{lorem (int 1 2)}}\"\n      }\n      {{/repeat}}\n    ],\n    \"supportedSpecies\": [\n      {{#repeat 1 (int 1 4) comma=true}}\n      {\n        \"id\": {{int 1 9999}},\n        \"en\": \"{{lorem (int 1 2)}}\",\n        \"fr\": \"{{lorem (int 1 2)}}\"\n      }\n      {{/repeat}}\n    ],\n    \"plantCount\": {{int 1 100}},\n    \"surviveCount\": {{int 1 100}},\n    \"replaceCount\": {{int 1 100}},\n    \"seedCollectedCount\": {{int 1 100}},\n    \"seeds\": [\n      {{#repeat 1 (int 1 4) comma=true}}\n      {\n        \"id\": {{int 1 9999}},\n        \"en\": \"{{lorem (int 1 2)}}\",\n        \"fr\": \"{{lorem (int 1 2)}}\",\n        \"quantity\": {{int 1 100}}\n      }\n      {{/repeat}}\n    ],\n    \"species\": [\n      {{#repeat 1 (int 1 4) comma=true}}\n      {\n        \"id\": {{int 1 9999}},\n        \"en\": \"{{lorem (int 1 2)}}\",\n        \"fr\": \"{{lorem (int 1 2)}}\",\n        \"quantity\": {{int 1 100}}\n      }\n      {{/repeat}}\n    ]\n  }\n  {{/repeat}}\n]",
+          "body": "[\n  {{#repeat 1 10 comma=true}}\n  {\n    \"id\": {{int 1 9999}},\n    \"siteId\": 0,\n    \"lastModifiedAt\": \"{{date '2024-03-23' '2024-03-24' \"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\"}}\",\n    \"sponsor\": \"{{lorem (int 1 2)}}\",\n    \"name\": \"{{lorem (int 1 2)}}\",\n    \"size\": \"{{int 1 100}}\",\n    \"soilCondition\": \"{{lorem 4}}\",\n    \"fertilizers\": [\n      {{#repeat 1 (int 1 2) comma=true}}\n      {\n        \"id\": {{int 1 9999}},\n        \"en\": \"{{lorem (int 1 2)}}\",\n        \"fr\": \"{{lorem (int 1 2)}}\"\n      }\n      {{/repeat}}\n    ],\n    \"mulchLayers\": [\n      {{#repeat 1 (int 1 2) comma=true}}\n      {\n        \"id\": {{int 1 9999}},\n        \"en\": \"{{lorem (int 1 2)}}\",\n        \"fr\": \"{{lorem (int 1 2)}}\"\n      }\n      {{/repeat}}\n    ],\n    \"supportedSpecies\": [\n      {{#repeat 1 (int 1 4) comma=true}}\n      {\n        \"id\": {{int 1 9999}},\n        \"en\": \"{{lorem (int 1 2)}}\",\n        \"fr\": \"{{lorem (int 1 2)}}\"\n      }\n      {{/repeat}}\n    ],\n    \"plantCount\": {{int 1 100}},\n    \"survivedCount\": {{int 1 100}},\n    \"replaceCount\": {{int 1 100}},\n    \"seedCollectedCount\": {{int 1 100}},\n    \"seeds\": [\n      {{#repeat 1 (int 1 4) comma=true}}\n      {\n        \"id\": {{int 1 9999}},\n        \"en\": \"{{lorem (int 1 2)}}\",\n        \"fr\": \"{{lorem (int 1 2)}}\",\n        \"quantity\": {{int 1 100}}\n      }\n      {{/repeat}}\n    ],\n    \"species\": [\n      {{#repeat 1 (int 1 4) comma=true}}\n      {\n        \"id\": {{int 1 9999}},\n        \"en\": \"{{lorem (int 1 2)}}\",\n        \"fr\": \"{{lorem (int 1 2)}}\",\n        \"quantity\": {{int 1 100}}\n      }\n      {{/repeat}}\n    ]\n  }\n  {{/repeat}}\n]",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -996,14 +996,18 @@
       "responses": [
         {
           "uuid": "a267dc25-6a4e-4a19-a77b-dc64168e76d7",
-          "body": "[\n  {{#repeat 1 (int 1 5) comma=true}}\n  {\n    \"id\": {{int 1 9999}},\n    \"name\": \"{{lorem (int 1 3)}}\",\n    \"type\": {\n      \"id\": {{int 0 6}},\n      \"en\": \"{{lorem (int 1 2)}}\",\n      \"fr\": \"{{lorem (int 1 2)}}\"\n    },\n    \"coordinates\": {\n      \"address\": \"{{city}}\",\n      \"latitude\": {{int 50 60}},\n      \"longitude\": -{{int 50 80}}\n    },\n    \"image\": \"\"\n  }\n]",
+          "body": "[\n  {{#repeat 1 (int 1 10) comma=true}}\n  {\n    \"id\": {{@index}},\n    \"name\": \"{{lorem (int 1 3)}}\",\n    \"siteType\": {\n      \"id\": {{int 1 6}},\n      \"en\": \"{{lorem (int 1 2)}}\",\n      \"fr\": \"{{lorem (int 1 2)}}\"\n    },\n    \"coordinates\": {\n      \"address\": \"{{city}}\",\n      \"latitude\": {{int 50 60}},\n      \"longitude\": -{{int 50 80}}\n    },\n    \"image\": \"\"\n  }\n  {{/repeat}}\n]",
           "latency": 0,
           "statusCode": 200,
           "label": "",
           "headers": [
             {
               "key": "Content-Type",
-              "value": "application/json"
+              "value": "application/x-www-form-urlencoded"
+            },
+            {
+              "key": "",
+              "value": ""
             }
           ],
           "bodyType": "INLINE",
@@ -1030,7 +1034,7 @@
       "responses": [
         {
           "uuid": "2d298812-02ea-4391-93fc-0dd874d3f57a",
-          "body": "{\n  \"name\": \"{{lorem (int 1 3)}}\",\n  \"type\": {\n    \"id\": {{int 1 9999}},\n    \"en\": \"{{lorem (int 1 3)}}\",\n    \"fr\": \"{{lorem (int 1 3)}}\"\n  },\n  \"description\": \"{{lorem (int 1 150)}}\",\n  \"sponsors\": {{{someOf (array (lorem 2) (lorem 2) (lorem 2) (lorem 2) (lorem 2)) 0 5 true}}},\n  \"announcement\": {\n    \"id\": {{int 1 9999}},\n    \"body\": \"{{lorem (int 1 150)}}\",\n    \"link\": \"https://{{domain}}/\"\n  },\n  \"contact\": {\n    \"id\": {{int 1 9999}},\n    \"address\": \"{{street}}, {{city}}, {{countryCode}} {{postcode}}\",\n    \"email\": \"{{email}}\",\n    \"phone\": \"{{phone}}\",\n    \"facebookLink\": \"https://beslogic.com\",\n    \"xLink\": \"https://beslogic.com\",\n    \"instagramLink\": \"https://beslogic.com\",\n    \"linkedInLink\": \"https://beslogic.com\"\n  },\n  \"widgets\": [\n    {{#repeat 0 (int 0 2) comma=true}}\n    {\n      \"id\": {{int 1 9999}},\n      \"title\": \"{{lorem (int 1 5)}}\",\n      \"body\": \"{{lorem (int 1 150)}}\"\n    }\n    {{/repeat}}\n  ],\n  \"image\": \"\"\n}",
+          "body": "{\n  \"name\": \"{{lorem (int 1 3)}}\",\n  \"siteType\": {\n    \"id\": {{int 1 9999}},\n    \"en\": \"{{lorem (int 1 3)}}\",\n    \"fr\": \"{{lorem (int 1 3)}}\"\n  },\n  \"description\": \"{{lorem (int 1 150)}}\",\n  \"sponsors\": {{{someOf (array (lorem 2) (lorem 2) (lorem 2) (lorem 2) (lorem 2)) 0 5 true}}},\n  \"announcement\": {\n    \"id\": {{int 1 9999}},\n    \"body\": \"{{lorem (int 1 150)}}\",\n    \"link\": \"https://{{domain}}/\"\n  },\n  \"contact\": {\n    \"id\": {{int 1 9999}},\n    \"address\": \"{{street}}, {{city}}, {{countryCode}} {{postcode}}\",\n    \"email\": \"{{email}}\",\n    \"phone\": \"{{phone}}\",\n    \"facebookLink\": \"\",\n    \"xLink\": \"\",\n    \"instagramLink\": \"\",\n    \"linkedInLink\": \"\"\n  },\n  \"widgets\": [\n    {{#repeat 0 (int 0 2) comma=true}}\n    {\n      \"id\": {{int 1 9999}},\n      \"title\": \"{{lorem (int 1 5)}}\",\n      \"body\": \"{{lorem (int 1 150)}}\"\n    }\n    {{/repeat}}\n  ],\n  \"image\": \"\"\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
