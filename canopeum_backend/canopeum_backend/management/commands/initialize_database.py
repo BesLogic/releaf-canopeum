@@ -193,7 +193,7 @@ class Command(BaseCommand):
             body="Canopeum is a park in Montreal",
             like_count=10,
             share_count=5,
-            created_at=timezone.now(),
+            created_at=timezone.now()
         )
         post.media.set(Asset.objects.all())
 

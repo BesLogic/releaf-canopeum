@@ -16,6 +16,11 @@ const MapSite = () => {
   const [isLoadingSite, setIsLoadingSite] = useState(true)
   const [error, setError] = useState<Error | undefined>(undefined)
   const [site, setSite] = useState<SiteSocial>()
+
+  const [isLoadingPosts, setIsLoadingPosts] = useState(true)
+  const [errorPosts, setErrorPosts] = useState<Error | undefined>(undefined)
+  const [posts, setPosts] = useState<Post[]>()  
+
   const viewMode = currentUser
     ? currentUser.role === 'RegularUser'
       ? 'user'
@@ -34,8 +39,22 @@ const MapSite = () => {
     }
   }
 
+  const fetchPosts = async (parsedSiteId: number) => {
+    setIsLoadingPosts(true)
+    try {
+      const fetchedPosts = await api().social.posts()
+      setPosts(fetchedPosts)
+    } catch (error_: unknown) {
+      setErrorPosts(ensureError(error_))
+    } finally {
+      setIsLoadingPosts(false)
+    }
+  }
+
+
   useEffect((): void => {
     void fetchSiteData(Number(siteId) || 1)
+    void fetchPosts(Number(siteId) || 1)
   }, [siteId])
 
   return (
@@ -67,7 +86,19 @@ const MapSite = () => {
                 <>
                   <CreatePostWidget site={site} />
                   <div className='d-flex flex-column gap-4'>
-                    {site.posts?.map((post: Post) => <PostWidget key={post.id} post={post} />)}
+                    {isLoadingPosts
+                      ? (
+                        <div className='bg-white rounded-2 2 py-2'>
+                          <p>Loading...</p>
+                          </div>
+                          )
+                        : errorPosts
+                        ? (
+                          <div className='bg-white rounded-2 2 py-2'>
+                            <p>{errorPosts.message}</p>
+                          </div>
+                        )
+                        : posts && posts?.map((post: Post) => <PostWidget key={post.id} post={post} />)}
                   </div>
                 </>
               )}
