@@ -125,7 +125,9 @@ const BatchTable = ({ batches }: Props) => {
                 style={{ borderColor: cellBorderColor }}
               >
                 <ul>
-                  {batch.fertilizers.map(type => <li key={`batch-${batch.id}-fertilizer`}>{translateValue(type)}</li>)}
+                  {batch.fertilizers.map(type => (
+                    <li key={`batch-${batch.id}-fertilizer-${type.en}`}>{translateValue(type)}</li>
+                  ))}
                 </ul>
               </td>
             ))}
@@ -164,7 +166,7 @@ const BatchTable = ({ batches }: Props) => {
               >
                 <ul>
                   {batch.supportedSpecies.map(type => (
-                    <li key={`batch-${batch.id}-supportedTreeType`}>{translateValue(type)}</li>
+                    <li key={`batch-${batch.id}-supportedTreeType-${type.en}`}>{translateValue(type)}</li>
                   ))}
                 </ul>
               </td>
@@ -252,8 +254,10 @@ const BatchTable = ({ batches }: Props) => {
                 style={{ borderColor: cellBorderColor }}
               >
                 <ul>
-                  {batch.seeds.map(type => (
-                    <li key={`batch-${batch.id}-seeds`}>{translateValue(type)} x {type.quantity}</li>
+                  {batch.seeds.map(batchSeed => (
+                    <li key={`batch-${batch.id}-seeds-list-${batchSeed.en}`}>
+                      {translateValue(batchSeed)} x {batchSeed.quantity}
+                    </li>
                   ))}
                 </ul>
               </td>
