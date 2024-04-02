@@ -15,7 +15,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #f8f9fa;
+  background-color: #b8bcc0;
   border-radius: 5px;
 }
 
@@ -189,4 +189,9 @@ body {
 
 .form-control:focus {
   color: $default-text-color;
+}
+
+button.unstyled-button {
+  border: none;
+  padding: inherit;
 }
