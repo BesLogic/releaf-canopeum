@@ -1,4 +1,4 @@
-import headerLogo from '@assets/images/map/MARR4059.png'
+import { getApiBaseUrl } from '@services/apiSettings'
 import { LanguageContext } from '@components/context/LanguageContext'
 import ToggleSwitch from '@components/inputs/ToggleSwitch'
 import PrimaryIconBadge from '@components/PrimaryIconBadge'
@@ -30,9 +30,13 @@ const SiteSummaryCard = ({ site, viewMode }: Props) => {
       <div className='row g-0'>
         <div
           className='col-md-4'
-          style={{ backgroundImage: `url(${headerLogo})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+          style={{
+            backgroundImage: `url('${getApiBaseUrl() + site.image?.asset}')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
         >
-          {/* TODO: replace img source when backend offers an image endpoint */}
+          {/* TODO: Fixing type asset */}
         </div>
         <div className='col-md-8'>
           <div className='card-body'>

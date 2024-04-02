@@ -387,12 +387,13 @@ class SiteSummarySerializer(serializers.ModelSerializer):
 
     @extend_schema_field(list[str])  # pyright: ignore[reportArgumentType]
     def get_sponsors(self, obj):
-        return BatchSerializer(obj, many=True).get_attribute("sponsor")
+        batches = Batch.objects.filter(site=obj)
+        return [batch.sponsor for batch in batches]
 
+    @extend_schema_field(SiteAdminSerializer(many=True))
     def get_admins(self, obj):
-        admins = obj.siteadmin_set.all()
-        serializer = SiteAdminSerializer(admins, many=True)
-        return serializer.data
+        admins = Siteadmin.objects.filter(site=obj)
+        return SiteAdminSerializer(admins, many=True).data
 
     def get_batches(self, obj):
         batches = obj.batch_set.all()

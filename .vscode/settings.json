@@ -159,7 +159,7 @@
   "python.terminal.activateEnvironment": true,
   // python.analysis is Pylance (pyright) configurations
   "python.analysis.fixAll": [
-    "source.convertImportFormat"
+    // Explicitly omiting "source.convertImportFormat", let Ruff handle it
     // Explicitly omiting "source.unusedImports", can be annoying when commenting code for debugging
   ],
   "python.analysis.importFormat": "relative",

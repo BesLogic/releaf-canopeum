@@ -6,14 +6,14 @@ import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { SiteSummary } from '../services/api'
-import api from '../services/apiInterface'
+import getApiClient from '../services/apiInterface'
 
 const Analytics = () => {
   const { t } = useTranslation()
   const { formatDate } = useContext(LanguageContext)
   const [siteSummaries, setSiteSummaries] = useState<SiteSummary[]>([])
 
-  const fetchSites = async () => setSiteSummaries(await api().analytics.siteSummaries())
+  const fetchSites = async () => setSiteSummaries(await getApiClient().summaryClient.all())
 
   useEffect((): void => {
     void fetchSites()

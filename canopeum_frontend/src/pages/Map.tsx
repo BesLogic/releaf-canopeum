@@ -9,7 +9,8 @@ import ReactMap, { GeolocateControl, Marker, NavigationControl, ScaleControl, ty
 import { Link } from 'react-router-dom'
 
 import type { SiteMap } from '../services/api'
-import api from '../services/apiInterface'
+import { getApiBaseUrl } from '@services/apiSettings'
+import getApiClient from '../services/apiInterface'
 
 const pinMap: Record<number, string> = {
   1: CanopeumPin,
@@ -40,7 +41,7 @@ const Map = () => {
   })
 
   const fetchData = async () => {
-    const response = await api().map.sites()
+    const response = await getApiClient().siteClient.map()
     setSites(response)
   }
 
@@ -82,7 +83,11 @@ const Map = () => {
                 <div className={`card ${selectedSiteId === site.id && 'border border-secondary border-5'}`}>
                   <div className='row g-0'>
                     <div className='col-md-4'>
-                      <img alt='' className='img-fluid rounded-start' src='' />
+                      <img
+                        alt=''
+                        className='img-fluid rounded-start'
+                        src={getApiBaseUrl() + site.image?.asset}
+                      />
                     </div>
                     <div className='col-md-8'>
                       <div className='card-body'>

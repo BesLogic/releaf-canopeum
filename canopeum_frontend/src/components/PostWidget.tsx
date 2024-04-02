@@ -1,5 +1,4 @@
-import canopeumLogo from '@assets/images/Canopeum_Logo.jpg'
-
+import { getApiBaseUrl } from '@services/apiSettings'
 import type { Post } from '../services/api'
 import { formatDate } from '../utils/dateFormatter'
 
@@ -9,7 +8,12 @@ const PostWidget = (props: { readonly post: Post }) => {
   return (
     <div className='bg-white rounded-2 px-5 py-4 d-flex flex-column gap-3'>
       <div className='d-flex justify-content-start gap-2'>
-        <img alt='site' className='rounded-circle' src={canopeumLogo} style={{ height: '48px', width: '48px' }} />
+        <img
+          alt='site'
+          className='rounded-circle'
+          src={getApiBaseUrl() + post.site.image.asset}
+          style={{ height: '48px', width: '48px' }}
+        />
         <div className='d-flex flex-column'>
           <div>{post.site.name}</div>
           {post.createdAt && <div>{formatDate(post.createdAt.toISOString())}</div>}
