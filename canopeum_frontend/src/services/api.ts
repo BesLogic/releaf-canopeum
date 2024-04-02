@@ -1585,6 +1585,7 @@ export class BatchAnalytics implements IBatchAnalytics {
   name?: string | undefined;
   size?: string | undefined;
   soilCondition?: string | undefined;
+  sponsor?: string | undefined;
   readonly fertilizers!: Batchfertilizer[];
   readonly mulchLayers!: BatchMulchLayer[];
   readonly supportedSpecies!: BatchSupportedSpecies[];
@@ -1594,6 +1595,7 @@ export class BatchAnalytics implements IBatchAnalytics {
   readonly seedCollectedCount!: number;
   readonly seeds!: BatchSeed[];
   readonly species!: BatchSpecies[];
+  updatedOn!: Date;
 
   [key: string]: any;
 
@@ -1623,6 +1625,7 @@ export class BatchAnalytics implements IBatchAnalytics {
           this.name = _data["name"];
           this.size = _data["size"];
           this.soilCondition = _data["soilCondition"];
+          this.sponsor = _data["sponsor"];
           if (Array.isArray(_data["fertilizers"])) {
               (<any>this).fertilizers = [] as any;
               for (let item of _data["fertilizers"])
@@ -1652,6 +1655,7 @@ export class BatchAnalytics implements IBatchAnalytics {
               for (let item of _data["species"])
                   (<any>this).species!.push(BatchSpecies.fromJS(item));
           }
+          this.updatedOn = _data["updatedOn"] ? new Date(_data["updatedOn"].toString()) : <any>undefined;
       }
   }
 
@@ -1672,6 +1676,7 @@ export class BatchAnalytics implements IBatchAnalytics {
       data["name"] = this.name;
       data["size"] = this.size;
       data["soilCondition"] = this.soilCondition;
+      data["sponsor"] = this.sponsor;
       if (Array.isArray(this.fertilizers)) {
           data["fertilizers"] = [];
           for (let item of this.fertilizers)
@@ -1701,6 +1706,7 @@ export class BatchAnalytics implements IBatchAnalytics {
           for (let item of this.species)
               data["species"].push(item.toJSON());
       }
+      data["updatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
       return data;
   }
 }
@@ -1710,6 +1716,7 @@ export interface IBatchAnalytics {
   name?: string | undefined;
   size?: string | undefined;
   soilCondition?: string | undefined;
+  sponsor?: string | undefined;
   fertilizers: Batchfertilizer[];
   mulchLayers: BatchMulchLayer[];
   supportedSpecies: BatchSupportedSpecies[];
@@ -1719,6 +1726,7 @@ export interface IBatchAnalytics {
   seedCollectedCount: number;
   seeds: BatchSeed[];
   species: BatchSpecies[];
+  updatedOn: Date;
 
   [key: string]: any;
 }
@@ -3292,6 +3300,7 @@ export class SiteSummary implements ISiteSummary {
   readonly sponsors!: string[];
   readonly progress!: number;
   admins!: SiteAdmin[];
+  batches!: BatchAnalytics[];
 
   [key: string]: any;
 
@@ -3307,6 +3316,7 @@ export class SiteSummary implements ISiteSummary {
           this.siteType = new SiteType();
           this.sponsors = [];
           this.admins = [];
+          this.batches = [];
       }
   }
 
@@ -3334,6 +3344,11 @@ export class SiteSummary implements ISiteSummary {
               this.admins = [] as any;
               for (let item of _data["admins"])
                   this.admins!.push(SiteAdmin.fromJS(item));
+          }
+          if (Array.isArray(_data["batches"])) {
+              this.batches = [] as any;
+              for (let item of _data["batches"])
+                  this.batches!.push(BatchAnalytics.fromJS(item));
           }
       }
   }
@@ -3370,6 +3385,11 @@ export class SiteSummary implements ISiteSummary {
           for (let item of this.admins)
               data["admins"].push(item.toJSON());
       }
+      if (Array.isArray(this.batches)) {
+          data["batches"] = [];
+          for (let item of this.batches)
+              data["batches"].push(item.toJSON());
+      }
       return data;
   }
 }
@@ -3386,6 +3406,7 @@ export interface ISiteSummary {
   sponsors: string[];
   progress: number;
   admins: SiteAdmin[];
+  batches: BatchAnalytics[];
 
   [key: string]: any;
 }
@@ -3798,11 +3819,11 @@ export enum Lang {
 }
 
 export class ApiException extends Error {
-  message: string
-  status: number
-  response: string
-  headers: { [key: string]: any }
-  result: any
+  override message: string;
+  status: number;
+  response: string;
+  headers: { [key: string]: any; };
+  result: any;
 
   constructor(message: string, status: number, response: string, headers: { [key: string]: any; }, result: any) {
       super();

@@ -71,7 +71,7 @@ const BatchTable = ({ batches }: Props) => {
               >
                 <ul>
                   {batch.species.map(type => (
-                    <li key={`batch-${batch.id}-treeType`}>{translateValue(type)} x {type.quantity}</li>
+                    <li key={`batch-${batch.id}-treeType-${type.en}`}>{translateValue(type)} x {type.quantity}</li>
                   ))}
                 </ul>
               </td>
@@ -146,7 +146,9 @@ const BatchTable = ({ batches }: Props) => {
                 style={{ borderColor: cellBorderColor }}
               >
                 <ul>
-                  {batch.mulchLayers.map(type => <li key={`batch-${batch.id}-mulchLayer`}>{translateValue(type)}</li>)}
+                  {batch.mulchLayers.map(type => (
+                    <li key={`batch-${batch.id}-mulchLayer-${type.en}`}>{translateValue(type)}</li>
+                  ))}
                 </ul>
               </td>
             ))}

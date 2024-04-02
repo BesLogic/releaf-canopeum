@@ -5,31 +5,22 @@ import { LanguageContext } from '@components/context/LanguageContext'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import type { BatchAnalytics, SiteSummary } from '../services/api'
+import type { SiteSummary } from '../services/api'
 import api from '../services/apiInterface'
 
 const Analytics = () => {
   const { t } = useTranslation()
   const { formatDate } = useContext(LanguageContext)
   const [siteSummaries, setSiteSummaries] = useState<SiteSummary[]>([])
-  const [batches, setBatches] = useState<BatchAnalytics[]>([])
 
   const fetchSites = async () => setSiteSummaries(await api().analytics.siteSummaries())
 
-  const fetchBatches = async () => setBatches(await api().analytics.batches())
-
   useEffect((): void => {
     void fetchSites()
-    void fetchBatches()
   }, [])
 
-  const renderBatches = () => {
-    const mappedBatchesPerSite = new Map<number, BatchAnalytics[]>()
-    for (const batch of batches) {
-      mappedBatchesPerSite.set(batch.siteId, [...mappedBatchesPerSite.get(batch.siteId) ?? [], batch])
-    }
-
-    return siteSummaries.map(site => (
+  const renderBatches = () =>
+    siteSummaries.map(site => (
       <div className='accordion-item mb-3 rounded' key={site.id}>
         <h2 className='accordion-header rounded' id={`heading-${site.id}`}>
           <button
@@ -46,7 +37,7 @@ const Analytics = () => {
                 {t('analytics.last-update')}: {formatDate(new Date())}
               </span>
               <span className='text-capitalize'>
-                {mappedBatchesPerSite.get(site.id)?.length ?? 0} {t('analytics.batches')}
+                {site.batches.length} {t('analytics.batches', { count: site.batches.length })}
               </span>
             </div>
           </button>
@@ -58,12 +49,11 @@ const Analytics = () => {
           id={`collapse-${site.id}`}
         >
           <div className='accordion-body'>
-            <BatchTable batches={batches} />
+            <BatchTable batches={site.batches} />
           </div>
         </div>
       </div>
     ))
-  }
 
   return (
     <div>

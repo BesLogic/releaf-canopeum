@@ -265,6 +265,7 @@ class BatchAnalyticsSerializer(serializers.ModelSerializer):
     seed_collected_count = serializers.SerializerMethodField()
     seeds = serializers.SerializerMethodField()
     species = serializers.SerializerMethodField()
+    updated_on = serializers.DateTimeField()
 
     class Meta:
         model = Batch
@@ -283,6 +284,7 @@ class BatchAnalyticsSerializer(serializers.ModelSerializer):
             "seed_collected_count",
             "seeds",
             "species",
+            "updated_on",
         )
 
     @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
@@ -348,6 +350,7 @@ class SiteSummarySerializer(serializers.ModelSerializer):
     progress = serializers.SerializerMethodField()
     sponsors = serializers.SerializerMethodField()
     admins = SiteAdminSerializer(many=True)
+    batches = BatchAnalyticsSerializer(many=True)
 
     class Meta:
         model = Site
@@ -363,6 +366,7 @@ class SiteSummarySerializer(serializers.ModelSerializer):
             "sponsors",
             "progress",
             "admins",
+            "batches",
         )
 
     @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
@@ -388,6 +392,11 @@ class SiteSummarySerializer(serializers.ModelSerializer):
     def get_admins(self, obj):
         admins = obj.siteadmin_set.all()
         serializer = SiteAdminSerializer(admins, many=True)
+        return serializer.data
+
+    def get_batches(self, obj):
+        batches = obj.batch_set.all()
+        serializer = BatchAnalyticsSerializer(batches, many=True)
         return serializer.data
 
 
