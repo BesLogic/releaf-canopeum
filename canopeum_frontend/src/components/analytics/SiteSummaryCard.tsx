@@ -1,5 +1,6 @@
 import SiteSponsorProgress from '@components/analytics/SiteSponsorProgress'
 import PrimaryIconBadge from '@components/PrimaryIconBadge'
+import SearchBar from '@components/SearchBar'
 import type { SiteSummary } from '@services/api'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -23,7 +24,7 @@ const SiteSummaryCard = ({ site }: Props) => {
       <Dropdown.Menu>
         <Dropdown.Menu title='Select Administrator'>
           <div className='p-4'>
-            <h5>Select here</h5>
+            <SearchBar />
 
             <span>ONE MORE TIME</span>
           </div>
@@ -40,6 +41,7 @@ const SiteSummaryCard = ({ site }: Props) => {
       key={site.name}
     >
       <div className='card h-100 w-100 py-3'>
+        <SearchBar />
         <div className='card-body d-flex flex-column h-100'>
           <div className='d-flex justify-content-between align-items-center card-title'>
             <Link className='nav-link' to={`/analytics/${site.id}`}>
