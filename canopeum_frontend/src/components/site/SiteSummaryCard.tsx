@@ -1,8 +1,9 @@
 import headerLogo from '@assets/images/map/MARR4059.png'
+import { LanguageContext } from '@components/context/LanguageContext'
 import ToggleSwitch from '@components/inputs/ToggleSwitch'
 import PrimaryIconBadge from '@components/PrimaryIconBadge'
 import type { SiteSocial } from '@services/api'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 type Props = {
@@ -19,16 +20,19 @@ const updateSiteIsPublic = async (_: boolean) => {
 }
 const SiteSummaryCard = ({ site, viewMode }: Props) => {
   const { t } = useTranslation()
+  const { translateValue } = useContext(LanguageContext)
   const [isPublic, setIsPublic] = useState(true)
 
   useEffect(() => void updateSiteIsPublic(isPublic), [isPublic])
 
   return (
-    <div className='card mb-3'>
+    <div className='card'>
       <div className='row g-0'>
-        <div className='col-md-4'>
+        <div
+          className='col-md-4'
+          style={{ backgroundImage: `url(${headerLogo})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+        >
           {/* TODO: replace img source when backend offers an image endpoint */}
-          <img alt='header logo' className='img-fluid' src={headerLogo} />
         </div>
         <div className='col-md-8'>
           <div className='card-body'>
@@ -50,7 +54,7 @@ const SiteSummaryCard = ({ site, viewMode }: Props) => {
             </div>
             <div className='card-text d-flex flex-row gap-1'>
               <PrimaryIconBadge type='school' />
-              <h4 className='fw-bold text-primary'>{site.type.en}</h4>
+              <h4 className='fw-bold text-primary'>{translateValue(site.siteType)}</h4>
             </div>
             <p className='card-text'>{site.description ?? ''}</p>
             <div className='container fw-bold'>
@@ -70,4 +74,5 @@ const SiteSummaryCard = ({ site, viewMode }: Props) => {
     </div>
   )
 }
+
 export default SiteSummaryCard

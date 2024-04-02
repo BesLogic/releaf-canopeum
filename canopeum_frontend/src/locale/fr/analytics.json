@@ -16,5 +16,15 @@
   "table-row-11": "combien ont été remplacés",
   "table-row-12": "quantité de graines collectées dans la zone",
   "table-row-13": "types de graines collectées",
-  "last-update": "dernière mise à jour"
+  "last-update": "dernière mise à jour",
+  "site-summary": {
+    "planted": "Planté",
+    "survived": "Survécu",
+    "propagation": "Propagation",
+    "visitors": "Visiteurs",
+    "sponsored": "Sponsorisé",
+    "no-admins": "Pas d'administrateurs",
+    "unknown": "Inconnu",
+    "unnamed-site": "Site sans nom"
+  }
 }

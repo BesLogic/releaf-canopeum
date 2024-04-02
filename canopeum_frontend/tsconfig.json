@@ -28,6 +28,9 @@
     /* Linting */
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    // Auto-generated api file services/api.ts fails this check
+    // TODO: Raise this issue upstream
+    "noImplicitOverride": false,
     // This makes index accesses even stricter. Let's avoid it for this project.
     "noUncheckedIndexedAccess": false
   },

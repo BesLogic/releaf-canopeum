@@ -182,7 +182,7 @@ const Analytics = () => {
           <button className='btn btn-secondary' type='button'>Create a New Site</button>
         </div>
 
-        <div className='mt-2 row gx-3 gy-3 pb-3 overflow-auto' style={{ maxHeight: '62rem' }}>
+        <div className='mt-2 row gx-3 gy-3 pb-3' style={{ maxHeight: '62rem' }}>
           {siteSummaries.map(site => <SiteSummaryCard key={`site-${site.id}-card`} site={site} />)}
         </div>
 

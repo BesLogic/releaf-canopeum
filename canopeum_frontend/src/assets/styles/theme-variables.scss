@@ -12,6 +12,7 @@ $green: #28a745;
 $teal: #20c997;
 $cyan: #17a2b8;
 $white: #fff;
+$grey-police: #433A2E;
 $gray-100: #f8f9fa;
 $gray-200: #e9ecef;
 $gray-300: #dee2e6;
@@ -38,12 +39,14 @@ $grays: (
 $theme-colors: (
   primary: #007E51,
   secondary: #F18200,
+  secondary_1: $grey-police,
   success: $green,
   info: $cyan,
   warning: $yellow,
   danger: $red,
   light: $gray-100,
-  dark: $gray-800
+  dark: $gray-800,
+  light-gray: #818181,
 );
 $colors: (
   blue: $blue,
@@ -62,15 +65,16 @@ $colors: (
   cream: $cream
 );
 $theme-color-interval: 8%;
+$table-bg-scale: -80%;
 $table-variants: (
   "primary": shift-color(map-get($theme-colors, primary), $table-bg-scale),
-  "secondary": shift-color($secondary, $table-bg-scale),
-  "success": shift-color($success, $table-bg-scale),
-  "info": shift-color($info, $table-bg-scale),
-  "warning": shift-color($warning, $table-bg-scale),
-  "danger": shift-color($danger, $table-bg-scale),
-  "light": $light,
-  "dark": $dark,
+  "secondary": shift-color(map-get($theme-colors, secondary), $table-bg-scale),
+  "success": shift-color(map-get($theme-colors, success), $table-bg-scale),
+  "info": shift-color(map-get($theme-colors, info), $table-bg-scale),
+  "warning": shift-color(map-get($theme-colors, warning), $table-bg-scale),
+  "danger": shift-color(map-get($theme-colors, danger), $table-bg-scale),
+  "light": map-get($theme-colors, light),
+  "dark": map-get($theme-colors, dark),
 );
 
 // Spacing
