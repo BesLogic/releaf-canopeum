@@ -7,7 +7,7 @@ import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { BatchAnalytics, SiteSummary } from '../services/api'
-import api from '../services/apiInterface'
+import getApiClient from '../services/apiInterface'
 
 type SiteSummaryChartOptions = { groups: string[], series: BarChartProps['series'], colors: string[], average: number }
 
@@ -54,9 +54,9 @@ const Analytics = () => {
   const [siteSummaries, setSiteSummaries] = useState<SiteSummary[]>([])
   const [batches, setBatches] = useState<BatchAnalytics[]>([])
 
-  const fetchSites = async () => setSiteSummaries(await api().analytics.siteSummaries())
+  const fetchSites = async () => setSiteSummaries(await getApiClient().summaryClient.all())
 
-  const fetchBatches = async () => setBatches(await api().analytics.batches())
+  const fetchBatches = async () => setBatches(await getApiClient().batchClient.all())
 
   useEffect((): void => {
     void fetchSites()

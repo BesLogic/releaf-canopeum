@@ -1,4 +1,4 @@
-let apiBaseUrl = 'http://localhost:4000'
+let apiBaseUrl = 'http://localhost:3000'
 
 export type ApiSettings = {
   apiBaseUrl: string,
