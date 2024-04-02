@@ -8,7 +8,7 @@ from django.utils import timezone
 
 from canopeum_backend import settings
 
-from ...models import (
+from ...models import (  # noqa: TID252
     Announcement,
     Asset,
     Batch,

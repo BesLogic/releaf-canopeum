@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import pytz
 from django.conf import settings
 from django.db import models
 
@@ -90,8 +91,8 @@ class MulchlayertypeInternationalization(models.Model):
     fr = models.TextField(db_column="FR", blank=True, null=True)
 
 
-def upload_to(instance, filename):
-    now = datetime.now().strftime("%Y%m%d%H%M%S%f")
+def upload_to(_, filename):
+    now = datetime.now(pytz.utc).strftime("%Y%m%d%H%M%S%f")
     return f"{now}{filename}"
 
 

@@ -225,9 +225,9 @@ class PostListAPIView(APIView):
     def post(self, request):
         assets = request.data.getlist("media")
         saved_assets = []
-        for asset in assets:
+        for asset_item in assets:
             q = QueryDict("", mutable=True)
-            q.update({"image": asset})
+            q.update({"image": asset_item})
             asset = AssetSerializer(data=q)
             if not asset.is_valid():
                 return Response(data=asset.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -236,8 +236,8 @@ class PostListAPIView(APIView):
         serializer = PostPostSerializer(data=request.data)
         if serializer.is_valid():
             post = serializer.save()
-            for asset in saved_assets:
-                post.media.add(asset.instance)
+            for asset_item in saved_assets:
+                post.media.add(asset_item.instance)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
