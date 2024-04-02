@@ -1,10 +1,9 @@
 import SiteSponsorProgress from '@components/analytics/SiteSponsorProgress'
 import PrimaryIconBadge from '@components/PrimaryIconBadge'
-import { Popover } from '@mui/material'
 import type { SiteSummary } from '@services/api'
-import { type MouseEvent, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import { Dropdown, Popover, Whisper } from 'rsuite'
 
 import CustomIcon from '../icons/CustomIcon'
 
@@ -19,16 +18,21 @@ const SiteSummaryCard = ({ site }: Props) => {
     ? site.admins.map(admin => admin.username).join(', ')
     : translate('analytics.site-summary.no-amins')
 
-  const [anchorElement, setAnchorElement] = useState<HTMLButtonElement | null>(null)
+  const summaryCardActionsPopover = (
+    <Popover full>
+      <Dropdown.Menu>
+        <Dropdown.Menu title='Select Administrator'>
+          <div className='p-4'>
+            <h5>Select here</h5>
 
-  const handleMoreClick = (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault()
-    setAnchorElement(event.currentTarget)
-  }
-
-  const handleClose = () => setAnchorElement(null)
-
-  const open = Boolean(anchorElement)
+            <span>ONE MORE TIME</span>
+          </div>
+        </Dropdown.Menu>
+        <Dropdown.Item>Edit Site Information</Dropdown.Item>
+        <Dropdown.Item>Delete</Dropdown.Item>
+      </Dropdown.Menu>
+    </Popover>
+  )
 
   return (
     <div
@@ -45,29 +49,19 @@ const SiteSummaryCard = ({ site }: Props) => {
               </div>
             </Link>
 
-            <button
-              className='bg-lightgreen text-center rounded-circle unstyled-button'
-              onClick={handleMoreClick}
-              type='button'
-            >
-              <span
-                className='material-symbols-outlined text-primary align-middle'
-                style={{ fontSize: 24 }}
+            <Whisper placement='auto' speaker={summaryCardActionsPopover} trigger='click'>
+              <button
+                className='bg-lightgreen text-center rounded-circle unstyled-button'
+                type='button'
               >
-                more_horiz
-              </span>
-            </button>
-
-            <Popover
-              anchorEl={anchorElement}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              id={`site-${site.id}-summary-card-actions-popover`}
-              onClose={handleClose}
-              open={open}
-            />
+                <span
+                  className='material-symbols-outlined text-primary align-middle'
+                  style={{ fontSize: 24 }}
+                >
+                  more_horiz
+                </span>
+              </button>
+            </Whisper>
           </div>
 
           <div className='card-subtitle my-1'>
