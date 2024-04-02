@@ -20,40 +20,51 @@ const Analytics = () => {
   }, [])
 
   const renderBatches = () =>
-    siteSummaries.map(site => (
-      <div className='accordion-item mb-3 rounded' key={site.id}>
-        <h2 className='accordion-header rounded' id={`heading-${site.id}`}>
-          <button
-            aria-controls={`collapse-${site.id}`}
-            aria-expanded='true'
-            className='accordion-button collapsed rounded'
-            data-bs-target={`#collapse-${site.id}`}
-            data-bs-toggle='collapse'
-            type='button'
+    siteSummaries.map(site => {
+      const lastModifiedBatchDate = site
+        .batches
+        .map(batch => batch.updatedOn)
+        .reduce((a, b) =>
+          a > b
+            ? a
+            : b
+        )
+
+      return (
+        <div className='accordion-item mb-3 rounded' key={site.id}>
+          <h2 className='accordion-header rounded' id={`heading-${site.id}`}>
+            <button
+              aria-controls={`collapse-${site.id}`}
+              aria-expanded='true'
+              className='accordion-button collapsed rounded'
+              data-bs-target={`#collapse-${site.id}`}
+              data-bs-toggle='collapse'
+              type='button'
+            >
+              <div className='d-flex justify-content-between w-100 pe-3 fs-5'>
+                <span>{site.name}</span>
+                <span className='text-capitalize' style={{ opacity: .5 }}>
+                  {t('analytics.last-update')}: {formatDate(lastModifiedBatchDate)}
+                </span>
+                <span className='text-capitalize'>
+                  {site.batches.length} {t('analytics.batches', { count: site.batches.length })}
+                </span>
+              </div>
+            </button>
+          </h2>
+          <div
+            aria-labelledby={`heading-${site.id}`}
+            className='accordion-collapse collapse'
+            data-bs-parent='#accordion-batches'
+            id={`collapse-${site.id}`}
           >
-            <div className='d-flex justify-content-between w-100 pe-3 fs-5'>
-              <span>{site.name}</span>
-              <span className='text-capitalize' style={{ opacity: .5 }}>
-                {t('analytics.last-update')}: {formatDate(new Date())}
-              </span>
-              <span className='text-capitalize'>
-                {site.batches.length} {t('analytics.batches', { count: site.batches.length })}
-              </span>
+            <div className='accordion-body'>
+              <BatchTable batches={site.batches} />
             </div>
-          </button>
-        </h2>
-        <div
-          aria-labelledby={`heading-${site.id}`}
-          className='accordion-collapse collapse'
-          data-bs-parent='#accordion-batches'
-          id={`collapse-${site.id}`}
-        >
-          <div className='accordion-body'>
-            <BatchTable batches={site.batches} />
           </div>
         </div>
-      </div>
-    ))
+      )
+    })
 
   return (
     <div>

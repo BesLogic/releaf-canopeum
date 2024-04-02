@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 
-const lastUpdatedDateOptions = {}
+import { formatDate } from '../utils/dateFormatter'
 
 const AnalyticsSite = () => {
   const { t: translate } = useTranslation<'analytics'>()
@@ -29,22 +29,20 @@ const AnalyticsSite = () => {
   useEffect(() => {
     if (!siteSummary || siteSummary.batches.length === 0) {
       setLastModifiedBatchDate(undefined)
-
-      return
+    } else {
+      const lastModifiedBatchDate = siteSummary
+        .batches
+        .map(batch => batch.updatedOn)
+        .reduce((a, b) =>
+          a > b
+            ? a
+            : b
+        )
+      setLastModifiedBatchDate(lastModifiedBatchDate)
     }
 
-    const dates = siteSummary.batches.map(batch => batch.updatedOn)
-    console.log('dates:', dates)
-    const lastModifiedBatch = siteSummary.batches.map(batch => batch.updatedOn).reduce((a, b) =>
-      a > b
-        ? a
-        : b
-    )
-    console.log('lastModifiedBatch:', lastModifiedBatch)
-    setLastModifiedBatchDate(lastModifiedBatch)
-
     return (): void => {
-      setSiteSummary(undefined)
+      setLastModifiedBatchDate(undefined)
     }
   }, [siteSummary])
 
@@ -63,11 +61,13 @@ const AnalyticsSite = () => {
           <div className='text-muted'>
             <span className='me-2'>{translate('analytics.last-update')}:</span>
             <span>
-              {lastModifiedBatchDate?.toLocaleString('fr-CA') ?? 'N/A'}
+              {lastModifiedBatchDate
+                ? formatDate(lastModifiedBatchDate)
+                : 'N/A'}
             </span>
           </div>
 
-          <div className='text-primary'>
+          <div className='text-primary d-flex align-items-center'>
             <span className='material-symbols-outlined fill-icon me-2'>add</span>
             <span>Add a New Batch</span>
           </div>

@@ -1,5 +1,7 @@
-export const formatDate = (dateIso: string): string => {
-  const date = new Date(dateIso)
+export const formatDate = (dateInput: Date | string): string => {
+  const date = typeof dateInput === 'string'
+    ? new Date(dateInput)
+    : dateInput
 
   const day = String(date.getDate()).padStart(2, '0')
   const month = String(date.getMonth() + 1).padStart(2, '0')
