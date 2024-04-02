@@ -1,7 +1,6 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import SiteSummaryCard from '@components/site/SiteSummaryCard'
 import type { Post, SiteSocial } from '@services/api'
-import api from '@services/apiInterface'
 import { ensureError } from '@services/errors'
 import { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
@@ -9,6 +8,7 @@ import CreatePostWidget from '../components/CreatePostWidget'
 import PostWidget from '../components/PostWidget'
 import AnnouncementCard from '../components/AnnouncementCard'
 import ContactCard from '../components/ContactCard'
+import getApiClient from '@services/apiInterface'
 
 const MapSite = () => {
   const { siteId } = useParams()
@@ -19,7 +19,7 @@ const MapSite = () => {
 
   const [isLoadingPosts, setIsLoadingPosts] = useState(true)
   const [errorPosts, setErrorPosts] = useState<Error | undefined>(undefined)
-  const [posts, setPosts] = useState<Post[]>()  
+  const [posts, setPosts] = useState<Post[]>()
 
   const viewMode = currentUser
     ? currentUser.role === 'RegularUser'
@@ -30,7 +30,7 @@ const MapSite = () => {
   const fetchSiteData = async (parsedSiteId: number) => {
     setIsLoadingSite(true)
     try {
-      const fetchedSite = await api().social.site(parsedSiteId)
+      const fetchedSite = await getApiClient().siteClient.social(parsedSiteId)
       setSite(fetchedSite)
     } catch (error_: unknown) {
       setError(ensureError(error_))
@@ -42,7 +42,7 @@ const MapSite = () => {
   const fetchPosts = async (parsedSiteId: number) => {
     setIsLoadingPosts(true)
     try {
-      const fetchedPosts = await api().social.posts()
+      const fetchedPosts = await getApiClient().postClient.all(parsedSiteId)
       setPosts(fetchedPosts)
     } catch (error_: unknown) {
       setErrorPosts(ensureError(error_))
@@ -50,7 +50,6 @@ const MapSite = () => {
       setIsLoadingPosts(false)
     }
   }
-
 
   useEffect((): void => {
     void fetchSiteData(Number(siteId) || 1)
@@ -90,15 +89,15 @@ const MapSite = () => {
                       ? (
                         <div className='bg-white rounded-2 2 py-2'>
                           <p>Loading...</p>
-                          </div>
-                          )
-                        : errorPosts
-                        ? (
-                          <div className='bg-white rounded-2 2 py-2'>
-                            <p>{errorPosts.message}</p>
-                          </div>
-                        )
-                        : posts && posts?.map((post: Post) => <PostWidget key={post.id} post={post} />)}
+                        </div>
+                      )
+                      : errorPosts
+                      ? (
+                        <div className='bg-white rounded-2 2 py-2'>
+                          <p>{errorPosts.message}</p>
+                        </div>
+                      )
+                      : posts && posts?.map((post: Post) => <PostWidget key={post.id} post={post} />)}
                   </div>
                 </>
               )}

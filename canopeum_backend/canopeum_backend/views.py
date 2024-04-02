@@ -1,7 +1,8 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.http import QueryDict
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.parsers import FormParser, MultiPartParser
@@ -83,7 +84,7 @@ class SiteListAPIView(APIView):
         asset = asset.save()
         serializer = SitePostSerializer(data=request.data)
         if serializer.is_valid():
-            post = serializer.save(image=asset)
+            serializer.save(image=asset)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -201,10 +202,18 @@ class SiteMapListAPIView(APIView):
 
 
 class PostListAPIView(APIView):
-    @extend_schema(responses=PostSerializer(many=True), operation_id="post_all")
+    @extend_schema(
+        responses=PostSerializer(many=True),
+        operation_id="post_all",
+        parameters=[OpenApiParameter(name="siteId", type=OpenApiTypes.INT, location=OpenApiParameter.QUERY)],
+    )
     def get(self, request):
         comment_count = Comment.objects.filter(post=request.data.get("id")).count()
-        has_liked = Like.objects.filter(post=request.data.get("id"), user=request.user).exists()
+        has_liked = (
+            Like.objects.filter(post=request.data.get("id"), user=request.user).exists()
+            if request.user.is_authenticated
+            else False
+        )
         site_id = request.GET.get("siteId", "")
         posts = Post.objects.filter(site=site_id) if not site_id else Post.objects.all()
         serializer = PostSerializer(posts, many=True, context={"comment_count": comment_count, "has_liked": has_liked})
@@ -297,7 +306,7 @@ class ContactDetailAPIView(APIView):
 
 
 class WidgetListAPIView(APIView):
-    @extend_schema(request=WidgetSerializer, responses=WidgetSerializer, operation_id="widget-create")
+    @extend_schema(request=WidgetSerializer, responses=WidgetSerializer, operation_id="widget_create")
     def post(self, request):
         serializer = WidgetSerializer(data=request.data)
         if serializer.is_valid():
@@ -424,7 +433,7 @@ class UserDetailAPIView(APIView):
 
 
 class UserCurrentUserAPIView(APIView):
-    @extend_schema(responses=UserSerializer, operation_id="user_current_user")
+    @extend_schema(responses=UserSerializer, operation_id="user_current")
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)

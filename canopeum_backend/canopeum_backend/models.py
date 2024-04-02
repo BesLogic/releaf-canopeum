@@ -61,7 +61,7 @@ class Contact(models.Model):
     facebook_link = models.URLField(blank=True, null=True)
     x_link = models.URLField(blank=True, null=True)
     instagram_link = models.URLField(blank=True, null=True)
-    linkedIn_link = models.URLField(blank=True, null=True)
+    linked_in_link = models.URLField(blank=True, null=True)
 
 
 class Coordinate(models.Model):

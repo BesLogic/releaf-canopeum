@@ -1,4 +1,3 @@
-import headerLogo from '@assets/images/map/MARR4059.png'
 import { getApiBaseUrl } from '@services/apiSettings'
 import { LanguageContext } from '@components/context/LanguageContext'
 import ToggleSwitch from '@components/inputs/ToggleSwitch'
@@ -31,7 +30,11 @@ const SiteSummaryCard = ({ site, viewMode }: Props) => {
       <div className='row g-0'>
         <div
           className='col-md-4'
-          style={{ backgroundImage: `url('${getApiBaseUrl() + site.image?.asset}')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+          style={{
+            backgroundImage: `url('${getApiBaseUrl() + site.image?.asset}')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
         >
           {/* TODO: Fixing type asset */}
         </div>
