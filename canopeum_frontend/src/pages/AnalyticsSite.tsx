@@ -1,7 +1,7 @@
 import AnalyticsSiteHeader from '@components/analytics/AnalyticsSiteHeader'
 import BatchTable from '@components/analytics/BatchTable'
 import type { SiteSummary } from '@services/api'
-import api from '@services/apiInterface'
+import getApiClient from '@services/apiInterface'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
@@ -15,7 +15,7 @@ const AnalyticsSite = () => {
   const [siteSummary, setSiteSummary] = useState<SiteSummary | undefined>()
   const [lastModifiedBatchDate, setLastModifiedBatchDate] = useState<Date | undefined>()
 
-  const fetchSite = async (siteId: number) => setSiteSummary(await api().analytics.siteSummary(siteId))
+  const fetchSite = async (siteId: number) => setSiteSummary(await getApiClient().siteClient.summary(siteId))
 
   useEffect(() => {
     if (!siteIdFromParams) return
@@ -30,15 +30,15 @@ const AnalyticsSite = () => {
     if (!siteSummary || siteSummary.batches.length === 0) {
       setLastModifiedBatchDate(undefined)
     } else {
-      const lastModifiedBatchDate = siteSummary
+      const lastModifiedBatch = siteSummary
         .batches
         .map(batch => batch.updatedOn)
-        .reduce((a, b) =>
+        .sort((a, b) =>
           a > b
-            ? a
-            : b
+            ? -1
+            : 1
         )
-      setLastModifiedBatchDate(lastModifiedBatchDate)
+      setLastModifiedBatchDate(lastModifiedBatch[0])
     }
 
     return (): void => {

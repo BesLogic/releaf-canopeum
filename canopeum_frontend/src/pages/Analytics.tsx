@@ -21,14 +21,16 @@ const Analytics = () => {
 
   const renderBatches = () =>
     siteSummaries.map(site => {
-      const lastModifiedBatchDate = site
-        .batches
-        .map(batch => batch.updatedOn)
-        .reduce((a, b) =>
-          a > b
-            ? a
-            : b
-        )
+      const lastModifiedBatchDate = site.batches.length > 0
+        ? site
+          .batches
+          .map(batch => batch.updatedOn)
+          .sort((a, b) =>
+            a > b
+              ? -1
+              : 1
+          )[0]
+        : undefined
 
       return (
         <div className='accordion-item mb-3 rounded' key={site.id}>
@@ -44,7 +46,9 @@ const Analytics = () => {
               <div className='d-flex justify-content-between w-100 pe-3 fs-5'>
                 <span>{site.name}</span>
                 <span className='text-capitalize' style={{ opacity: .5 }}>
-                  {t('analytics.last-update')}: {formatDate(lastModifiedBatchDate)}
+                  {t('analytics.last-update')}: {lastModifiedBatchDate
+                    ? formatDate(lastModifiedBatchDate)
+                    : 'N/A'}
                 </span>
                 <span className='text-capitalize'>
                   {site.batches.length} {t('analytics.batches', { count: site.batches.length })}
@@ -75,7 +79,7 @@ const Analytics = () => {
           <button className='btn btn-secondary' type='button'>Create a New Site</button>
         </div>
 
-        <div className='mt-2 row gx-3 gy-3 pb-3' style={{ maxHeight: '62rem' }}>
+        <div className='mt-2 row gx-3 gy-3 pb-3'>
           {siteSummaries.map(site => <SiteSummaryCard key={`site-${site.id}-card`} site={site} />)}
         </div>
 

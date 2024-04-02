@@ -3657,7 +3657,7 @@ export class SiteSummary implements ISiteSummary {
                   (<any>this).admins!.push(SiteAdmin.fromJS(item));
           }
           if (Array.isArray(_data["batches"])) {
-              this.batches = [] as any;
+              (<any>this).batches = [] as any;
               for (let item of _data["batches"])
                   this.batches!.push(BatchAnalytics.fromJS(item));
           }
