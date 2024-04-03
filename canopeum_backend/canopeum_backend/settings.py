@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import os
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "drf_spectacular",
     "drf_spectacular_sidecar",
+    "rest_framework_simplejwt",
     "canopeum_backend",
 ]
 
@@ -88,6 +90,9 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_PARSER_CLASSES": [
         "rest_framework.parsers.JSONParser",
+    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
 }
 
@@ -150,6 +155,11 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=180),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=50),
+}
 
 
 # Internationalization
