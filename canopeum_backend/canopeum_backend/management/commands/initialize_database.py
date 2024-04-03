@@ -257,4 +257,5 @@ class Command(BaseCommand):
             soil_condition="Good",
             total_number_seed=100,
             total_propagation=100,
+            updated_at=timezone.now(),
         )
