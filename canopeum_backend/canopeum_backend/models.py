@@ -13,6 +13,7 @@ class Announcement(models.Model):
 class Batch(models.Model):
     site = models.ForeignKey("Site", models.DO_NOTHING, blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
+    updated_on = models.DateTimeField(blank=True, null=True)
     name = models.TextField(blank=True, null=True)
     sponsor = models.TextField(blank=True, null=True)
     size = models.TextField(blank=True, null=True)
