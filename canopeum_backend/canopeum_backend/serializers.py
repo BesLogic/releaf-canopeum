@@ -35,7 +35,7 @@ class AuthUserSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = "__all__"
+        exclude = ("password",)
 
 
 class CoordinatesSerializer(serializers.ModelSerializer):
@@ -325,20 +325,11 @@ class BatchAnalyticsSerializer(serializers.ModelSerializer):
 
 
 class SiteAdminSerializer(serializers.ModelSerializer):
-    user_id = serializers.SerializerMethodField()
-    username = serializers.SerializerMethodField()
+    user = UserSerializer(source="auth_user")
 
     class Meta:
         model = Siteadmin
-        fields = ("id", "user_id", "username")
-
-    @extend_schema_field(str)  # pyright: ignore[reportArgumentType]
-    def get_user_id(self, obj):
-        return AuthUserSerializer().get_attribute("id")
-
-    @extend_schema_field(str)  # pyright: ignore[reportArgumentType]
-    def get_username(self, obj):
-        return AuthUserSerializer().get_attribute("username")
+        fields = ("user",)
 
 
 class SiteSummarySerializer(serializers.ModelSerializer):

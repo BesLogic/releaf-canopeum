@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from django.contrib.auth.models import User
 from django.core.files import File
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
@@ -19,6 +20,7 @@ from canopeum_backend.models import (
     MulchlayertypeInternationalization,
     Post,
     Site,
+    Siteadmin,
     Sitetype,
     SitetypeInternationalization,
     TreespeciestypeInternationalization,
@@ -64,6 +66,8 @@ class Command(BaseCommand):
         self.create_canopeum_site()
         self.create_post_conopeum_site()
         self.create_batch()
+        self.create_users()
+        self.create_siteadmins()
         self.stdout.write(self.style.SUCCESS("Data Generated"))
 
     def create_fertilizer_types(self):
@@ -258,4 +262,20 @@ class Command(BaseCommand):
             total_number_seed=100,
             total_propagation=100,
             updated_at=timezone.now(),
+        )
+
+    def create_users(self):
+        User.objects.create_user("Tyrion Lannister", "tyrion@lannister.com", "tyrion123")
+        User.objects.create_user("Daenerys Targaryen", "daenerys@targaryen.com", "daenerys123")
+        User.objects.create_user("Jon Snow", "jon@snow.com", "jon123")
+        User.objects.create_user("Oberyn Martell", "oberyn@martell.com", "oberyn123")
+
+    def create_siteadmins(self):
+        Siteadmin.objects.create(
+            auth_user=User.objects.get(email="tyrion@lannister.com"),
+            site=Site.objects.get(name="Canopeum"),
+        )
+        Siteadmin.objects.create(
+            auth_user=User.objects.get(email="daenerys@targaryen.com"),
+            site=Site.objects.get(name="Canopeum"),
         )
