@@ -1,10 +1,9 @@
 import SiteSponsorProgress from '@components/analytics/SiteSponsorProgress'
+import SiteSummaryActions from '@components/analytics/SiteSummaryActions'
 import PrimaryIconBadge from '@components/PrimaryIconBadge'
-import SearchBar from '@components/SearchBar'
 import type { SiteSummary } from '@services/api'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { Dropdown, Popover, Whisper } from 'rsuite'
 
 import CustomIcon from '../icons/CustomIcon'
 
@@ -19,29 +18,12 @@ const SiteSummaryCard = ({ site }: Props) => {
     ? site.admins.map(admin => admin.username).join(', ')
     : translate('analytics.site-summary.no-amins')
 
-  const summaryCardActionsPopover = (
-    <Popover full>
-      <Dropdown.Menu>
-        <Dropdown.Menu title='Select Administrator'>
-          <div className='p-4'>
-            <SearchBar />
-
-            <span>ONE MORE TIME</span>
-          </div>
-        </Dropdown.Menu>
-        <Dropdown.Item>Edit Site Information</Dropdown.Item>
-        <Dropdown.Item>Delete</Dropdown.Item>
-      </Dropdown.Menu>
-    </Popover>
-  )
-
   return (
     <div
       className='col-3'
       key={site.name}
     >
       <div className='card h-100 w-100 py-3'>
-        <SearchBar />
         <div className='card-body d-flex flex-column h-100'>
           <div className='d-flex justify-content-between align-items-center card-title'>
             <Link className='nav-link' to={`/analytics/${site.id}`}>
@@ -51,19 +33,11 @@ const SiteSummaryCard = ({ site }: Props) => {
               </div>
             </Link>
 
-            <Whisper placement='auto' speaker={summaryCardActionsPopover} trigger='click'>
-              <button
-                className='bg-lightgreen text-center rounded-circle unstyled-button'
-                type='button'
-              >
-                <span
-                  className='material-symbols-outlined text-primary align-middle'
-                  style={{ fontSize: 24 }}
-                >
-                  more_horiz
-                </span>
-              </button>
-            </Whisper>
+            {
+              /* TODO(NicolasDontigny): Once user permissions have been implemented,
+              require the mega_admin permission here */
+            }
+            <SiteSummaryActions siteSummary={site} />
           </div>
 
           <div className='card-subtitle my-1'>
