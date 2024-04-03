@@ -1,23 +1,61 @@
 import SearchBar from '@components/SearchBar'
-import type { SiteSummary } from '@services/api'
+import type { SiteSummary, User } from '@services/api'
+import { type ChangeEvent, useState } from 'react'
 import { Dropdown, Popover, Whisper } from 'rsuite'
 
 type Props = {
   readonly siteSummary: SiteSummary,
+  readonly admins: User[],
 }
 
-const SiteSummaryActions = ({ siteSummary }: Props) => {
+const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
+  const [filteredAdmins, setFilteredAdmins] = useState(admins)
+  const [selectedAdmins, setSelectedAdmins] = useState(siteSummary.admins.map(admin => admin.user))
+
+  const onSearchAdmins = (query: string) =>
+    setFilteredAdmins(admins.filter(admin =>
+      admin
+        .username
+        .toLocaleLowerCase()
+        .includes(query.toLocaleLowerCase())
+    ))
+
+  // TODO(NicolasDontigny): Create Checkbox component
+  const onAdminSelectionChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target
+    console.log('CHECKBOX event target:', event.target)
+    console.log('CHECKBOX value:', value)
+  }
+
+  const onSaveAdmins = () => {
+    console.log('selectedAdmins:', selectedAdmins)
+  }
+
   const administratorsSelection = (
     <div className='py-2 px-3' style={{ minWidth: '18rem' }}>
-      <SearchBar onChange={input => console.log('input:', input)} />
+      <SearchBar onChange={onSearchAdmins} />
 
       <div className='mt-2 py-2'>
-        <div className='form-check'>
-          <input className='form-check-input' id='flexCheckDefault' type='checkbox' value='' />
-          <label className='form-check-label' htmlFor='flexCheckDefault'>
-            Default checkbox
-          </label>
-        </div>
+        {filteredAdmins.map(admin => {
+          const checkboxId = `site-${siteSummary.id}-admin-${admin.id}-checkbox`
+          const isAlreadyAdmin = siteSummary.admins.some(siteAdmin => siteAdmin.user.id === admin.id)
+
+          return (
+            <div className='form-check' key={admin.id}>
+              <input
+                className='form-check-input'
+                defaultChecked={isAlreadyAdmin}
+                id={checkboxId}
+                onChange={onAdminSelectionChange}
+                type='checkbox'
+                value={admin.id}
+              />
+              <label className='form-check-label' htmlFor={checkboxId}>
+                {admin.username}
+              </label>
+            </div>
+          )
+        })}
       </div>
 
       <div className='d-flex justify-content-between pt-2 border-top'>

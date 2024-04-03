@@ -2885,7 +2885,6 @@ export interface IPatchedSite {
 
 export class PatchedUser implements IPatchedUser {
   readonly id?: number;
-  password?: string;
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;
@@ -2922,7 +2921,6 @@ export class PatchedUser implements IPatchedUser {
                   this[property] = _data[property];
           }
           (<any>this).id = _data["id"];
-          this.password = _data["password"];
           this.lastLogin = _data["lastLogin"] ? new Date(_data["lastLogin"].toString()) : <any>undefined;
           this.isSuperuser = _data["isSuperuser"];
           this.username = _data["username"];
@@ -2959,7 +2957,6 @@ export class PatchedUser implements IPatchedUser {
               data[property] = this[property];
       }
       data["id"] = this.id;
-      data["password"] = this.password;
       data["lastLogin"] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined;
       data["isSuperuser"] = this.isSuperuser;
       data["username"] = this.username;
@@ -2985,7 +2982,6 @@ export class PatchedUser implements IPatchedUser {
 
 export interface IPatchedUser {
   id?: number;
-  password?: string;
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;
@@ -3324,9 +3320,7 @@ export interface ISite {
 }
 
 export class SiteAdmin implements ISiteAdmin {
-  readonly id!: number;
-  readonly userId!: string;
-  readonly username!: string;
+  user!: User;
 
   [key: string]: any;
 
@@ -3337,6 +3331,9 @@ export class SiteAdmin implements ISiteAdmin {
                   (<any>this)[property] = (<any>data)[property];
           }
       }
+      if (!data) {
+          this.user = new User();
+      }
   }
 
   init(_data?: any) {
@@ -3345,9 +3342,7 @@ export class SiteAdmin implements ISiteAdmin {
               if (_data.hasOwnProperty(property))
                   this[property] = _data[property];
           }
-          (<any>this).id = _data["id"];
-          (<any>this).userId = _data["userId"];
-          (<any>this).username = _data["username"];
+          this.user = _data["user"] ? User.fromJS(_data["user"]) : new User();
       }
   }
 
@@ -3364,17 +3359,13 @@ export class SiteAdmin implements ISiteAdmin {
           if (this.hasOwnProperty(property))
               data[property] = this[property];
       }
-      data["id"] = this.id;
-      data["userId"] = this.userId;
-      data["username"] = this.username;
+      data["user"] = this.user ? this.user.toJSON() : <any>undefined;
       return data;
   }
 }
 
 export interface ISiteAdmin {
-  id: number;
-  userId: string;
-  username: string;
+  user: User;
 
   [key: string]: any;
 }
@@ -3848,7 +3839,6 @@ export interface ISitetreespecies {
 
 export class User implements IUser {
   readonly id!: number;
-  password!: string;
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;
@@ -3885,7 +3875,6 @@ export class User implements IUser {
                   this[property] = _data[property];
           }
           (<any>this).id = _data["id"];
-          this.password = _data["password"];
           this.lastLogin = _data["lastLogin"] ? new Date(_data["lastLogin"].toString()) : <any>undefined;
           this.isSuperuser = _data["isSuperuser"];
           this.username = _data["username"];
@@ -3922,7 +3911,6 @@ export class User implements IUser {
               data[property] = this[property];
       }
       data["id"] = this.id;
-      data["password"] = this.password;
       data["lastLogin"] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined;
       data["isSuperuser"] = this.isSuperuser;
       data["username"] = this.username;
@@ -3948,7 +3936,6 @@ export class User implements IUser {
 
 export interface IUser {
   id: number;
-  password: string;
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;
