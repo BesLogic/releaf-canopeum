@@ -265,6 +265,7 @@ class BatchAnalyticsSerializer(serializers.ModelSerializer):
     seed_collected_count = serializers.SerializerMethodField()
     seeds = serializers.SerializerMethodField()
     species = serializers.SerializerMethodField()
+    updated_at = serializers.DateTimeField()
 
     class Meta:
         model = Batch
@@ -283,6 +284,7 @@ class BatchAnalyticsSerializer(serializers.ModelSerializer):
             "seed_collected_count",
             "seeds",
             "species",
+            "updated_at",
         )
 
     @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
@@ -347,7 +349,8 @@ class SiteSummarySerializer(serializers.ModelSerializer):
     propagation_count = serializers.SerializerMethodField()
     progress = serializers.SerializerMethodField()
     sponsors = serializers.SerializerMethodField()
-    admins = serializers.SerializerMethodField()
+    admins = SiteAdminSerializer(source="siteadmin_set", read_only=True, many=True)
+    batches = BatchAnalyticsSerializer(source="batch_set", read_only=True, many=True)
 
     class Meta:
         model = Site
@@ -363,6 +366,7 @@ class SiteSummarySerializer(serializers.ModelSerializer):
             "sponsors",
             "progress",
             "admins",
+            "batches",
         )
 
     @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
@@ -385,11 +389,6 @@ class SiteSummarySerializer(serializers.ModelSerializer):
     def get_sponsors(self, obj):
         batches = Batch.objects.filter(site=obj)
         return [batch.sponsor for batch in batches]
-
-    @extend_schema_field(SiteAdminSerializer(many=True))
-    def get_admins(self, obj):
-        admins = Siteadmin.objects.filter(site=obj)
-        return SiteAdminSerializer(admins, many=True).data
 
 
 class CoordinatesMapSerializer(serializers.ModelSerializer):

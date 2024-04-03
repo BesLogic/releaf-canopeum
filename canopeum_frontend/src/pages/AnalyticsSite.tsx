@@ -1,23 +1,21 @@
-import SiteSponsorProgress from '@components/analytics/SiteSponsorProgress'
+import AnalyticsSiteHeader from '@components/analytics/AnalyticsSiteHeader'
+import BatchTable from '@components/analytics/BatchTable'
 import { LanguageContext } from '@components/context/LanguageContext'
-import CustomIconBadge from '@components/CustomIconBadge'
 import type { SiteSummary } from '@services/api'
-import api from '@services/apiInterface'
+import getApiClient from '@services/apiInterface'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useParams } from 'react-router-dom'
-
-import CustomIcon from '../components/icons/CustomIcon'
-import classes from './AnalyticsSite.module.scss'
+import { useParams } from 'react-router-dom'
 
 const AnalyticsSite = () => {
   const { t: translate } = useTranslation<'analytics'>()
   const { siteId: siteIdFromParams } = useParams()
-  const { translateValue } = useContext(LanguageContext)
+  const { formatDate } = useContext(LanguageContext)
 
-  const [site, setSite] = useState<SiteSummary | undefined>()
+  const [siteSummary, setSiteSummary] = useState<SiteSummary | undefined>()
+  const [lastModifiedBatchDate, setLastModifiedBatchDate] = useState<Date | undefined>()
 
-  const fetchSite = async (siteId: number) => setSite(await api().analytics.siteSummary(siteId))
+  const fetchSite = async (siteId: number) => setSiteSummary(await getApiClient().siteClient.summary(siteId))
 
   useEffect(() => {
     if (!siteIdFromParams) return
@@ -28,90 +26,54 @@ const AnalyticsSite = () => {
     void fetchSite(siteIdNumber)
   }, [siteIdFromParams])
 
-  if (!site) {
+  useEffect(() => {
+    if (!siteSummary || siteSummary.batches.length === 0) {
+      setLastModifiedBatchDate(undefined)
+    } else {
+      const lastModifiedBatch = siteSummary
+        .batches
+        .map(batch => batch.updatedAt)
+        .sort((a, b) =>
+          a > b
+            ? -1
+            : 1
+        )
+      setLastModifiedBatchDate(lastModifiedBatch[0])
+    }
+
+    return (): void => {
+      setLastModifiedBatchDate(undefined)
+    }
+  }, [siteSummary])
+
+  if (!siteSummary) {
     return <div>Loading...</div>
   }
 
   return (
     <div className='container py-3 d-flex flex-column gap-4'>
-      <div className='bg-white rounded d-flex'>
-        <div className='p-5'>
-          <span>{translate('analyticsSite.location')}</span>
-        </div>
+      <AnalyticsSiteHeader siteSummary={siteSummary} />
 
-        <div className='site-info-container pb-4 pt-5 px-5 flex-grow-1'>
-          <div className='d-flex justify-content-between align-items-start'>
-            <div>
-              <h2>{site.name}</h2>
-              <div className='d-flex align-items-center'>
-                <CustomIconBadge icon='siteTypeCanopeumIcon' />
-                <span className='ms-2'>{translateValue(site.siteType)}</span>
-              </div>
-            </div>
+      <div className='bg-white rounded py-4 px-5'>
+        <div className='d-flex justify-content-between mb-3'>
+          <h4>{translate('analyticsSite.batch-tracking')} ({siteSummary.batches.length})</h4>
 
-            <Link className='nav-link' to={`/map/${site.id}`}>
-              <button className='btn btn-primary' type='button'>{translate('analyticsSite.social-page')}</button>
-            </Link>
+          <div className='text-muted'>
+            <span className='me-2'>{translate('analytics.last-update')}:</span>
+            <span>
+              {lastModifiedBatchDate
+                ? formatDate(lastModifiedBatchDate)
+                : 'N/A'}
+            </span>
           </div>
 
-          <div className={`d-flex justify-content-between mt-4 ${classes.analyticsCountsContainer}`}>
-            <div className='d-flex align-items-center gap-2 me-5'>
-              <div className='bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'>
-                <CustomIcon icon='sitePlantedIcon' size='5xl' />
-              </div>
-              <div className='d-flex flex-column'>
-                <span className='text-primary fs-4 fw-bold'>{site.plantCount}</span>
-                <span className='text-muted'>{translate('analytics.site-summary.planted')}</span>
-              </div>
-            </div>
-
-            <div className='d-flex align-items-center gap-2 me-5'>
-              <div className='bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'>
-                <CustomIcon icon='siteSurvivedIcon' size='5xl' />
-              </div>
-              <div className='d-flex flex-column'>
-                <span className='text-primary fs-4 fw-bold'>{site.survivedCount}</span>
-                <span className='text-muted'>{translate('analytics.site-summary.survived')}</span>
-              </div>
-            </div>
-
-            <div className='d-flex align-items-center gap-2 me-5'>
-              <div className='bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'>
-                <CustomIcon icon='sitePropagationIcon' size='5xl' />
-              </div>
-              <div className='d-flex flex-column'>
-                <span className='text-primary fs-4 fw-bold'>{site.propagationCount}</span>
-                <span className='text-muted'>{translate('analytics.site-summary.propagation')}</span>
-              </div>
-            </div>
-
-            <div className='d-flex align-items-center gap-2 me-5'>
-              <div className='bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'>
-                <CustomIcon icon='siteVisitorsIcon' size='5xl' />
-              </div>
-              <div className='d-flex flex-column'>
-                <span className='text-primary fs-4 fw-bold'>{site.visitorCount}</span>
-                <span className='text-muted'>{translate('analytics.site-summary.visitors')}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className='mt-4'>
-            <div className='d-flex align-items-flex-end fw-bold'>
-              <span className='material-symbols-outlined'>group</span>
-              <span className='ms-1 me-2'>{translate('analyticsSite.sponsors')}:</span>
-              {site.sponsors.map(sponsor => <span className='me-4' key={sponsor}>{sponsor}</span>)}
-            </div>
-          </div>
-
-          <div className='mt-1'>
-            <SiteSponsorProgress progress={site.progress} />
+          <div className='text-primary d-flex align-items-center'>
+            <span className='material-symbols-outlined fill-icon me-2'>add</span>
+            <span>Add a New Batch</span>
           </div>
         </div>
-      </div>
 
-      <div className='bg-white rounded py-3 px-4 d-flex'>
-        <h4>{translate('analyticsSite.batch-tracking')}</h4>
+        <BatchTable batches={siteSummary.batches} />
       </div>
     </div>
   )
