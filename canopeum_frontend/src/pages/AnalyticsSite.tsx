@@ -1,16 +1,16 @@
 import AnalyticsSiteHeader from '@components/analytics/AnalyticsSiteHeader'
 import BatchTable from '@components/analytics/BatchTable'
+import { LanguageContext } from '@components/context/LanguageContext'
 import type { SiteSummary } from '@services/api'
 import getApiClient from '@services/apiInterface'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
-
-import { formatDate } from '../utils/dateFormatter'
 
 const AnalyticsSite = () => {
   const { t: translate } = useTranslation<'analytics'>()
   const { siteId: siteIdFromParams } = useParams()
+  const { formatDate } = useContext(LanguageContext)
 
   const [siteSummary, setSiteSummary] = useState<SiteSummary | undefined>()
   const [lastModifiedBatchDate, setLastModifiedBatchDate] = useState<Date | undefined>()
@@ -32,7 +32,7 @@ const AnalyticsSite = () => {
     } else {
       const lastModifiedBatch = siteSummary
         .batches
-        .map(batch => batch.updatedOn)
+        .map(batch => batch.updatedAt)
         .sort((a, b) =>
           a > b
             ? -1

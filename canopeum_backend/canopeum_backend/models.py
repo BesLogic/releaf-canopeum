@@ -13,7 +13,7 @@ class Announcement(models.Model):
 class Batch(models.Model):
     site = models.ForeignKey("Site", models.DO_NOTHING, blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
-    updated_on = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
     name = models.TextField(blank=True, null=True)
     sponsor = models.TextField(blank=True, null=True)
     size = models.TextField(blank=True, null=True)
@@ -63,7 +63,7 @@ class Contact(models.Model):
     facebook_link = models.URLField(blank=True, null=True)
     x_link = models.URLField(blank=True, null=True)
     instagram_link = models.URLField(blank=True, null=True)
-    linked_in_link = models.URLField(blank=True, null=True)
+    linkedin_link = models.URLField(blank=True, null=True)
 
 
 class Coordinate(models.Model):
