@@ -14,7 +14,7 @@ const SiteSummaryCard = ({ site }: Props) => {
 
   const siteAdminsDisplay = site.admins.length > 0
     ? site.admins.map(admin => admin.username).join(', ')
-    : translate('analytics.site-summary.no-amins')
+    : translate('analytics.site-summary.no-admins')
 
   return (
     <div

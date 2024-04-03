@@ -45,7 +45,7 @@ const Analytics = () => {
             >
               <div className='d-flex justify-content-between w-100 pe-3 fs-5'>
                 <span>{site.name}</span>
-                <span className='text-capitalize' style={{ opacity: .5 }}>
+                <span style={{ opacity: .5 }}>
                   {t('analytics.last-update')}: {lastModifiedBatchDate
                     ? formatDate(lastModifiedBatchDate)
                     : 'N/A'}
