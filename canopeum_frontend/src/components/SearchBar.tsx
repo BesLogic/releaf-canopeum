@@ -8,9 +8,13 @@ type Props = {
 const SearchBar = ({ initialValue, onChange }: Props) => {
   const [searchValue, setSearchValue] = useState(initialValue ?? '')
 
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => setSearchValue(event.target.value)
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    event.stopPropagation()
+    setSearchValue(event.target.value)
+  }
 
   const handleKeyDown = (event: KeyboardEvent) => {
+    event.stopPropagation()
     if (event.key !== 'Enter') return
 
     onChange(searchValue)

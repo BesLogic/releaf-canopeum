@@ -1,6 +1,7 @@
+import Checkbox from '@components/Checkbox'
 import SearchBar from '@components/SearchBar'
 import type { SiteSummary, User } from '@services/api'
-import { type ChangeEvent, useState } from 'react'
+import { useState } from 'react'
 import { Dropdown, Popover, Whisper } from 'rsuite'
 
 type Props = {
@@ -21,14 +22,28 @@ const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
     ))
 
   // TODO(NicolasDontigny): Create Checkbox component
-  const onAdminSelectionChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target
-    console.log('CHECKBOX event target:', event.target)
-    console.log('CHECKBOX value:', value)
+  const onAdminSelectionChange = (adminId: number, isSelected: boolean) => {
+    if (isSelected) {
+      const isAlreadyAdmin = selectedAdmins.find(admin => admin.id === adminId)
+      if (isAlreadyAdmin) return
+
+      const matchingAdmin = admins.find(admin => admin.id === adminId)
+      if (!matchingAdmin) return
+
+      setSelectedAdmins(previous => [...previous, matchingAdmin])
+    } else {
+      setSelectedAdmins(previous => previous.filter(admin => admin.id !== adminId))
+    }
   }
 
   const onSaveAdmins = () => {
     console.log('selectedAdmins:', selectedAdmins)
+    // TODO(NicolasDontigny): call PATCH /admins here
+  }
+
+  const onSelectAdminsCancel = () => {
+    setFilteredAdmins([...admins])
+    setSelectedAdmins(siteSummary.admins.map(admin => admin.user))
   }
 
   const administratorsSelection = (
@@ -38,29 +53,35 @@ const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
       <div className='mt-2 py-2'>
         {filteredAdmins.map(admin => {
           const checkboxId = `site-${siteSummary.id}-admin-${admin.id}-checkbox`
-          const isAlreadyAdmin = siteSummary.admins.some(siteAdmin => siteAdmin.user.id === admin.id)
+          const isSelected = selectedAdmins.some(siteAdmin => siteAdmin.id === admin.id)
 
           return (
-            <div className='form-check' key={admin.id}>
-              <input
-                className='form-check-input'
-                defaultChecked={isAlreadyAdmin}
-                id={checkboxId}
-                onChange={onAdminSelectionChange}
-                type='checkbox'
-                value={admin.id}
-              />
-              <label className='form-check-label' htmlFor={checkboxId}>
-                {admin.username}
-              </label>
-            </div>
+            <Checkbox
+              checked={isSelected}
+              id={checkboxId}
+              key={admin.id}
+              onChange={onAdminSelectionChange}
+              value={admin.id}
+            >
+              {admin.username}
+            </Checkbox>
           )
         })}
       </div>
 
       <div className='d-flex justify-content-between pt-2 border-top'>
-        <button className='btn btn-outline-primary' style={{ minWidth: '6rem' }} type='button'>Cancel</button>
-        <button className='btn btn-primary' style={{ minWidth: '6rem' }} type='button'>Save</button>
+        <button
+          className='btn btn-outline-primary'
+          onClick={onSelectAdminsCancel}
+          style={{ minWidth: '6rem' }}
+          type='button'
+        >Cancel</button>
+        <button
+          className='btn btn-primary'
+          onClick={onSaveAdmins}
+          style={{ minWidth: '6rem' }}
+          type='button'
+        >Save</button>
       </div>
     </div>
   )
