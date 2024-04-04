@@ -172,3 +172,12 @@ class Like(models.Model):
 class Internationalization(models.Model):
     en = models.TextField(db_column="EN", blank=True, null=True)
     fr = models.TextField(db_column="FR", blank=True, null=True)
+
+
+class Role(models.Model):
+    name = models.TextField(blank=True, null=True)
+
+
+class UserExtended(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    role = models.ForeignKey(Role, models.DO_NOTHING, blank=True, null=True)

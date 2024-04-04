@@ -45,6 +45,7 @@ class LoginAPIView(APIView):
         user = authenticate(username=username, password=password)
         if user is not None:
             refresh = cast(RefreshToken, RefreshToken.for_user(user))
+            refresh["role"] = "MegaAdmin"  # Custom claim TODO: Add role to user model
             return Response({"refresh": str(refresh), "access": str(refresh.access_token)}, status=status.HTTP_200_OK)
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
