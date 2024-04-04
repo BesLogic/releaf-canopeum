@@ -1,6 +1,5 @@
 from pathlib import Path
 
-from django.contrib.auth.models import User
 from django.core.files import File
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
@@ -25,7 +24,7 @@ from canopeum_backend.models import (
     SitetypeInternationalization,
     TreespeciestypeInternationalization,
     Treetype,
-    UserExtended,
+    User,
 )
 
 
@@ -268,20 +267,16 @@ class Command(BaseCommand):
         )
 
     def create_roles(self):
-        Role.objects.create(name="Admin")
         Role.objects.create(name="User")
+        Role.objects.create(name="Admin")
         Role.objects.create(name="MegaAdmin")
 
     def create_user(self):
-        user = User.objects.create(
+        User.objects.create(
             username="admin",
             email="admin@beslogic.com",
             password="Adminbeslogic!",  # noqa: S106 MOCK_PASSWORD
             is_staff=True,
             is_superuser=True,
-        )
-
-        UserExtended.objects.create(
-            user=user,
-            role=Role.objects.get(name="MegaAdmin"),
+            role=Role.objects.get(name="Admin"),
         )

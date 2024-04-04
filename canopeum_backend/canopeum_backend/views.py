@@ -1,7 +1,7 @@
 from typing import cast
 
 from django.contrib.auth import authenticate
-from django.contrib.auth.models import AbstractBaseUser, User
+from django.contrib.auth.models import AbstractBaseUser
 from django.http import QueryDict
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, Widget
+from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, User, Widget
 from .serializers import (
     AnnouncementSerializer,
     AssetSerializer,
@@ -42,10 +42,11 @@ class LoginAPIView(APIView):
         username = request.data.get("username")
         password = request.data.get("password")
 
-        user = authenticate(username=username, password=password)
+        user = cast(User, authenticate(username=username, password=password))
         if user is not None:
             refresh = cast(RefreshToken, RefreshToken.for_user(user))
-            refresh["role"] = "MegaAdmin"  # Custom claim TODO: Add role to user model
+            if user.role is not None:
+                refresh["role"] = user.role.name
             return Response({"refresh": str(refresh), "access": str(refresh.access_token)}, status=status.HTTP_200_OK)
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -56,6 +57,8 @@ class RegisterAPIView(APIView):
     @extend_schema(request=UserSerializer, responses=AuthUserSerializer, operation_id="authentication_register")
     def post(self, request):
         serializer = AuthUserSerializer(data=request.data)
+        if "role" not in request.data:
+            serializer.role = 1
         if serializer.is_valid():
             user = serializer.save()
             refresh = cast(RefreshToken, RefreshToken.for_user(cast(AbstractBaseUser, user)))

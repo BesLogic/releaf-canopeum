@@ -2,6 +2,7 @@ from datetime import datetime
 
 import pytz
 from django.conf import settings
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
@@ -178,6 +179,5 @@ class Role(models.Model):
     name = models.TextField(blank=True, null=True)
 
 
-class UserExtended(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    role = models.ForeignKey(Role, models.DO_NOTHING, blank=True, null=True)
+class User(AbstractUser):
+    role = models.ForeignKey(Role, models.DO_NOTHING, null=False)
