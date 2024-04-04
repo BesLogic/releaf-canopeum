@@ -23,6 +23,14 @@ body {
   background-image: url('@assets/images/TreeBackground.png');
 }
 
+.login-background {
+  background-image: url('@assets/images/LoginBackground.png');
+  background-position: center;
+  background-size: cover;
+  background-position: bottom;
+  background-repeat: no-repeat;
+}
+
 .material-symbols-outlined,
 .custom-icon {
   color: inherit;

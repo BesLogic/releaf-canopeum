@@ -16,8 +16,6 @@ const MainLayout = () => {
   const location = useLocation()
   const { isAuthenticated } = useContext(AuthenticationContext)
 
-  console.log('isAuthenticated', isAuthenticated)
-
   return (
     <>
       {location.pathname !== '/login' && <Navbar />}
