@@ -180,4 +180,4 @@ class Role(models.Model):
 
 
 class User(AbstractUser):
-    role = models.ForeignKey(Role, models.DO_NOTHING, null=False)
+    role = models.ForeignKey(Role, models.DO_NOTHING, null=False, default=1)  # type: ignore

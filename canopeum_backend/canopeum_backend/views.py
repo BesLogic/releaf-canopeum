@@ -60,7 +60,7 @@ class RegisterAPIView(APIView):
         if "role" not in request.data:
             serializer.role = 1
         if serializer.is_valid():
-            user = serializer.save()
+            user = User.objects.create_user(**serializer.validated_data)
             refresh = cast(RefreshToken, RefreshToken.for_user(cast(AbstractBaseUser, user)))
             return Response(
                 {"refresh": str(refresh), "access": str(refresh.access_token)}, status=status.HTTP_201_CREATED

@@ -272,7 +272,7 @@ class Command(BaseCommand):
         Role.objects.create(name="MegaAdmin")
 
     def create_user(self):
-        User.objects.create(
+        User.objects.create_user(
             username="admin",
             email="admin@beslogic.com",
             password="Adminbeslogic!",  # noqa: S106 MOCK_PASSWORD
