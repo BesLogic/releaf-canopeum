@@ -22,7 +22,7 @@ const MapSite = () => {
   const [posts, setPosts] = useState<Post[]>()
 
   const viewMode = currentUser
-    ? currentUser.role === 'RegularUser'
+    ? currentUser.role === 'User'
       ? 'user'
       : 'admin'
     : 'visitor'
@@ -75,15 +75,15 @@ const MapSite = () => {
         <div className='row'>
           <div className='col-4'>
             <div className='d-flex flex-column gap-4'>
-              {site?.announcement && <AnnouncementCard announcement={site.announcement} />}
-              {site?.contact && <ContactCard contact={site.contact} />}
+              {site?.announcement && <AnnouncementCard announcement={site.announcement} viewMode={viewMode} />}
+              {site?.contact && <ContactCard contact={site.contact} viewMode={viewMode} />}
             </div>
           </div>
           <div className='col-8'>
             <div className='rounded-2 d-flex flex-column gap-4'>
               {site && (
                 <>
-                  <CreatePostWidget site={site} />
+                  {viewMode == 'admin' && <CreatePostWidget site={site} />}
                   <div className='d-flex flex-column gap-4'>
                     {isLoadingPosts
                       ? (

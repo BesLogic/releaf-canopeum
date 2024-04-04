@@ -217,11 +217,10 @@ class PostListAPIView(APIView):
     )
     def get(self, request):
         comment_count = Comment.objects.filter(post=request.data.get("id")).count()
-        has_liked = (
-            Like.objects.filter(post=request.data.get("id"), user=request.user).exists()
-            if request.user.is_authenticated
-            else False
-        )
+        if request.user.is_authenticated:
+            has_liked = Like.objects.filter(post=request.data.get("id"), user=request.user).exists()
+        else:
+            has_liked = False
         site_id = request.GET.get("siteId", "")
         posts = Post.objects.filter(site=site_id) if not site_id else Post.objects.all()
         serializer = PostSerializer(posts, many=True, context={"comment_count": comment_count, "has_liked": has_liked})

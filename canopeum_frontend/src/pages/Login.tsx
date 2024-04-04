@@ -51,7 +51,7 @@ const Login = () => {
           firstname: response.firstName ?? '',
           image: '',
           lastname: response.lastName ?? '',
-          role: decodedToken.role,
+          role: decodedToken.role as UserRole,
         })
       } catch {
         setLoginError('Error while login')
