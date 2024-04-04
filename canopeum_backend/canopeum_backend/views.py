@@ -1,7 +1,7 @@
 from typing import cast
 
 from django.contrib.auth import authenticate
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractBaseUser, User
 from django.http import QueryDict
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
@@ -57,7 +57,7 @@ class RegisterAPIView(APIView):
         serializer = AuthUserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            refresh = cast(RefreshToken, RefreshToken.for_user(user))
+            refresh = cast(RefreshToken, RefreshToken.for_user(cast(AbstractBaseUser, user)))
             return Response(
                 {"refresh": str(refresh), "access": str(refresh.access_token)}, status=status.HTTP_201_CREATED
             )
