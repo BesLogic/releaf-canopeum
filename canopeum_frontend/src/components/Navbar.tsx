@@ -48,50 +48,54 @@ const Navbar = () => {
         </button>
         <div className='collapse navbar-collapse' id='navbarNav'>
           <ul className='navbar-nav d-flex w-100 ms-3 gap-3 fs-4'>
-            <li
-              className={`nav-item ${
-                location.pathname === '/home'
-                  ? 'active'
-                  : ''
-              }`}
-            >
-              <Link className='nav-link' to='/home'>
-                <span className='material-symbols-outlined text-light'>home</span>
-              </Link>
-            </li>
-            <li
-              className={`nav-item ${
-                location.pathname === '/analytics'
-                  ? 'active'
-                  : ''
-              }`}
-            >
-              <Link className='nav-link' to='/analytics'>
-                <span className='material-symbols-outlined text-light'>donut_small</span>
-              </Link>
-            </li>
-            <li
-              className={`nav-item ${
-                location.pathname === '/map'
-                  ? 'active'
-                  : ''
-              }`}
-            >
-              <Link className='nav-link' to='/map'>
-                <span className='material-symbols-outlined text-light'>pin_drop</span>
-              </Link>
-            </li>
-            <li
-              className={`nav-item ${
-                location.pathname === '/utilities'
-                  ? 'active'
-                  : ''
-              }`}
-            >
-              <Link className='nav-link' to='/utilities'>
-                <span className='material-symbols-outlined text-light'>style</span>
-              </Link>
-            </li>
+            {isAuthenticated && (
+              <>
+                <li
+                  className={`nav-item ${
+                    location.pathname === '/home'
+                      ? 'active'
+                      : ''
+                  }`}
+                >
+                  <Link className='nav-link' to='/home'>
+                    <span className='material-symbols-outlined text-light'>home</span>
+                  </Link>
+                </li>
+                <li
+                  className={`nav-item ${
+                    location.pathname === '/analytics'
+                      ? 'active'
+                      : ''
+                  }`}
+                >
+                  <Link className='nav-link' to='/analytics'>
+                    <span className='material-symbols-outlined text-light'>donut_small</span>
+                  </Link>
+                </li>
+                <li
+                  className={`nav-item ${
+                    location.pathname === '/map'
+                      ? 'active'
+                      : ''
+                  }`}
+                >
+                  <Link className='nav-link' to='/map'>
+                    <span className='material-symbols-outlined text-light'>pin_drop</span>
+                  </Link>
+                </li>
+                <li
+                  className={`nav-item ${
+                    location.pathname === '/utilities'
+                      ? 'active'
+                      : ''
+                  }`}
+                >
+                  <Link className='nav-link' to='/utilities'>
+                    <span className='material-symbols-outlined text-light'>style</span>
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
           <ul className='navbar-nav ms-3 gap-3'>
             {isAuthenticated && (
@@ -111,7 +115,7 @@ const Navbar = () => {
             {!isAuthenticated && (
               <li>
                 <button
-                  className='btn btn-link text-light'
+                  className='btn btn-primary'
                   onClick={() => onLoginLogoutbuttonClick()}
                   style={{ width: 100 }}
                   type='button'

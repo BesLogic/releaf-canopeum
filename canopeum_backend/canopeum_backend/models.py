@@ -1,8 +1,16 @@
 from datetime import datetime
 
 import pytz
-from django.conf import settings
+from django.contrib.auth.models import AbstractUser
 from django.db import models
+
+
+class Role(models.Model):
+    name = models.TextField(blank=True, null=True)
+
+
+class User(AbstractUser):
+    role = models.ForeignKey(Role, models.DO_NOTHING, null=False, default=1)  # type: ignore
 
 
 class Announcement(models.Model):
@@ -52,7 +60,7 @@ class BatchSupportedSpecies(models.Model):
 class Comment(models.Model):
     body = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
-    auth_user = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
     post = models.ForeignKey("Post", models.DO_NOTHING, blank=True, null=True)
 
 
@@ -130,7 +138,7 @@ class Site(models.Model):
 
 
 class Siteadmin(models.Model):
-    auth_user = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
     site = models.ForeignKey(Site, models.DO_NOTHING, blank=True, null=True)
 
 
@@ -165,7 +173,7 @@ class Widget(models.Model):
 
 
 class Like(models.Model):
-    auth_user = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
     post = models.ForeignKey(Post, models.DO_NOTHING, blank=True, null=True)
 
 
