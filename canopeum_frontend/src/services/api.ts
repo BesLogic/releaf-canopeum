@@ -561,7 +561,7 @@ export class AdminsClient {
     this.baseUrl = baseUrl ?? "";
   }
 
-  update(siteId: number, body: { [key: string]: any; } | undefined): Promise<SiteAdmin[]> {
+  update(siteId: number, body: number[] | undefined): Promise<SiteAdmin[]> {
     let url_ = this.baseUrl + "/analytics/sites/{siteId}/admins";
     if (siteId === undefined || siteId === null)
       throw new Error("The parameter 'siteId' must be defined.");
@@ -851,6 +851,104 @@ export class AuthenticationClient {
       });
     }
     return Promise.resolve<AuthUser>(null as any);
+  }
+}
+
+export class TokenClient {
+  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+    this.http = http ? http : window as any;
+    this.baseUrl = baseUrl ?? "";
+  }
+
+  create(body: TokenObtainPair): Promise<TokenObtainPair> {
+    let url_ = this.baseUrl + "/auth/token/";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processCreate(_response);
+    });
+  }
+
+  protected processCreate(response: Response): Promise<TokenObtainPair> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = TokenObtainPair.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<TokenObtainPair>(null as any);
+  }
+}
+
+export class RefreshClient {
+  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+    this.http = http ? http : window as any;
+    this.baseUrl = baseUrl ?? "";
+  }
+
+  create(body: TokenRefresh): Promise<TokenRefresh> {
+    let url_ = this.baseUrl + "/auth/token/refresh/";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processCreate(_response);
+    });
+  }
+
+  protected processCreate(response: Response): Promise<TokenRefresh> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = TokenRefresh.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<TokenRefresh>(null as any);
   }
 }
 
@@ -2309,7 +2407,7 @@ export interface IBatchfertilizer {
 export class Comment implements IComment {
   readonly id!: number;
   body?: string | undefined;
-  authUser?: number | undefined;
+  user?: number | undefined;
   createdAt?: Date | undefined;
 
   [key: string]: any;
@@ -2331,7 +2429,7 @@ export class Comment implements IComment {
       }
       (<any>this).id = _data["id"];
       this.body = _data["body"];
-      this.authUser = _data["authUser"];
+      this.user = _data["user"];
       this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
     }
   }
@@ -2351,7 +2449,7 @@ export class Comment implements IComment {
     }
     data["id"] = this.id;
     data["body"] = this.body;
-    data["authUser"] = this.authUser;
+    data["user"] = this.user;
     data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
     return data;
   }
@@ -2360,7 +2458,7 @@ export class Comment implements IComment {
 export interface IComment {
   id: number;
   body?: string | undefined;
-  authUser?: number | undefined;
+  user?: number | undefined;
   createdAt?: Date | undefined;
 
   [key: string]: any;
@@ -2568,7 +2666,7 @@ export interface ICoordinatesMap {
 
 export class Like implements ILike {
   readonly id!: number;
-  authUser?: number | undefined;
+  user?: number | undefined;
   post?: number | undefined;
 
   [key: string]: any;
@@ -2589,7 +2687,7 @@ export class Like implements ILike {
           this[property] = _data[property];
       }
       (<any>this).id = _data["id"];
-      this.authUser = _data["authUser"];
+      this.user = _data["user"];
       this.post = _data["post"];
     }
   }
@@ -2608,7 +2706,7 @@ export class Like implements ILike {
         data[property] = this[property];
     }
     data["id"] = this.id;
-    data["authUser"] = this.authUser;
+    data["user"] = this.user;
     data["post"] = this.post;
     return data;
   }
@@ -2616,7 +2714,7 @@ export class Like implements ILike {
 
 export interface ILike {
   id: number;
-  authUser?: number | undefined;
+  user?: number | undefined;
   post?: number | undefined;
 
   [key: string]: any;
@@ -2957,6 +3055,7 @@ export class PatchedUser implements IPatchedUser {
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
   isActive?: boolean;
   dateJoined?: Date;
+  role?: number;
   /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
   groups?: number[];
   /** Specific permissions for this user. */
@@ -2989,6 +3088,7 @@ export class PatchedUser implements IPatchedUser {
       this.isStaff = _data["isStaff"];
       this.isActive = _data["isActive"];
       this.dateJoined = _data["dateJoined"] ? new Date(_data["dateJoined"].toString()) : <any>undefined;
+      this.role = _data["role"];
       if (Array.isArray(_data["groups"])) {
         this.groups = [] as any;
         for (let item of _data["groups"])
@@ -3025,6 +3125,7 @@ export class PatchedUser implements IPatchedUser {
     data["isStaff"] = this.isStaff;
     data["isActive"] = this.isActive;
     data["dateJoined"] = this.dateJoined ? this.dateJoined.toISOString() : <any>undefined;
+    data["role"] = this.role;
     if (Array.isArray(this.groups)) {
       data["groups"] = [];
       for (let item of this.groups)
@@ -3054,6 +3155,7 @@ export interface IPatchedUser {
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
   isActive?: boolean;
   dateJoined?: Date;
+  role?: number;
   /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
   groups?: number[];
   /** Specific permissions for this user. */
@@ -3896,6 +3998,118 @@ export interface ISitetreespecies {
   [key: string]: any;
 }
 
+export class TokenObtainPair implements ITokenObtainPair {
+  username!: string;
+  password!: string;
+  readonly access!: string;
+  readonly refresh!: string;
+
+  [key: string]: any;
+
+  constructor(data?: ITokenObtainPair) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property))
+          this[property] = _data[property];
+      }
+      this.username = _data["username"];
+      this.password = _data["password"];
+      (<any>this).access = _data["access"];
+      (<any>this).refresh = _data["refresh"];
+    }
+  }
+
+  static fromJS(data: any): TokenObtainPair {
+    data = typeof data === 'object' ? data : {};
+    let result = new TokenObtainPair();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    data["username"] = this.username;
+    data["password"] = this.password;
+    data["access"] = this.access;
+    data["refresh"] = this.refresh;
+    return data;
+  }
+}
+
+export interface ITokenObtainPair {
+  username: string;
+  password: string;
+  access: string;
+  refresh: string;
+
+  [key: string]: any;
+}
+
+export class TokenRefresh implements ITokenRefresh {
+  readonly access!: string;
+  refresh!: string;
+
+  [key: string]: any;
+
+  constructor(data?: ITokenRefresh) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property))
+          this[property] = _data[property];
+      }
+      (<any>this).access = _data["access"];
+      this.refresh = _data["refresh"];
+    }
+  }
+
+  static fromJS(data: any): TokenRefresh {
+    data = typeof data === 'object' ? data : {};
+    let result = new TokenRefresh();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    data["access"] = this.access;
+    data["refresh"] = this.refresh;
+    return data;
+  }
+}
+
+export interface ITokenRefresh {
+  access: string;
+  refresh: string;
+
+  [key: string]: any;
+}
+
 export class User implements IUser {
   readonly id!: number;
   lastLogin?: Date | undefined;
@@ -3911,6 +4125,7 @@ export class User implements IUser {
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
   isActive?: boolean;
   dateJoined?: Date;
+  role?: number;
   /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
   groups?: number[];
   /** Specific permissions for this user. */
@@ -3943,6 +4158,7 @@ export class User implements IUser {
       this.isStaff = _data["isStaff"];
       this.isActive = _data["isActive"];
       this.dateJoined = _data["dateJoined"] ? new Date(_data["dateJoined"].toString()) : <any>undefined;
+      this.role = _data["role"];
       if (Array.isArray(_data["groups"])) {
         this.groups = [] as any;
         for (let item of _data["groups"])
@@ -3979,6 +4195,7 @@ export class User implements IUser {
     data["isStaff"] = this.isStaff;
     data["isActive"] = this.isActive;
     data["dateJoined"] = this.dateJoined ? this.dateJoined.toISOString() : <any>undefined;
+    data["role"] = this.role;
     if (Array.isArray(this.groups)) {
       data["groups"] = [];
       for (let item of this.groups)
@@ -4008,6 +4225,7 @@ export interface IUser {
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
   isActive?: boolean;
   dateJoined?: Date;
+  role?: number;
   /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
   groups?: number[];
   /** Specific permissions for this user. */

@@ -325,7 +325,7 @@ class BatchAnalyticsSerializer(serializers.ModelSerializer):
 
 
 class SiteAdminSerializer(serializers.ModelSerializer):
-    user = UserSerializer(source="auth_user")
+    user = UserSerializer()
 
     class Meta:
         model = Siteadmin
@@ -457,7 +457,7 @@ class PostSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ("id", "body", "auth_user", "created_at")
+        fields = ("id", "body", "user", "created_at")
 
 
 class LikeSerializer(serializers.ModelSerializer):

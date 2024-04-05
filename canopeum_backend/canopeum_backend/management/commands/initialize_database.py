@@ -1,6 +1,5 @@
 from pathlib import Path
 
-from django.contrib.auth.models import User
 from django.core.files import File
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
@@ -26,6 +25,7 @@ from canopeum_backend.models import (
     SitetypeInternationalization,
     TreespeciestypeInternationalization,
     Treetype,
+    User,
 )
 
 
@@ -69,10 +69,9 @@ class Command(BaseCommand):
         self.create_canopeum_site()
         self.create_post_conopeum_site()
         self.create_batch()
+        self.create_roles()
         self.create_users()
         self.create_siteadmins()
-        self.create_roles()
-        self.create_admin_user()
         self.stdout.write(self.style.SUCCESS("Data Generated"))
 
     def create_fertilizer_types(self):
@@ -269,28 +268,12 @@ class Command(BaseCommand):
             updated_at=timezone.now(),
         )
 
-    def create_users(self):
-        User.objects.create_user("Tyrion Lannister", "tyrion@lannister.com", "tyrion123")
-        User.objects.create_user("Daenerys Targaryen", "daenerys@targaryen.com", "daenerys123")
-        User.objects.create_user("Jon Snow", "jon@snow.com", "jon123")
-        User.objects.create_user("Oberyn Martell", "oberyn@martell.com", "oberyn123")
-
-    def create_siteadmins(self):
-        Siteadmin.objects.create(
-            auth_user=User.objects.get(email="tyrion@lannister.com"),
-            site=Site.objects.get(name="Canopeum"),
-        )
-        Siteadmin.objects.create(
-            auth_user=User.objects.get(email="daenerys@targaryen.com"),
-            site=Site.objects.get(name="Canopeum"),
-        )
-
     def create_roles(self):
         Role.objects.create(name="User")
         Role.objects.create(name="Admin")
         Role.objects.create(name="MegaAdmin")
 
-    def create_admin_user(self):
+    def create_users(self):
         User.objects.create_user(
             username="admin",
             email="admin@beslogic.com",
@@ -298,4 +281,38 @@ class Command(BaseCommand):
             is_staff=True,
             is_superuser=True,
             role=Role.objects.get(name="Admin"),
+        )
+        User.objects.create_user(
+            username="Tyrion Lannister",
+            email="tyrion@lannister.com",
+            password="tyrion123",  # noqa: S106 MOCK_PASSWORD
+            role=Role.objects.get(name="Admin"),
+        )
+        User.objects.create_user(
+            username="Daenerys Targaryen",
+            email="daenerys@targaryen.com",
+            password="daenerys123",  # noqa: S106 MOCK_PASSWORD
+            role=Role.objects.get(name="Admin"),
+        )
+        User.objects.create_user(
+            username="Jon Snow",
+            email="jon@snow.com",
+            password="jon123",  # noqa: S106 MOCK_PASSWORD
+            role=Role.objects.get(name="Admin"),
+        )
+        User.objects.create_user(
+            username="Oberyn Martell",
+            email="oberyn@martell.com",
+            password="oberyn123",  # noqa: S106 MOCK_PASSWORD
+            role=Role.objects.get(name="Admin"),
+        )
+
+    def create_siteadmins(self):
+        Siteadmin.objects.create(
+            user=User.objects.get(email="tyrion@lannister.com"),
+            site=Site.objects.get(name="Canopeum"),
+        )
+        Siteadmin.objects.create(
+            user=User.objects.get(email="daenerys@targaryen.com"),
+            site=Site.objects.get(name="Canopeum"),
         )

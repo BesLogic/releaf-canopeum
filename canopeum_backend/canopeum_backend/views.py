@@ -187,7 +187,7 @@ class SiteAdminsAPIView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         existing_site_admins = Siteadmin.objects.filter(site=site)
-        existing_admin_users = [admin.auth_user for admin in existing_site_admins]
+        existing_admin_users = [admin.user for admin in existing_site_admins]
 
         admin_ids = request.data
         updated_admin_users_list = User.objects.filter(id__in=admin_ids)
@@ -195,13 +195,13 @@ class SiteAdminsAPIView(APIView):
         for user in updated_admin_users_list:
             if user not in existing_admin_users:
                 Siteadmin.objects.create(
-                    auth_user=user,
+                    user=user,
                     site=site,
                 )
 
         for existing_user in existing_admin_users:
             if existing_user not in updated_admin_users_list:
-                existing_site_admins.filter(auth_user__id__exact=existing_user.id).delete()
+                existing_site_admins.filter(user__id__exact=existing_user.id).delete()
 
         serializer = SiteAdminSerializer(Siteadmin.objects.filter(site=site), many=True)
         return Response(serializer.data)
