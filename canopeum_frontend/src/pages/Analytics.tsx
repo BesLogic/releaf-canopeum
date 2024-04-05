@@ -5,18 +5,23 @@ import { LanguageContext } from '@components/context/LanguageContext'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import type { SiteSummary } from '../services/api'
+import type { SiteSummary, User } from '../services/api'
 import getApiClient from '../services/apiInterface'
 
 const Analytics = () => {
   const { t } = useTranslation()
   const { formatDate } = useContext(LanguageContext)
   const [siteSummaries, setSiteSummaries] = useState<SiteSummary[]>([])
+  const [admins, setAdmins] = useState<User[]>([])
 
   const fetchSites = async () => setSiteSummaries(await getApiClient().summaryClient.all())
+  // TODO(NicolasDontigny): Once authentication + permissions are implemented,
+  // Use a new endpoint or query param to get only the admins here
+  const fetchAdmins = async () => setAdmins(await getApiClient().userClient.all())
 
   useEffect((): void => {
     void fetchSites()
+    void fetchAdmins()
   }, [])
 
   const renderBatches = () =>
@@ -80,7 +85,7 @@ const Analytics = () => {
         </div>
 
         <div className='mt-2 row gx-3 gy-3 pb-3'>
-          {siteSummaries.map(site => <SiteSummaryCard key={`site-${site.id}-card`} site={site} />)}
+          {siteSummaries.map(site => <SiteSummaryCard admins={admins} key={`site-${site.id}-card`} site={site} />)}
         </div>
 
         <div className='mt-4 bg-white rounded p-3'>

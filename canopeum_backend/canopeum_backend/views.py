@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, User, Widget
+from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, Siteadmin, User, Widget
 from .serializers import (
     AnnouncementSerializer,
     AssetSerializer,
@@ -24,6 +24,7 @@ from .serializers import (
     LikeSerializer,
     PostPostSerializer,
     PostSerializer,
+    SiteAdminSerializer,
     SiteMapSerializer,
     SitePostSerializer,
     SiteSerializer,
@@ -173,6 +174,36 @@ class SiteSummaryDetailAPIView(APIView):
                 "propagation_count": propagation_count,
             },
         )
+        return Response(serializer.data)
+
+
+class SiteAdminsAPIView(APIView):
+    # TODO(NicolasDontigny): Find the best way to type the request as a list of integer ids
+    @extend_schema(request=list[str], responses=SiteAdminSerializer(many=True), operation_id="site_admins_update")
+    def patch(self, request, siteId):
+        try:
+            site = Site.objects.get(pk=siteId)
+        except Site.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        existing_site_admins = Siteadmin.objects.filter(site=site)
+        existing_admin_users = [admin.user for admin in existing_site_admins]
+
+        admin_ids = request.data
+        updated_admin_users_list = User.objects.filter(id__in=admin_ids)
+
+        for user in updated_admin_users_list:
+            if user not in existing_admin_users:
+                Siteadmin.objects.create(
+                    user=user,
+                    site=site,
+                )
+
+        for existing_user in existing_admin_users:
+            if existing_user not in updated_admin_users_list:
+                existing_site_admins.filter(user__id__exact=existing_user.id).delete()
+
+        serializer = SiteAdminSerializer(Siteadmin.objects.filter(site=site), many=True)
         return Response(serializer.data)
 
 
