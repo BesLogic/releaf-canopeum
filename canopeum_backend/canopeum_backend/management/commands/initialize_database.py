@@ -19,6 +19,7 @@ from canopeum_backend.models import (
     Mulchlayertype,
     MulchlayertypeInternationalization,
     Post,
+    Role,
     Site,
     Siteadmin,
     Sitetype,
@@ -39,22 +40,24 @@ class Command(BaseCommand):
         if response != "yes":
             self.stdout.write(self.style.ERROR("Operation cancelled"))
             return
-        self.stdout.write("Erasing existing data...")
-        assets_to_delete = Asset.objects.all().exclude(asset="site_img.png")
-        for asset in assets_to_delete:
-            path = Path(settings.BASE_DIR) / "canopeum_backend" / "media" / asset.asset.name
-            path.unlink(missing_ok=True)
-        call_command("flush", "--noinput")
         with connection.cursor() as cursor:
-            cursor.execute("SET FOREIGN_KEY_CHECKS = 0;")
-            cursor.execute("SHOW TABLES;")
-            tables = cursor.fetchall()
-            for table in tables:
-                cursor.execute(f"DROP TABLE IF EXISTS {table[0]};")
-            cursor.execute("SET FOREIGN_KEY_CHECKS = 1;")
+            if cursor.execute("SHOW TABLES;") != 0:
+                self.stdout.write("Erasing existing data...")
+                assets_to_delete = Asset.objects.all().exclude(asset="site_img.png")
+                for asset in assets_to_delete:
+                    path = Path(settings.BASE_DIR) / "canopeum_backend" / "media" / asset.asset.name
+                    path.unlink(missing_ok=True)
+                call_command("flush", "--noinput")
+                cursor.execute("SET FOREIGN_KEY_CHECKS = 0;")
+                cursor.execute("SHOW TABLES;")
+                tables = cursor.fetchall()
+                for table in tables:
+                    cursor.execute(f"DROP TABLE IF EXISTS {table[0]};")
+                cursor.execute("SET FOREIGN_KEY_CHECKS = 1;")
         self.stdout.write(self.style.SUCCESS("Existing data erased"))
 
         self.stdout.write("Migrating database...")
+        call_command("makemigrations")
         call_command("migrate")
 
         self.stdout.write("Generating Data")
@@ -68,6 +71,8 @@ class Command(BaseCommand):
         self.create_batch()
         self.create_users()
         self.create_siteadmins()
+        self.create_roles()
+        self.create_admin_user()
         self.stdout.write(self.style.SUCCESS("Data Generated"))
 
     def create_fertilizer_types(self):
@@ -278,4 +283,19 @@ class Command(BaseCommand):
         Siteadmin.objects.create(
             auth_user=User.objects.get(email="daenerys@targaryen.com"),
             site=Site.objects.get(name="Canopeum"),
+        )
+
+    def create_roles(self):
+        Role.objects.create(name="User")
+        Role.objects.create(name="Admin")
+        Role.objects.create(name="MegaAdmin")
+
+    def create_admin_user(self):
+        User.objects.create_user(
+            username="admin",
+            email="admin@beslogic.com",
+            password="Adminbeslogic!",  # noqa: S106 MOCK_PASSWORD
+            is_staff=True,
+            is_superuser=True,
+            role=Role.objects.get(name="Admin"),
         )

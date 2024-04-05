@@ -1,8 +1,9 @@
-import { AuthenticationContext } from '@components/context/AuthenticationContext'
+import { AuthenticationContext, type UserRole } from '@components/context/AuthenticationContext'
 import { AuthUser } from '@services/api'
-import api from '@services/apiInterface'
+import getApiClient from '@services/apiInterface'
 import { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { jwtDecode } from 'jwt-decode'
 
 const isLoginEntryValid = (entry: string | undefined) => entry !== undefined && entry !== ''
 
@@ -35,19 +36,22 @@ const Login = () => {
 
     if (isLoginEntryValid(userName) && isLoginEntryValid(password)) {
       try {
-        const response = await api().auth.login(
+        const response = await getApiClient().authenticationClient.login(
           new AuthUser({
             username: userName,
             password,
             id: 1,
           }),
         )
+        sessionStorage.setItem('token', response.access)
+        sessionStorage.setItem('refreshToken', response.refresh)
+        const decodedToken = jwtDecode(response.access) as { role: UserRole }
         authenticate({
           email: response.email ?? '',
           firstname: response.firstName ?? '',
           image: '',
           lastname: response.lastName ?? '',
-          role: 'MegaAdmin', // TODO (Vincent) set the user role
+          role: decodedToken.role as UserRole,
         })
       } catch {
         setLoginError('Error while login')
@@ -56,8 +60,8 @@ const Login = () => {
   }
 
   return (
-    <div className='d-flex' style={{ height: '100vh' }}>
-      <div style={{ width: '55%' }} />
+    <div className='d-flex bg-primary' style={{ height: '100vh' }}>
+      <div style={{ width: '55%' }} className='login-background' />
       <div className='d-flex flex-column bg-white px-3 py-2' style={{ width: '45%', alignItems: 'center' }}>
         <div style={{ flexGrow: '0.3', display: 'flex', alignItems: 'center' }}>
           <h1 style={{ textAlign: 'center' }}>Log In to Your Account</h1>

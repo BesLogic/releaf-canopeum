@@ -1,7 +1,7 @@
 import type { FunctionComponent, ReactNode } from 'react'
 import { createContext, memo, useCallback, useMemo, useState } from 'react'
 
-export type UserRole = 'MegaAdmin' | 'MiniAdmin' | 'RegularUser'
+export type UserRole = 'MegaAdmin' | 'Admin' | 'User'
 
 type User = {
   firstname: string,

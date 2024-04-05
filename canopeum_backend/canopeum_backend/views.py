@@ -1,16 +1,18 @@
+from typing import cast
+
 from django.contrib.auth import authenticate
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractBaseUser
 from django.http import QueryDict
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import status
-from rest_framework.authtoken.models import Token
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, Siteadmin, Widget
+from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, Siteadmin, User, Widget
 from .serializers import (
     AnnouncementSerializer,
     AssetSerializer,
@@ -41,10 +43,12 @@ class LoginAPIView(APIView):
         username = request.data.get("username")
         password = request.data.get("password")
 
-        user = authenticate(username=username, password=password)
+        user = cast(User, authenticate(username=username, password=password))
         if user is not None:
-            token, _ = Token.objects.get_or_create(user=user)
-            return Response({"token": token.key}, status=status.HTTP_200_OK)
+            refresh = cast(RefreshToken, RefreshToken.for_user(user))
+            if user.role is not None:
+                refresh["role"] = user.role.name
+            return Response({"refresh": str(refresh), "access": str(refresh.access_token)}, status=status.HTTP_200_OK)
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
@@ -53,11 +57,15 @@ class RegisterAPIView(APIView):
 
     @extend_schema(request=UserSerializer, responses=AuthUserSerializer, operation_id="authentication_register")
     def post(self, request):
-        serializer = UserSerializer(data=request.data)
+        serializer = AuthUserSerializer(data=request.data)
+        if "role" not in request.data:
+            serializer.role = 1
         if serializer.is_valid():
-            user = serializer.save()
-            token, _ = Token.objects.get_or_create(user=user)
-            return Response({"token": token.key}, status=status.HTTP_201_CREATED)
+            user = User.objects.create_user(**serializer.validated_data)
+            refresh = cast(RefreshToken, RefreshToken.for_user(cast(AbstractBaseUser, user)))
+            return Response(
+                {"refresh": str(refresh), "access": str(refresh.access_token)}, status=status.HTTP_201_CREATED
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -240,11 +248,10 @@ class PostListAPIView(APIView):
     )
     def get(self, request):
         comment_count = Comment.objects.filter(post=request.data.get("id")).count()
-        has_liked = (
-            Like.objects.filter(post=request.data.get("id"), user=request.user).exists()
-            if request.user.is_authenticated
-            else False
-        )
+        if request.user.is_authenticated:
+            has_liked = Like.objects.filter(post=request.data.get("id"), user=request.user).exists()
+        else:
+            has_liked = False
         site_id = request.GET.get("siteId", "")
         posts = Post.objects.filter(site=site_id) if not site_id else Post.objects.all()
         serializer = PostSerializer(posts, many=True, context={"comment_count": comment_count, "has_liked": has_liked})

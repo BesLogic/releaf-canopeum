@@ -5,13 +5,17 @@ import xLogo from '@assets/icons/x-contact-logo.svg'
 import { Link } from 'react-router-dom'
 import type { Contact } from '@services/api'
 
-const ContactCard = ({ contact }: { readonly contact: Contact }) => {
+const ContactCard = (
+  { contact, viewMode }: { readonly contact: Contact, readonly viewMode: 'admin' | 'user' | 'visitor' },
+) => {
   const renderContactCard = () => (
     <div className='card rounded px-3 py-2'>
       <div className='card-body'>
         <div className='d-flex justify-content-between align-items-center pb-3'>
           <h2 className='card-title'>Contact</h2>
-          <span className='material-symbols-outlined text-primary fs-2'>edit_square</span>
+          <div>
+            {viewMode === 'admin' && <span className='material-symbols-outlined text-primary fs-2'>edit_square</span>}
+          </div>
         </div>
         <div className='info-section d-flex flex-column'>
           <div className='card-text adress d-flex align-items-center pb-3 gap-2'>
