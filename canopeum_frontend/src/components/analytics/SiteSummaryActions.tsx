@@ -1,6 +1,7 @@
 import Checkbox from '@components/Checkbox'
 import SearchBar from '@components/SearchBar'
 import type { SiteSummary, User } from '@services/api'
+import getApiClient from '@services/apiInterface'
 import { useState } from 'react'
 import { Dropdown, Popover, Whisper } from 'rsuite'
 
@@ -21,7 +22,6 @@ const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
         .includes(query.toLocaleLowerCase())
     ))
 
-  // TODO(NicolasDontigny): Create Checkbox component
   const onAdminSelectionChange = (adminId: number, isSelected: boolean) => {
     if (isSelected) {
       const isAlreadyAdmin = selectedAdmins.find(admin => admin.id === adminId)
@@ -36,10 +36,11 @@ const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
     }
   }
 
-  const onSaveAdmins = () => {
-    console.log('selectedAdmins:', selectedAdmins)
-    // TODO(NicolasDontigny): call PATCH /admins here
-  }
+  const onSaveAdmins = async () =>
+    await getApiClient()
+      .siteAdminsClient
+      .update(siteSummary.id, selectedAdmins.map(admin => admin.id))
+  // TODO(NicolasDontigny): Do we need to update the parent model here?
 
   const onSelectAdminsCancel = () => {
     setFilteredAdmins([...admins])

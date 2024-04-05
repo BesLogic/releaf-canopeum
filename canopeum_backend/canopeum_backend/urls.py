@@ -50,6 +50,11 @@ urlpatterns = [
     path("analytics/sites/<int:siteId>/", views.SiteDetailAPIView.as_view(), name="site-detail"),
     path("analytics/sites/summary", views.SiteSummaryListAPIView.as_view(), name="site-summary-list"),
     path("analytics/sites/<int:siteId>/summary", views.SiteSummaryDetailAPIView.as_view(), name="site-summary-detail"),
+    path(
+        "analytics/sites/<int:siteId>/admins",
+        views.SiteAdminsAPIView.as_view(),
+        name="site-admins",
+    ),
     # Batches
     path("analytics/batches/", views.BatchListAPIView.as_view(), name="batch-list"),
     path("analytics/batches/<int:batchId>/", views.BatchDetailAPIView.as_view(), name="batch-detail"),

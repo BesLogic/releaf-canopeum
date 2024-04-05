@@ -1,4 +1,4 @@
-import { AnnouncementClient, AuthenticationClient, BatchClient, CommentClient, ContactClient, LikeClient, PostClient, SiteClient, SocialClient, SummaryClient, UserClient, WidgetClient } from './api'
+import { AdminsClient, AnnouncementClient, AuthenticationClient, BatchClient, CommentClient, ContactClient, LikeClient, PostClient, SiteClient, SocialClient, SummaryClient, UserClient, WidgetClient } from './api'
 import { getApiBaseUrl } from './apiSettings'
 
 const getApiClient = () => ({
@@ -10,6 +10,7 @@ const getApiClient = () => ({
   likeClient: new LikeClient(getApiBaseUrl()),
   userClient: new UserClient(getApiBaseUrl()),
   siteClient: new SiteClient(getApiBaseUrl()),
+  siteAdminsClient: new AdminsClient(getApiBaseUrl()),
   summaryClient: new SummaryClient(getApiBaseUrl()),
   announcementClient: new AnnouncementClient(getApiBaseUrl()),
   contactClient: new ContactClient(getApiBaseUrl()),
