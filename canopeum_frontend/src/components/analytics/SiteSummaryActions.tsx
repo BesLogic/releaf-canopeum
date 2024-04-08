@@ -45,8 +45,8 @@ const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
     const body = new PatchedSiteAdminUpdateRequest({ ids: selectedAdmins.map(admin => admin.id) })
 
     await getApiClient()
-      .siteAdminsClient
-      .update(siteSummary.id, body)
+      .siteClient
+      .updateAdmins(siteSummary.id, body)
     // TODO(NicolasDontigny): Do we need to update the parent model here?
   }
 

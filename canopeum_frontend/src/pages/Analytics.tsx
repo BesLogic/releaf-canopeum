@@ -12,12 +12,14 @@ const Analytics = () => {
   const { t } = useTranslation()
   const { formatDate } = useContext(LanguageContext)
   const [siteSummaries, setSiteSummaries] = useState<SiteSummary[]>([])
-  const [admins, setAdmins] = useState<User[]>([])
+  const [adminList, setAdminList] = useState<User[]>([])
 
   const fetchSites = async () => setSiteSummaries(await getApiClient().summaryClient.all())
   // TODO(NicolasDontigny): Once authentication + permissions are implemented,
   // Use a new endpoint or query param to get only the admins here
-  const fetchAdmins = async () => setAdmins(await getApiClient().userClient.all())
+  const fetchAdmins = async () => setAdminList(await getApiClient().userClient.allAdmins())
+
+  console.log('adminList:', adminList);
 
   useEffect((): void => {
     void fetchSites()
@@ -85,7 +87,7 @@ const Analytics = () => {
         </div>
 
         <div className='mt-2 row gx-3 gy-3 pb-3'>
-          {siteSummaries.map(site => <SiteSummaryCard admins={admins} key={`site-${site.id}-card`} site={site} />)}
+          {siteSummaries.map(site => <SiteSummaryCard admins={adminList} key={`site-${site.id}-card`} site={site} />)}
         </div>
 
         <div className='mt-4 bg-white rounded p-3'>

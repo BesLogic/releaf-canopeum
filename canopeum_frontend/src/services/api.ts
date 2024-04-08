@@ -435,6 +435,54 @@ export class SiteClient {
     return Promise.resolve<{ [key: string]: any; }>(null as any);
   }
 
+  updateAdmins(siteId: number, body: PatchedSiteAdminUpdateRequest | undefined): Promise<SiteAdmin[]> {
+    let url_ = this.baseUrl + "/analytics/sites/{siteId}/admins";
+    if (siteId === undefined || siteId === null)
+      throw new Error("The parameter 'siteId' must be defined.");
+    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processUpdateAdmins(_response);
+    });
+  }
+
+  protected processUpdateAdmins(response: Response): Promise<SiteAdmin[]> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        if (Array.isArray(resultData200)) {
+          result200 = [] as any;
+          for (let item of resultData200)
+            result200!.push(SiteAdmin.fromJS(item));
+        }
+        else {
+          result200 = <any>null;
+        }
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<SiteAdmin[]>(null as any);
+  }
+
   summary(siteId: number): Promise<SiteSummary> {
     let url_ = this.baseUrl + "/analytics/sites/{siteId}/summary";
     if (siteId === undefined || siteId === null)
@@ -548,65 +596,6 @@ export class SiteClient {
       });
     }
     return Promise.resolve<SiteSocial>(null as any);
-  }
-}
-
-export class AdminsClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : window as any;
-    this.baseUrl = baseUrl ?? "";
-  }
-
-  update(siteId: number, body: PatchedSiteAdminUpdateRequest | undefined): Promise<SiteAdmin[]> {
-    let url_ = this.baseUrl + "/analytics/sites/{siteId}/admins";
-    if (siteId === undefined || siteId === null)
-      throw new Error("The parameter 'siteId' must be defined.");
-    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(body);
-
-    let options_: RequestInit = {
-      body: content_,
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      }
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processUpdate(_response);
-    });
-  }
-
-  protected processUpdate(response: Response): Promise<SiteAdmin[]> {
-    const status = response.status;
-    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        if (Array.isArray(resultData200)) {
-          result200 = [] as any;
-          for (let item of resultData200)
-            result200!.push(SiteAdmin.fromJS(item));
-        }
-        else {
-          result200 = <any>null;
-        }
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<SiteAdmin[]>(null as any);
   }
 }
 
@@ -1690,6 +1679,47 @@ export class UserClient {
       });
     }
     return Promise.resolve<User>(null as any);
+  }
+
+  allAdmins(): Promise<User[]> {
+    let url_ = this.baseUrl + "/users/admins";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        "Accept": "application/json"
+      }
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processAllAdmins(_response);
+    });
+  }
+
+  protected processAllAdmins(response: Response): Promise<User[]> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        if (Array.isArray(resultData200)) {
+          result200 = [] as any;
+          for (let item of resultData200)
+            result200!.push(User.fromJS(item));
+        }
+        else {
+          result200 = <any>null;
+        }
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<User[]>(null as any);
   }
 
   current(): Promise<User> {

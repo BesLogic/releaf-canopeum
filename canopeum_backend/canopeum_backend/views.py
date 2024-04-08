@@ -180,11 +180,10 @@ class SiteSummaryDetailAPIView(APIView):
 
 
 class SiteAdminsAPIView(APIView):
-    # TODO(NicolasDontigny): Find the best way to type the request as a list of integer ids
     @extend_schema(
         request=SiteAdminUpdateRequestSerializer,
         responses=SiteAdminSerializer(many=True),
-        operation_id="site_admins_update",
+        operation_id="site_updateAdmins",
     )
     def patch(self, request, siteId):
         try:
@@ -195,7 +194,6 @@ class SiteAdminsAPIView(APIView):
         existing_site_admins = Siteadmin.objects.filter(site=site)
         existing_admin_users = [admin.user for admin in existing_site_admins]
 
-        print("request.data:", request.data)
         admin_ids = request.data["ids"]
         updated_admin_users_list = User.objects.filter(id__in=admin_ids)
 
@@ -439,6 +437,8 @@ class BatchDetailAPIView(APIView):
 class UserListAPIView(APIView):
     @extend_schema(responses=UserSerializer(many=True), operation_id="user_all")
     def get(self, request):
+        roles = request.GET.get("roles")
+        print("roles: ", roles)
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
@@ -450,6 +450,14 @@ class UserListAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AdminUsersListAPIView(APIView):
+    @extend_schema(responses=UserSerializer(many=True), operation_id="user_allAdmins")
+    def get(self, request):
+        users = User.objects.filter(role__name__iexact="admin")
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
 
 
 class UserDetailAPIView(APIView):
