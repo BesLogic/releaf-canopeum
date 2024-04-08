@@ -1,7 +1,9 @@
 import SiteSponsorProgress from '@components/analytics/SiteSponsorProgress'
 import SiteSummaryActions from '@components/analytics/SiteSummaryActions'
+import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import PrimaryIconBadge from '@components/PrimaryIconBadge'
 import type { SiteSummary, User } from '@services/api'
+import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
@@ -14,10 +16,13 @@ type Props = {
 
 const SiteSummaryCard = ({ site, admins }: Props) => {
   const { t: translate } = useTranslation()
+  const { currentUser } = useContext(AuthenticationContext)
 
   const siteAdminsDisplay = site.admins.length > 0
     ? site.admins.map(admin => admin.user.username).join(', ')
     : translate('analytics.site-summary.no-admins')
+
+  console.log('currentUser:', currentUser);
 
   return (
     <div
@@ -38,7 +43,7 @@ const SiteSummaryCard = ({ site, admins }: Props) => {
               /* TODO(NicolasDontigny): Once authentication & user permissions have been implemented,
               require the mega_admin permission here */
             }
-            <SiteSummaryActions admins={admins} siteSummary={site} />
+            {currentUser?.role === 'MegaAdmin' && <SiteSummaryActions admins={admins} siteSummary={site} />}
           </div>
 
           <div className='card-subtitle my-1'>

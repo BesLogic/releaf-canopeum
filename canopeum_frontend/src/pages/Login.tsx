@@ -1,11 +1,12 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext';
-import { isUserRole } from '@models/User'
-import type { User } from '@services/api';
+import { isUserRole, type User } from '@models/User'
 import { AuthUser } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { jwtDecode } from 'jwt-decode'
 import { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+
+import useLogin from '../hooks/LoginHook';
 
 const isLoginEntryValid = (entry: string | undefined) => entry !== undefined && entry !== ''
 
@@ -13,13 +14,14 @@ const Login = () => {
   const [userName, setUserName] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
+  const { authenticateUser } = useLogin()
 
   const [userNameInError, setUserNameInError] = useState(false)
   const [passwordInError, setPasswordInError] = useState(false)
 
   const [loginError, setLoginError] = useState<string | undefined>(undefined)
 
-  const { authenticate, isAuthenticated } = useContext(AuthenticationContext)
+  const { isAuthenticated } = useContext(AuthenticationContext)
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -47,17 +49,8 @@ const Login = () => {
         )
         sessionStorage.setItem('token', response.access)
         sessionStorage.setItem('refreshToken', response.refresh)
-        const decodedToken = jwtDecode<User>(response.access)
-        const userRole = isUserRole(decodedToken.role)
-          ? decodedToken.role
-          : 'User'
-        authenticate({
-          email: response.email ?? '',
-          firstname: response.firstName ?? '',
-          image: '',
-          lastname: response.lastName ?? '',
-          role: userRole,
-        })
+
+        authenticateUser(response.access)
       } catch {
         setLoginError('Error while login')
       }
