@@ -19,8 +19,6 @@ const Analytics = () => {
   // Use a new endpoint or query param to get only the admins here
   const fetchAdmins = async () => setAdminList(await getApiClient().userClient.allAdmins())
 
-  console.log('adminList:', adminList);
-
   useEffect((): void => {
     void fetchSites()
     void fetchAdmins()

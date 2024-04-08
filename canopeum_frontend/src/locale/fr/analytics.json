@@ -25,6 +25,7 @@
     "sponsored": "Sponsorisé",
     "no-admins": "Pas d'administrateurs",
     "unknown": "Inconnu",
-    "unnamed-site": "Site sans nom"
+    "unnamed-site": "Site sans nom",
+    "admins-saved": "Administrateurs sauvegardés avec succès pour {{siteName}}!"
   }
 }

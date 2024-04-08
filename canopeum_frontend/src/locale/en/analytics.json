@@ -26,6 +26,7 @@
     "sponsored": "Sponsored",
     "no-admins": "No Admins",
     "unknown": "Unknown",
-    "unnamed-site": "Unnamed site"
+    "unnamed-site": "Unnamed site",
+    "admins-saved": "Admins saved successfully for {{siteName}}!"
   }
 }
