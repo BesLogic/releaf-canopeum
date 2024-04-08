@@ -1,15 +1,6 @@
+import type { User } from '@models/User'
 import type { FunctionComponent, ReactNode } from 'react'
 import { createContext, memo, useCallback, useMemo, useState } from 'react'
-
-export type UserRole = 'MegaAdmin' | 'Admin' | 'User'
-
-type User = {
-  firstname: string,
-  lastname: string,
-  email: string,
-  role: UserRole,
-  image: string,
-}
 
 type IAuthenticationContext = {
   authenticate: (user: User) => void,
@@ -19,8 +10,8 @@ type IAuthenticationContext = {
 }
 
 export const AuthenticationContext = createContext<IAuthenticationContext>({
-  authenticate: (_: User) => {/* empty */},
-  logout: () => {/* empty */},
+  authenticate: (_: User) => {/* empty */ },
+  logout: () => {/* empty */ },
   isAuthenticated: false,
   currentUser: undefined,
 })

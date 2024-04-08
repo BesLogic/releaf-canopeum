@@ -25,12 +25,14 @@ from .serializers import (
     PostPostSerializer,
     PostSerializer,
     SiteAdminSerializer,
+    SiteAdminUpdateRequestSerializer,
     SiteMapSerializer,
     SitePostSerializer,
     SiteSerializer,
     SiteSocialSerializer,
     SiteSummarySerializer,
     UserSerializer,
+    UserTokenSerializer,
     WidgetSerializer,
 )
 
@@ -38,7 +40,7 @@ from .serializers import (
 class LoginAPIView(APIView):
     permission_classes = (AllowAny,)
 
-    @extend_schema(request=AuthUserSerializer, responses=UserSerializer, operation_id="authentication_login")
+    @extend_schema(request=AuthUserSerializer, responses=UserTokenSerializer, operation_id="authentication_login")
     def post(self, request):
         username = request.data.get("username")
         password = request.data.get("password")
@@ -48,14 +50,15 @@ class LoginAPIView(APIView):
             refresh = cast(RefreshToken, RefreshToken.for_user(user))
             if user.role is not None:
                 refresh["role"] = user.role.name
-            return Response({"refresh": str(refresh), "access": str(refresh.access_token)}, status=status.HTTP_200_OK)
+            serializer = UserTokenSerializer({"refresh": str(refresh), "access": str(refresh.access_token)})
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class RegisterAPIView(APIView):
     permission_classes = (AllowAny,)
 
-    @extend_schema(request=UserSerializer, responses=AuthUserSerializer, operation_id="authentication_register")
+    @extend_schema(request=UserSerializer, responses=UserTokenSerializer, operation_id="authentication_register")
     def post(self, request):
         serializer = AuthUserSerializer(data=request.data)
         if "role" not in request.data:
@@ -63,9 +66,8 @@ class RegisterAPIView(APIView):
         if serializer.is_valid():
             user = User.objects.create_user(**serializer.validated_data)
             refresh = cast(RefreshToken, RefreshToken.for_user(cast(AbstractBaseUser, user)))
-            return Response(
-                {"refresh": str(refresh), "access": str(refresh.access_token)}, status=status.HTTP_201_CREATED
-            )
+            serializer = UserTokenSerializer({"refresh": str(refresh), "access": str(refresh.access_token)})
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -179,7 +181,11 @@ class SiteSummaryDetailAPIView(APIView):
 
 class SiteAdminsAPIView(APIView):
     # TODO(NicolasDontigny): Find the best way to type the request as a list of integer ids
-    @extend_schema(request=list[str], responses=SiteAdminSerializer(many=True), operation_id="site_admins_update")
+    @extend_schema(
+        request=SiteAdminUpdateRequestSerializer,
+        responses=SiteAdminSerializer(many=True),
+        operation_id="site_admins_update",
+    )
     def patch(self, request, siteId):
         try:
             site = Site.objects.get(pk=siteId)
@@ -189,7 +195,8 @@ class SiteAdminsAPIView(APIView):
         existing_site_admins = Siteadmin.objects.filter(site=site)
         existing_admin_users = [admin.user for admin in existing_site_admins]
 
-        admin_ids = request.data
+        print("request.data:", request.data)
+        admin_ids = request.data["ids"]
         updated_admin_users_list = User.objects.filter(id__in=admin_ids)
 
         for user in updated_admin_users_list:

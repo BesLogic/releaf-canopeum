@@ -1,6 +1,6 @@
 import Checkbox from '@components/Checkbox'
 import SearchBar from '@components/SearchBar'
-import type { SiteSummary, User } from '@services/api'
+import { PatchedSiteAdminUpdateRequest, type SiteSummary, type User } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { useState } from 'react'
 import { Dropdown, Popover, Whisper } from 'rsuite'
@@ -36,11 +36,14 @@ const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
     }
   }
 
-  const onSaveAdmins = async () =>
+  const onSaveAdmins = async () => {
+    const body = new PatchedSiteAdminUpdateRequest({ ids: selectedAdmins.map(admin => admin.id) })
+
     await getApiClient()
       .siteAdminsClient
-      .update(siteSummary.id, selectedAdmins.map(admin => admin.id))
-  // TODO(NicolasDontigny): Do we need to update the parent model here?
+      .update(siteSummary.id, body)
+    // TODO(NicolasDontigny): Do we need to update the parent model here?
+  }
 
   const onSelectAdminsCancel = () => {
     setFilteredAdmins([...admins])

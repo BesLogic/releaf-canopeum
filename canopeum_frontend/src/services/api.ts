@@ -561,7 +561,7 @@ export class AdminsClient {
     this.baseUrl = baseUrl ?? "";
   }
 
-  update(siteId: number, body: number[] | undefined): Promise<SiteAdmin[]> {
+  update(siteId: number, body: PatchedSiteAdminUpdateRequest | undefined): Promise<SiteAdmin[]> {
     let url_ = this.baseUrl + "/analytics/sites/{siteId}/admins";
     if (siteId === undefined || siteId === null)
       throw new Error("The parameter 'siteId' must be defined.");
@@ -734,7 +734,7 @@ export class AuthenticationClient {
     this.baseUrl = baseUrl ?? "";
   }
 
-  login(body: AuthUser): Promise<User> {
+  login(body: AuthUser): Promise<UserToken> {
     let url_ = this.baseUrl + "/auth/login/";
     url_ = url_.replace(/[?&]$/, "");
 
@@ -754,14 +754,14 @@ export class AuthenticationClient {
     });
   }
 
-  protected processLogin(response: Response): Promise<User> {
+  protected processLogin(response: Response): Promise<UserToken> {
     const status = response.status;
     let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
     if (status === 200) {
       return response.text().then((_responseText) => {
         let result200: any = null;
         let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = User.fromJS(resultData200);
+        result200 = UserToken.fromJS(resultData200);
         return result200;
       });
     } else if (status !== 200 && status !== 204) {
@@ -769,7 +769,7 @@ export class AuthenticationClient {
         return throwException("An unexpected server error occurred.", status, _responseText, _headers);
       });
     }
-    return Promise.resolve<User>(null as any);
+    return Promise.resolve<UserToken>(null as any);
   }
 
   logout(): Promise<{ [key: string]: any; }> {
@@ -815,7 +815,7 @@ export class AuthenticationClient {
     return Promise.resolve<{ [key: string]: any; }>(null as any);
   }
 
-  register(body: User): Promise<AuthUser> {
+  register(body: User): Promise<UserToken> {
     let url_ = this.baseUrl + "/auth/register/";
     url_ = url_.replace(/[?&]$/, "");
 
@@ -835,14 +835,14 @@ export class AuthenticationClient {
     });
   }
 
-  protected processRegister(response: Response): Promise<AuthUser> {
+  protected processRegister(response: Response): Promise<UserToken> {
     const status = response.status;
     let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
     if (status === 200) {
       return response.text().then((_responseText) => {
         let result200: any = null;
         let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = AuthUser.fromJS(resultData200);
+        result200 = UserToken.fromJS(resultData200);
         return result200;
       });
     } else if (status !== 200 && status !== 204) {
@@ -850,7 +850,7 @@ export class AuthenticationClient {
         return throwException("An unexpected server error occurred.", status, _responseText, _headers);
       });
     }
-    return Promise.resolve<AuthUser>(null as any);
+    return Promise.resolve<UserToken>(null as any);
   }
 }
 
@@ -3040,8 +3040,65 @@ export interface IPatchedSite {
   [key: string]: any;
 }
 
+export class PatchedSiteAdminUpdateRequest implements IPatchedSiteAdminUpdateRequest {
+  ids?: number[];
+
+  [key: string]: any;
+
+  constructor(data?: IPatchedSiteAdminUpdateRequest) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property))
+          this[property] = _data[property];
+      }
+      if (Array.isArray(_data["ids"])) {
+        this.ids = [] as any;
+        for (let item of _data["ids"])
+          this.ids!.push(item);
+      }
+    }
+  }
+
+  static fromJS(data: any): PatchedSiteAdminUpdateRequest {
+    data = typeof data === 'object' ? data : {};
+    let result = new PatchedSiteAdminUpdateRequest();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    if (Array.isArray(this.ids)) {
+      data["ids"] = [];
+      for (let item of this.ids)
+        data["ids"].push(item);
+    }
+    return data;
+  }
+}
+
+export interface IPatchedSiteAdminUpdateRequest {
+  ids?: number[];
+
+  [key: string]: any;
+}
+
 export class PatchedUser implements IPatchedUser {
   readonly id?: number;
+  readonly role?: string;
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;
@@ -3055,7 +3112,6 @@ export class PatchedUser implements IPatchedUser {
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
   isActive?: boolean;
   dateJoined?: Date;
-  role?: number;
   /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
   groups?: number[];
   /** Specific permissions for this user. */
@@ -3079,6 +3135,7 @@ export class PatchedUser implements IPatchedUser {
           this[property] = _data[property];
       }
       (<any>this).id = _data["id"];
+      (<any>this).role = _data["role"];
       this.lastLogin = _data["lastLogin"] ? new Date(_data["lastLogin"].toString()) : <any>undefined;
       this.isSuperuser = _data["isSuperuser"];
       this.username = _data["username"];
@@ -3088,7 +3145,6 @@ export class PatchedUser implements IPatchedUser {
       this.isStaff = _data["isStaff"];
       this.isActive = _data["isActive"];
       this.dateJoined = _data["dateJoined"] ? new Date(_data["dateJoined"].toString()) : <any>undefined;
-      this.role = _data["role"];
       if (Array.isArray(_data["groups"])) {
         this.groups = [] as any;
         for (let item of _data["groups"])
@@ -3116,6 +3172,7 @@ export class PatchedUser implements IPatchedUser {
         data[property] = this[property];
     }
     data["id"] = this.id;
+    data["role"] = this.role;
     data["lastLogin"] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined;
     data["isSuperuser"] = this.isSuperuser;
     data["username"] = this.username;
@@ -3125,7 +3182,6 @@ export class PatchedUser implements IPatchedUser {
     data["isStaff"] = this.isStaff;
     data["isActive"] = this.isActive;
     data["dateJoined"] = this.dateJoined ? this.dateJoined.toISOString() : <any>undefined;
-    data["role"] = this.role;
     if (Array.isArray(this.groups)) {
       data["groups"] = [];
       for (let item of this.groups)
@@ -3142,6 +3198,7 @@ export class PatchedUser implements IPatchedUser {
 
 export interface IPatchedUser {
   id?: number;
+  role?: string;
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;
@@ -3155,7 +3212,6 @@ export interface IPatchedUser {
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
   isActive?: boolean;
   dateJoined?: Date;
-  role?: number;
   /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
   groups?: number[];
   /** Specific permissions for this user. */
@@ -4112,6 +4168,7 @@ export interface ITokenRefresh {
 
 export class User implements IUser {
   readonly id!: number;
+  readonly role!: string;
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;
@@ -4125,7 +4182,6 @@ export class User implements IUser {
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
   isActive?: boolean;
   dateJoined?: Date;
-  role?: number;
   /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
   groups?: number[];
   /** Specific permissions for this user. */
@@ -4149,6 +4205,7 @@ export class User implements IUser {
           this[property] = _data[property];
       }
       (<any>this).id = _data["id"];
+      (<any>this).role = _data["role"];
       this.lastLogin = _data["lastLogin"] ? new Date(_data["lastLogin"].toString()) : <any>undefined;
       this.isSuperuser = _data["isSuperuser"];
       this.username = _data["username"];
@@ -4158,7 +4215,6 @@ export class User implements IUser {
       this.isStaff = _data["isStaff"];
       this.isActive = _data["isActive"];
       this.dateJoined = _data["dateJoined"] ? new Date(_data["dateJoined"].toString()) : <any>undefined;
-      this.role = _data["role"];
       if (Array.isArray(_data["groups"])) {
         this.groups = [] as any;
         for (let item of _data["groups"])
@@ -4186,6 +4242,7 @@ export class User implements IUser {
         data[property] = this[property];
     }
     data["id"] = this.id;
+    data["role"] = this.role;
     data["lastLogin"] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined;
     data["isSuperuser"] = this.isSuperuser;
     data["username"] = this.username;
@@ -4195,7 +4252,6 @@ export class User implements IUser {
     data["isStaff"] = this.isStaff;
     data["isActive"] = this.isActive;
     data["dateJoined"] = this.dateJoined ? this.dateJoined.toISOString() : <any>undefined;
-    data["role"] = this.role;
     if (Array.isArray(this.groups)) {
       data["groups"] = [];
       for (let item of this.groups)
@@ -4212,6 +4268,7 @@ export class User implements IUser {
 
 export interface IUser {
   id: number;
+  role: string;
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;
@@ -4225,11 +4282,62 @@ export interface IUser {
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
   isActive?: boolean;
   dateJoined?: Date;
-  role?: number;
   /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
   groups?: number[];
   /** Specific permissions for this user. */
   userPermissions?: number[];
+
+  [key: string]: any;
+}
+
+export class UserToken implements IUserToken {
+  readonly refresh!: string;
+  readonly access!: string;
+
+  [key: string]: any;
+
+  constructor(data?: IUserToken) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property))
+          this[property] = _data[property];
+      }
+      (<any>this).refresh = _data["refresh"];
+      (<any>this).access = _data["access"];
+    }
+  }
+
+  static fromJS(data: any): UserToken {
+    data = typeof data === 'object' ? data : {};
+    let result = new UserToken();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    data["refresh"] = this.refresh;
+    data["access"] = this.access;
+    return data;
+  }
+}
+
+export interface IUserToken {
+  refresh: string;
+  access: string;
 
   [key: string]: any;
 }
@@ -4402,7 +4510,7 @@ export enum Lang {
 }
 
 export class ApiException extends Error {
-  message: string;
+  override message: string;
   status: number;
   response: string;
   headers: { [key: string]: any; };

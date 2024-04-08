@@ -32,10 +32,23 @@ class AuthUserSerializer(serializers.ModelSerializer):
         fields = ("id", "username", "email", "password")
 
 
+class UserTokenSerializer(serializers.Serializer):
+    refresh = serializers.StringRelatedField()
+    access = serializers.StringRelatedField()
+
+    class Meta:
+        fields = ("refresh", "access")
+
+
 class UserSerializer(serializers.ModelSerializer):
+    role = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         exclude = ("password",)
+
+    def get_role(self, obj):
+        return obj.role.name
 
 
 class CoordinatesSerializer(serializers.ModelSerializer):
@@ -330,6 +343,17 @@ class SiteAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Siteadmin
         fields = ("user",)
+
+
+class IntegerListFieldSerializer(serializers.ListField):
+    child = serializers.IntegerField()
+
+
+class SiteAdminUpdateRequestSerializer(serializers.Serializer):
+    ids = IntegerListFieldSerializer()
+
+    class Meta:
+        fields = ("ids",)
 
 
 class SiteSummarySerializer(serializers.ModelSerializer):

@@ -1,9 +1,11 @@
-import { AuthenticationContext, type UserRole } from '@components/context/AuthenticationContext'
+import { AuthenticationContext } from '@components/context/AuthenticationContext';
+import { isUserRole } from '@models/User'
+import type { User } from '@services/api';
 import { AuthUser } from '@services/api'
 import getApiClient from '@services/apiInterface'
+import { jwtDecode } from 'jwt-decode'
 import { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { jwtDecode } from 'jwt-decode'
 
 const isLoginEntryValid = (entry: string | undefined) => entry !== undefined && entry !== ''
 
@@ -45,13 +47,16 @@ const Login = () => {
         )
         sessionStorage.setItem('token', response.access)
         sessionStorage.setItem('refreshToken', response.refresh)
-        const decodedToken = jwtDecode(response.access) as { role: UserRole }
+        const decodedToken = jwtDecode<User>(response.access)
+        const userRole = isUserRole(decodedToken.role)
+          ? decodedToken.role
+          : 'User'
         authenticate({
           email: response.email ?? '',
           firstname: response.firstName ?? '',
           image: '',
           lastname: response.lastName ?? '',
-          role: decodedToken.role as UserRole,
+          role: userRole,
         })
       } catch {
         setLoginError('Error while login')
@@ -61,7 +66,7 @@ const Login = () => {
 
   return (
     <div className='d-flex bg-primary' style={{ height: '100vh' }}>
-      <div style={{ width: '55%' }} className='login-background' />
+      <div className='login-background' style={{ width: '55%' }} />
       <div className='d-flex flex-column bg-white px-3 py-2' style={{ width: '45%', alignItems: 'center' }}>
         <div style={{ flexGrow: '0.3', display: 'flex', alignItems: 'center' }}>
           <h1 style={{ textAlign: 'center' }}>Log In to Your Account</h1>
@@ -69,7 +74,7 @@ const Login = () => {
 
         <div className='d-flex flex-column' style={{ width: '60%' }}>
           <div style={{ width: '100%', margin: '20px 0px 20px 0px' }}>
-            <label htmlFor='exampleInputEmail1'>Email address</label>
+            <label htmlFor='exampleInputEmail1'>Username</label>
             <input
               aria-describedby='emailHelp'
               className={`form-control ${userNameInError && !isLoginEntryValid(userName) && 'is-invalid'} `}

@@ -280,7 +280,7 @@ class Command(BaseCommand):
             password="Adminbeslogic!",  # noqa: S106 MOCK_PASSWORD
             is_staff=True,
             is_superuser=True,
-            role=Role.objects.get(name="Admin"),
+            role=Role.objects.get(name="MegaAdmin"),
         )
         User.objects.create_user(
             username="Tyrion Lannister",
