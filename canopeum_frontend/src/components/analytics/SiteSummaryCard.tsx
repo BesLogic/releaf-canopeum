@@ -22,8 +22,6 @@ const SiteSummaryCard = ({ site, admins }: Props) => {
     ? site.admins.map(admin => admin.user.username).join(', ')
     : translate('analytics.site-summary.no-admins')
 
-  console.log('currentUser:', currentUser);
-
   return (
     <div
       className='col-3'
@@ -39,10 +37,6 @@ const SiteSummaryCard = ({ site, admins }: Props) => {
               </div>
             </Link>
 
-            {
-              /* TODO(NicolasDontigny): Once authentication & user permissions have been implemented,
-              require the mega_admin permission here */
-            }
             {currentUser?.role === 'MegaAdmin' && <SiteSummaryActions admins={admins} siteSummary={site} />}
           </div>
 

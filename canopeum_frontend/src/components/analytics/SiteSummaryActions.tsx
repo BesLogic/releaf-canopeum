@@ -2,7 +2,7 @@ import Checkbox from '@components/Checkbox'
 import SearchBar from '@components/SearchBar'
 import { PatchedSiteAdminUpdateRequest, type SiteSummary, type User } from '@services/api'
 import getApiClient from '@services/apiInterface'
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Dropdown, Popover, Whisper } from 'rsuite'
 
 type Props = {
@@ -14,13 +14,18 @@ const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
   const [filteredAdmins, setFilteredAdmins] = useState(admins)
   const [selectedAdmins, setSelectedAdmins] = useState(siteSummary.admins.map(admin => admin.user))
 
-  const onSearchAdmins = (query: string) =>
+  useEffect(() => {
+    setFilteredAdmins(admins)
+    setSelectedAdmins(siteSummary.admins.map(admin => admin.user))
+  }, [siteSummary.admins, admins])
+
+  const onSearchAdmins = useCallback((query: string) =>
     setFilteredAdmins(admins.filter(admin =>
       admin
         .username
         .toLocaleLowerCase()
         .includes(query.toLocaleLowerCase())
-    ))
+    )), [admins])
 
   const onAdminSelectionChange = (adminId: number, isSelected: boolean) => {
     if (isSelected) {
