@@ -12,6 +12,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from canopeum_backend.permissions import MegaAdminPermission
+
 from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, Siteadmin, User, Widget
 from .serializers import (
     AnnouncementSerializer,
@@ -180,6 +182,8 @@ class SiteSummaryDetailAPIView(APIView):
 
 
 class SiteAdminsAPIView(APIView):
+    permission_classes = (MegaAdminPermission,)
+
     @extend_schema(
         request=SiteAdminUpdateRequestSerializer,
         responses=SiteAdminSerializer(many=True),
@@ -437,8 +441,6 @@ class BatchDetailAPIView(APIView):
 class UserListAPIView(APIView):
     @extend_schema(responses=UserSerializer(many=True), operation_id="user_all")
     def get(self, request):
-        roles = request.GET.get("roles")
-        print("roles: ", roles)
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
@@ -453,6 +455,8 @@ class UserListAPIView(APIView):
 
 
 class AdminUsersListAPIView(APIView):
+    permission_classes = (MegaAdminPermission,)
+
     @extend_schema(responses=UserSerializer(many=True), operation_id="user_allAdmins")
     def get(self, request):
         users = User.objects.filter(role__name__iexact="admin")

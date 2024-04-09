@@ -1,6 +1,7 @@
 import BatchTable from '@components/analytics/BatchTable'
 import SiteSuccessRatesChart from '@components/analytics/SiteSuccessRatesChart'
 import SiteSummaryCard from '@components/analytics/SiteSummaryCard'
+import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { LanguageContext } from '@components/context/LanguageContext'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -11,16 +12,17 @@ import getApiClient from '../services/apiInterface'
 const Analytics = () => {
   const { t } = useTranslation()
   const { formatDate } = useContext(LanguageContext)
+  const { currentUser } = useContext(AuthenticationContext)
   const [siteSummaries, setSiteSummaries] = useState<SiteSummary[]>([])
   const [adminList, setAdminList] = useState<User[]>([])
 
   const fetchSites = async () => setSiteSummaries(await getApiClient().summaryClient.all())
-  // TODO(NicolasDontigny): Once authentication + permissions are implemented,
-  // Use a new endpoint or query param to get only the admins here
   const fetchAdmins = async () => setAdminList(await getApiClient().userClient.allAdmins())
 
   useEffect((): void => {
     void fetchSites()
+    if (currentUser?.role !== 'MegaAdmin') return
+
     void fetchAdmins()
   }, [])
 
