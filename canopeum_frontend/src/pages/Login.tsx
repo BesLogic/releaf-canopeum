@@ -1,8 +1,6 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext';
-import { isUserRole, type User } from '@models/user'
 import { AuthUser } from '@services/api'
 import getApiClient from '@services/apiInterface'
-import { jwtDecode } from 'jwt-decode'
 import { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 

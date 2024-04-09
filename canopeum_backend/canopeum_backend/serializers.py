@@ -32,14 +32,6 @@ class AuthUserSerializer(serializers.ModelSerializer):
         fields = ("id", "username", "email", "password")
 
 
-class UserTokenSerializer(serializers.Serializer):
-    refresh = serializers.StringRelatedField()
-    access = serializers.StringRelatedField()
-
-    class Meta:
-        fields = ("refresh", "access")
-
-
 class UserSerializer(serializers.ModelSerializer):
     role = serializers.SerializerMethodField()
 
@@ -49,6 +41,14 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_role(self, obj):
         return obj.role.name
+
+
+class UserTokenSerializer(serializers.Serializer):
+    refresh = serializers.StringRelatedField()
+    access = serializers.StringRelatedField()
+
+    class Meta:
+        fields = ("refresh", "access")
 
 
 class CoordinatesSerializer(serializers.ModelSerializer):

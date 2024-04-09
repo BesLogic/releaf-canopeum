@@ -50,8 +50,12 @@ class LoginAPIView(APIView):
         user = cast(User, authenticate(username=username, password=password))
         if user is not None:
             refresh = cast(RefreshToken, RefreshToken.for_user(user))
+            refresh["username"] = user.username
+            refresh["email"] = user.email
+            refresh["id"] = user.pk
             if user.role is not None:
                 refresh["role"] = user.role.name
+
             serializer = UserTokenSerializer({"refresh": str(refresh), "access": str(refresh.access_token)})
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
