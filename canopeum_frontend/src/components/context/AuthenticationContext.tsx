@@ -21,7 +21,12 @@ const AuthenticationContextProvider: FunctionComponent<{ readonly children?: Rea
 
   const authenticate = useCallback((newUser: User) => setUser(newUser), [setUser])
 
-  const logout = useCallback(() => setUser(undefined), [setUser])
+  const logout = useCallback(() => {
+    sessionStorage.removeItem('token')
+    sessionStorage.removeItem('refreshToken')
+
+    setUser(undefined)
+  }, [setUser])
 
   const context = useMemo<IAuthenticationContext>(() => (
     {

@@ -19,6 +19,8 @@ const Analytics = () => {
   const fetchSites = async () => setSiteSummaries(await getApiClient().summaryClient.all())
   const fetchAdmins = async () => setAdminList(await getApiClient().userClient.allAdmins())
 
+  console.log('currentUser:', currentUser);
+
   useEffect((): void => {
     void fetchSites()
     if (currentUser?.role !== 'MegaAdmin') return
