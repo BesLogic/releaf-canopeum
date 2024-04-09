@@ -1,5 +1,5 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext';
-import { isUserRole, type User } from '@models/User'
+import { isUserRole, type User } from '@models/user'
 import { AuthUser } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { jwtDecode } from 'jwt-decode'

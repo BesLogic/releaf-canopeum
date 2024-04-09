@@ -152,7 +152,7 @@ const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
         <Alert
           onClose={handleSnackbarClose}
           severity="success"
-          sx={{ width: '100%' }}
+          sx={{ width: '100%', boxShadow: 3 }}
           variant="filled"
         >
           {translate('analytics.site-summary.admins-saved', { siteName: siteSummary.name })}
