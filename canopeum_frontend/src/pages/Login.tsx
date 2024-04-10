@@ -13,10 +13,10 @@ const Login = () => {
   const navigate = useNavigate()
   const { authenticateUser } = useLogin()
   const { t: translate } = useTranslation()
-  const [userName, setUserName] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const [userNameInError, setUserNameInError] = useState(false)
+  const [emailInError, setEmailInError] = useState(false)
   const [passwordInError, setPasswordInError] = useState(false)
 
   const [loginError, setLoginError] = useState<string | undefined>(undefined)
@@ -30,21 +30,20 @@ const Login = () => {
   }, [isAuthenticated, navigate])
 
   const onLoginClick = async () => {
-    if (!userName) {
-      setUserNameInError(true)
+    if (!email) {
+      setEmailInError(true)
     }
 
     if (!password) {
       setPasswordInError(true)
     }
 
-    if (isLoginEntryValid(userName) && isLoginEntryValid(password)) {
+    if (isLoginEntryValid(email) && isLoginEntryValid(password)) {
       try {
         const response = await getApiClient().authenticationClient.login(
           new AuthUser({
-            username: userName,
+            email,
             password,
-            id: 1,
           }),
         )
         sessionStorage.setItem('token', response.access)
@@ -62,28 +61,28 @@ const Login = () => {
       <div className='login-background' style={{ width: '55%' }} />
       <div className='d-flex flex-column bg-white px-3 py-2' style={{ width: '45%', alignItems: 'center' }}>
         <div style={{ flexGrow: '0.3', display: 'flex', alignItems: 'center' }}>
-          <h1 style={{ textAlign: 'center' }}>Log In to Your Account</h1>
+          <h1 style={{ textAlign: 'center' }}>{translate('auth.log-in-header-text')}</h1>
         </div>
 
         <div className='d-flex flex-column' style={{ width: '60%' }}>
           <div style={{ width: '100%', margin: '20px 0px 20px 0px' }}>
-            <label htmlFor='exampleInputEmail1'>Username</label>
+            <label htmlFor='exampleInputEmail1'>{translate('auth.email-label')}</label>
             <input
               aria-describedby='emailHelp'
-              className={`form-control ${userNameInError && !isLoginEntryValid(userName) && 'is-invalid'} `}
+              className={`form-control ${emailInError && !isLoginEntryValid(email) && 'is-invalid'} `}
               id='exampleInputEmail1'
-              onChange={event => setUserName(event.target.value)}
+              onChange={event => setEmail(event.target.value)}
               type='email'
             />
-            {userNameInError && !isLoginEntryValid(userName) && (
+            {emailInError && !isLoginEntryValid(email) && (
               <span className='help-block text-danger'>
-                Please enter a email address
+                {translate('auth.email-error-required')}
               </span>
             )}
           </div>
 
           <div style={{ width: '100%', margin: '20px 0px 20px 0px' }}>
-            <label htmlFor='exampleInputPassword1'>Password</label>
+            <label htmlFor='exampleInputPassword1'>{translate('auth.password-label')}</label>
             <input
               className={`form-control ${passwordInError && !isLoginEntryValid(password) && 'is-invalid'} `}
               id='exampleInputPassword1'
@@ -91,7 +90,7 @@ const Login = () => {
               type='password'
             />
             {passwordInError && !isLoginEntryValid(password) && (
-              <span className='help-block text-danger'>Please enter a password</span>
+              <span className='help-block text-danger'>{translate('auth.password-error-required')}</span>
             )}
           </div>
           {loginError && <span className='help-block text-danger'>{loginError}</span>}

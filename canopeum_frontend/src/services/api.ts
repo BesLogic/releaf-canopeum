@@ -1862,10 +1862,7 @@ export interface IAsset {
 }
 
 export class AuthUser implements IAuthUser {
-  readonly id!: number;
-  /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
-  username!: string;
-  email?: string;
+  email!: string;
   password!: string;
 
   [key: string]: any;
@@ -1885,8 +1882,6 @@ export class AuthUser implements IAuthUser {
         if (_data.hasOwnProperty(property))
           this[property] = _data[property];
       }
-      (<any>this).id = _data["id"];
-      this.username = _data["username"];
       this.email = _data["email"];
       this.password = _data["password"];
     }
@@ -1905,8 +1900,6 @@ export class AuthUser implements IAuthUser {
       if (this.hasOwnProperty(property))
         data[property] = this[property];
     }
-    data["id"] = this.id;
-    data["username"] = this.username;
     data["email"] = this.email;
     data["password"] = this.password;
     return data;
@@ -1914,10 +1907,7 @@ export class AuthUser implements IAuthUser {
 }
 
 export interface IAuthUser {
-  id: number;
-  /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
-  username: string;
-  email?: string;
+  email: string;
   password: string;
 
   [key: string]: any;
@@ -3136,12 +3126,12 @@ export class PatchedUser implements IPatchedUser {
   username?: string;
   firstName?: string;
   lastName?: string;
-  email?: string;
   /** Designates whether the user can log into this admin site. */
   isStaff?: boolean;
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
   isActive?: boolean;
   dateJoined?: Date;
+  email?: string;
   /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
   groups?: number[];
   /** Specific permissions for this user. */
@@ -3171,10 +3161,10 @@ export class PatchedUser implements IPatchedUser {
       this.username = _data["username"];
       this.firstName = _data["firstName"];
       this.lastName = _data["lastName"];
-      this.email = _data["email"];
       this.isStaff = _data["isStaff"];
       this.isActive = _data["isActive"];
       this.dateJoined = _data["dateJoined"] ? new Date(_data["dateJoined"].toString()) : <any>undefined;
+      this.email = _data["email"];
       if (Array.isArray(_data["groups"])) {
         this.groups = [] as any;
         for (let item of _data["groups"])
@@ -3208,10 +3198,10 @@ export class PatchedUser implements IPatchedUser {
     data["username"] = this.username;
     data["firstName"] = this.firstName;
     data["lastName"] = this.lastName;
-    data["email"] = this.email;
     data["isStaff"] = this.isStaff;
     data["isActive"] = this.isActive;
     data["dateJoined"] = this.dateJoined ? this.dateJoined.toISOString() : <any>undefined;
+    data["email"] = this.email;
     if (Array.isArray(this.groups)) {
       data["groups"] = [];
       for (let item of this.groups)
@@ -3236,12 +3226,12 @@ export interface IPatchedUser {
   username?: string;
   firstName?: string;
   lastName?: string;
-  email?: string;
   /** Designates whether the user can log into this admin site. */
   isStaff?: boolean;
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
   isActive?: boolean;
   dateJoined?: Date;
+  email?: string;
   /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
   groups?: number[];
   /** Specific permissions for this user. */
@@ -4085,7 +4075,7 @@ export interface ISitetreespecies {
 }
 
 export class TokenObtainPair implements ITokenObtainPair {
-  username!: string;
+  email!: string;
   password!: string;
   readonly access!: string;
   readonly refresh!: string;
@@ -4107,7 +4097,7 @@ export class TokenObtainPair implements ITokenObtainPair {
         if (_data.hasOwnProperty(property))
           this[property] = _data[property];
       }
-      this.username = _data["username"];
+      this.email = _data["email"];
       this.password = _data["password"];
       (<any>this).access = _data["access"];
       (<any>this).refresh = _data["refresh"];
@@ -4127,7 +4117,7 @@ export class TokenObtainPair implements ITokenObtainPair {
       if (this.hasOwnProperty(property))
         data[property] = this[property];
     }
-    data["username"] = this.username;
+    data["email"] = this.email;
     data["password"] = this.password;
     data["access"] = this.access;
     data["refresh"] = this.refresh;
@@ -4136,7 +4126,7 @@ export class TokenObtainPair implements ITokenObtainPair {
 }
 
 export interface ITokenObtainPair {
-  username: string;
+  email: string;
   password: string;
   access: string;
   refresh: string;
@@ -4206,12 +4196,12 @@ export class User implements IUser {
   username!: string;
   firstName?: string;
   lastName?: string;
-  email?: string;
   /** Designates whether the user can log into this admin site. */
   isStaff?: boolean;
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
   isActive?: boolean;
   dateJoined?: Date;
+  email!: string;
   /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
   groups?: number[];
   /** Specific permissions for this user. */
@@ -4241,10 +4231,10 @@ export class User implements IUser {
       this.username = _data["username"];
       this.firstName = _data["firstName"];
       this.lastName = _data["lastName"];
-      this.email = _data["email"];
       this.isStaff = _data["isStaff"];
       this.isActive = _data["isActive"];
       this.dateJoined = _data["dateJoined"] ? new Date(_data["dateJoined"].toString()) : <any>undefined;
+      this.email = _data["email"];
       if (Array.isArray(_data["groups"])) {
         this.groups = [] as any;
         for (let item of _data["groups"])
@@ -4278,10 +4268,10 @@ export class User implements IUser {
     data["username"] = this.username;
     data["firstName"] = this.firstName;
     data["lastName"] = this.lastName;
-    data["email"] = this.email;
     data["isStaff"] = this.isStaff;
     data["isActive"] = this.isActive;
     data["dateJoined"] = this.dateJoined ? this.dateJoined.toISOString() : <any>undefined;
+    data["email"] = this.email;
     if (Array.isArray(this.groups)) {
       data["groups"] = [];
       for (let item of this.groups)
@@ -4306,12 +4296,12 @@ export interface IUser {
   username: string;
   firstName?: string;
   lastName?: string;
-  email?: string;
   /** Designates whether the user can log into this admin site. */
   isStaff?: boolean;
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
   isActive?: boolean;
   dateJoined?: Date;
+  email: string;
   /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
   groups?: number[];
   /** Specific permissions for this user. */
@@ -4540,7 +4530,7 @@ export enum Lang {
 }
 
 export class ApiException extends Error {
-  override message: string;
+  message: string;
   status: number;
   response: string;
   headers: { [key: string]: any; };

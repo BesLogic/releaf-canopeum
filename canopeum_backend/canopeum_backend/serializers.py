@@ -29,7 +29,7 @@ from .models import (
 class AuthUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("id", "username", "email", "password")
+        fields = ("email", "password")
 
 
 class UserSerializer(serializers.ModelSerializer):

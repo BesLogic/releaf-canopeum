@@ -44,10 +44,10 @@ class LoginAPIView(APIView):
 
     @extend_schema(request=AuthUserSerializer, responses=UserTokenSerializer, operation_id="authentication_login")
     def post(self, request):
-        username = request.data.get("username")
+        email = request.data.get("email")
         password = request.data.get("password")
 
-        user = cast(User, authenticate(username=username, password=password))
+        user = cast(User, authenticate(email=email, password=password))
         if user is not None:
             refresh = cast(RefreshToken, RefreshToken.for_user(user))
             refresh["username"] = user.username
