@@ -65,9 +65,11 @@ class RegisterAPIView(APIView):
     permission_classes = (AllowAny,)
 
     @extend_schema(
-        request=RegisterUserSerializer, responses=UserTokenSerializer, operation_id="authentication_register"
+        request=RegisterUserSerializer, responses={201: UserTokenSerializer}, operation_id="authentication_register"
     )
     def post(self, request):
+        # TODO(NicolasDontigny): Find out how to convert request body properties from camel case to lower snake case
+        request.data["password_confirmation"] = request.data.get("passwordConfirmation")
         serializer = RegisterUserSerializer(data=request.data)
 
         if serializer.is_valid():

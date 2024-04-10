@@ -827,12 +827,12 @@ export class AuthenticationClient {
   protected processRegister(response: Response): Promise<UserToken> {
     const status = response.status;
     let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 200) {
+    if (status === 201) {
       return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = UserToken.fromJS(resultData200);
-        return result200;
+        let result201: any = null;
+        let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result201 = UserToken.fromJS(resultData201);
+        return result201;
       });
     } else if (status !== 200 && status !== 204) {
       return response.text().then((_responseText) => {
@@ -4378,8 +4378,8 @@ export interface IUser {
 }
 
 export class UserToken implements IUserToken {
-  refresh!: string;
-  access!: string;
+  readonly refresh!: string;
+  readonly access!: string;
 
   [key: string]: any;
 
@@ -4398,8 +4398,8 @@ export class UserToken implements IUserToken {
         if (_data.hasOwnProperty(property))
           this[property] = _data[property];
       }
-      this.refresh = _data["refresh"];
-      this.access = _data["access"];
+      (<any>this).refresh = _data["refresh"];
+      (<any>this).access = _data["access"];
     }
   }
 

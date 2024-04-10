@@ -82,8 +82,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserTokenSerializer(serializers.Serializer):
-    refresh = serializers.CharField()
-    access = serializers.CharField()
+    refresh = serializers.StringRelatedField()
+    access = serializers.StringRelatedField()
 
     class Meta:
         fields = ("refresh", "access")
