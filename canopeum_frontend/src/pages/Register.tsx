@@ -9,7 +9,7 @@ import useLogin from '../hooks/LoginHook';
 
 const isLoginEntryValid = (entry: string | undefined) => entry !== undefined && entry !== ''
 
-const Login = () => {
+const Register = () => {
   const navigate = useNavigate()
   const { authenticateUser } = useLogin()
   const { t: translate } = useTranslation()
@@ -118,4 +118,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default Register
