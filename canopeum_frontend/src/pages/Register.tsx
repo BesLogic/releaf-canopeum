@@ -1,3 +1,4 @@
+import AuthPageLayout from '@components/auth/AuthPageLayout';
 import { AuthenticationContext } from '@components/context/AuthenticationContext';
 import { RegisterUser } from '@services/api'
 import getApiClient from '@services/apiInterface'
@@ -71,12 +72,8 @@ const Register = () => {
   }
 
   return (
-    <div className='d-flex bg-primary' style={{ height: '100vh' }}>
-      <div className='login-background' style={{ width: '55%' }} />
-      <div
-        className='d-flex flex-column align-items-center bg-white px-3 py-4 overflow-y-auto'
-        style={{ width: '45%' }}
-      >
+    <AuthPageLayout>
+      <>
         <div style={{ flexGrow: '0.5', display: 'flex', alignItems: 'center' }}>
           <h1 style={{ textAlign: 'center' }}>{translate('auth.sign-up-header-text')}</h1>
         </div>
@@ -130,13 +127,13 @@ const Register = () => {
           </div>
 
           <div className='w-100'>
-            <label htmlFor='password-input'>{translate('auth.password-confirmation-label')}</label>
+            <label htmlFor='confirmation-password-input'>{translate('auth.password-confirmation-label')}</label>
             <input
               className={`form-control ${passwordConfirmationError &&
                 !isLoginEntryValid(passwordConfirmation) &&
                 'is-invalid'
                 }`}
-              id='password-input'
+              id='confirmation-password-input'
               onChange={event => setPasswordConfirmation(event.target.value)}
               type='password'
             />
@@ -165,8 +162,8 @@ const Register = () => {
             </Link>
           </div>
         </div>
-      </div>
-    </div>
+      </>
+    </AuthPageLayout>
   )
 }
 

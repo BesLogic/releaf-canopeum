@@ -1,3 +1,4 @@
+import AuthPageLayout from '@components/auth/AuthPageLayout';
 import { AuthenticationContext } from '@components/context/AuthenticationContext';
 import { LoginUser } from '@services/api'
 import getApiClient from '@services/apiInterface'
@@ -57,67 +58,64 @@ const Login = () => {
   }
 
   return (
-    <div className='d-flex bg-primary' style={{ height: '100vh' }}>
-      <div className='login-background' style={{ width: '55%' }} />
-      <div className='d-flex flex-column bg-white px-3 py-2' style={{ width: '45%', alignItems: 'center' }}>
-        <div style={{ flexGrow: '0.4', display: 'flex', alignItems: 'center' }}>
-          <h1 style={{ textAlign: 'center' }}>{translate('auth.log-in-header-text')}</h1>
+    <AuthPageLayout>
+      <div style={{ flexGrow: '0.4', display: 'flex', alignItems: 'center' }}>
+        <h1 style={{ textAlign: 'center' }}>{translate('auth.log-in-header-text')}</h1>
+      </div>
+
+      <div className='d-flex flex-column gap-4' style={{ width: '60%' }}>
+        <div className='w-100'>
+          <label htmlFor='email-input'>{translate('auth.email-label')}</label>
+          <input
+            aria-describedby='email'
+            className={`form-control ${emailError && !isLoginEntryValid(email) && 'is-invalid'} `}
+            id='email-input'
+            onChange={event => setEmail(event.target.value)}
+            type='email'
+          />
+          {emailError && !isLoginEntryValid(email) && (
+            <span className='help-block text-danger'>
+              {translate('auth.email-error-required')}
+            </span>
+          )}
         </div>
 
-        <div className='d-flex flex-column gap-4' style={{ width: '60%' }}>
-          <div className='w-100'>
-            <label htmlFor='email-input'>{translate('auth.email-label')}</label>
-            <input
-              aria-describedby='email'
-              className={`form-control ${emailError && !isLoginEntryValid(email) && 'is-invalid'} `}
-              id='email-input'
-              onChange={event => setEmail(event.target.value)}
-              type='email'
-            />
-            {emailError && !isLoginEntryValid(email) && (
-              <span className='help-block text-danger'>
-                {translate('auth.email-error-required')}
-              </span>
-            )}
-          </div>
+        <div className='w-100'>
+          <label htmlFor='password-input'>{translate('auth.password-label')}</label>
+          <input
+            className={`form-control ${passwordError && !isLoginEntryValid(password) && 'is-invalid'} `}
+            id='password-input'
+            onChange={event => setPassword(event.target.value)}
+            type='password'
+          />
+          {passwordError && !isLoginEntryValid(password) && (
+            <span className='help-block text-danger'>
+              {translate('auth.password-error-required')}
+            </span>
+          )}
+        </div>
+        {loginError && <span className='help-block text-danger'>{loginError}</span>}
 
-          <div className='w-100'>
-            <label htmlFor='password-input'>{translate('auth.password-label')}</label>
-            <input
-              className={`form-control ${passwordError && !isLoginEntryValid(password) && 'is-invalid'} `}
-              id='password-input'
-              onChange={event => setPassword(event.target.value)}
-              type='password'
-            />
-            {passwordError && !isLoginEntryValid(password) && (
-              <span className='help-block text-danger'>
-                {translate('auth.password-error-required')}
-              </span>
-            )}
-          </div>
-          {loginError && <span className='help-block text-danger'>{loginError}</span>}
+        <div className='w-100'>
+          <button
+            className='btn btn-primary w-100'
+            onClick={onLoginClick}
+            style={{ margin: '40px 0px 10px' }}
+            type='submit'
+          >
+            {translate('auth.log-in')}
+          </button>
 
-          <div className='w-100'>
+          <Link className='w-100' to='/register'>
             <button
-              className='btn btn-primary w-100'
-              onClick={onLoginClick}
-              style={{ margin: '40px 0px 10px' }}
-              type='submit'
-            >
-              {translate('auth.log-in')}
-            </button>
-
-            <Link className='w-100' to='/register'>
-              <button
-                className='btn btn-outline-primary w-100'
-                style={{ margin: '10px 0px 10px' }}
-                type='button'
-              >{translate('auth.sign-up')}</button>
-            </Link>
-          </div>
+              className='btn btn-outline-primary w-100'
+              style={{ margin: '10px 0px 10px' }}
+              type='button'
+            >{translate('auth.sign-up')}</button>
+          </Link>
         </div>
       </div>
-    </div>
+    </AuthPageLayout>
   )
 }
 
