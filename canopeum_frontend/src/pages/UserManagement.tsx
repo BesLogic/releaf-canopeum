@@ -3,7 +3,6 @@ import ProfileSettings from '@components/settings/ProfileSettings'
 import SettingsTab from '@components/settings/SettingsTab'
 import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
 
 type UserManagementTab = 'logout' | 'profileSettings' | 'termsAndPolicies'
 
@@ -25,7 +24,6 @@ const tabs: { type: UserManagementTab, translationKey: string }[] = [
 const UserManagement = () => {
   const { t: translate } = useTranslation()
   const { logout } = useContext(AuthenticationContext)
-  const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState<UserManagementTab>('profileSettings')
 
   const displayRightTab = () => {
@@ -39,7 +37,6 @@ const UserManagement = () => {
   const onTabClick = (tabType: UserManagementTab) => {
     if (tabType === 'logout') {
       logout()
-      navigate('/login')
 
       return
     }

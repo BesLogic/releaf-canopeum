@@ -207,3 +207,9 @@ button.unstyled-button {
   background-color: inherit;
   background: inherit;
 }
+
+a.nav-link:active,
+a.nav-link:focus,
+a.nav-link:hover {
+  text-decoration: none;
+}

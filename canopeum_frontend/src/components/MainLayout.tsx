@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react'
-import { redirect, Route, Routes, useLocation } from 'react-router-dom'
+import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom'
 
 import useLogin from '../hooks/LoginHook'
 import Analytics from '../pages/Analytics'
@@ -13,9 +13,18 @@ import Utilities from '../pages/Utilities'
 import { AuthenticationContext } from './context/AuthenticationContext'
 import Navbar from './Navbar'
 
+const AuthenticatedRoutes = () => {
+  const { isAuthenticated } = useContext(AuthenticationContext)
+
+  return (
+    isAuthenticated
+      ? <Outlet />
+      : <Navigate to="/login" />
+  )
+}
+
 const MainLayout = () => {
   const location = useLocation()
-  const { isAuthenticated } = useContext(AuthenticationContext)
   const { authenticateUser } = useLogin()
 
   // Try authenticating user on app start if token was saved in localStorage
@@ -25,32 +34,23 @@ const MainLayout = () => {
     <>
       {location.pathname !== '/login' && <Navbar />}
       <Routes>
-        <Route element={<Home />} loader={() => isAuthenticated
-          ? null
-          : redirect('/login')} path='/home' />
-        <Route element={<Home />} loader={() => isAuthenticated
-          ? null
-          : redirect('/login')} path='/' />
-        <Route element={<Analytics />} loader={() => isAuthenticated
-          ? null
-          : redirect('/login')} path='/analytics' />
-        <Route
-          element={<AnalyticsSite />}
-          loader={() => isAuthenticated
-            ? null
-            : redirect('/login')}
-          path='/analytics/:siteId'
-        />
-        <Route
-          element={<UserManagement />}
-          loader={() => isAuthenticated
-            ? null
-            : redirect('/login')}
-          path='/user-management'
-        />
-        <Route element={<Utilities />} loader={() => isAuthenticated
-          ? null
-          : redirect('/login')} path='/utilities' />
+        <Route element={<AuthenticatedRoutes />}>
+          <Route element={<Home />} path='/home' />
+          <Route element={<Home />} path='/' />
+          <Route element={<Analytics />} path='/analytics' />
+          <Route
+            element={<AnalyticsSite />}
+            path='/analytics/:siteId'
+          />
+          <Route
+            element={<UserManagement />}
+            path='/user-management'
+          />
+          <Route
+            element={<Utilities />}
+            path='/utilities'
+          />
+        </Route>
 
         <Route element={<Login />} path='/login' />
         <Route element={<Map />} path='/map' />
