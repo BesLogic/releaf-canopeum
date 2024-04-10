@@ -7,8 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom'
 
 import useLogin from '../hooks/LoginHook';
-
-const isLoginEntryValid = (entry: string | undefined) => entry !== undefined && entry !== ''
+import { type InputValidationError, isValidEmail, isValidPassword, mustMatch } from '../utils/validators';
 
 const Register = () => {
   const navigate = useNavigate()
@@ -19,10 +18,10 @@ const Register = () => {
   const [password, setPassword] = useState('')
   const [passwordConfirmation, setPasswordConfirmation] = useState('')
 
-  const [usernameError, setUsernameError] = useState(false)
-  const [emailError, setEmailError] = useState(false)
-  const [passwordError, setPasswordError] = useState(false)
-  const [passwordConfirmationError, setPasswordConfirmationError] = useState(false)
+  const [usernameError, setUsernameError] = useState<InputValidationError | undefined>()
+  const [emailError, setEmailError] = useState<InputValidationError | undefined>()
+  const [passwordError, setPasswordError] = useState<InputValidationError | undefined>()
+  const [passwordConfirmationError, setPasswordConfirmationError] = useState<InputValidationError | undefined>()
 
   const [registrationError, setRegistrationError] = useState<string | undefined>(undefined)
 
@@ -34,40 +33,104 @@ const Register = () => {
     }
   }, [isAuthenticated, navigate])
 
-  const onCreateAccountClick = async () => {
+  const validateUsername = () => {
     if (!username) {
-      setUsernameError(true)
+      setUsernameError('required')
+
+      return false
     }
 
+    setUsernameError(undefined)
+
+    return true
+  }
+
+  const validateEmail = () => {
     if (!email) {
-      setEmailError(true)
+      setEmailError('required')
+
+      return false
     }
 
+    if (!isValidEmail(email)) {
+      setEmailError('email')
+
+      return false
+    }
+
+    setEmailError(undefined)
+
+    return true
+  }
+
+  const validatePassword = () => {
     if (!password) {
-      setPasswordError(true)
+      setPasswordError('required')
+
+      return false
     }
 
+    if (!isValidPassword(password)) {
+      setPasswordError('password')
+
+      return false
+    }
+
+    setPasswordError(undefined)
+
+    return true
+  }
+
+  const validatePasswordConfirmation = () => {
     if (!passwordConfirmation) {
-      setPasswordConfirmationError(true)
+      setPasswordConfirmationError('required')
+
+      return false
     }
 
-    if (isLoginEntryValid(username) && isLoginEntryValid(password)) {
-      try {
-        const response = await getApiClient().authenticationClient.register(
-          new RegisterUser({
-            email,
-            username,
-            password,
-            passwordConfirmation,
-          }),
-        )
-        sessionStorage.setItem('token', response.access)
-        sessionStorage.setItem('refreshToken', response.refresh)
+    if (!mustMatch(password, passwordConfirmation)) {
+      setPasswordConfirmationError('mustMatch')
 
-        authenticateUser(response.access)
-      } catch {
-        setRegistrationError(translate('auth.sign-up-error'))
-      }
+      return false
+    }
+
+    setPasswordConfirmationError(undefined)
+
+    return true
+  }
+
+  const validateForm = () => {
+    // Do not return directly the method calls; we need each of them to be called before returning the result
+    const usernameValid = validateUsername()
+    const emailValid = validateEmail()
+    const passwordValid = validatePassword()
+    const passwordConfirmationValid = validatePasswordConfirmation()
+
+    return usernameValid &&
+      emailValid &&
+      passwordValid &&
+      passwordConfirmationValid
+  }
+
+  const onCreateAccountClick = async () => {
+    const isFormValid = validateForm()
+    if (!isFormValid) return
+
+    try {
+      const response = await getApiClient().authenticationClient.register(
+        new RegisterUser({
+          email,
+          username,
+          password,
+          passwordConfirmation,
+        }),
+      )
+      sessionStorage.setItem('token', response.access)
+      sessionStorage.setItem('refreshToken', response.refresh)
+
+      authenticateUser(response.access)
+    } catch {
+      setRegistrationError(translate('auth.sign-up-error'))
     }
   }
 
@@ -83,12 +146,13 @@ const Register = () => {
             <label htmlFor='username-input'>{translate('auth.username-label')}</label>
             <input
               aria-describedby='emailHelp'
-              className={`form-control ${usernameError && !isLoginEntryValid(username) && 'is-invalid'} `}
+              className={`form-control ${usernameError && 'is-invalid'} `}
               id='username-input'
+              onBlur={() => validateUsername()}
               onChange={event => setUsername(event.target.value)}
               type="text"
             />
-            {usernameError && !isLoginEntryValid(username) && (
+            {usernameError && (
               <span className='help-block text-danger'>
                 {translate('auth.username-error-required')}
               </span>
@@ -99,14 +163,20 @@ const Register = () => {
             <label htmlFor='email-input'>{translate('auth.email-label')}</label>
             <input
               aria-describedby='email'
-              className={`form-control ${emailError && !isLoginEntryValid(email) && 'is-invalid'} `}
+              className={`form-control ${emailError && 'is-invalid'} `}
               id='email-input'
+              onBlur={() => validateEmail()}
               onChange={event => setEmail(event.target.value)}
               type='email'
             />
-            {emailError && !isLoginEntryValid(email) && (
+            {emailError === 'required' && (
               <span className='help-block text-danger'>
                 {translate('auth.email-error-required')}
+              </span>
+            )}
+            {emailError === 'email' && (
+              <span className='help-block text-danger'>
+                {translate('auth.email-error-format')}
               </span>
             )}
           </div>
@@ -114,14 +184,20 @@ const Register = () => {
           <div className='w-100'>
             <label htmlFor='password-input'>{translate('auth.password-label')}</label>
             <input
-              className={`form-control ${passwordError && !isLoginEntryValid(password) && 'is-invalid'} `}
+              className={`form-control ${passwordError && 'is-invalid'} `}
               id='password-input'
+              onBlur={() => validatePassword()}
               onChange={event => setPassword(event.target.value)}
               type='password'
             />
-            {passwordError && !isLoginEntryValid(password) && (
+            {passwordError === 'required' && (
               <span className='help-block text-danger'>
                 {translate('auth.password-error-required')}
+              </span>
+            )}
+            {passwordError === 'password' && (
+              <span className='help-block text-danger'>
+                {translate('auth.password-error-format')}
               </span>
             )}
           </div>
@@ -129,15 +205,18 @@ const Register = () => {
           <div className='w-100'>
             <label htmlFor='confirmation-password-input'>{translate('auth.password-confirmation-label')}</label>
             <input
-              className={`form-control ${passwordConfirmationError &&
-                !isLoginEntryValid(passwordConfirmation) &&
-                'is-invalid'
-                }`}
+              className={`form-control ${passwordConfirmationError && 'is-invalid'}`}
               id='confirmation-password-input'
+              onBlur={() => validatePasswordConfirmation()}
               onChange={event => setPasswordConfirmation(event.target.value)}
               type='password'
             />
-            {passwordConfirmationError && !isLoginEntryValid(passwordConfirmation) && (
+            {passwordConfirmationError === 'required' && (
+              <span className='help-block text-danger'>
+                {translate('auth.password-confirmation-error-required')}
+              </span>
+            )}
+            {passwordConfirmationError === 'mustMatch' && (
               <span className='help-block text-danger'>
                 {translate('auth.password-error-must-match')}
               </span>

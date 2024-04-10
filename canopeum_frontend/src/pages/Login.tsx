@@ -7,8 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom'
 
 import useLogin from '../hooks/LoginHook';
-
-const isLoginEntryValid = (entry: string | undefined) => entry !== undefined && entry !== ''
+import type { InputValidationError } from '../utils/validators';
 
 const Login = () => {
   const navigate = useNavigate()
@@ -17,8 +16,8 @@ const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const [emailError, setEmailError] = useState(false)
-  const [passwordError, setPasswordError] = useState(false)
+  const [emailError, setEmailError] = useState<InputValidationError | undefined>()
+  const [passwordError, setPasswordError] = useState<InputValidationError | undefined>()
 
   const [loginError, setLoginError] = useState<string | undefined>(undefined)
 
@@ -30,30 +29,57 @@ const Login = () => {
     }
   }, [isAuthenticated, navigate])
 
-  const onLoginClick = async () => {
+
+  const validateEmail = () => {
     if (!email) {
-      setEmailError(true)
+      setEmailError('required')
+
+      return false
     }
 
+    setEmailError(undefined)
+
+    return true
+  }
+
+  const validatePassword = () => {
     if (!password) {
-      setPasswordError(true)
+      setPasswordError('required')
+
+      return false
     }
 
-    if (isLoginEntryValid(email) && isLoginEntryValid(password)) {
-      try {
-        const response = await getApiClient().authenticationClient.login(
-          new LoginUser({
-            email,
-            password,
-          }),
-        )
-        sessionStorage.setItem('token', response.access)
-        sessionStorage.setItem('refreshToken', response.refresh)
+    setPasswordError(undefined)
 
-        authenticateUser(response.access)
-      } catch {
-        setLoginError(translate('auth.log-in-error'))
-      }
+    return true
+  }
+
+  const validateForm = () => {
+    // Do not return directly the method calls; we need each of them to be called before returning the result
+    const emailValid = validateEmail()
+    const passwordValid = validatePassword()
+
+    return emailValid &&
+      passwordValid
+  }
+
+  const onLoginClick = async () => {
+    const isFormValid = validateForm()
+    if (!isFormValid) return
+
+    try {
+      const response = await getApiClient().authenticationClient.login(
+        new LoginUser({
+          email,
+          password,
+        }),
+      )
+      sessionStorage.setItem('token', response.access)
+      sessionStorage.setItem('refreshToken', response.refresh)
+
+      authenticateUser(response.access)
+    } catch {
+      setLoginError(translate('auth.log-in-error'))
     }
   }
 
@@ -68,12 +94,13 @@ const Login = () => {
           <label htmlFor='email-input'>{translate('auth.email-label')}</label>
           <input
             aria-describedby='email'
-            className={`form-control ${emailError && !isLoginEntryValid(email) && 'is-invalid'} `}
+            className={`form-control ${emailError && 'is-invalid'} `}
             id='email-input'
+            onBlur={() => validateEmail()}
             onChange={event => setEmail(event.target.value)}
             type='email'
           />
-          {emailError && !isLoginEntryValid(email) && (
+          {emailError === 'required' && (
             <span className='help-block text-danger'>
               {translate('auth.email-error-required')}
             </span>
@@ -83,12 +110,13 @@ const Login = () => {
         <div className='w-100'>
           <label htmlFor='password-input'>{translate('auth.password-label')}</label>
           <input
-            className={`form-control ${passwordError && !isLoginEntryValid(password) && 'is-invalid'} `}
+            className={`form-control ${passwordError && 'is-invalid'} `}
             id='password-input'
+            onBlur={() => validatePassword()}
             onChange={event => setPassword(event.target.value)}
             type='password'
           />
-          {passwordError && !isLoginEntryValid(password) && (
+          {passwordError === 'required' && (
             <span className='help-block text-danger'>
               {translate('auth.password-error-required')}
             </span>
