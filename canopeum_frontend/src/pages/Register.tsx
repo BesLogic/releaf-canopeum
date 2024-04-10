@@ -1,5 +1,5 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext';
-import { AuthUser } from '@services/api'
+import { RegisterUser } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next';
@@ -13,13 +13,17 @@ const Register = () => {
   const navigate = useNavigate()
   const { authenticateUser } = useLogin()
   const { t: translate } = useTranslation()
-  const [userName, setUserName] = useState('')
+  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [passwordConfirmation, setPasswordConfirmation] = useState('')
 
-  const [userNameInError, setUserNameInError] = useState(false)
-  const [passwordInError, setPasswordInError] = useState(false)
+  const [usernameError, setUsernameError] = useState(false)
+  const [emailError, setEmailError] = useState(false)
+  const [passwordError, setPasswordError] = useState(false)
+  const [passwordConfirmationError, setPasswordConfirmationError] = useState(false)
 
-  const [loginError, setLoginError] = useState<string | undefined>(undefined)
+  const [registrationError, setRegistrationError] = useState<string | undefined>(undefined)
 
   const { isAuthenticated } = useContext(AuthenticationContext)
 
@@ -29,21 +33,31 @@ const Register = () => {
     }
   }, [isAuthenticated, navigate])
 
-  const onLoginClick = async () => {
-    if (!userName) {
-      setUserNameInError(true)
+  const onCreateAccountClick = async () => {
+    if (!username) {
+      setUsernameError(true)
+    }
+
+    if (!email) {
+      setEmailError(true)
     }
 
     if (!password) {
-      setPasswordInError(true)
+      setPasswordError(true)
     }
 
-    if (isLoginEntryValid(userName) && isLoginEntryValid(password)) {
+    if (!passwordConfirmation) {
+      setPasswordConfirmationError(true)
+    }
+
+    if (isLoginEntryValid(username) && isLoginEntryValid(password)) {
       try {
-        const response = await getApiClient().authenticationClient.login(
-          new AuthUser({
-            email: userName,
+        const response = await getApiClient().authenticationClient.register(
+          new RegisterUser({
+            email,
+            username,
             password,
+            passwordConfirmation,
           }),
         )
         sessionStorage.setItem('token', response.access)
@@ -51,7 +65,7 @@ const Register = () => {
 
         authenticateUser(response.access)
       } catch {
-        setLoginError('Error while login')
+        setRegistrationError(translate('auth.sign-up-error'))
       }
     }
   }
@@ -60,57 +74,93 @@ const Register = () => {
     <div className='d-flex bg-primary' style={{ height: '100vh' }}>
       <div className='login-background' style={{ width: '55%' }} />
       <div className='d-flex flex-column bg-white px-3 py-2' style={{ width: '45%', alignItems: 'center' }}>
-        <div style={{ flexGrow: '0.3', display: 'flex', alignItems: 'center' }}>
-          <h1 style={{ textAlign: 'center' }}>{translate('auth.log-in-header-text')}</h1>
+        <div style={{ flexGrow: '0.4', display: 'flex', alignItems: 'center' }}>
+          <h1 style={{ textAlign: 'center' }}>{translate('auth.sign-up-header-text')}</h1>
         </div>
 
-        <div className='d-flex flex-column' style={{ width: '60%' }}>
-          <div style={{ width: '100%', margin: '20px 0px 20px 0px' }}>
-            <label htmlFor='exampleInputEmail1'>{translate('auth.log-in-header-text')}</label>
+        <div className='d-flex flex-column gap-4' style={{ width: '60%' }}>
+          <div className='w-100'>
+            <label htmlFor='username-input'>{translate('auth.username-label')}</label>
             <input
               aria-describedby='emailHelp'
-              className={`form-control ${userNameInError && !isLoginEntryValid(userName) && 'is-invalid'} `}
-              id='exampleInputEmail1'
-              onChange={event => setUserName(event.target.value)}
-              type='email'
+              className={`form-control ${usernameError && !isLoginEntryValid(username) && 'is-invalid'} `}
+              id='username-input'
+              onChange={event => setUsername(event.target.value)}
+              type="text"
             />
-            {userNameInError && !isLoginEntryValid(userName) && (
+            {usernameError && !isLoginEntryValid(username) && (
               <span className='help-block text-danger'>
-                Please enter a email address
+                {translate('auth.username-error-required')}
               </span>
             )}
           </div>
 
-          <div style={{ width: '100%', margin: '20px 0px 20px 0px' }}>
-            <label htmlFor='exampleInputPassword1'>Password</label>
+          <div className='w-100'>
+            <label htmlFor='email-input'>{translate('auth.email-label')}</label>
             <input
-              className={`form-control ${passwordInError && !isLoginEntryValid(password) && 'is-invalid'} `}
-              id='exampleInputPassword1'
+              aria-describedby='email'
+              className={`form-control ${emailError && !isLoginEntryValid(email) && 'is-invalid'} `}
+              id='email-input'
+              onChange={event => setEmail(event.target.value)}
+              type='email'
+            />
+            {emailError && !isLoginEntryValid(email) && (
+              <span className='help-block text-danger'>
+                {translate('auth.email-error-required')}
+              </span>
+            )}
+          </div>
+
+          <div className='w-100'>
+            <label htmlFor='password-input'>{translate('auth.password-label')}</label>
+            <input
+              className={`form-control ${passwordError && !isLoginEntryValid(password) && 'is-invalid'} `}
+              id='password-input'
               onChange={event => setPassword(event.target.value)}
               type='password'
             />
-            {passwordInError && !isLoginEntryValid(password) && (
-              <span className='help-block text-danger'>Please enter a password</span>
+            {passwordError && !isLoginEntryValid(password) && (
+              <span className='help-block text-danger'>
+                {translate('auth.password-error-required')}
+              </span>
             )}
           </div>
-          {loginError && <span className='help-block text-danger'>{loginError}</span>}
+
+          <div className='w-100'>
+            <label htmlFor='password-input'>{translate('auth.password-confirmation-label')}</label>
+            <input
+              className={`form-control ${passwordConfirmationError &&
+                !isLoginEntryValid(passwordConfirmation) &&
+                'is-invalid'
+                }`}
+              id='password-input'
+              onChange={event => setPasswordConfirmation(event.target.value)}
+              type='password'
+            />
+            {passwordConfirmationError && !isLoginEntryValid(passwordConfirmation) && (
+              <span className='help-block text-danger'>
+                {translate('auth.password-error-must-match')}
+              </span>
+            )}
+          </div>
+
+          {registrationError && <span className='help-block text-danger'>{registrationError}</span>}
 
           <button
             className='btn btn-primary'
-            onClick={onLoginClick}
+            onClick={onCreateAccountClick}
             style={{ margin: '40px 0px 10px' }}
             type='submit'
           >
-            {translate('auth.log-in')}
+            {translate('auth.create-account')}
           </button>
 
-          <Link className='w-100' to='/register'>
-            <button
-              className='btn btn-outline-primary w-100'
-              style={{ margin: '10px 0px 10px' }}
-              type='button'
-            >{translate('auth.sign-up')}</button>
-          </Link>
+          <div className='mt-4 text-center'>
+            <span>{translate('auth.already-have-an-account')}</span>
+            <Link className='ms-2' to='/login'>
+              <span className='text-primary text-decoration-underline'>{translate('auth.log-in')}</span>
+            </Link>
+          </div>
         </div>
       </div>
     </div>

@@ -723,7 +723,7 @@ export class AuthenticationClient {
     this.baseUrl = baseUrl ?? "";
   }
 
-  login(body: AuthUser): Promise<UserToken> {
+  login(body: LoginUser): Promise<UserToken> {
     let url_ = this.baseUrl + "/auth/login/";
     url_ = url_.replace(/[?&]$/, "");
 
@@ -804,7 +804,7 @@ export class AuthenticationClient {
     return Promise.resolve<{ [key: string]: any; }>(null as any);
   }
 
-  register(body: User): Promise<UserToken> {
+  register(body: RegisterUser): Promise<UserToken> {
     let url_ = this.baseUrl + "/auth/register/";
     url_ = url_.replace(/[?&]$/, "");
 
@@ -1861,58 +1861,6 @@ export interface IAsset {
   [key: string]: any;
 }
 
-export class AuthUser implements IAuthUser {
-  email!: string;
-  password!: string;
-
-  [key: string]: any;
-
-  constructor(data?: IAuthUser) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
-    }
-  }
-
-  init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property))
-          this[property] = _data[property];
-      }
-      this.email = _data["email"];
-      this.password = _data["password"];
-    }
-  }
-
-  static fromJS(data: any): AuthUser {
-    data = typeof data === 'object' ? data : {};
-    let result = new AuthUser();
-    result.init(data);
-    return result;
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property))
-        data[property] = this[property];
-    }
-    data["email"] = this.email;
-    data["password"] = this.password;
-    return data;
-  }
-}
-
-export interface IAuthUser {
-  email: string;
-  password: string;
-
-  [key: string]: any;
-}
-
 export class Batch implements IBatch {
   readonly id!: number;
   createdAt?: Date | undefined;
@@ -2740,6 +2688,58 @@ export interface ILike {
   [key: string]: any;
 }
 
+export class LoginUser implements ILoginUser {
+  email!: string;
+  password!: string;
+
+  [key: string]: any;
+
+  constructor(data?: ILoginUser) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property))
+          this[property] = _data[property];
+      }
+      this.email = _data["email"];
+      this.password = _data["password"];
+    }
+  }
+
+  static fromJS(data: any): LoginUser {
+    data = typeof data === 'object' ? data : {};
+    let result = new LoginUser();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    data["email"] = this.email;
+    data["password"] = this.password;
+    return data;
+  }
+}
+
+export interface ILoginUser {
+  email: string;
+  password: string;
+
+  [key: string]: any;
+}
+
 export class PatchedAnnouncement implements IPatchedAnnouncement {
   readonly id?: number;
   body?: string | undefined;
@@ -3440,6 +3440,73 @@ export class PostPost implements IPostPost {
 export interface IPostPost {
   site?: number | undefined;
   body?: string | undefined;
+
+  [key: string]: any;
+}
+
+export class RegisterUser implements IRegisterUser {
+  username!: string;
+  email!: string;
+  password!: string;
+  passwordConfirmation!: string;
+  role?: string;
+
+  [key: string]: any;
+
+  constructor(data?: IRegisterUser) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    if (!data) {
+      this.role = "User";
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property))
+          this[property] = _data[property];
+      }
+      this.username = _data["username"];
+      this.email = _data["email"];
+      this.password = _data["password"];
+      this.passwordConfirmation = _data["passwordConfirmation"];
+      this.role = _data["role"] !== undefined ? _data["role"] : "User";
+    }
+  }
+
+  static fromJS(data: any): RegisterUser {
+    data = typeof data === 'object' ? data : {};
+    let result = new RegisterUser();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    data["username"] = this.username;
+    data["email"] = this.email;
+    data["password"] = this.password;
+    data["passwordConfirmation"] = this.passwordConfirmation;
+    data["role"] = this.role;
+    return data;
+  }
+}
+
+export interface IRegisterUser {
+  username: string;
+  email: string;
+  password: string;
+  passwordConfirmation: string;
+  role?: string;
 
   [key: string]: any;
 }
@@ -4311,8 +4378,8 @@ export interface IUser {
 }
 
 export class UserToken implements IUserToken {
-  readonly refresh!: string;
-  readonly access!: string;
+  refresh!: string;
+  access!: string;
 
   [key: string]: any;
 
@@ -4331,8 +4398,8 @@ export class UserToken implements IUserToken {
         if (_data.hasOwnProperty(property))
           this[property] = _data[property];
       }
-      (<any>this).refresh = _data["refresh"];
-      (<any>this).access = _data["access"];
+      this.refresh = _data["refresh"];
+      this.access = _data["access"];
     }
   }
 

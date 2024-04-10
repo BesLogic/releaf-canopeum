@@ -1,7 +1,6 @@
 from typing import cast
 
 from django.contrib.auth import authenticate
-from django.contrib.auth.models import AbstractBaseUser
 from django.http import QueryDict
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
@@ -18,14 +17,15 @@ from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, Sit
 from .serializers import (
     AnnouncementSerializer,
     AssetSerializer,
-    AuthUserSerializer,
     BatchAnalyticsSerializer,
     BatchSerializer,
     CommentSerializer,
     ContactSerializer,
     LikeSerializer,
+    LoginUserSerializer,
     PostPostSerializer,
     PostSerializer,
+    RegisterUserSerializer,
     SiteAdminSerializer,
     SiteAdminUpdateRequestSerializer,
     SiteMapSerializer,
@@ -42,7 +42,7 @@ from .serializers import (
 class LoginAPIView(APIView):
     permission_classes = (AllowAny,)
 
-    @extend_schema(request=AuthUserSerializer, responses=UserTokenSerializer, operation_id="authentication_login")
+    @extend_schema(request=LoginUserSerializer, responses=UserTokenSerializer, operation_id="authentication_login")
     def post(self, request):
         email = request.data.get("email")
         password = request.data.get("password")
@@ -64,16 +64,24 @@ class LoginAPIView(APIView):
 class RegisterAPIView(APIView):
     permission_classes = (AllowAny,)
 
-    @extend_schema(request=UserSerializer, responses=UserTokenSerializer, operation_id="authentication_register")
+    @extend_schema(
+        request=RegisterUserSerializer, responses=UserTokenSerializer, operation_id="authentication_register"
+    )
     def post(self, request):
-        serializer = AuthUserSerializer(data=request.data)
-        if "role" not in request.data:
-            serializer.role = 1
+        serializer = RegisterUserSerializer(data=request.data)
+
         if serializer.is_valid():
-            user = User.objects.create_user(**serializer.validated_data)
-            refresh = cast(RefreshToken, RefreshToken.for_user(cast(AbstractBaseUser, user)))
-            serializer = UserTokenSerializer({"refresh": str(refresh), "access": str(refresh.access_token)})
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            user = serializer.create_user()
+            if user is not None:
+                refresh = cast(RefreshToken, RefreshToken.for_user(user))
+                refresh["username"] = user.username
+                refresh["email"] = user.email
+                refresh["id"] = user.pk
+                if user.role is not None:
+                    refresh["role"] = user.role.name
+
+                serializer = UserTokenSerializer({"refresh": str(refresh), "access": str(refresh.access_token)})
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
