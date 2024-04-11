@@ -1,3 +1,4 @@
+import { appRoutes } from '@constants/routes.constant'
 import { useContext, useEffect, useState } from 'react'
 import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
 
@@ -26,7 +27,7 @@ const NotAuthenticatedRoutes = () => {
 
   return (
     isAuthenticated
-      ? <Navigate to='/' />
+      ? <Navigate to={appRoutes.home} />
       : <Outlet />
   )
 }
@@ -37,7 +38,7 @@ const AuthenticatedRoutes = () => {
   return (
     isAuthenticated
       ? <Outlet />
-      : <Navigate to='/login' />
+      : <Navigate to={appRoutes.login} />
   )
 }
 
@@ -66,9 +67,9 @@ const MainLayout = () => {
             <Route element={<AuthenticatedRoutes />}>
               <Route element={<Home />} path='/home' />
               <Route element={<Home />} path='/' />
-              <Route element={<Analytics />} path='/analytics' />
-              <Route element={<AnalyticsSite />} path='/analytics/:siteId' />
-              <Route element={<SiteSocialPage />} path='/map/:siteId' />
+              <Route element={<Analytics />} path='/sites' />
+              <Route element={<AnalyticsSite />} path='/sites/:siteId' />
+              <Route element={<SiteSocialPage />} path='/sites/:siteId/social' />
               <Route element={<UserManagement />} path='/user-management' />
               <Route element={<Utilities />} path='/utilities' />
             </Route>
