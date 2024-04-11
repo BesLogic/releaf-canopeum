@@ -54,7 +54,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         return attrs
 
     def create_user(self):
-        role_name = self.validated_data["role"]
+        role_name = self.validated_data.get("role", "User")
         role = Role.objects.get(name=role_name)
         if role is None:
             role = Role.objects.get(name="User")
