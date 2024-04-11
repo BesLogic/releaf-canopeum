@@ -70,7 +70,7 @@ const Login = () => {
     try {
       const response = await getApiClient().authenticationClient.login(
         new LoginUser({
-          email,
+          email: email.trim(),
           password,
         }),
       )

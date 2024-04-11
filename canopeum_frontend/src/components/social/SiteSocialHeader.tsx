@@ -20,7 +20,7 @@ const updateSiteIsPublic = async (_: boolean) => {
 }
 
 const SiteSocialHeader = ({ site, viewMode }: Props) => {
-  const { t } = useTranslation()
+  const { t: translate } = useTranslation()
   const { translateValue } = useContext(LanguageContext)
   const [isPublic, setIsPublic] = useState(true)
 
@@ -45,7 +45,7 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
               <h1 className='fw-bold card-title'>{site.name}</h1>
               {viewMode === 'user' && (
                 <button className='btn btn-secondary' onClick={onFollowClick} type='button'>
-                  {t('mapSite.siteSummaryCard.follow')}
+                  {translate('social.site-social-header.follow')}
                 </button>
               )}
               {viewMode === 'admin' && (
@@ -53,7 +53,7 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
                   additionalClassNames='fs-4'
                   checked={isPublic}
                   onChange={setIsPublic}
-                  text={t('mapSite.siteSummaryCard.public')}
+                  text={translate('social.site-social-header.public')}
                 />
               )}
             </div>
@@ -65,7 +65,7 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
             <div className='container fw-bold'>
               <div className='mb-2'>
                 <span className='material-symbols-outlined align-middle'>person</span>
-                <span>{t('mapSite.siteSummaryCard.sponsors')}:</span>
+                <span>{translate('social.site-social-header.sponsors')}:</span>
               </div>
               <div className='row'>
                 {site.sponsors.map(sponsorName => (

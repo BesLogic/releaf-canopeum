@@ -119,8 +119,8 @@ const Register = () => {
     try {
       const response = await getApiClient().authenticationClient.register(
         new RegisterUser({
-          email,
-          username,
+          email: email.trim(),
+          username: username.trim(),
           password,
           passwordConfirmation,
         }),
