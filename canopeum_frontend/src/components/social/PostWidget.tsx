@@ -6,7 +6,7 @@ import { useContext, useState } from 'react'
 import type { Post } from '../../services/api'
 
 type Props = {
-  readonly post: Post
+  readonly post: Post,
 }
 
 const PostWidget = ({ post }: Props) => {
@@ -29,16 +29,18 @@ const PostWidget = ({ post }: Props) => {
           />
           <div className='d-flex flex-column'>
             <h6 className='text-uppercase fw-bold mb-1'>{post.site.name}</h6>
-            {post.createdAt && <span className='text-muted initialism'>
-              {formatDate(post.createdAt, { dateStyle: 'short' })}
-            </span>}
+            {post.createdAt && (
+              <span className='text-muted initialism'>
+                {formatDate(post.createdAt, { dateStyle: 'short' })}
+              </span>
+            )}
           </div>
         </div>
 
         <div>{post.body}</div>
 
         <div className='d-flex justify-content-end gap-4'>
-          <button className='d-flex gap-2 unstyled-button' type="button">
+          <button className='d-flex gap-2 unstyled-button' type='button'>
             <span className='material-symbols-outlined'>eco</span>
             <div>{post.likeCount}</div>
           </button>
@@ -46,13 +48,13 @@ const PostWidget = ({ post }: Props) => {
           <button
             className='d-flex gap-2 unstyled-button'
             onClick={openPostComments}
-            type="button"
+            type='button'
           >
             <span className='material-symbols-outlined'>sms</span>
             <div>{post.commentCount}</div>
           </button>
 
-          <button className='d-flex gap-2 unstyled-button' type="button">
+          <button className='d-flex gap-2 unstyled-button' type='button'>
             <span className='material-symbols-outlined'>share</span>
             <div>{post.shareCount}</div>
           </button>

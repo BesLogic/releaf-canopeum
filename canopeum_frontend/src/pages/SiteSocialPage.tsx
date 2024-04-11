@@ -66,12 +66,12 @@ const SiteSocialPage = () => {
           </div>
         )
         : error
-          ? (
-            <div className='bg-white rounded-2 2 py-2'>
-              <p>{error.message}</p>
-            </div>
-          )
-          : (site && <SiteSocialHeader site={site} viewMode={viewMode} />)}
+        ? (
+          <div className='bg-white rounded-2 2 py-2'>
+            <p>{error.message}</p>
+          </div>
+        )
+        : (site && <SiteSocialHeader site={site} viewMode={viewMode} />)}
       <div className='container px-0'>
         <div className='row'>
           <div className='col-4'>
@@ -93,12 +93,12 @@ const SiteSocialPage = () => {
                         </div>
                       )
                       : errorPosts
-                        ? (
-                          <div className='bg-white rounded-2 2 py-2'>
-                            <p>{errorPosts.message}</p>
-                          </div>
-                        )
-                        : posts?.map((post: Post) => <PostWidget key={post.id} post={post} />)}
+                      ? (
+                        <div className='bg-white rounded-2 2 py-2'>
+                          <p>{errorPosts.message}</p>
+                        </div>
+                      )
+                      : posts?.map((post: Post) => <PostWidget key={post.id} post={post} />)}
                   </div>
                 </>
               )}

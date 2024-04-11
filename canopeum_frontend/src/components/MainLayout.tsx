@@ -26,7 +26,7 @@ const NotAuthenticatedRoutes = () => {
 
   return (
     isAuthenticated
-      ? <Navigate to="/" />
+      ? <Navigate to='/' />
       : <Outlet />
   )
 }
@@ -37,7 +37,7 @@ const AuthenticatedRoutes = () => {
   return (
     isAuthenticated
       ? <Outlet />
-      : <Navigate to="/login" />
+      : <Navigate to='/login' />
   )
 }
 
@@ -55,24 +55,28 @@ const MainLayout = () => {
 
   return (
     <Routes>
-      {sessionStorageChecked && (<><Route element={<NotAuthenticatedRoutes />}>
-        <Route element={<Login />} path='/login' />
-        <Route element={<Register />} path='/register' />
-      </Route>
-
-        <Route element={<NavbarLayout />}>
-          <Route element={<AuthenticatedRoutes />}>
-            <Route element={<Home />} path='/home' />
-            <Route element={<Home />} path='/' />
-            <Route element={<Analytics />} path='/analytics' />
-            <Route element={<AnalyticsSite />} path='/analytics/:siteId' />
-            <Route element={<SiteSocialPage />} path='/map/:siteId' />
-            <Route element={<UserManagement />} path='/user-management' />
-            <Route element={<Utilities />} path='/utilities' />
+      {sessionStorageChecked && (
+        <>
+          <Route element={<NotAuthenticatedRoutes />}>
+            <Route element={<Login />} path='/login' />
+            <Route element={<Register />} path='/register' />
           </Route>
 
-          <Route element={<Map />} path='/map' />
-        </Route></>)}
+          <Route element={<NavbarLayout />}>
+            <Route element={<AuthenticatedRoutes />}>
+              <Route element={<Home />} path='/home' />
+              <Route element={<Home />} path='/' />
+              <Route element={<Analytics />} path='/analytics' />
+              <Route element={<AnalyticsSite />} path='/analytics/:siteId' />
+              <Route element={<SiteSocialPage />} path='/map/:siteId' />
+              <Route element={<UserManagement />} path='/user-management' />
+              <Route element={<Utilities />} path='/utilities' />
+            </Route>
+
+            <Route element={<Map />} path='/map' />
+          </Route>
+        </>
+      )}
     </Routes>
   )
 }

@@ -1,13 +1,13 @@
-import AuthPageLayout from '@components/auth/AuthPageLayout';
-import { AuthenticationContext } from '@components/context/AuthenticationContext';
+import AuthPageLayout from '@components/auth/AuthPageLayout'
+import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { RegisterUser } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { useContext, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 
-import useLogin from '../hooks/LoginHook';
-import { type InputValidationError, isValidEmail, isValidPassword, mustMatch } from '../utils/validators';
+import useLogin from '../hooks/LoginHook'
+import { type InputValidationError, isValidEmail, isValidPassword, mustMatch } from '../utils/validators'
 
 const Register = () => {
   const navigate = useNavigate()
@@ -150,7 +150,7 @@ const Register = () => {
               id='username-input'
               onBlur={() => validateUsername()}
               onChange={event => setUsername(event.target.value)}
-              type="text"
+              type='text'
             />
             {usernameError && (
               <span className='help-block text-danger'>

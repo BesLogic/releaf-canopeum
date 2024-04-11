@@ -51,40 +51,44 @@ const Navbar = () => {
             {isAuthenticated && (
               <>
                 <li
-                  className={`nav-item ${location.pathname === '/home'
-                    ? 'active'
-                    : ''
-                    }`}
+                  className={`nav-item ${
+                    location.pathname === '/home'
+                      ? 'active'
+                      : ''
+                  }`}
                 >
                   <Link className='nav-link' to='/home'>
                     <span className='material-symbols-outlined text-light'>home</span>
                   </Link>
                 </li>
                 <li
-                  className={`nav-item ${location.pathname === '/analytics'
-                    ? 'active'
-                    : ''
-                    }`}
+                  className={`nav-item ${
+                    location.pathname === '/analytics'
+                      ? 'active'
+                      : ''
+                  }`}
                 >
                   <Link className='nav-link' to='/analytics'>
                     <span className='material-symbols-outlined text-light'>donut_small</span>
                   </Link>
                 </li>
                 <li
-                  className={`nav-item ${location.pathname === '/map'
-                    ? 'active'
-                    : ''
-                    }`}
+                  className={`nav-item ${
+                    location.pathname === '/map'
+                      ? 'active'
+                      : ''
+                  }`}
                 >
                   <Link className='nav-link' to='/map'>
                     <span className='material-symbols-outlined text-light'>pin_drop</span>
                   </Link>
                 </li>
                 <li
-                  className={`nav-item ${location.pathname === '/utilities'
-                    ? 'active'
-                    : ''
-                    }`}
+                  className={`nav-item ${
+                    location.pathname === '/utilities'
+                      ? 'active'
+                      : ''
+                  }`}
                 >
                   <Link className='nav-link' to='/utilities'>
                     <span className='material-symbols-outlined text-light'>style</span>
@@ -96,10 +100,11 @@ const Navbar = () => {
           <ul className='navbar-nav ms-3 gap-3'>
             {isAuthenticated && (
               <li
-                className={`nav-item ${location.pathname === '/user-management'
-                  ? 'active'
-                  : ''
-                  }`}
+                className={`nav-item ${
+                  location.pathname === '/user-management'
+                    ? 'active'
+                    : ''
+                }`}
               >
                 <Link className='nav-link' to='/user-management'>
                   <span className='material-symbols-outlined text-light'>account_circle</span>

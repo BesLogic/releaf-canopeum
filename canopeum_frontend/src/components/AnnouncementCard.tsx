@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+
 import type { Announcement } from '../services/api'
 
 const AnnouncementCard = (

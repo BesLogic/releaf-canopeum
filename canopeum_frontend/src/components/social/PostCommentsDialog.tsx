@@ -1,12 +1,12 @@
-import PostComment from '@components/social/PostComment';
-import { Dialog, DialogContent } from '@mui/material';
-import { type Comment, CreateComment } from '@services/api';
-import getApiClient from '@services/apiInterface';
-import { type ChangeEvent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import PostComment from '@components/social/PostComment'
+import { Dialog, DialogContent } from '@mui/material'
+import { type Comment, CreateComment } from '@services/api'
+import getApiClient from '@services/apiInterface'
+import { type ChangeEvent, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
-import { numberOfWordsInText } from '../../utils/stringUtils';
-import type { InputValidationError } from '../../utils/validators';
+import { numberOfWordsInText } from '../../utils/stringUtils'
+import type { InputValidationError } from '../../utils/validators'
 
 type Props = {
   readonly postId: number,
@@ -75,10 +75,10 @@ const PostCommentsDialog = ({ open, postId, handleClose }: Props) => {
   }
 
   return (
-    <Dialog fullWidth maxWidth="sm" onClose={handleClose} open={open}>
+    <Dialog fullWidth maxWidth='sm' onClose={handleClose} open={open}>
       <DialogContent className='pb-5'>
         <div className='d-flex justify-content-between align-items-center pb-1'>
-          <label className="form-label mb-0 flex-grow-1" htmlFor="new-comment-body-input">
+          <label className='form-label mb-0 flex-grow-1' htmlFor='new-comment-body-input'>
             <h3 className='mb-0'>{translate('social.comments.leave-a-comment')}</h3>
           </label>
 
@@ -91,13 +91,13 @@ const PostCommentsDialog = ({ open, postId, handleClose }: Props) => {
           <div className='position-relative'>
             <textarea
               className={`form-control ${commentBodyError && 'is-invalid'}`}
-              id="new-comment-body-input"
+              id='new-comment-body-input'
               onBlur={() => validateCommentBody()}
               onChange={handleCommentBodyChange}
               rows={5}
               value={commentBody}
             />
-            <div className="max-words position-absolute end-0 pe-2" style={{ bottom: '-1.6rem' }}>
+            <div className='max-words position-absolute end-0 pe-2' style={{ bottom: '-1.6rem' }}>
               <span>{commentBodyNumberOfWords}/{MAXIMUM_WORDS_PER_COMMENT}</span>
               <span className='ms-1'>{translate('social.comments.words', { count: MAXIMUM_WORDS_PER_COMMENT })}</span>
             </div>
@@ -116,12 +116,12 @@ const PostCommentsDialog = ({ open, postId, handleClose }: Props) => {
           )}
         </div>
 
-        <div className="mt-5 d-flex align-items-center gap-1 fw-bold fs-5">
+        <div className='mt-5 d-flex align-items-center gap-1 fw-bold fs-5'>
           <span className='material-symbols-outlined'>sms</span>
           <span>{translate('social.comments.comments')} ({comments.length})</span>
         </div>
 
-        <div className="mt-2 d-flex flex-column gap-3">
+        <div className='mt-2 d-flex flex-column gap-3'>
           {comments.map(comment => <PostComment comment={comment} key={comment.id} />)}
         </div>
       </DialogContent>

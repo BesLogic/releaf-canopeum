@@ -4,12 +4,12 @@ import EducationalFacilityPin from '@assets/icons/pins/educational-facility-pin.
 import FarmsLandPin from '@assets/icons/pins/farms-land-pin.svg'
 import IndegeniousCommunityPin from '@assets/icons/pins/indegenious-community-pin.svg'
 import ParkPin from '@assets/icons/pins/park-pin.svg'
+import { getApiBaseUrl } from '@services/apiSettings'
 import { useEffect, useState } from 'react'
 import ReactMap, { GeolocateControl, Marker, NavigationControl, ScaleControl, type ViewState } from 'react-map-gl/maplibre'
 import { Link } from 'react-router-dom'
 
 import type { SiteMap } from '../services/api'
-import { getApiBaseUrl } from '@services/apiSettings'
 import getApiClient from '../services/apiInterface'
 
 const pinMap: Record<number, string> = {
@@ -86,7 +86,7 @@ const Map = () => {
                       <img
                         alt=''
                         className='img-fluid rounded-start'
-                        src={getApiBaseUrl() + site.image?.asset}
+                        src={getApiBaseUrl() + site.image.asset}
                       />
                     </div>
                     <div className='col-md-8'>

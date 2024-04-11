@@ -1,13 +1,13 @@
-import AuthPageLayout from '@components/auth/AuthPageLayout';
-import { AuthenticationContext } from '@components/context/AuthenticationContext';
+import AuthPageLayout from '@components/auth/AuthPageLayout'
+import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { LoginUser } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { useContext, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 
-import useLogin from '../hooks/LoginHook';
-import type { InputValidationError } from '../utils/validators';
+import useLogin from '../hooks/LoginHook'
+import type { InputValidationError } from '../utils/validators'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -28,7 +28,6 @@ const Login = () => {
       navigate('/')
     }
   }, [isAuthenticated, navigate])
-
 
   const validateEmail = () => {
     if (!email) {
@@ -139,7 +138,9 @@ const Login = () => {
               className='btn btn-outline-primary w-100'
               style={{ margin: '10px 0px 10px' }}
               type='button'
-            >{translate('auth.sign-up')}</button>
+            >
+              {translate('auth.sign-up')}
+            </button>
           </Link>
         </div>
       </div>
