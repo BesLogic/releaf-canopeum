@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom'
 import AnnouncementCard from '../components/AnnouncementCard'
 import ContactCard from '../components/ContactCard'
 import CreatePostWidget from '../components/CreatePostWidget'
-import PostWidget from '../components/PostWidget'
+import PostWidget from '../components/social/PostWidget'
 
 const SiteSocialPage = () => {
   const { siteId } = useParams()

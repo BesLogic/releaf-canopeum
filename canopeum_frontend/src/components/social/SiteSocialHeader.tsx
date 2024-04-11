@@ -57,11 +57,11 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
                 />
               )}
             </div>
-            <div className='card-text d-flex flex-row gap-1'>
+            <div className='card-text d-flex flex-row align-items-center gap-1'>
               <PrimaryIconBadge type='school' />
-              <h4 className='fw-bold text-primary'>{translateValue(site.siteType)}</h4>
+              <h4 className='fw-bold text-primary mb-0'>{translateValue(site.siteType)}</h4>
             </div>
-            <p className='card-text'>{site.description ?? ''}</p>
+            <p className='card-text mt-2'>{site.description ?? ''}</p>
             <div className='container fw-bold'>
               <div className='mb-2'>
                 <span className='material-symbols-outlined align-middle'>person</span>
