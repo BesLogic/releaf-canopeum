@@ -1,8 +1,8 @@
-import { getApiBaseUrl } from '@services/apiSettings'
 import { LanguageContext } from '@components/context/LanguageContext'
 import ToggleSwitch from '@components/inputs/ToggleSwitch'
 import PrimaryIconBadge from '@components/PrimaryIconBadge'
 import type { SiteSocial } from '@services/api'
+import { getApiBaseUrl } from '@services/apiSettings'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -18,7 +18,8 @@ const onFollowClick = () => {
 const updateSiteIsPublic = async (_: boolean) => {
   // TODO Implement site update when backend is ready
 }
-const SiteSummaryCard = ({ site, viewMode }: Props) => {
+
+const SiteSocialHeader = ({ site, viewMode }: Props) => {
   const { t } = useTranslation()
   const { translateValue } = useContext(LanguageContext)
   const [isPublic, setIsPublic] = useState(true)
@@ -31,7 +32,7 @@ const SiteSummaryCard = ({ site, viewMode }: Props) => {
         <div
           className='col-md-4'
           style={{
-            backgroundImage: `url('${getApiBaseUrl() + site.image?.asset}')`,
+            backgroundImage: `url('${getApiBaseUrl() + site.image.asset}')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
@@ -79,4 +80,4 @@ const SiteSummaryCard = ({ site, viewMode }: Props) => {
   )
 }
 
-export default SiteSummaryCard
+export default SiteSocialHeader
