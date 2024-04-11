@@ -54,6 +54,8 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         return attrs
 
     def create_user(self):
+        if self.validated_data is not dict:
+            raise serializers.ValidationError("RegisterUser validated data is invalid")
         role_name = self.validated_data.get("role", "User")
         role = Role.objects.get(name=role_name)
         if role is None:
