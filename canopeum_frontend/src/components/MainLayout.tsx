@@ -43,19 +43,19 @@ const AuthenticatedRoutes = () => {
 
 const MainLayout = () => {
   const { authenticateUser } = useLogin()
-  const [localStorageChecked, setLocalStorageChecked] = useState(false)
+  const [sessionStorageChecked, setSessionStorageChecked] = useState(false)
 
-  // Try authenticating user on app start if token was saved in localStorage
+  // Try authenticating user on app start if token was saved in sessionStorage
   useEffect(() => {
     authenticateUser()
     // TODO(NicolasDontigny): This is a temporary workaround, because when loading the app,
-    // We first check in localStorage if the user is logged in, but the route guards immediately redirect to /login
-    setLocalStorageChecked(true)
+    // We first check in sessionStorage if the user is logged in, but the route guards immediately redirect to /login
+    setSessionStorageChecked(true)
   }, [authenticateUser])
 
   return (
     <Routes>
-      {localStorageChecked && (<><Route element={<NotAuthenticatedRoutes />}>
+      {sessionStorageChecked && (<><Route element={<NotAuthenticatedRoutes />}>
         <Route element={<Login />} path='/login' />
         <Route element={<Register />} path='/register' />
       </Route>

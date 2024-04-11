@@ -518,6 +518,12 @@ class PostSerializer(serializers.ModelSerializer):
         return self.context.get("has_liked")
 
 
+class CreateCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ("body",)
+
+
 class CommentSerializer(serializers.ModelSerializer):
     author_username = serializers.SerializerMethodField()
     # TODO(NicolasDontigny): Add user avatar image here once implemented

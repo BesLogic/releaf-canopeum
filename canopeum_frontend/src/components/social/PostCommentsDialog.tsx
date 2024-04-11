@@ -1,6 +1,6 @@
 import PostComment from '@components/social/PostComment';
 import { Dialog, DialogContent } from '@mui/material';
-import type { Comment } from '@services/api';
+import { type Comment, CreateComment } from '@services/api';
 import getApiClient from '@services/apiInterface';
 import { type ChangeEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +14,7 @@ type Props = {
   readonly handleClose: () => void,
 }
 
-const MAXIMUM_WORDS_PER_COMMENT = 6
+const MAXIMUM_WORDS_PER_COMMENT = 100
 
 const PostCommentsDialog = ({ open, postId, handleClose }: Props) => {
   const { t: translate } = useTranslation()
@@ -62,11 +62,16 @@ const PostCommentsDialog = ({ open, postId, handleClose }: Props) => {
     return true
   }
 
-  const postComment = () => {
+  const postComment = async () => {
     setSendButtonClicked(true)
     const isCommentBodyValid = validateCommentBody(true)
+    if (!isCommentBodyValid) return
 
     // Create comment, trim value
+    const createComment = new CreateComment({ body: commentBody })
+    const newComment = await getApiClient().commentClient.create(postId, createComment)
+
+    setComments(previous => [newComment, ...previous])
   }
 
   return (
