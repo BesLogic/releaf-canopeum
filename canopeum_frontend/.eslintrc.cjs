@@ -33,5 +33,5 @@ module.exports = {
     // Until this is fixed or solved, we'll turn this one off to prevent blocking
     // in PR with the exception
     'etc/no-implicit-any-catch': 'off',
-  },
+  }
 }
