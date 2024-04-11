@@ -12,6 +12,7 @@ import CreatePostWidget from '../components/CreatePostWidget'
 import PostWidget from '../components/social/PostWidget'
 
 const SiteSocialPage = () => {
+  console.log('SITE SOCIAL PAGE');
   const { siteId } = useParams()
   const { currentUser } = useContext(AuthenticationContext)
   const [isLoadingSite, setIsLoadingSite] = useState(true)

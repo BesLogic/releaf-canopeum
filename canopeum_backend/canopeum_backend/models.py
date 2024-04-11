@@ -66,10 +66,10 @@ class BatchSupportedSpecies(models.Model):
 
 
 class Comment(models.Model):
-    body = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
-    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
-    post = models.ForeignKey("Post", models.DO_NOTHING, blank=True, null=True)
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, models.DO_NOTHING)
+    post = models.ForeignKey("Post", models.DO_NOTHING)
 
 
 class Contact(models.Model):

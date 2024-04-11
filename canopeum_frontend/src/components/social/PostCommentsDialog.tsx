@@ -1,5 +1,5 @@
 import PostComment from '@components/social/PostComment';
-import { Dialog, DialogContent, DialogTitle } from '@mui/material';
+import { Dialog, DialogContent } from '@mui/material';
 import type { Comment } from '@services/api';
 import getApiClient from '@services/apiInterface';
 import { useEffect, useState } from 'react';
@@ -23,23 +23,24 @@ const PostCommentsDialog = ({ open, postId, handleClose }: Props) => {
 
   return (
     <Dialog fullWidth maxWidth="sm" onClose={handleClose} open={open}>
-      <DialogTitle className='d-flex justify-content-between align-items-center pb-1'>
-        <label className="form-label mb-0" htmlFor="new-comment-body-input">Leave a Comment</label>
-
-        <button className='btn btn-primary' onClick={postComment} type='button'>Send</button>
-      </DialogTitle>
       <DialogContent>
+        <div className='d-flex justify-content-between align-items-center pb-1'>
+          <label className="form-label mb-0" htmlFor="new-comment-body-input">Leave a Comment</label>
+
+          <button className='btn btn-primary' onClick={postComment} type='button'>Send</button>
+        </div>
+
         <div className="position-relative">
           <textarea className="form-control" id="new-comment-body-input" rows={3} />
           <span className="max-words position-absolute bottom-0 end-0 pe-2 pb-1" style={{}}>300 words maximum</span>
         </div>
 
-        <div className="mt-4 d-flex align-items-center gap-1 fw-bold">
+        <div className="mt-4 d-flex align-items-center gap-1 fw-bold fs-5">
           <span className='material-symbols-outlined'>sms</span>
           <span>Comments ({comments.length})</span>
         </div>
 
-        <div className="mt-2 d-flex flex-column gap-2">
+        <div className="mt-2 d-flex flex-column gap-3">
           {comments.map(comment => <PostComment comment={comment} key={comment.id} />)}
         </div>
       </DialogContent>

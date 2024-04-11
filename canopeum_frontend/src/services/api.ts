@@ -1094,7 +1094,7 @@ export class CommentClient {
     return Promise.resolve<Comment[]>(null as any);
   }
 
-  create(postId: number, body: Comment | undefined): Promise<Comment> {
+  create(postId: number, body: Comment): Promise<Comment> {
     let url_ = this.baseUrl + "/social/posts/{postId}/comments/";
     if (postId === undefined || postId === null)
       throw new Error("The parameter 'postId' must be defined.");
@@ -2374,9 +2374,9 @@ export interface IBatchfertilizer {
 
 export class Comment implements IComment {
   readonly id!: number;
-  body?: string | undefined;
-  user?: number | undefined;
-  createdAt?: Date | undefined;
+  body!: string;
+  readonly authorUsername!: string;
+  readonly createdAt!: Date;
 
   [key: string]: any;
 
@@ -2397,8 +2397,8 @@ export class Comment implements IComment {
       }
       (<any>this).id = _data["id"];
       this.body = _data["body"];
-      this.user = _data["user"];
-      this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+      (<any>this).authorUsername = _data["authorUsername"];
+      (<any>this).createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
     }
   }
 
@@ -2417,7 +2417,7 @@ export class Comment implements IComment {
     }
     data["id"] = this.id;
     data["body"] = this.body;
-    data["user"] = this.user;
+    data["authorUsername"] = this.authorUsername;
     data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
     return data;
   }
@@ -2425,9 +2425,9 @@ export class Comment implements IComment {
 
 export interface IComment {
   id: number;
-  body?: string | undefined;
-  user?: number | undefined;
-  createdAt?: Date | undefined;
+  body: string;
+  authorUsername: string;
+  createdAt: Date;
 
   [key: string]: any;
 }
