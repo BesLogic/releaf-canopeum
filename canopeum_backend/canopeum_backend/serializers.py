@@ -1,5 +1,7 @@
+from django.contrib.auth.password_validation import validate_password
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 
 from .models import (
     Announcement,
@@ -16,6 +18,7 @@ from .models import (
     Like,
     Mulchlayertype,
     Post,
+    Role,
     Site,
     Siteadmin,
     Sitetreespecies,
@@ -26,16 +29,66 @@ from .models import (
 )
 
 
-class AuthUserSerializer(serializers.ModelSerializer):
+class LoginUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("id", "username", "email", "password")
+        fields = ("email", "password")
+
+
+class RegisterUserSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(required=True, validators=[UniqueValidator(queryset=User.objects.all())])
+    email = serializers.EmailField(required=True, validators=[UniqueValidator(queryset=User.objects.all())])
+
+    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    password_confirmation = serializers.CharField(write_only=True, required=True)
+    role = serializers.CharField(required=False, default="User")
+
+    class Meta:
+        model = User
+        fields = ("username", "email", "password", "password_confirmation", "role")
+
+    def validate(self, attrs):
+        if attrs["password"] != attrs["password_confirmation"]:
+            raise serializers.ValidationError({"password": "Password fields didn't match."})
+
+        return attrs
+
+    def create_user(self):
+        if self.validated_data is not dict:
+            raise serializers.ValidationError("RegisterUser validated data is invalid")
+        role_name = self.validated_data.get("role", "User")
+        role = Role.objects.get(name=role_name)
+        if role is None:
+            role = Role.objects.get(name="User")
+        user = User.objects.create(
+            username=self.validated_data["username"],
+            email=self.validated_data["email"],
+            role=role,
+        )
+
+        user.set_password(self.validated_data["password"])
+        user.save()
+
+        return user
 
 
 class UserSerializer(serializers.ModelSerializer):
+    role = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         exclude = ("password",)
+
+    def get_role(self, obj):
+        return obj.role.name
+
+
+class UserTokenSerializer(serializers.Serializer):
+    refresh = serializers.StringRelatedField()
+    access = serializers.StringRelatedField()
+
+    class Meta:
+        fields = ("refresh", "access")
 
 
 class CoordinatesSerializer(serializers.ModelSerializer):
@@ -330,6 +383,17 @@ class SiteAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Siteadmin
         fields = ("user",)
+
+
+class IntegerListFieldSerializer(serializers.ListField):
+    child = serializers.IntegerField()
+
+
+class SiteAdminUpdateRequestSerializer(serializers.Serializer):
+    ids = IntegerListFieldSerializer()
+
+    class Meta:
+        fields = ("ids",)
 
 
 class SiteSummarySerializer(serializers.ModelSerializer):

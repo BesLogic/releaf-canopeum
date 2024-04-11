@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import ClassVar
 
 import pytz
 from django.contrib.auth.models import AbstractUser
@@ -10,6 +11,13 @@ class Role(models.Model):
 
 
 class User(AbstractUser):
+    email = models.EmailField(
+        verbose_name="email address",
+        max_length=255,
+        unique=True,
+    )
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS: ClassVar[list[str]] = []
     role = models.ForeignKey(Role, models.DO_NOTHING, null=False, default=1)  # type: ignore
 
 

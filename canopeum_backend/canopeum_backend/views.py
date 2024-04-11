@@ -1,7 +1,6 @@
 from typing import cast
 
 from django.contrib.auth import authenticate
-from django.contrib.auth.models import AbstractBaseUser
 from django.http import QueryDict
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
@@ -12,25 +11,30 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from canopeum_backend.permissions import MegaAdminPermission
+
 from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, Siteadmin, User, Widget
 from .serializers import (
     AnnouncementSerializer,
     AssetSerializer,
-    AuthUserSerializer,
     BatchAnalyticsSerializer,
     BatchSerializer,
     CommentSerializer,
     ContactSerializer,
     LikeSerializer,
+    LoginUserSerializer,
     PostPostSerializer,
     PostSerializer,
+    RegisterUserSerializer,
     SiteAdminSerializer,
+    SiteAdminUpdateRequestSerializer,
     SiteMapSerializer,
     SitePostSerializer,
     SiteSerializer,
     SiteSocialSerializer,
     SiteSummarySerializer,
     UserSerializer,
+    UserTokenSerializer,
     WidgetSerializer,
 )
 
@@ -38,34 +42,48 @@ from .serializers import (
 class LoginAPIView(APIView):
     permission_classes = (AllowAny,)
 
-    @extend_schema(request=AuthUserSerializer, responses=UserSerializer, operation_id="authentication_login")
+    @extend_schema(request=LoginUserSerializer, responses=UserTokenSerializer, operation_id="authentication_login")
     def post(self, request):
-        username = request.data.get("username")
+        email = request.data.get("email")
         password = request.data.get("password")
 
-        user = cast(User, authenticate(username=username, password=password))
+        user = cast(User, authenticate(email=email, password=password))
         if user is not None:
             refresh = cast(RefreshToken, RefreshToken.for_user(user))
+            refresh["username"] = user.username
+            refresh["email"] = user.email
+            refresh["id"] = user.pk
             if user.role is not None:
                 refresh["role"] = user.role.name
-            return Response({"refresh": str(refresh), "access": str(refresh.access_token)}, status=status.HTTP_200_OK)
+
+            serializer = UserTokenSerializer({"refresh": str(refresh), "access": str(refresh.access_token)})
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class RegisterAPIView(APIView):
     permission_classes = (AllowAny,)
 
-    @extend_schema(request=UserSerializer, responses=AuthUserSerializer, operation_id="authentication_register")
+    @extend_schema(
+        request=RegisterUserSerializer, responses={201: UserTokenSerializer}, operation_id="authentication_register"
+    )
     def post(self, request):
-        serializer = AuthUserSerializer(data=request.data)
-        if "role" not in request.data:
-            serializer.role = 1
+        # TODO(NicolasDontigny): Find out how to convert request body properties from camel case to lower snake case
+        request.data["password_confirmation"] = request.data.get("passwordConfirmation")
+        serializer = RegisterUserSerializer(data=request.data)
+
         if serializer.is_valid():
-            user = User.objects.create_user(**serializer.validated_data)
-            refresh = cast(RefreshToken, RefreshToken.for_user(cast(AbstractBaseUser, user)))
-            return Response(
-                {"refresh": str(refresh), "access": str(refresh.access_token)}, status=status.HTTP_201_CREATED
-            )
+            user = serializer.create_user()
+            if user is not None:
+                refresh = cast(RefreshToken, RefreshToken.for_user(user))
+                refresh["username"] = user.username
+                refresh["email"] = user.email
+                refresh["id"] = user.pk
+                if user.role is not None:
+                    refresh["role"] = user.role.name
+
+                serializer = UserTokenSerializer({"refresh": str(refresh), "access": str(refresh.access_token)})
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -178,8 +196,13 @@ class SiteSummaryDetailAPIView(APIView):
 
 
 class SiteAdminsAPIView(APIView):
-    # TODO(NicolasDontigny): Find the best way to type the request as a list of integer ids
-    @extend_schema(request=list[str], responses=SiteAdminSerializer(many=True), operation_id="site_admins_update")
+    permission_classes = (MegaAdminPermission,)
+
+    @extend_schema(
+        request=SiteAdminUpdateRequestSerializer,
+        responses=SiteAdminSerializer(many=True),
+        operation_id="site_updateAdmins",
+    )
     def patch(self, request, siteId):
         try:
             site = Site.objects.get(pk=siteId)
@@ -189,7 +212,7 @@ class SiteAdminsAPIView(APIView):
         existing_site_admins = Siteadmin.objects.filter(site=site)
         existing_admin_users = [admin.user for admin in existing_site_admins]
 
-        admin_ids = request.data
+        admin_ids = request.data["ids"]
         updated_admin_users_list = User.objects.filter(id__in=admin_ids)
 
         for user in updated_admin_users_list:
@@ -443,6 +466,16 @@ class UserListAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AdminUsersListAPIView(APIView):
+    permission_classes = (MegaAdminPermission,)
+
+    @extend_schema(responses=UserSerializer(many=True), operation_id="user_allAdmins")
+    def get(self, request):
+        users = User.objects.filter(role__name__iexact="admin")
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
 
 
 class UserDetailAPIView(APIView):

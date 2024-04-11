@@ -1,9 +1,12 @@
 import Checkbox from '@components/Checkbox'
 import SearchBar from '@components/SearchBar'
-import type { SiteSummary, User } from '@services/api'
+import { Alert, Snackbar } from '@mui/material'
+import { PatchedSiteAdminUpdateRequest, type SiteSummary, type User } from '@services/api'
 import getApiClient from '@services/apiInterface'
-import { useState } from 'react'
+import { type SyntheticEvent, useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Dropdown, Popover, Whisper } from 'rsuite'
+import type { OverlayTriggerHandle } from 'rsuite/esm/internals/Overlay/OverlayTrigger'
 
 type Props = {
   readonly siteSummary: SiteSummary,
@@ -11,16 +14,32 @@ type Props = {
 }
 
 const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
+  const { t: translate } = useTranslation()
+  const whisperRef = useRef<OverlayTriggerHandle>(null);
   const [filteredAdmins, setFilteredAdmins] = useState(admins)
   const [selectedAdmins, setSelectedAdmins] = useState(siteSummary.admins.map(admin => admin.user))
+  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false)
 
-  const onSearchAdmins = (query: string) =>
+  useEffect(() => {
+    setFilteredAdmins(admins)
+    setSelectedAdmins(siteSummary.admins.map(admin => admin.user))
+  }, [siteSummary.admins, admins])
+
+  const handleSnackbarClose = (_event: Event | SyntheticEvent, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setShowSuccessSnackbar(false);
+  }
+
+  const onSearchAdmins = useCallback((query: string) =>
     setFilteredAdmins(admins.filter(admin =>
       admin
         .username
         .toLocaleLowerCase()
         .includes(query.toLocaleLowerCase())
-    ))
+    )), [admins])
 
   const onAdminSelectionChange = (adminId: number, isSelected: boolean) => {
     if (isSelected) {
@@ -36,15 +55,21 @@ const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
     }
   }
 
-  const onSaveAdmins = async () =>
+  const onSaveAdmins = async () => {
+    const body = new PatchedSiteAdminUpdateRequest({ ids: selectedAdmins.map(admin => admin.id) })
+
     await getApiClient()
-      .siteAdminsClient
-      .update(siteSummary.id, selectedAdmins.map(admin => admin.id))
-  // TODO(NicolasDontigny): Do we need to update the parent model here?
+      .siteClient
+      .updateAdmins(siteSummary.id, body)
+    // TODO(NicolasDontigny): Do we need to update the parent model here?
+    whisperRef.current?.close()
+    setShowSuccessSnackbar(true)
+  }
 
   const onSelectAdminsCancel = () => {
     setFilteredAdmins([...admins])
     setSelectedAdmins(siteSummary.admins.map(admin => admin.user))
+    whisperRef.current?.close()
   }
 
   const administratorsSelection = (
@@ -100,25 +125,41 @@ const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
   )
 
   return (
-    <Whisper
-      placement='auto'
-      speaker={actionsPopover}
-      trigger='click'
-    >
-      <button
-        className='bg-lightgreen text-center rounded-circle unstyled-button'
-        type='button'
+    <>
+      <Whisper
+        placement='auto'
+        ref={whisperRef}
+        speaker={actionsPopover}
+        trigger='click'
       >
-        <span>
+        <button
+          className='bg-lightgreen text-center rounded-circle unstyled-button'
+          type='button'
+        >
           <span
             className='material-symbols-outlined text-primary align-middle'
             style={{ fontSize: 24 }}
           >
             more_horiz
           </span>
-        </span>
-      </button>
-    </Whisper>
+        </button>
+      </Whisper>
+
+      <Snackbar
+        autoHideDuration={5000}
+        onClose={handleSnackbarClose}
+        open={showSuccessSnackbar}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity="success"
+          sx={{ width: '100%', boxShadow: 3 }}
+          variant="filled"
+        >
+          {translate('analytics.site-summary.admins-saved', { siteName: siteSummary.name })}
+        </Alert>
+      </Snackbar>
+    </>
   )
 }
 

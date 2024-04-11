@@ -435,6 +435,54 @@ export class SiteClient {
     return Promise.resolve<{ [key: string]: any; }>(null as any);
   }
 
+  updateAdmins(siteId: number, body: PatchedSiteAdminUpdateRequest | undefined): Promise<SiteAdmin[]> {
+    let url_ = this.baseUrl + "/analytics/sites/{siteId}/admins";
+    if (siteId === undefined || siteId === null)
+      throw new Error("The parameter 'siteId' must be defined.");
+    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processUpdateAdmins(_response);
+    });
+  }
+
+  protected processUpdateAdmins(response: Response): Promise<SiteAdmin[]> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        if (Array.isArray(resultData200)) {
+          result200 = [] as any;
+          for (let item of resultData200)
+            result200!.push(SiteAdmin.fromJS(item));
+        }
+        else {
+          result200 = <any>null;
+        }
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<SiteAdmin[]>(null as any);
+  }
+
   summary(siteId: number): Promise<SiteSummary> {
     let url_ = this.baseUrl + "/analytics/sites/{siteId}/summary";
     if (siteId === undefined || siteId === null)
@@ -548,65 +596,6 @@ export class SiteClient {
       });
     }
     return Promise.resolve<SiteSocial>(null as any);
-  }
-}
-
-export class AdminsClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : window as any;
-    this.baseUrl = baseUrl ?? "";
-  }
-
-  update(siteId: number, body: number[] | undefined): Promise<SiteAdmin[]> {
-    let url_ = this.baseUrl + "/analytics/sites/{siteId}/admins";
-    if (siteId === undefined || siteId === null)
-      throw new Error("The parameter 'siteId' must be defined.");
-    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(body);
-
-    let options_: RequestInit = {
-      body: content_,
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      }
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processUpdate(_response);
-    });
-  }
-
-  protected processUpdate(response: Response): Promise<SiteAdmin[]> {
-    const status = response.status;
-    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        if (Array.isArray(resultData200)) {
-          result200 = [] as any;
-          for (let item of resultData200)
-            result200!.push(SiteAdmin.fromJS(item));
-        }
-        else {
-          result200 = <any>null;
-        }
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<SiteAdmin[]>(null as any);
   }
 }
 
@@ -734,7 +723,7 @@ export class AuthenticationClient {
     this.baseUrl = baseUrl ?? "";
   }
 
-  login(body: AuthUser): Promise<User> {
+  login(body: LoginUser): Promise<UserToken> {
     let url_ = this.baseUrl + "/auth/login/";
     url_ = url_.replace(/[?&]$/, "");
 
@@ -754,14 +743,14 @@ export class AuthenticationClient {
     });
   }
 
-  protected processLogin(response: Response): Promise<User> {
+  protected processLogin(response: Response): Promise<UserToken> {
     const status = response.status;
     let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
     if (status === 200) {
       return response.text().then((_responseText) => {
         let result200: any = null;
         let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = User.fromJS(resultData200);
+        result200 = UserToken.fromJS(resultData200);
         return result200;
       });
     } else if (status !== 200 && status !== 204) {
@@ -769,7 +758,7 @@ export class AuthenticationClient {
         return throwException("An unexpected server error occurred.", status, _responseText, _headers);
       });
     }
-    return Promise.resolve<User>(null as any);
+    return Promise.resolve<UserToken>(null as any);
   }
 
   logout(): Promise<{ [key: string]: any; }> {
@@ -815,7 +804,7 @@ export class AuthenticationClient {
     return Promise.resolve<{ [key: string]: any; }>(null as any);
   }
 
-  register(body: User): Promise<AuthUser> {
+  register(body: RegisterUser): Promise<UserToken> {
     let url_ = this.baseUrl + "/auth/register/";
     url_ = url_.replace(/[?&]$/, "");
 
@@ -835,22 +824,22 @@ export class AuthenticationClient {
     });
   }
 
-  protected processRegister(response: Response): Promise<AuthUser> {
+  protected processRegister(response: Response): Promise<UserToken> {
     const status = response.status;
     let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 200) {
+    if (status === 201) {
       return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = AuthUser.fromJS(resultData200);
-        return result200;
+        let result201: any = null;
+        let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result201 = UserToken.fromJS(resultData201);
+        return result201;
       });
     } else if (status !== 200 && status !== 204) {
       return response.text().then((_responseText) => {
         return throwException("An unexpected server error occurred.", status, _responseText, _headers);
       });
     }
-    return Promise.resolve<AuthUser>(null as any);
+    return Promise.resolve<UserToken>(null as any);
   }
 }
 
@@ -1692,6 +1681,47 @@ export class UserClient {
     return Promise.resolve<User>(null as any);
   }
 
+  allAdmins(): Promise<User[]> {
+    let url_ = this.baseUrl + "/users/admins";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        "Accept": "application/json"
+      }
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processAllAdmins(_response);
+    });
+  }
+
+  protected processAllAdmins(response: Response): Promise<User[]> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        if (Array.isArray(resultData200)) {
+          result200 = [] as any;
+          for (let item of resultData200)
+            result200!.push(User.fromJS(item));
+        }
+        else {
+          result200 = <any>null;
+        }
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<User[]>(null as any);
+  }
+
   current(): Promise<User> {
     let url_ = this.baseUrl + "/users/current_user/";
     url_ = url_.replace(/[?&]$/, "");
@@ -1827,68 +1857,6 @@ export class Asset implements IAsset {
 
 export interface IAsset {
   asset: string;
-
-  [key: string]: any;
-}
-
-export class AuthUser implements IAuthUser {
-  readonly id!: number;
-  /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
-  username!: string;
-  email?: string;
-  password!: string;
-
-  [key: string]: any;
-
-  constructor(data?: IAuthUser) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
-    }
-  }
-
-  init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property))
-          this[property] = _data[property];
-      }
-      (<any>this).id = _data["id"];
-      this.username = _data["username"];
-      this.email = _data["email"];
-      this.password = _data["password"];
-    }
-  }
-
-  static fromJS(data: any): AuthUser {
-    data = typeof data === 'object' ? data : {};
-    let result = new AuthUser();
-    result.init(data);
-    return result;
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property))
-        data[property] = this[property];
-    }
-    data["id"] = this.id;
-    data["username"] = this.username;
-    data["email"] = this.email;
-    data["password"] = this.password;
-    return data;
-  }
-}
-
-export interface IAuthUser {
-  id: number;
-  /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
-  username: string;
-  email?: string;
-  password: string;
 
   [key: string]: any;
 }
@@ -2720,6 +2688,58 @@ export interface ILike {
   [key: string]: any;
 }
 
+export class LoginUser implements ILoginUser {
+  email!: string;
+  password!: string;
+
+  [key: string]: any;
+
+  constructor(data?: ILoginUser) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property))
+          this[property] = _data[property];
+      }
+      this.email = _data["email"];
+      this.password = _data["password"];
+    }
+  }
+
+  static fromJS(data: any): LoginUser {
+    data = typeof data === 'object' ? data : {};
+    let result = new LoginUser();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    data["email"] = this.email;
+    data["password"] = this.password;
+    return data;
+  }
+}
+
+export interface ILoginUser {
+  email: string;
+  password: string;
+
+  [key: string]: any;
+}
+
 export class PatchedAnnouncement implements IPatchedAnnouncement {
   readonly id?: number;
   body?: string | undefined;
@@ -3040,8 +3060,65 @@ export interface IPatchedSite {
   [key: string]: any;
 }
 
+export class PatchedSiteAdminUpdateRequest implements IPatchedSiteAdminUpdateRequest {
+  ids?: number[];
+
+  [key: string]: any;
+
+  constructor(data?: IPatchedSiteAdminUpdateRequest) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property))
+          this[property] = _data[property];
+      }
+      if (Array.isArray(_data["ids"])) {
+        this.ids = [] as any;
+        for (let item of _data["ids"])
+          this.ids!.push(item);
+      }
+    }
+  }
+
+  static fromJS(data: any): PatchedSiteAdminUpdateRequest {
+    data = typeof data === 'object' ? data : {};
+    let result = new PatchedSiteAdminUpdateRequest();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    if (Array.isArray(this.ids)) {
+      data["ids"] = [];
+      for (let item of this.ids)
+        data["ids"].push(item);
+    }
+    return data;
+  }
+}
+
+export interface IPatchedSiteAdminUpdateRequest {
+  ids?: number[];
+
+  [key: string]: any;
+}
+
 export class PatchedUser implements IPatchedUser {
   readonly id?: number;
+  readonly role?: string;
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;
@@ -3049,13 +3126,12 @@ export class PatchedUser implements IPatchedUser {
   username?: string;
   firstName?: string;
   lastName?: string;
-  email?: string;
   /** Designates whether the user can log into this admin site. */
   isStaff?: boolean;
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
   isActive?: boolean;
   dateJoined?: Date;
-  role?: number;
+  email?: string;
   /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
   groups?: number[];
   /** Specific permissions for this user. */
@@ -3079,16 +3155,16 @@ export class PatchedUser implements IPatchedUser {
           this[property] = _data[property];
       }
       (<any>this).id = _data["id"];
+      (<any>this).role = _data["role"];
       this.lastLogin = _data["lastLogin"] ? new Date(_data["lastLogin"].toString()) : <any>undefined;
       this.isSuperuser = _data["isSuperuser"];
       this.username = _data["username"];
       this.firstName = _data["firstName"];
       this.lastName = _data["lastName"];
-      this.email = _data["email"];
       this.isStaff = _data["isStaff"];
       this.isActive = _data["isActive"];
       this.dateJoined = _data["dateJoined"] ? new Date(_data["dateJoined"].toString()) : <any>undefined;
-      this.role = _data["role"];
+      this.email = _data["email"];
       if (Array.isArray(_data["groups"])) {
         this.groups = [] as any;
         for (let item of _data["groups"])
@@ -3116,16 +3192,16 @@ export class PatchedUser implements IPatchedUser {
         data[property] = this[property];
     }
     data["id"] = this.id;
+    data["role"] = this.role;
     data["lastLogin"] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined;
     data["isSuperuser"] = this.isSuperuser;
     data["username"] = this.username;
     data["firstName"] = this.firstName;
     data["lastName"] = this.lastName;
-    data["email"] = this.email;
     data["isStaff"] = this.isStaff;
     data["isActive"] = this.isActive;
     data["dateJoined"] = this.dateJoined ? this.dateJoined.toISOString() : <any>undefined;
-    data["role"] = this.role;
+    data["email"] = this.email;
     if (Array.isArray(this.groups)) {
       data["groups"] = [];
       for (let item of this.groups)
@@ -3142,6 +3218,7 @@ export class PatchedUser implements IPatchedUser {
 
 export interface IPatchedUser {
   id?: number;
+  role?: string;
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;
@@ -3149,13 +3226,12 @@ export interface IPatchedUser {
   username?: string;
   firstName?: string;
   lastName?: string;
-  email?: string;
   /** Designates whether the user can log into this admin site. */
   isStaff?: boolean;
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
   isActive?: boolean;
   dateJoined?: Date;
-  role?: number;
+  email?: string;
   /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
   groups?: number[];
   /** Specific permissions for this user. */
@@ -3364,6 +3440,73 @@ export class PostPost implements IPostPost {
 export interface IPostPost {
   site?: number | undefined;
   body?: string | undefined;
+
+  [key: string]: any;
+}
+
+export class RegisterUser implements IRegisterUser {
+  username!: string;
+  email!: string;
+  password!: string;
+  passwordConfirmation!: string;
+  role?: string;
+
+  [key: string]: any;
+
+  constructor(data?: IRegisterUser) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    if (!data) {
+      this.role = "User";
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property))
+          this[property] = _data[property];
+      }
+      this.username = _data["username"];
+      this.email = _data["email"];
+      this.password = _data["password"];
+      this.passwordConfirmation = _data["passwordConfirmation"];
+      this.role = _data["role"] !== undefined ? _data["role"] : "User";
+    }
+  }
+
+  static fromJS(data: any): RegisterUser {
+    data = typeof data === 'object' ? data : {};
+    let result = new RegisterUser();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    data["username"] = this.username;
+    data["email"] = this.email;
+    data["password"] = this.password;
+    data["passwordConfirmation"] = this.passwordConfirmation;
+    data["role"] = this.role;
+    return data;
+  }
+}
+
+export interface IRegisterUser {
+  username: string;
+  email: string;
+  password: string;
+  passwordConfirmation: string;
+  role?: string;
 
   [key: string]: any;
 }
@@ -3999,7 +4142,7 @@ export interface ISitetreespecies {
 }
 
 export class TokenObtainPair implements ITokenObtainPair {
-  username!: string;
+  email!: string;
   password!: string;
   readonly access!: string;
   readonly refresh!: string;
@@ -4021,7 +4164,7 @@ export class TokenObtainPair implements ITokenObtainPair {
         if (_data.hasOwnProperty(property))
           this[property] = _data[property];
       }
-      this.username = _data["username"];
+      this.email = _data["email"];
       this.password = _data["password"];
       (<any>this).access = _data["access"];
       (<any>this).refresh = _data["refresh"];
@@ -4041,7 +4184,7 @@ export class TokenObtainPair implements ITokenObtainPair {
       if (this.hasOwnProperty(property))
         data[property] = this[property];
     }
-    data["username"] = this.username;
+    data["email"] = this.email;
     data["password"] = this.password;
     data["access"] = this.access;
     data["refresh"] = this.refresh;
@@ -4050,7 +4193,7 @@ export class TokenObtainPair implements ITokenObtainPair {
 }
 
 export interface ITokenObtainPair {
-  username: string;
+  email: string;
   password: string;
   access: string;
   refresh: string;
@@ -4112,6 +4255,7 @@ export interface ITokenRefresh {
 
 export class User implements IUser {
   readonly id!: number;
+  readonly role!: string;
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;
@@ -4119,13 +4263,12 @@ export class User implements IUser {
   username!: string;
   firstName?: string;
   lastName?: string;
-  email?: string;
   /** Designates whether the user can log into this admin site. */
   isStaff?: boolean;
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
   isActive?: boolean;
   dateJoined?: Date;
-  role?: number;
+  email!: string;
   /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
   groups?: number[];
   /** Specific permissions for this user. */
@@ -4149,16 +4292,16 @@ export class User implements IUser {
           this[property] = _data[property];
       }
       (<any>this).id = _data["id"];
+      (<any>this).role = _data["role"];
       this.lastLogin = _data["lastLogin"] ? new Date(_data["lastLogin"].toString()) : <any>undefined;
       this.isSuperuser = _data["isSuperuser"];
       this.username = _data["username"];
       this.firstName = _data["firstName"];
       this.lastName = _data["lastName"];
-      this.email = _data["email"];
       this.isStaff = _data["isStaff"];
       this.isActive = _data["isActive"];
       this.dateJoined = _data["dateJoined"] ? new Date(_data["dateJoined"].toString()) : <any>undefined;
-      this.role = _data["role"];
+      this.email = _data["email"];
       if (Array.isArray(_data["groups"])) {
         this.groups = [] as any;
         for (let item of _data["groups"])
@@ -4186,16 +4329,16 @@ export class User implements IUser {
         data[property] = this[property];
     }
     data["id"] = this.id;
+    data["role"] = this.role;
     data["lastLogin"] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined;
     data["isSuperuser"] = this.isSuperuser;
     data["username"] = this.username;
     data["firstName"] = this.firstName;
     data["lastName"] = this.lastName;
-    data["email"] = this.email;
     data["isStaff"] = this.isStaff;
     data["isActive"] = this.isActive;
     data["dateJoined"] = this.dateJoined ? this.dateJoined.toISOString() : <any>undefined;
-    data["role"] = this.role;
+    data["email"] = this.email;
     if (Array.isArray(this.groups)) {
       data["groups"] = [];
       for (let item of this.groups)
@@ -4212,6 +4355,7 @@ export class User implements IUser {
 
 export interface IUser {
   id: number;
+  role: string;
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;
@@ -4219,17 +4363,68 @@ export interface IUser {
   username: string;
   firstName?: string;
   lastName?: string;
-  email?: string;
   /** Designates whether the user can log into this admin site. */
   isStaff?: boolean;
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
   isActive?: boolean;
   dateJoined?: Date;
-  role?: number;
+  email: string;
   /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
   groups?: number[];
   /** Specific permissions for this user. */
   userPermissions?: number[];
+
+  [key: string]: any;
+}
+
+export class UserToken implements IUserToken {
+  readonly refresh!: string;
+  readonly access!: string;
+
+  [key: string]: any;
+
+  constructor(data?: IUserToken) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property))
+          this[property] = _data[property];
+      }
+      (<any>this).refresh = _data["refresh"];
+      (<any>this).access = _data["access"];
+    }
+  }
+
+  static fromJS(data: any): UserToken {
+    data = typeof data === 'object' ? data : {};
+    let result = new UserToken();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    data["refresh"] = this.refresh;
+    data["access"] = this.access;
+    return data;
+  }
+}
+
+export interface IUserToken {
+  refresh: string;
+  access: string;
 
   [key: string]: any;
 }
