@@ -109,11 +109,13 @@ const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
         className='bg-lightgreen text-center rounded-circle unstyled-button'
         type='button'
       >
-        <span
-          className='material-symbols-outlined text-primary align-middle'
-          style={{ fontSize: 24 }}
-        >
-          more_horiz
+        <span>
+          <span
+            className='material-symbols-outlined text-primary align-middle'
+            style={{ fontSize: 24 }}
+          >
+            more_horiz
+          </span>
         </span>
       </button>
     </Whisper>

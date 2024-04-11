@@ -447,7 +447,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_comment_count(self, obj):
-        return self.context.get("comment_count")
+        return obj.comment_set.count()
 
     @extend_schema_field(bool)  # pyright: ignore[reportArgumentType]
     def get_has_liked(self, obj):
@@ -455,9 +455,15 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    author_username = serializers.SerializerMethodField()
+    # TODO(NicolasDontigny): Add user avatar image here once implemented
+
     class Meta:
         model = Comment
-        fields = ("id", "body", "user", "created_at")
+        fields = ("id", "body", "author_username", "created_at")
+
+    def get_author_username(self, obj):
+        return obj.user.username
 
 
 class LikeSerializer(serializers.ModelSerializer):

@@ -1,4 +1,8 @@
+import PostComment from '@components/social/PostComment';
 import { Dialog, DialogContent, DialogTitle } from '@mui/material';
+import type { Comment } from '@services/api';
+import getApiClient from '@services/apiInterface';
+import { useEffect, useState } from 'react';
 
 type Props = {
   readonly postId: number,
@@ -7,7 +11,13 @@ type Props = {
 }
 
 const PostCommentsDialog = ({ open, postId, handleClose }: Props) => {
-  console.log('postId:', postId);
+  const [comments, setComments] = useState<Comment[]>([])
+
+  useEffect(() => {
+    const fetchComments = async () => setComments(await getApiClient().commentClient.all(postId))
+
+    void fetchComments()
+  }, [postId])
 
   const postComment = () => { }
 
@@ -19,9 +29,18 @@ const PostCommentsDialog = ({ open, postId, handleClose }: Props) => {
         <button className='btn btn-primary' onClick={postComment} type='button'>Send</button>
       </DialogTitle>
       <DialogContent>
-        <div className="mb-3 position-relative">
+        <div className="position-relative">
           <textarea className="form-control" id="new-comment-body-input" rows={3} />
           <span className="max-words position-absolute bottom-0 end-0 pe-2 pb-1" style={{}}>300 words maximum</span>
+        </div>
+
+        <div className="mt-4 d-flex align-items-center gap-1 fw-bold">
+          <span className='material-symbols-outlined'>sms</span>
+          <span>Comments ({comments.length})</span>
+        </div>
+
+        <div className="mt-2 d-flex flex-column gap-2">
+          {comments.map(comment => <PostComment comment={comment} key={comment.id} />)}
         </div>
       </DialogContent>
     </Dialog>
