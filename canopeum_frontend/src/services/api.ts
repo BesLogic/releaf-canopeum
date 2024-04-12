@@ -59,7 +59,7 @@ export class BatchClient {
       return Promise.resolve<BatchAnalytics[]>(null as any);
   }
 
-  create(body: BatchRequest | undefined): Promise<Batch> {
+  create(body: Batch | undefined): Promise<Batch> {
       let url_ = this.baseUrl + "/analytics/batches/";
       url_ = url_.replace(/[?&]$/, "");
 
@@ -82,12 +82,12 @@ export class BatchClient {
   protected processCreate(response: Response): Promise<Batch> {
       const status = response.status;
       let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
+      if (status === 201) {
           return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = Batch.fromJS(resultData200);
-          return result200;
+          let result201: any = null;
+          let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result201 = Batch.fromJS(resultData201);
+          return result201;
           });
       } else if (status !== 200 && status !== 204) {
           return response.text().then((_responseText) => {
@@ -97,7 +97,7 @@ export class BatchClient {
       return Promise.resolve<Batch>(null as any);
   }
 
-  update(batchId: number, body: PatchedBatchRequest | undefined): Promise<Batch> {
+  update(batchId: number, body: PatchedBatch | undefined): Promise<Batch> {
       let url_ = this.baseUrl + "/analytics/batches/{batchId}/";
       if (batchId === undefined || batchId === null)
           throw new Error("The parameter 'batchId' must be defined.");
@@ -226,15 +226,33 @@ export class SiteClient {
       return Promise.resolve<Site[]>(null as any);
   }
 
-  create(coordinate: CoordinatesRequest | undefined, contact: ContactRequest | undefined, announcement: AnnouncementRequest | undefined, image: AssetRequest | undefined, name: string | null | undefined, description: string | null | undefined, size: string | null | undefined, researchPartnership: boolean | null | undefined, visibleMap: boolean | null | undefined, visitorCount: number | null | undefined): Promise<Site> {
+  create(id: number | undefined, siteType: SiteType | undefined, coordinate: Coordinates | undefined, siteTreeSpecies: Sitetreespecies[] | undefined, contact: Contact | undefined, announcement: Announcement | undefined, image: Asset | undefined, name: string | null | undefined, description: string | null | undefined, size: string | null | undefined, researchPartnership: boolean | null | undefined, visibleMap: boolean | null | undefined, visitorCount: number | null | undefined): Promise<Site> {
       let url_ = this.baseUrl + "/analytics/sites/";
       url_ = url_.replace(/[?&]$/, "");
 
       let content_ = "";
+      if (id === null)
+          throw new Error("The parameter 'id' cannot be null.");
+      else if (id !== undefined)
+          content_ += encodeURIComponent("id") + "=" + encodeURIComponent("" + id) + "&";
+      if (siteType === null)
+          throw new Error("The parameter 'siteType' cannot be null.");
+      else if (siteType !== undefined)
+          content_ += encodeURIComponent("siteType") + "=" + encodeURIComponent("" + siteType) + "&";
       if (coordinate === null)
           throw new Error("The parameter 'coordinate' cannot be null.");
       else if (coordinate !== undefined)
           content_ += encodeURIComponent("coordinate") + "=" + encodeURIComponent("" + coordinate) + "&";
+      if (siteTreeSpecies === null)
+          throw new Error("The parameter 'siteTreeSpecies' cannot be null.");
+      else if (siteTreeSpecies !== undefined)
+          siteTreeSpecies && siteTreeSpecies.forEach((item_, index_) => {
+              for (const attr_ in item_) {
+                 if (item_.hasOwnProperty(attr_)) {
+                      content_ += encodeURIComponent("siteTreeSpecies[" + index_ + "]." + attr_) + "=" + encodeURIComponent("" + (item_ as any)[attr_]) + "&";
+                 }
+              }
+          });
       if (contact === null)
           throw new Error("The parameter 'contact' cannot be null.");
       else if (contact !== undefined)
@@ -278,12 +296,12 @@ export class SiteClient {
   protected processCreate(response: Response): Promise<Site> {
       const status = response.status;
       let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
+      if (status === 201) {
           return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = Site.fromJS(resultData200);
-          return result200;
+          let result201: any = null;
+          let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result201 = Site.fromJS(resultData201);
+          return result201;
           });
       } else if (status !== 200 && status !== 204) {
           return response.text().then((_responseText) => {
@@ -330,7 +348,7 @@ export class SiteClient {
       return Promise.resolve<Site>(null as any);
   }
 
-  update(siteId: number, body: PatchedSiteRequest | undefined): Promise<Site> {
+  update(siteId: number, body: PatchedSite | undefined): Promise<Site> {
       let url_ = this.baseUrl + "/analytics/sites/{siteId}/";
       if (siteId === undefined || siteId === null)
           throw new Error("The parameter 'siteId' must be defined.");
@@ -375,17 +393,17 @@ export class SiteClient {
    * @return No response body
    */
   delete(siteId: number): Promise<void> {
-    let url_ = this.baseUrl + "/analytics/sites/{siteId}/";
-    if (siteId === undefined || siteId === null)
-      throw new Error("The parameter 'siteId' must be defined.");
-    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
-    url_ = url_.replace(/[?&]$/, "");
+      let url_ = this.baseUrl + "/analytics/sites/{siteId}/";
+      if (siteId === undefined || siteId === null)
+          throw new Error("The parameter 'siteId' must be defined.");
+      url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+      url_ = url_.replace(/[?&]$/, "");
 
-    let options_: RequestInit = {
-      method: "DELETE",
-      headers: {
-      }
-    };
+      let options_: RequestInit = {
+          method: "DELETE",
+          headers: {
+          }
+      };
 
       return this.http.fetch(url_, options_).then((_response: Response) => {
           return this.processDelete(_response);
@@ -393,66 +411,66 @@ export class SiteClient {
   }
 
   protected processDelete(response: Response): Promise<void> {
-    const status = response.status;
-    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 204) {
-      return response.text().then((_responseText) => {
-        return;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<void>(null as any);
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 204) {
+          return response.text().then((_responseText) => {
+          return;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<void>(null as any);
   }
 
   updateAdmins(siteId: number, body: PatchedSiteAdminUpdateRequest | undefined): Promise<SiteAdmin[]> {
-    let url_ = this.baseUrl + "/analytics/sites/{siteId}/admins";
-    if (siteId === undefined || siteId === null)
-      throw new Error("The parameter 'siteId' must be defined.");
-    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
-    url_ = url_.replace(/[?&]$/, "");
+      let url_ = this.baseUrl + "/analytics/sites/{siteId}/admins";
+      if (siteId === undefined || siteId === null)
+          throw new Error("The parameter 'siteId' must be defined.");
+      url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+      url_ = url_.replace(/[?&]$/, "");
 
-    const content_ = JSON.stringify(body);
+      const content_ = JSON.stringify(body);
 
-    let options_: RequestInit = {
-      body: content_,
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      }
-    };
+      let options_: RequestInit = {
+          body: content_,
+          method: "PATCH",
+          headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+          }
+      };
 
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processUpdateAdmins(_response);
-    });
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processUpdateAdmins(_response);
+      });
   }
 
   protected processUpdateAdmins(response: Response): Promise<SiteAdmin[]> {
-    const status = response.status;
-    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        if (Array.isArray(resultData200)) {
-          result200 = [] as any;
-          for (let item of resultData200)
-            result200!.push(SiteAdmin.fromJS(item));
-        }
-        else {
-          result200 = <any>null;
-        }
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<SiteAdmin[]>(null as any);
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          if (Array.isArray(resultData200)) {
+              result200 = [] as any;
+              for (let item of resultData200)
+                  result200!.push(SiteAdmin.fromJS(item));
+          }
+          else {
+              result200 = <any>null;
+          }
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<SiteAdmin[]>(null as any);
   }
 
   summary(siteId: number): Promise<SiteSummary> {
@@ -696,8 +714,8 @@ export class AuthenticationClient {
   }
 
   login(body: LoginUser): Promise<UserToken> {
-    let url_ = this.baseUrl + "/auth/login/";
-    url_ = url_.replace(/[?&]$/, "");
+      let url_ = this.baseUrl + "/auth/login/";
+      url_ = url_.replace(/[?&]$/, "");
 
       const content_ = JSON.stringify(body);
 
@@ -716,21 +734,21 @@ export class AuthenticationClient {
   }
 
   protected processLogin(response: Response): Promise<UserToken> {
-    const status = response.status;
-    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = UserToken.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<UserToken>(null as any);
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = UserToken.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<UserToken>(null as any);
   }
 
   logout(): Promise<{ [key: string]: any; }> {
@@ -777,8 +795,8 @@ export class AuthenticationClient {
   }
 
   register(body: RegisterUser): Promise<UserToken> {
-    let url_ = this.baseUrl + "/auth/register/";
-    url_ = url_.replace(/[?&]$/, "");
+      let url_ = this.baseUrl + "/auth/register/";
+      url_ = url_.replace(/[?&]$/, "");
 
       const content_ = JSON.stringify(body);
 
@@ -797,21 +815,21 @@ export class AuthenticationClient {
   }
 
   protected processRegister(response: Response): Promise<UserToken> {
-    const status = response.status;
-    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 201) {
-      return response.text().then((_responseText) => {
-        let result201: any = null;
-        let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result201 = UserToken.fromJS(resultData201);
-        return result201;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<UserToken>(null as any);
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 201) {
+          return response.text().then((_responseText) => {
+          let result201: any = null;
+          let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result201 = UserToken.fromJS(resultData201);
+          return result201;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<UserToken>(null as any);
   }
 }
 
@@ -825,7 +843,7 @@ export class TokenClient {
       this.baseUrl = baseUrl ?? "";
   }
 
-  create(body: TokenObtainPairRequest): Promise<TokenObtainPair> {
+  create(body: TokenObtainPair): Promise<TokenObtainPair> {
       let url_ = this.baseUrl + "/auth/token/";
       url_ = url_.replace(/[?&]$/, "");
 
@@ -874,7 +892,7 @@ export class RefreshClient {
       this.baseUrl = baseUrl ?? "";
   }
 
-  create(body: TokenRefreshRequest): Promise<TokenRefresh> {
+  create(body: TokenRefresh): Promise<TokenRefresh> {
       let url_ = this.baseUrl + "/auth/token/refresh/";
       url_ = url_.replace(/[?&]$/, "");
 
@@ -1073,11 +1091,11 @@ export class CommentClient {
   }
 
   create(postId: number, body: CreateComment): Promise<Comment> {
-    let url_ = this.baseUrl + "/social/posts/{postId}/comments/";
-    if (postId === undefined || postId === null)
-      throw new Error("The parameter 'postId' must be defined.");
-    url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
-    url_ = url_.replace(/[?&]$/, "");
+      let url_ = this.baseUrl + "/social/posts/{postId}/comments/";
+      if (postId === undefined || postId === null)
+          throw new Error("The parameter 'postId' must be defined.");
+      url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
+      url_ = url_.replace(/[?&]$/, "");
 
       const content_ = JSON.stringify(body);
 
@@ -1096,21 +1114,21 @@ export class CommentClient {
   }
 
   protected processCreate(response: Response): Promise<Comment> {
-    const status = response.status;
-    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 201) {
-      return response.text().then((_responseText) => {
-        let result201: any = null;
-        let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result201 = Comment.fromJS(resultData201);
-        return result201;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<Comment>(null as any);
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 201) {
+          return response.text().then((_responseText) => {
+          let result201: any = null;
+          let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result201 = Comment.fromJS(resultData201);
+          return result201;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<Comment>(null as any);
   }
 
   /**
@@ -1163,7 +1181,7 @@ export class LikeClient {
       this.baseUrl = baseUrl ?? "";
   }
 
-  all(postId: number, body: LikeRequest | undefined): Promise<Like> {
+  all(postId: number, body: Like | undefined): Promise<Like> {
       let url_ = this.baseUrl + "/social/posts/{postId}/likes/";
       if (postId === undefined || postId === null)
           throw new Error("The parameter 'postId' must be defined.");
@@ -1189,12 +1207,12 @@ export class LikeClient {
   protected processAll(response: Response): Promise<Like> {
       const status = response.status;
       let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
+      if (status === 201) {
           return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = Like.fromJS(resultData200);
-          return result200;
+          let result201: any = null;
+          let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result201 = Like.fromJS(resultData201);
+          return result201;
           });
       } else if (status !== 200 && status !== 204) {
           return response.text().then((_responseText) => {
@@ -1260,7 +1278,7 @@ export class AnnouncementClient {
       this.baseUrl = baseUrl ?? "";
   }
 
-  update(siteId: number, body: PatchedAnnouncementRequest | undefined): Promise<Announcement> {
+  update(siteId: number, body: PatchedAnnouncement | undefined): Promise<Announcement> {
       let url_ = this.baseUrl + "/social/sites/{siteId}/announcements/";
       if (siteId === undefined || siteId === null)
           throw new Error("The parameter 'siteId' must be defined.");
@@ -1312,7 +1330,7 @@ export class ContactClient {
       this.baseUrl = baseUrl ?? "";
   }
 
-  update(contactId: number, siteId: number, body: PatchedContactRequest | undefined): Promise<Contact> {
+  update(contactId: number, siteId: number, body: PatchedContact | undefined): Promise<Contact> {
       let url_ = this.baseUrl + "/social/sites/{siteId}/contacts/{contactId}/";
       if (contactId === undefined || contactId === null)
           throw new Error("The parameter 'contactId' must be defined.");
@@ -1367,7 +1385,7 @@ export class WidgetClient {
       this.baseUrl = baseUrl ?? "";
   }
 
-  create(siteId: number, body: WidgetRequest | undefined): Promise<Widget> {
+  create(siteId: number, body: Widget | undefined): Promise<Widget> {
       let url_ = this.baseUrl + "/social/sites/{siteId}/widgets/";
       if (siteId === undefined || siteId === null)
           throw new Error("The parameter 'siteId' must be defined.");
@@ -1393,12 +1411,12 @@ export class WidgetClient {
   protected processCreate(response: Response): Promise<Widget> {
       const status = response.status;
       let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
+      if (status === 201) {
           return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = Widget.fromJS(resultData200);
-          return result200;
+          let result201: any = null;
+          let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result201 = Widget.fromJS(resultData201);
+          return result201;
           });
       } else if (status !== 200 && status !== 204) {
           return response.text().then((_responseText) => {
@@ -1408,7 +1426,7 @@ export class WidgetClient {
       return Promise.resolve<Widget>(null as any);
   }
 
-  update(siteId: number, widgetId: number, body: PatchedWidgetRequest | undefined): Promise<Widget> {
+  update(siteId: number, widgetId: number, body: PatchedWidget | undefined): Promise<Widget> {
       let url_ = this.baseUrl + "/social/sites/{siteId}/widgets/{widgetId}/";
       if (siteId === undefined || siteId === null)
           throw new Error("The parameter 'siteId' must be defined.");
@@ -1543,44 +1561,6 @@ export class UserClient {
       return Promise.resolve<User[]>(null as any);
   }
 
-  create(body: UserRequest): Promise<User> {
-      let url_ = this.baseUrl + "/users/";
-      url_ = url_.replace(/[?&]$/, "");
-
-      const content_ = JSON.stringify(body);
-
-      let options_: RequestInit = {
-          body: content_,
-          method: "POST",
-          headers: {
-              "Content-Type": "application/json",
-              "Accept": "application/json"
-          }
-      };
-
-      return this.http.fetch(url_, options_).then((_response: Response) => {
-          return this.processCreate(_response);
-      });
-  }
-
-  protected processCreate(response: Response): Promise<User> {
-      const status = response.status;
-      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
-          return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = User.fromJS(resultData200);
-          return result200;
-          });
-      } else if (status !== 200 && status !== 204) {
-          return response.text().then((_responseText) => {
-          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-          });
-      }
-      return Promise.resolve<User>(null as any);
-  }
-
   detail(userId: number): Promise<User> {
       let url_ = this.baseUrl + "/users/{userId}/";
       if (userId === undefined || userId === null)
@@ -1618,7 +1598,7 @@ export class UserClient {
       return Promise.resolve<User>(null as any);
   }
 
-  update(userId: number, body: PatchedUserRequest | undefined): Promise<User> {
+  update(userId: number, body: PatchedUser | undefined): Promise<User> {
       let url_ = this.baseUrl + "/users/{userId}/";
       if (userId === undefined || userId === null)
           throw new Error("The parameter 'userId' must be defined.");
@@ -1660,44 +1640,44 @@ export class UserClient {
   }
 
   allAdmins(): Promise<User[]> {
-    let url_ = this.baseUrl + "/users/admins";
-    url_ = url_.replace(/[?&]$/, "");
+      let url_ = this.baseUrl + "/users/admins";
+      url_ = url_.replace(/[?&]$/, "");
 
-    let options_: RequestInit = {
-      method: "GET",
-      headers: {
-        "Accept": "application/json"
-      }
-    };
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
 
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processAllAdmins(_response);
-    });
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processAllAdmins(_response);
+      });
   }
 
   protected processAllAdmins(response: Response): Promise<User[]> {
-    const status = response.status;
-    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        if (Array.isArray(resultData200)) {
-          result200 = [] as any;
-          for (let item of resultData200)
-            result200!.push(User.fromJS(item));
-        }
-        else {
-          result200 = <any>null;
-        }
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<User[]>(null as any);
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          if (Array.isArray(resultData200)) {
+              result200 = [] as any;
+              for (let item of resultData200)
+                  result200!.push(User.fromJS(item));
+          }
+          else {
+              result200 = <any>null;
+          }
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<User[]>(null as any);
   }
 
   current(): Promise<User> {
@@ -1785,58 +1765,6 @@ export class Announcement implements IAnnouncement {
 
 export interface IAnnouncement {
   id: number;
-  body?: string | undefined;
-  link?: string | undefined;
-
-  [key: string]: any;
-}
-
-export class AnnouncementRequest implements IAnnouncementRequest {
-  body?: string | undefined;
-  link?: string | undefined;
-
-  [key: string]: any;
-
-  constructor(data?: IAnnouncementRequest) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-  }
-
-  init(_data?: any) {
-      if (_data) {
-          for (var property in _data) {
-              if (_data.hasOwnProperty(property))
-                  this[property] = _data[property];
-          }
-          this.body = _data["body"];
-          this.link = _data["link"];
-      }
-  }
-
-  static fromJS(data: any): AnnouncementRequest {
-      data = typeof data === 'object' ? data : {};
-      let result = new AnnouncementRequest();
-      result.init(data);
-      return result;
-  }
-
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      for (var property in this) {
-          if (this.hasOwnProperty(property))
-              data[property] = this[property];
-      }
-      data["body"] = this.body;
-      data["link"] = this.link;
-      return data;
-  }
-}
-
-export interface IAnnouncementRequest {
   body?: string | undefined;
   link?: string | undefined;
 
@@ -2182,86 +2110,6 @@ export interface IBatchMulchLayer {
   [key: string]: any;
 }
 
-export class BatchRequest implements IBatchRequest {
-  createdAt?: Date | undefined;
-  updatedAt?: Date | undefined;
-  name?: string | undefined;
-  sponsor?: string | undefined;
-  size?: string | undefined;
-  soilCondition?: string | undefined;
-  totalNumberSeed?: number | undefined;
-  totalPropagation?: number | undefined;
-  site?: number | undefined;
-
-  [key: string]: any;
-
-  constructor(data?: IBatchRequest) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-  }
-
-  init(_data?: any) {
-      if (_data) {
-          for (var property in _data) {
-              if (_data.hasOwnProperty(property))
-                  this[property] = _data[property];
-          }
-          this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
-          this.updatedAt = _data["updatedAt"] ? new Date(_data["updatedAt"].toString()) : <any>undefined;
-          this.name = _data["name"];
-          this.sponsor = _data["sponsor"];
-          this.size = _data["size"];
-          this.soilCondition = _data["soilCondition"];
-          this.totalNumberSeed = _data["totalNumberSeed"];
-          this.totalPropagation = _data["totalPropagation"];
-          this.site = _data["site"];
-      }
-  }
-
-  static fromJS(data: any): BatchRequest {
-      data = typeof data === 'object' ? data : {};
-      let result = new BatchRequest();
-      result.init(data);
-      return result;
-  }
-
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      for (var property in this) {
-          if (this.hasOwnProperty(property))
-              data[property] = this[property];
-      }
-      data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
-      data["updatedAt"] = this.updatedAt ? this.updatedAt.toISOString() : <any>undefined;
-      data["name"] = this.name;
-      data["sponsor"] = this.sponsor;
-      data["size"] = this.size;
-      data["soilCondition"] = this.soilCondition;
-      data["totalNumberSeed"] = this.totalNumberSeed;
-      data["totalPropagation"] = this.totalPropagation;
-      data["site"] = this.site;
-      return data;
-  }
-}
-
-export interface IBatchRequest {
-  createdAt?: Date | undefined;
-  updatedAt?: Date | undefined;
-  name?: string | undefined;
-  sponsor?: string | undefined;
-  size?: string | undefined;
-  soilCondition?: string | undefined;
-  totalNumberSeed?: number | undefined;
-  totalPropagation?: number | undefined;
-  site?: number | undefined;
-
-  [key: string]: any;
-}
-
 export class BatchSeed implements IBatchSeed {
   quantity?: number | undefined;
   readonly en!: string;
@@ -2507,14 +2355,9 @@ export class Comment implements IComment {
           }
           (<any>this).id = _data["id"];
           this.body = _data["body"];
-          this.user = _data["user"];
-          this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+          (<any>this).authorUsername = _data["authorUsername"];
+          (<any>this).createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
       }
-      (<any>this).id = _data["id"];
-      this.body = _data["body"];
-      (<any>this).authorUsername = _data["authorUsername"];
-      (<any>this).createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
-    }
   }
 
   static fromJS(data: any): Comment {
@@ -2525,16 +2368,16 @@ export class Comment implements IComment {
   }
 
   toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property))
-        data[property] = this[property];
-    }
-    data["id"] = this.id;
-    data["body"] = this.body;
-    data["authorUsername"] = this.authorUsername;
-    data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["body"] = this.body;
+      data["authorUsername"] = this.authorUsername;
+      data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+      return data;
   }
 }
 
@@ -2543,62 +2386,6 @@ export interface IComment {
   body: string;
   authorUsername: string;
   createdAt: Date;
-
-  [key: string]: any;
-}
-
-export class CommentRequest implements ICommentRequest {
-  body?: string | undefined;
-  user?: number | undefined;
-  createdAt?: Date | undefined;
-
-  [key: string]: any;
-
-  constructor(data?: ICommentRequest) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-  }
-
-  init(_data?: any) {
-      if (_data) {
-          for (var property in _data) {
-              if (_data.hasOwnProperty(property))
-                  this[property] = _data[property];
-          }
-          this.body = _data["body"];
-          this.user = _data["user"];
-          this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
-      }
-  }
-
-  static fromJS(data: any): CommentRequest {
-      data = typeof data === 'object' ? data : {};
-      let result = new CommentRequest();
-      result.init(data);
-      return result;
-  }
-
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      for (var property in this) {
-          if (this.hasOwnProperty(property))
-              data[property] = this[property];
-      }
-      data["body"] = this.body;
-      data["user"] = this.user;
-      data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
-      return data;
-  }
-}
-
-export interface ICommentRequest {
-  body?: string | undefined;
-  user?: number | undefined;
-  createdAt?: Date | undefined;
 
   [key: string]: any;
 }
@@ -2668,78 +2455,6 @@ export class Contact implements IContact {
 
 export interface IContact {
   id: number;
-  address?: string | undefined;
-  email?: string | undefined;
-  phone?: string | undefined;
-  facebookLink?: string | undefined;
-  xLink?: string | undefined;
-  instagramLink?: string | undefined;
-  linkedinLink?: string | undefined;
-
-  [key: string]: any;
-}
-
-export class ContactRequest implements IContactRequest {
-  address?: string | undefined;
-  email?: string | undefined;
-  phone?: string | undefined;
-  facebookLink?: string | undefined;
-  xLink?: string | undefined;
-  instagramLink?: string | undefined;
-  linkedinLink?: string | undefined;
-
-  [key: string]: any;
-
-  constructor(data?: IContactRequest) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-  }
-
-  init(_data?: any) {
-      if (_data) {
-          for (var property in _data) {
-              if (_data.hasOwnProperty(property))
-                  this[property] = _data[property];
-          }
-          this.address = _data["address"];
-          this.email = _data["email"];
-          this.phone = _data["phone"];
-          this.facebookLink = _data["facebookLink"];
-          this.xLink = _data["xLink"];
-          this.instagramLink = _data["instagramLink"];
-          this.linkedinLink = _data["linkedinLink"];
-      }
-  }
-
-  static fromJS(data: any): ContactRequest {
-      data = typeof data === 'object' ? data : {};
-      let result = new ContactRequest();
-      result.init(data);
-      return result;
-  }
-
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      for (var property in this) {
-          if (this.hasOwnProperty(property))
-              data[property] = this[property];
-      }
-      data["address"] = this.address;
-      data["email"] = this.email;
-      data["phone"] = this.phone;
-      data["facebookLink"] = this.facebookLink;
-      data["xLink"] = this.xLink;
-      data["instagramLink"] = this.instagramLink;
-      data["linkedinLink"] = this.linkedinLink;
-      return data;
-  }
-}
-
-export interface IContactRequest {
   address?: string | undefined;
   email?: string | undefined;
   phone?: string | undefined;
@@ -2881,39 +2596,39 @@ export class CreateComment implements ICreateComment {
   [key: string]: any;
 
   constructor(data?: ICreateComment) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
       }
-    }
   }
 
   init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property))
-          this[property] = _data[property];
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          this.body = _data["body"];
       }
-      this.body = _data["body"];
-    }
   }
 
   static fromJS(data: any): CreateComment {
-    data = typeof data === 'object' ? data : {};
-    let result = new CreateComment();
-    result.init(data);
-    return result;
+      data = typeof data === 'object' ? data : {};
+      let result = new CreateComment();
+      result.init(data);
+      return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property))
-        data[property] = this[property];
-    }
-    data["body"] = this.body;
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["body"] = this.body;
+      return data;
   }
 }
 
@@ -2986,41 +2701,41 @@ export class LoginUser implements ILoginUser {
   [key: string]: any;
 
   constructor(data?: ILoginUser) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
       }
-    }
   }
 
   init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property))
-          this[property] = _data[property];
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          this.email = _data["email"];
+          this.password = _data["password"];
       }
-      this.email = _data["email"];
-      this.password = _data["password"];
-    }
   }
 
   static fromJS(data: any): LoginUser {
-    data = typeof data === 'object' ? data : {};
-    let result = new LoginUser();
-    result.init(data);
-    return result;
+      data = typeof data === 'object' ? data : {};
+      let result = new LoginUser();
+      result.init(data);
+      return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property))
-        data[property] = this[property];
-    }
-    data["email"] = this.email;
-    data["password"] = this.password;
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["email"] = this.email;
+      data["password"] = this.password;
+      return data;
   }
 }
 
@@ -3038,7 +2753,7 @@ export class PatchedAnnouncement implements IPatchedAnnouncement {
 
   [key: string]: any;
 
-  constructor(data?: ILikeRequest) {
+  constructor(data?: IPatchedAnnouncement) {
       if (data) {
           for (var property in data) {
               if (data.hasOwnProperty(property))
@@ -3053,66 +2768,15 @@ export class PatchedAnnouncement implements IPatchedAnnouncement {
               if (_data.hasOwnProperty(property))
                   this[property] = _data[property];
           }
-          this.user = _data["user"];
-          this.post = _data["post"];
-      }
-  }
-
-  static fromJS(data: any): LikeRequest {
-      data = typeof data === 'object' ? data : {};
-      let result = new LikeRequest();
-      result.init(data);
-      return result;
-  }
-
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      for (var property in this) {
-          if (this.hasOwnProperty(property))
-              data[property] = this[property];
-      }
-      data["user"] = this.user;
-      data["post"] = this.post;
-      return data;
-  }
-}
-
-export interface ILikeRequest {
-  user?: number | undefined;
-  post?: number | undefined;
-
-  [key: string]: any;
-}
-
-export class PatchedAnnouncementRequest implements IPatchedAnnouncementRequest {
-  body?: string | undefined;
-  link?: string | undefined;
-
-  [key: string]: any;
-
-  constructor(data?: IPatchedAnnouncementRequest) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-  }
-
-  init(_data?: any) {
-      if (_data) {
-          for (var property in _data) {
-              if (_data.hasOwnProperty(property))
-                  this[property] = _data[property];
-          }
+          (<any>this).id = _data["id"];
           this.body = _data["body"];
           this.link = _data["link"];
       }
   }
 
-  static fromJS(data: any): PatchedAnnouncementRequest {
+  static fromJS(data: any): PatchedAnnouncement {
       data = typeof data === 'object' ? data : {};
-      let result = new PatchedAnnouncementRequest();
+      let result = new PatchedAnnouncement();
       result.init(data);
       return result;
   }
@@ -3123,20 +2787,23 @@ export class PatchedAnnouncementRequest implements IPatchedAnnouncementRequest {
           if (this.hasOwnProperty(property))
               data[property] = this[property];
       }
+      data["id"] = this.id;
       data["body"] = this.body;
       data["link"] = this.link;
       return data;
   }
 }
 
-export interface IPatchedAnnouncementRequest {
+export interface IPatchedAnnouncement {
+  id?: number;
   body?: string | undefined;
   link?: string | undefined;
 
   [key: string]: any;
 }
 
-export class PatchedBatchRequest implements IPatchedBatchRequest {
+export class PatchedBatch implements IPatchedBatch {
+  readonly id?: number;
   createdAt?: Date | undefined;
   updatedAt?: Date | undefined;
   name?: string | undefined;
@@ -3149,7 +2816,7 @@ export class PatchedBatchRequest implements IPatchedBatchRequest {
 
   [key: string]: any;
 
-  constructor(data?: IPatchedBatchRequest) {
+  constructor(data?: IPatchedBatch) {
       if (data) {
           for (var property in data) {
               if (data.hasOwnProperty(property))
@@ -3164,6 +2831,7 @@ export class PatchedBatchRequest implements IPatchedBatchRequest {
               if (_data.hasOwnProperty(property))
                   this[property] = _data[property];
           }
+          (<any>this).id = _data["id"];
           this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
           this.updatedAt = _data["updatedAt"] ? new Date(_data["updatedAt"].toString()) : <any>undefined;
           this.name = _data["name"];
@@ -3176,9 +2844,9 @@ export class PatchedBatchRequest implements IPatchedBatchRequest {
       }
   }
 
-  static fromJS(data: any): PatchedBatchRequest {
+  static fromJS(data: any): PatchedBatch {
       data = typeof data === 'object' ? data : {};
-      let result = new PatchedBatchRequest();
+      let result = new PatchedBatch();
       result.init(data);
       return result;
   }
@@ -3189,6 +2857,7 @@ export class PatchedBatchRequest implements IPatchedBatchRequest {
           if (this.hasOwnProperty(property))
               data[property] = this[property];
       }
+      data["id"] = this.id;
       data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
       data["updatedAt"] = this.updatedAt ? this.updatedAt.toISOString() : <any>undefined;
       data["name"] = this.name;
@@ -3202,7 +2871,8 @@ export class PatchedBatchRequest implements IPatchedBatchRequest {
   }
 }
 
-export interface IPatchedBatchRequest {
+export interface IPatchedBatch {
+  id?: number;
   createdAt?: Date | undefined;
   updatedAt?: Date | undefined;
   name?: string | undefined;
@@ -3216,7 +2886,8 @@ export interface IPatchedBatchRequest {
   [key: string]: any;
 }
 
-export class PatchedContactRequest implements IPatchedContactRequest {
+export class PatchedContact implements IPatchedContact {
+  readonly id?: number;
   address?: string | undefined;
   email?: string | undefined;
   phone?: string | undefined;
@@ -3227,7 +2898,7 @@ export class PatchedContactRequest implements IPatchedContactRequest {
 
   [key: string]: any;
 
-  constructor(data?: IPatchedContactRequest) {
+  constructor(data?: IPatchedContact) {
       if (data) {
           for (var property in data) {
               if (data.hasOwnProperty(property))
@@ -3242,6 +2913,7 @@ export class PatchedContactRequest implements IPatchedContactRequest {
               if (_data.hasOwnProperty(property))
                   this[property] = _data[property];
           }
+          (<any>this).id = _data["id"];
           this.address = _data["address"];
           this.email = _data["email"];
           this.phone = _data["phone"];
@@ -3252,9 +2924,9 @@ export class PatchedContactRequest implements IPatchedContactRequest {
       }
   }
 
-  static fromJS(data: any): PatchedContactRequest {
+  static fromJS(data: any): PatchedContact {
       data = typeof data === 'object' ? data : {};
-      let result = new PatchedContactRequest();
+      let result = new PatchedContact();
       result.init(data);
       return result;
   }
@@ -3265,6 +2937,7 @@ export class PatchedContactRequest implements IPatchedContactRequest {
           if (this.hasOwnProperty(property))
               data[property] = this[property];
       }
+      data["id"] = this.id;
       data["address"] = this.address;
       data["email"] = this.email;
       data["phone"] = this.phone;
@@ -3276,7 +2949,8 @@ export class PatchedContactRequest implements IPatchedContactRequest {
   }
 }
 
-export interface IPatchedContactRequest {
+export interface IPatchedContact {
+  id?: number;
   address?: string | undefined;
   email?: string | undefined;
   phone?: string | undefined;
@@ -3288,11 +2962,14 @@ export interface IPatchedContactRequest {
   [key: string]: any;
 }
 
-export class PatchedSiteRequest implements IPatchedSiteRequest {
-  coordinate?: CoordinatesRequest;
-  contact?: ContactRequest;
-  announcement?: AnnouncementRequest;
-  image?: AssetRequest;
+export class PatchedSite implements IPatchedSite {
+  readonly id?: number;
+  siteType?: SiteType;
+  coordinate?: Coordinates;
+  readonly siteTreeSpecies?: Sitetreespecies[];
+  contact?: Contact;
+  announcement?: Announcement;
+  image?: Asset;
   name?: string | undefined;
   description?: string | undefined;
   size?: string | undefined;
@@ -3302,7 +2979,7 @@ export class PatchedSiteRequest implements IPatchedSiteRequest {
 
   [key: string]: any;
 
-  constructor(data?: IPatchedSiteRequest) {
+  constructor(data?: IPatchedSite) {
       if (data) {
           for (var property in data) {
               if (data.hasOwnProperty(property))
@@ -3317,10 +2994,17 @@ export class PatchedSiteRequest implements IPatchedSiteRequest {
               if (_data.hasOwnProperty(property))
                   this[property] = _data[property];
           }
-          this.coordinate = _data["coordinate"] ? CoordinatesRequest.fromJS(_data["coordinate"]) : <any>undefined;
-          this.contact = _data["contact"] ? ContactRequest.fromJS(_data["contact"]) : <any>undefined;
-          this.announcement = _data["announcement"] ? AnnouncementRequest.fromJS(_data["announcement"]) : <any>undefined;
-          this.image = _data["image"] ? AssetRequest.fromJS(_data["image"]) : <any>undefined;
+          (<any>this).id = _data["id"];
+          this.siteType = _data["siteType"] ? SiteType.fromJS(_data["siteType"]) : <any>undefined;
+          this.coordinate = _data["coordinate"] ? Coordinates.fromJS(_data["coordinate"]) : <any>undefined;
+          if (Array.isArray(_data["siteTreeSpecies"])) {
+              (<any>this).siteTreeSpecies = [] as any;
+              for (let item of _data["siteTreeSpecies"])
+                  (<any>this).siteTreeSpecies!.push(Sitetreespecies.fromJS(item));
+          }
+          this.contact = _data["contact"] ? Contact.fromJS(_data["contact"]) : <any>undefined;
+          this.announcement = _data["announcement"] ? Announcement.fromJS(_data["announcement"]) : <any>undefined;
+          this.image = _data["image"] ? Asset.fromJS(_data["image"]) : <any>undefined;
           this.name = _data["name"];
           this.description = _data["description"];
           this.size = _data["size"];
@@ -3330,9 +3014,9 @@ export class PatchedSiteRequest implements IPatchedSiteRequest {
       }
   }
 
-  static fromJS(data: any): PatchedSiteRequest {
+  static fromJS(data: any): PatchedSite {
       data = typeof data === 'object' ? data : {};
-      let result = new PatchedSiteRequest();
+      let result = new PatchedSite();
       result.init(data);
       return result;
   }
@@ -3343,7 +3027,14 @@ export class PatchedSiteRequest implements IPatchedSiteRequest {
           if (this.hasOwnProperty(property))
               data[property] = this[property];
       }
+      data["id"] = this.id;
+      data["siteType"] = this.siteType ? this.siteType.toJSON() : <any>undefined;
       data["coordinate"] = this.coordinate ? this.coordinate.toJSON() : <any>undefined;
+      if (Array.isArray(this.siteTreeSpecies)) {
+          data["siteTreeSpecies"] = [];
+          for (let item of this.siteTreeSpecies)
+              data["siteTreeSpecies"].push(item.toJSON());
+      }
       data["contact"] = this.contact ? this.contact.toJSON() : <any>undefined;
       data["announcement"] = this.announcement ? this.announcement.toJSON() : <any>undefined;
       data["image"] = this.image ? this.image.toJSON() : <any>undefined;
@@ -3357,11 +3048,14 @@ export class PatchedSiteRequest implements IPatchedSiteRequest {
   }
 }
 
-export interface IPatchedSiteRequest {
-  coordinate?: CoordinatesRequest;
-  contact?: ContactRequest;
-  announcement?: AnnouncementRequest;
-  image?: AssetRequest;
+export interface IPatchedSite {
+  id?: number;
+  siteType?: SiteType;
+  coordinate?: Coordinates;
+  siteTreeSpecies?: Sitetreespecies[];
+  contact?: Contact;
+  announcement?: Announcement;
+  image?: Asset;
   name?: string | undefined;
   description?: string | undefined;
   size?: string | undefined;
@@ -3378,47 +3072,47 @@ export class PatchedSiteAdminUpdateRequest implements IPatchedSiteAdminUpdateReq
   [key: string]: any;
 
   constructor(data?: IPatchedSiteAdminUpdateRequest) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
       }
-    }
   }
 
   init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property))
-          this[property] = _data[property];
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          if (Array.isArray(_data["ids"])) {
+              this.ids = [] as any;
+              for (let item of _data["ids"])
+                  this.ids!.push(item);
+          }
       }
-      if (Array.isArray(_data["ids"])) {
-        this.ids = [] as any;
-        for (let item of _data["ids"])
-          this.ids!.push(item);
-      }
-    }
   }
 
   static fromJS(data: any): PatchedSiteAdminUpdateRequest {
-    data = typeof data === 'object' ? data : {};
-    let result = new PatchedSiteAdminUpdateRequest();
-    result.init(data);
-    return result;
+      data = typeof data === 'object' ? data : {};
+      let result = new PatchedSiteAdminUpdateRequest();
+      result.init(data);
+      return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property))
-        data[property] = this[property];
-    }
-    if (Array.isArray(this.ids)) {
-      data["ids"] = [];
-      for (let item of this.ids)
-        data["ids"].push(item);
-    }
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      if (Array.isArray(this.ids)) {
+          data["ids"] = [];
+          for (let item of this.ids)
+              data["ids"].push(item);
+      }
+      return data;
   }
 }
 
@@ -3451,7 +3145,7 @@ export class PatchedUser implements IPatchedUser {
 
   [key: string]: any;
 
-  constructor(data?: IPatchedUserRequest) {
+  constructor(data?: IPatchedUser) {
       if (data) {
           for (var property in data) {
               if (data.hasOwnProperty(property))
@@ -3466,16 +3160,17 @@ export class PatchedUser implements IPatchedUser {
               if (_data.hasOwnProperty(property))
                   this[property] = _data[property];
           }
+          (<any>this).id = _data["id"];
+          (<any>this).role = _data["role"];
           this.lastLogin = _data["lastLogin"] ? new Date(_data["lastLogin"].toString()) : <any>undefined;
           this.isSuperuser = _data["isSuperuser"];
           this.username = _data["username"];
           this.firstName = _data["firstName"];
           this.lastName = _data["lastName"];
-          this.email = _data["email"];
           this.isStaff = _data["isStaff"];
           this.isActive = _data["isActive"];
           this.dateJoined = _data["dateJoined"] ? new Date(_data["dateJoined"].toString()) : <any>undefined;
-          this.role = _data["role"];
+          this.email = _data["email"];
           if (Array.isArray(_data["groups"])) {
               this.groups = [] as any;
               for (let item of _data["groups"])
@@ -3487,65 +3182,43 @@ export class PatchedUser implements IPatchedUser {
                   this.userPermissions!.push(item);
           }
       }
-      (<any>this).id = _data["id"];
-      (<any>this).role = _data["role"];
-      this.lastLogin = _data["lastLogin"] ? new Date(_data["lastLogin"].toString()) : <any>undefined;
-      this.isSuperuser = _data["isSuperuser"];
-      this.username = _data["username"];
-      this.firstName = _data["firstName"];
-      this.lastName = _data["lastName"];
-      this.isStaff = _data["isStaff"];
-      this.isActive = _data["isActive"];
-      this.dateJoined = _data["dateJoined"] ? new Date(_data["dateJoined"].toString()) : <any>undefined;
-      this.email = _data["email"];
-      if (Array.isArray(_data["groups"])) {
-        this.groups = [] as any;
-        for (let item of _data["groups"])
-          this.groups!.push(item);
-      }
-      if (Array.isArray(_data["userPermissions"])) {
-        this.userPermissions = [] as any;
-        for (let item of _data["userPermissions"])
-          this.userPermissions!.push(item);
-      }
-    }
   }
 
-  static fromJS(data: any): PatchedUserRequest {
+  static fromJS(data: any): PatchedUser {
       data = typeof data === 'object' ? data : {};
-      let result = new PatchedUserRequest();
+      let result = new PatchedUser();
       result.init(data);
       return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property))
-        data[property] = this[property];
-    }
-    data["id"] = this.id;
-    data["role"] = this.role;
-    data["lastLogin"] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined;
-    data["isSuperuser"] = this.isSuperuser;
-    data["username"] = this.username;
-    data["firstName"] = this.firstName;
-    data["lastName"] = this.lastName;
-    data["isStaff"] = this.isStaff;
-    data["isActive"] = this.isActive;
-    data["dateJoined"] = this.dateJoined ? this.dateJoined.toISOString() : <any>undefined;
-    data["email"] = this.email;
-    if (Array.isArray(this.groups)) {
-      data["groups"] = [];
-      for (let item of this.groups)
-        data["groups"].push(item);
-    }
-    if (Array.isArray(this.userPermissions)) {
-      data["userPermissions"] = [];
-      for (let item of this.userPermissions)
-        data["userPermissions"].push(item);
-    }
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["role"] = this.role;
+      data["lastLogin"] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined;
+      data["isSuperuser"] = this.isSuperuser;
+      data["username"] = this.username;
+      data["firstName"] = this.firstName;
+      data["lastName"] = this.lastName;
+      data["isStaff"] = this.isStaff;
+      data["isActive"] = this.isActive;
+      data["dateJoined"] = this.dateJoined ? this.dateJoined.toISOString() : <any>undefined;
+      data["email"] = this.email;
+      if (Array.isArray(this.groups)) {
+          data["groups"] = [];
+          for (let item of this.groups)
+              data["groups"].push(item);
+      }
+      if (Array.isArray(this.userPermissions)) {
+          data["userPermissions"] = [];
+          for (let item of this.userPermissions)
+              data["userPermissions"].push(item);
+      }
+      return data;
   }
 }
 
@@ -3573,14 +3246,15 @@ export interface IPatchedUser {
   [key: string]: any;
 }
 
-export class PatchedWidgetRequest implements IPatchedWidgetRequest {
+export class PatchedWidget implements IPatchedWidget {
+  readonly id?: number;
   title?: string | undefined;
   body?: string | undefined;
   site?: number | undefined;
 
   [key: string]: any;
 
-  constructor(data?: IPatchedWidgetRequest) {
+  constructor(data?: IPatchedWidget) {
       if (data) {
           for (var property in data) {
               if (data.hasOwnProperty(property))
@@ -3595,15 +3269,16 @@ export class PatchedWidgetRequest implements IPatchedWidgetRequest {
               if (_data.hasOwnProperty(property))
                   this[property] = _data[property];
           }
+          (<any>this).id = _data["id"];
           this.title = _data["title"];
           this.body = _data["body"];
           this.site = _data["site"];
       }
   }
 
-  static fromJS(data: any): PatchedWidgetRequest {
+  static fromJS(data: any): PatchedWidget {
       data = typeof data === 'object' ? data : {};
-      let result = new PatchedWidgetRequest();
+      let result = new PatchedWidget();
       result.init(data);
       return result;
   }
@@ -3614,6 +3289,7 @@ export class PatchedWidgetRequest implements IPatchedWidgetRequest {
           if (this.hasOwnProperty(property))
               data[property] = this[property];
       }
+      data["id"] = this.id;
       data["title"] = this.title;
       data["body"] = this.body;
       data["site"] = this.site;
@@ -3621,7 +3297,8 @@ export class PatchedWidgetRequest implements IPatchedWidgetRequest {
   }
 }
 
-export interface IPatchedWidgetRequest {
+export interface IPatchedWidget {
+  id?: number;
   title?: string | undefined;
   body?: string | undefined;
   site?: number | undefined;
@@ -3632,7 +3309,7 @@ export interface IPatchedWidgetRequest {
 export class Post implements IPost {
   readonly id!: number;
   site!: SiteOverview;
-  createdAt?: Date | undefined;
+  readonly createdAt!: Date;
   body!: string;
   likeCount?: number | undefined;
   shareCount?: number | undefined;
@@ -3663,7 +3340,7 @@ export class Post implements IPost {
           }
           (<any>this).id = _data["id"];
           this.site = _data["site"] ? SiteOverview.fromJS(_data["site"]) : new SiteOverview();
-          this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+          (<any>this).createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
           this.body = _data["body"];
           this.likeCount = _data["likeCount"];
           this.shareCount = _data["shareCount"];
@@ -3710,65 +3387,13 @@ export class Post implements IPost {
 export interface IPost {
   id: number;
   site: SiteOverview;
-  createdAt?: Date | undefined;
+  createdAt: Date;
   body: string;
   likeCount?: number | undefined;
   shareCount?: number | undefined;
   commentCount: number;
   hasLiked: boolean;
   media: Asset[];
-
-  [key: string]: any;
-}
-
-export class PostPost implements IPostPost {
-  site?: number | undefined;
-  body?: string | undefined;
-
-  [key: string]: any;
-
-  constructor(data?: IPostPost) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
-    }
-  }
-
-  init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property))
-          this[property] = _data[property];
-      }
-      this.site = _data["site"];
-      this.body = _data["body"];
-    }
-  }
-
-  static fromJS(data: any): PostPost {
-    data = typeof data === 'object' ? data : {};
-    let result = new PostPost();
-    result.init(data);
-    return result;
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property))
-        data[property] = this[property];
-    }
-    data["site"] = this.site;
-    data["body"] = this.body;
-    return data;
-  }
-}
-
-export interface IPostPost {
-  site?: number | undefined;
-  body?: string | undefined;
 
   [key: string]: any;
 }
@@ -3783,50 +3408,50 @@ export class RegisterUser implements IRegisterUser {
   [key: string]: any;
 
   constructor(data?: IRegisterUser) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
       }
-    }
-    if (!data) {
-      this.role = "User";
-    }
+      if (!data) {
+          this.role = "User";
+      }
   }
 
   init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property))
-          this[property] = _data[property];
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          this.username = _data["username"];
+          this.email = _data["email"];
+          this.password = _data["password"];
+          this.passwordConfirmation = _data["passwordConfirmation"];
+          this.role = _data["role"] !== undefined ? _data["role"] : "User";
       }
-      this.username = _data["username"];
-      this.email = _data["email"];
-      this.password = _data["password"];
-      this.passwordConfirmation = _data["passwordConfirmation"];
-      this.role = _data["role"] !== undefined ? _data["role"] : "User";
-    }
   }
 
   static fromJS(data: any): RegisterUser {
-    data = typeof data === 'object' ? data : {};
-    let result = new RegisterUser();
-    result.init(data);
-    return result;
+      data = typeof data === 'object' ? data : {};
+      let result = new RegisterUser();
+      result.init(data);
+      return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property))
-        data[property] = this[property];
-    }
-    data["username"] = this.username;
-    data["email"] = this.email;
-    data["password"] = this.password;
-    data["passwordConfirmation"] = this.passwordConfirmation;
-    data["role"] = this.role;
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["username"] = this.username;
+      data["email"] = this.email;
+      data["password"] = this.password;
+      data["passwordConfirmation"] = this.passwordConfirmation;
+      data["role"] = this.role;
+      return data;
   }
 }
 
@@ -4131,96 +3756,6 @@ export interface ISiteOverview {
   [key: string]: any;
 }
 
-export class SiteRequest implements ISiteRequest {
-  coordinate!: CoordinatesRequest;
-  contact!: ContactRequest;
-  announcement!: AnnouncementRequest;
-  image!: AssetRequest;
-  name?: string | undefined;
-  description?: string | undefined;
-  size?: string | undefined;
-  researchPartnership?: boolean | undefined;
-  visibleMap?: boolean | undefined;
-  visitorCount?: number | undefined;
-
-  [key: string]: any;
-
-  constructor(data?: ISiteRequest) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-      if (!data) {
-          this.coordinate = new CoordinatesRequest();
-          this.contact = new ContactRequest();
-          this.announcement = new AnnouncementRequest();
-          this.image = new AssetRequest();
-      }
-  }
-
-  init(_data?: any) {
-      if (_data) {
-          for (var property in _data) {
-              if (_data.hasOwnProperty(property))
-                  this[property] = _data[property];
-          }
-          this.coordinate = _data["coordinate"] ? CoordinatesRequest.fromJS(_data["coordinate"]) : new CoordinatesRequest();
-          this.contact = _data["contact"] ? ContactRequest.fromJS(_data["contact"]) : new ContactRequest();
-          this.announcement = _data["announcement"] ? AnnouncementRequest.fromJS(_data["announcement"]) : new AnnouncementRequest();
-          this.image = _data["image"] ? AssetRequest.fromJS(_data["image"]) : new AssetRequest();
-          this.name = _data["name"];
-          this.description = _data["description"];
-          this.size = _data["size"];
-          this.researchPartnership = _data["researchPartnership"];
-          this.visibleMap = _data["visibleMap"];
-          this.visitorCount = _data["visitorCount"];
-      }
-  }
-
-  static fromJS(data: any): SiteRequest {
-      data = typeof data === 'object' ? data : {};
-      let result = new SiteRequest();
-      result.init(data);
-      return result;
-  }
-
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      for (var property in this) {
-          if (this.hasOwnProperty(property))
-              data[property] = this[property];
-      }
-      data["coordinate"] = this.coordinate ? this.coordinate.toJSON() : <any>undefined;
-      data["contact"] = this.contact ? this.contact.toJSON() : <any>undefined;
-      data["announcement"] = this.announcement ? this.announcement.toJSON() : <any>undefined;
-      data["image"] = this.image ? this.image.toJSON() : <any>undefined;
-      data["name"] = this.name;
-      data["description"] = this.description;
-      data["size"] = this.size;
-      data["researchPartnership"] = this.researchPartnership;
-      data["visibleMap"] = this.visibleMap;
-      data["visitorCount"] = this.visitorCount;
-      return data;
-  }
-}
-
-export interface ISiteRequest {
-  coordinate: CoordinatesRequest;
-  contact: ContactRequest;
-  announcement: AnnouncementRequest;
-  image: AssetRequest;
-  name?: string | undefined;
-  description?: string | undefined;
-  size?: string | undefined;
-  researchPartnership?: boolean | undefined;
-  visibleMap?: boolean | undefined;
-  visitorCount?: number | undefined;
-
-  [key: string]: any;
-}
-
 export class SiteSocial implements ISiteSocial {
   name?: string | undefined;
   siteType!: SiteType;
@@ -4374,9 +3909,9 @@ export class SiteSummary implements ISiteSummary {
           }
           (<any>this).progress = _data["progress"];
           if (Array.isArray(_data["admins"])) {
-              (<any>this).admins = [] as any;
+              this.admins = [] as any;
               for (let item of _data["admins"])
-                  (<any>this).admins!.push(SiteAdmin.fromJS(item));
+                  this.admins!.push(SiteAdmin.fromJS(item));
           }
           if (Array.isArray(_data["batches"])) {
               (<any>this).batches = [] as any;
@@ -4384,31 +3919,6 @@ export class SiteSummary implements ISiteSummary {
                   (<any>this).batches!.push(BatchAnalytics.fromJS(item));
           }
       }
-      (<any>this).id = _data["id"];
-      this.name = _data["name"];
-      this.coordinate = _data["coordinate"] ? Coordinates.fromJS(_data["coordinate"]) : new Coordinates();
-      this.siteType = _data["siteType"] ? SiteType.fromJS(_data["siteType"]) : new SiteType();
-      (<any>this).plantCount = _data["plantCount"];
-      (<any>this).survivedCount = _data["survivedCount"];
-      (<any>this).propagationCount = _data["propagationCount"];
-      this.visitorCount = _data["visitorCount"];
-      if (Array.isArray(_data["sponsors"])) {
-        (<any>this).sponsors = [] as any;
-        for (let item of _data["sponsors"])
-          (<any>this).sponsors!.push(item);
-      }
-      (<any>this).progress = _data["progress"];
-      if (Array.isArray(_data["admins"])) {
-        this.admins = [] as any;
-        for (let item of _data["admins"])
-          this.admins!.push(SiteAdmin.fromJS(item));
-      }
-      if (Array.isArray(_data["batches"])) {
-        (<any>this).batches = [] as any;
-        for (let item of _data["batches"])
-          (<any>this).batches!.push(BatchAnalytics.fromJS(item));
-      }
-    }
   }
 
   static fromJS(data: any): SiteSummary {
@@ -4608,14 +4118,11 @@ export class TokenObtainPair implements ITokenObtainPair {
               if (_data.hasOwnProperty(property))
                   this[property] = _data[property];
           }
+          this.email = _data["email"];
+          this.password = _data["password"];
           (<any>this).access = _data["access"];
           (<any>this).refresh = _data["refresh"];
       }
-      this.email = _data["email"];
-      this.password = _data["password"];
-      (<any>this).access = _data["access"];
-      (<any>this).refresh = _data["refresh"];
-    }
   }
 
   static fromJS(data: any): TokenObtainPair {
@@ -4626,16 +4133,16 @@ export class TokenObtainPair implements ITokenObtainPair {
   }
 
   toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property))
-        data[property] = this[property];
-    }
-    data["email"] = this.email;
-    data["password"] = this.password;
-    data["access"] = this.access;
-    data["refresh"] = this.refresh;
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["email"] = this.email;
+      data["password"] = this.password;
+      data["access"] = this.access;
+      data["refresh"] = this.refresh;
+      return data;
   }
 }
 
@@ -4648,60 +4155,9 @@ export interface ITokenObtainPair {
   [key: string]: any;
 }
 
-export class TokenObtainPairRequest implements ITokenObtainPairRequest {
-  username!: string;
-  password!: string;
-
-  [key: string]: any;
-
-  constructor(data?: ITokenObtainPairRequest) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-  }
-
-  init(_data?: any) {
-      if (_data) {
-          for (var property in _data) {
-              if (_data.hasOwnProperty(property))
-                  this[property] = _data[property];
-          }
-          this.username = _data["username"];
-          this.password = _data["password"];
-      }
-  }
-
-  static fromJS(data: any): TokenObtainPairRequest {
-      data = typeof data === 'object' ? data : {};
-      let result = new TokenObtainPairRequest();
-      result.init(data);
-      return result;
-  }
-
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      for (var property in this) {
-          if (this.hasOwnProperty(property))
-              data[property] = this[property];
-      }
-      data["username"] = this.username;
-      data["password"] = this.password;
-      return data;
-  }
-}
-
-export interface ITokenObtainPairRequest {
-  username: string;
-  password: string;
-
-  [key: string]: any;
-}
-
 export class TokenRefresh implements ITokenRefresh {
   readonly access!: string;
+  refresh!: string;
 
   [key: string]: any;
 
@@ -4721,6 +4177,7 @@ export class TokenRefresh implements ITokenRefresh {
                   this[property] = _data[property];
           }
           (<any>this).access = _data["access"];
+          this.refresh = _data["refresh"];
       }
   }
 
@@ -4738,59 +4195,13 @@ export class TokenRefresh implements ITokenRefresh {
               data[property] = this[property];
       }
       data["access"] = this.access;
+      data["refresh"] = this.refresh;
       return data;
   }
 }
 
 export interface ITokenRefresh {
   access: string;
-
-  [key: string]: any;
-}
-
-export class TokenRefreshRequest implements ITokenRefreshRequest {
-  refresh!: string;
-
-  [key: string]: any;
-
-  constructor(data?: ITokenRefreshRequest) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-  }
-
-  init(_data?: any) {
-      if (_data) {
-          for (var property in _data) {
-              if (_data.hasOwnProperty(property))
-                  this[property] = _data[property];
-          }
-          this.refresh = _data["refresh"];
-      }
-  }
-
-  static fromJS(data: any): TokenRefreshRequest {
-      data = typeof data === 'object' ? data : {};
-      let result = new TokenRefreshRequest();
-      result.init(data);
-      return result;
-  }
-
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      for (var property in this) {
-          if (this.hasOwnProperty(property))
-              data[property] = this[property];
-      }
-      data["refresh"] = this.refresh;
-      return data;
-  }
-}
-
-export interface ITokenRefreshRequest {
   refresh: string;
 
   [key: string]: any;
@@ -4835,16 +4246,16 @@ export class User implements IUser {
                   this[property] = _data[property];
           }
           (<any>this).id = _data["id"];
+          (<any>this).role = _data["role"];
           this.lastLogin = _data["lastLogin"] ? new Date(_data["lastLogin"].toString()) : <any>undefined;
           this.isSuperuser = _data["isSuperuser"];
           this.username = _data["username"];
           this.firstName = _data["firstName"];
           this.lastName = _data["lastName"];
-          this.email = _data["email"];
           this.isStaff = _data["isStaff"];
           this.isActive = _data["isActive"];
           this.dateJoined = _data["dateJoined"] ? new Date(_data["dateJoined"].toString()) : <any>undefined;
-          this.role = _data["role"];
+          this.email = _data["email"];
           if (Array.isArray(_data["groups"])) {
               this.groups = [] as any;
               for (let item of _data["groups"])
@@ -4856,28 +4267,6 @@ export class User implements IUser {
                   this.userPermissions!.push(item);
           }
       }
-      (<any>this).id = _data["id"];
-      (<any>this).role = _data["role"];
-      this.lastLogin = _data["lastLogin"] ? new Date(_data["lastLogin"].toString()) : <any>undefined;
-      this.isSuperuser = _data["isSuperuser"];
-      this.username = _data["username"];
-      this.firstName = _data["firstName"];
-      this.lastName = _data["lastName"];
-      this.isStaff = _data["isStaff"];
-      this.isActive = _data["isActive"];
-      this.dateJoined = _data["dateJoined"] ? new Date(_data["dateJoined"].toString()) : <any>undefined;
-      this.email = _data["email"];
-      if (Array.isArray(_data["groups"])) {
-        this.groups = [] as any;
-        for (let item of _data["groups"])
-          this.groups!.push(item);
-      }
-      if (Array.isArray(_data["userPermissions"])) {
-        this.userPermissions = [] as any;
-        for (let item of _data["userPermissions"])
-          this.userPermissions!.push(item);
-      }
-    }
   }
 
   static fromJS(data: any): User {
@@ -4888,33 +4277,33 @@ export class User implements IUser {
   }
 
   toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property))
-        data[property] = this[property];
-    }
-    data["id"] = this.id;
-    data["role"] = this.role;
-    data["lastLogin"] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined;
-    data["isSuperuser"] = this.isSuperuser;
-    data["username"] = this.username;
-    data["firstName"] = this.firstName;
-    data["lastName"] = this.lastName;
-    data["isStaff"] = this.isStaff;
-    data["isActive"] = this.isActive;
-    data["dateJoined"] = this.dateJoined ? this.dateJoined.toISOString() : <any>undefined;
-    data["email"] = this.email;
-    if (Array.isArray(this.groups)) {
-      data["groups"] = [];
-      for (let item of this.groups)
-        data["groups"].push(item);
-    }
-    if (Array.isArray(this.userPermissions)) {
-      data["userPermissions"] = [];
-      for (let item of this.userPermissions)
-        data["userPermissions"].push(item);
-    }
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["role"] = this.role;
+      data["lastLogin"] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined;
+      data["isSuperuser"] = this.isSuperuser;
+      data["username"] = this.username;
+      data["firstName"] = this.firstName;
+      data["lastName"] = this.lastName;
+      data["isStaff"] = this.isStaff;
+      data["isActive"] = this.isActive;
+      data["dateJoined"] = this.dateJoined ? this.dateJoined.toISOString() : <any>undefined;
+      data["email"] = this.email;
+      if (Array.isArray(this.groups)) {
+          data["groups"] = [];
+          for (let item of this.groups)
+              data["groups"].push(item);
+      }
+      if (Array.isArray(this.userPermissions)) {
+          data["userPermissions"] = [];
+          for (let item of this.userPermissions)
+              data["userPermissions"].push(item);
+      }
+      return data;
   }
 }
 
@@ -4949,41 +4338,41 @@ export class UserToken implements IUserToken {
   [key: string]: any;
 
   constructor(data?: IUserToken) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
       }
-    }
   }
 
   init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property))
-          this[property] = _data[property];
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).refresh = _data["refresh"];
+          (<any>this).access = _data["access"];
       }
-      (<any>this).refresh = _data["refresh"];
-      (<any>this).access = _data["access"];
-    }
   }
 
   static fromJS(data: any): UserToken {
-    data = typeof data === 'object' ? data : {};
-    let result = new UserToken();
-    result.init(data);
-    return result;
+      data = typeof data === 'object' ? data : {};
+      let result = new UserToken();
+      result.init(data);
+      return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property))
-        data[property] = this[property];
-    }
-    data["refresh"] = this.refresh;
-    data["access"] = this.access;
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["refresh"] = this.refresh;
+      data["access"] = this.access;
+      return data;
   }
 }
 
@@ -5047,62 +4436,6 @@ export class Widget implements IWidget {
 
 export interface IWidget {
   id: number;
-  title?: string | undefined;
-  body?: string | undefined;
-  site?: number | undefined;
-
-  [key: string]: any;
-}
-
-export class WidgetRequest implements IWidgetRequest {
-  title?: string | undefined;
-  body?: string | undefined;
-  site?: number | undefined;
-
-  [key: string]: any;
-
-  constructor(data?: IWidgetRequest) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-  }
-
-  init(_data?: any) {
-      if (_data) {
-          for (var property in _data) {
-              if (_data.hasOwnProperty(property))
-                  this[property] = _data[property];
-          }
-          this.title = _data["title"];
-          this.body = _data["body"];
-          this.site = _data["site"];
-      }
-  }
-
-  static fromJS(data: any): WidgetRequest {
-      data = typeof data === 'object' ? data : {};
-      let result = new WidgetRequest();
-      result.init(data);
-      return result;
-  }
-
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      for (var property in this) {
-          if (this.hasOwnProperty(property))
-              data[property] = this[property];
-      }
-      data["title"] = this.title;
-      data["body"] = this.body;
-      data["site"] = this.site;
-      return data;
-  }
-}
-
-export interface IWidgetRequest {
   title?: string | undefined;
   body?: string | undefined;
   site?: number | undefined;

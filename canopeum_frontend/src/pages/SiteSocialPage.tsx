@@ -53,7 +53,6 @@ const SiteSocialPage = () => {
   }
 
   const addNewPost = (newPost: Post) => {
-    console.log('fsdfvg', newPost)
     setPosts([...(posts || []), newPost])
   }
 
@@ -104,9 +103,9 @@ const SiteSocialPage = () => {
                         </div>
                       )
                       : posts &&
-                        posts?.sort((a: Post, b: Post) => a.createdAt - b.createdAt).map((post: Post) => (
-                          <PostWidget key={post.id} post={post} />
-                        ))}
+                        posts?.sort((a: Post, b: Post) =>
+                          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                        ).map((post: Post) => <PostWidget key={post.id} post={post} />)}
                   </div>
                 </>
               )}

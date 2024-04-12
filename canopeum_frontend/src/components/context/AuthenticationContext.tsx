@@ -1,4 +1,4 @@
-import { TokenRefresh, TokenRefreshRequest } from '@services/api'
+import { TokenRefresh } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { jwtDecode } from 'jwt-decode'
 import type { User, UserRole } from '@models/User'
@@ -44,7 +44,7 @@ const AuthenticationContextProvider: FunctionComponent<{ readonly children?: Rea
     const token = sessionStorage.getItem('token')
     if (token) {
       getApiClient().refreshClient.create(
-        new TokenRefreshRequest({ refresh: sessionStorage.getItem('refreshToken') ?? '' }),
+        new TokenRefresh({ access: token, refresh: sessionStorage.getItem('refreshToken') ?? '' }),
       )
         .then((response: TokenRefresh) => {
           const decodedToken = jwtDecode(response.access) as { role: UserRole }
