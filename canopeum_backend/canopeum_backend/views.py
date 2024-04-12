@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from canopeum_backend.permissions import MegaAdminPermission
+from canopeum_backend.permissions import MegaAdminPermission, MegaAdminPermissionReadOnly
 
 from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, Siteadmin, User, Widget
 from .serializers import (
@@ -117,6 +117,8 @@ class SiteListAPIView(APIView):
 
 
 class SiteDetailAPIView(APIView):
+    permission_classes = (MegaAdminPermissionReadOnly,)
+
     @extend_schema(request=SiteSerializer, responses=SiteSerializer, operation_id="site_detail")
     def get(self, request, siteId):
         try:
