@@ -1,0 +1,17 @@
+{
+  "site-social-header": {
+    "follow": "Follow",
+    "sponsors": "Sponsors",
+    "public": "Public"
+  },
+  "comments": {
+    "leave-a-comment": "Leave a Comment",
+    "words_one": "word",
+    "words_other": "words",
+    "comments": "Comments",
+    "send": "Send",
+    "comment-body-required": "Your comment cannot be empty.",
+    "comment-body-max-chars_one": "Your comment cannot contain more than {{count}} words.",
+    "comment-body-max-chars_other": "Your comment cannot contain more than {{count}} words."
+  }
+}

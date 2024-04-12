@@ -32,6 +32,10 @@ body {
   background-repeat: no-repeat;
 }
 
+.text-small {
+  font-size: 90%;
+}
+
 .material-symbols-outlined,
 .custom-icon {
   color: inherit;
@@ -166,14 +170,6 @@ body {
   text-align: center;
 }
 
-.lightgreen-color {
-  color: #E8F3E9;
-}
-
-.bg-lightgreen {
-  background: #E8F3E9;
-}
-
 .text-ellipsis {
   white-space: nowrap;
   overflow: hidden;
@@ -200,11 +196,19 @@ body {
   color: $default-text-color;
 }
 
-button.unstyled-button {
+.unstyled-button {
   border: none;
   padding: inherit;
   background-color: inherit;
   background: inherit;
+}
+
+.lightgreen-color {
+  color: #E8F3E9;
+}
+
+.bg-lightgreen {
+  background: #E8F3E9;
 }
 
 a.nav-link:active,

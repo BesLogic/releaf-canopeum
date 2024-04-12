@@ -1,16 +1,15 @@
-import AuthPageLayout from '@components/auth/AuthPageLayout';
-import { AuthenticationContext } from '@components/context/AuthenticationContext';
+import AuthPageLayout from '@components/auth/AuthPageLayout'
+import { appRoutes } from '@constants/routes.constant'
 import { RegisterUser } from '@services/api'
 import getApiClient from '@services/apiInterface'
-import { useContext, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 
-import useLogin from '../hooks/LoginHook';
-import { type InputValidationError, isValidEmail, isValidPassword, mustMatch } from '../utils/validators';
+import useLogin from '../hooks/LoginHook'
+import { type InputValidationError, isValidEmail, isValidPassword, mustMatch } from '../utils/validators'
 
 const Register = () => {
-  const navigate = useNavigate()
   const { authenticateUser } = useLogin()
   const { t: translate } = useTranslation()
   const [username, setUsername] = useState('')
@@ -24,14 +23,6 @@ const Register = () => {
   const [passwordConfirmationError, setPasswordConfirmationError] = useState<InputValidationError | undefined>()
 
   const [registrationError, setRegistrationError] = useState<string | undefined>(undefined)
-
-  const { isAuthenticated } = useContext(AuthenticationContext)
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/')
-    }
-  }, [isAuthenticated, navigate])
 
   const validateUsername = () => {
     if (!username) {
@@ -119,8 +110,8 @@ const Register = () => {
     try {
       const response = await getApiClient().authenticationClient.register(
         new RegisterUser({
-          email,
-          username,
+          email: email.trim(),
+          username: username.trim(),
           password,
           passwordConfirmation,
         }),
@@ -146,11 +137,12 @@ const Register = () => {
             <label htmlFor='username-input'>{translate('auth.username-label')}</label>
             <input
               aria-describedby='emailHelp'
+              // eslint-disable-next-line sonarjs/no-duplicate-string -- Fix this by creating an Input Component?
               className={`form-control ${usernameError && 'is-invalid'} `}
               id='username-input'
               onBlur={() => validateUsername()}
               onChange={event => setUsername(event.target.value)}
-              type="text"
+              type='text'
             />
             {usernameError && (
               <span className='help-block text-danger'>
@@ -236,7 +228,7 @@ const Register = () => {
 
           <div className='mt-4 text-center'>
             <span>{translate('auth.already-have-an-account')}</span>
-            <Link className='ms-2' to='/login'>
+            <Link className='ms-2' to={appRoutes.login}>
               <span className='text-primary text-decoration-underline'>{translate('auth.log-in')}</span>
             </Link>
           </div>

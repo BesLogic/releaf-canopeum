@@ -1,16 +1,17 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
-import SiteSummaryCard from '@components/site/SiteSummaryCard'
+import SiteSocialHeader from '@components/social/SiteSocialHeader'
 import type { Post, SiteSocial } from '@services/api'
+import getApiClient from '@services/apiInterface'
 import { ensureError } from '@services/errors'
 import { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import CreatePostWidget from '../components/CreatePostWidget'
-import PostWidget from '../components/PostWidget'
+
 import AnnouncementCard from '../components/AnnouncementCard'
 import ContactCard from '../components/ContactCard'
-import getApiClient from '@services/apiInterface'
+import CreatePostWidget from '../components/CreatePostWidget'
+import PostWidget from '../components/social/PostWidget'
 
-const MapSite = () => {
+const SiteSocialPage = () => {
   const { siteId } = useParams()
   const { currentUser } = useContext(AuthenticationContext)
   const [isLoadingSite, setIsLoadingSite] = useState(true)
@@ -70,7 +71,7 @@ const MapSite = () => {
             <p>{error.message}</p>
           </div>
         )
-        : (site && <SiteSummaryCard site={site} viewMode={viewMode} />)}
+        : (site && <SiteSocialHeader site={site} viewMode={viewMode} />)}
       <div className='container px-0'>
         <div className='row'>
           <div className='col-4'>
@@ -83,7 +84,7 @@ const MapSite = () => {
             <div className='rounded-2 d-flex flex-column gap-4'>
               {site && (
                 <>
-                  {viewMode == 'admin' && <CreatePostWidget site={site} />}
+                  {viewMode === 'admin' && <CreatePostWidget site={site} />}
                   <div className='d-flex flex-column gap-4'>
                     {isLoadingPosts
                       ? (
@@ -97,7 +98,7 @@ const MapSite = () => {
                           <p>{errorPosts.message}</p>
                         </div>
                       )
-                      : posts && posts?.map((post: Post) => <PostWidget key={post.id} post={post} />)}
+                      : posts?.map((post: Post) => <PostWidget key={post.id} post={post} />)}
                   </div>
                 </>
               )}
@@ -108,4 +109,4 @@ const MapSite = () => {
     </div>
   )
 }
-export default MapSite
+export default SiteSocialPage

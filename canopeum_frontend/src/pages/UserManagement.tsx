@@ -28,7 +28,11 @@ const UserManagement = () => {
 
   const displayRightTab = () => {
     if (selectedTab === 'termsAndPolicies') {
-      return <div><h1>Terms And Policies</h1></div>
+      return (
+        <div>
+          <h1>Terms And Policies</h1>
+        </div>
+      )
     }
 
     return <ProfileSettings />
@@ -46,23 +50,27 @@ const UserManagement = () => {
 
   return (
     <div className='container py-3 h-100'>
-      <div className="row">
-        <div className="col-4">
+      <div className='row'>
+        <div className='col-4'>
           <div className='bg-white rounded-2 py-3 px-4'>
-            <div className="py-3">
+            <div className='py-3'>
               <h4 className='text-center'>CANOPEUM</h4>
             </div>
 
             <div className='d-flex flex-column gap-2'>
-              {tabs.map(tab => <SettingsTab
-                key={tab.type}
-                onClick={() => onTabClick(tab.type)}
-                selected={selectedTab === tab.type}
-              >{translate(`settings.tabs.${tab.translationKey}`)}</SettingsTab>)}
+              {tabs.map(tab => (
+                <SettingsTab
+                  key={tab.type}
+                  onClick={() => onTabClick(tab.type)}
+                  selected={selectedTab === tab.type}
+                >
+                  {translate(`settings.tabs.${tab.translationKey}`)}
+                </SettingsTab>
+              ))}
             </div>
           </div>
         </div>
-        <div className="col-8">
+        <div className='col-8'>
           {displayRightTab()}
         </div>
       </div>
