@@ -140,7 +140,7 @@ class SiteDetailAPIView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @extend_schema(responses=status.HTTP_204_NO_CONTENT, operation_id="site_delete")
+    @extend_schema(responses={status.HTTP_204_NO_CONTENT: None}, operation_id="site_delete")
     def delete(self, request, siteId):
         try:
             site = Site.objects.get(pk=siteId)

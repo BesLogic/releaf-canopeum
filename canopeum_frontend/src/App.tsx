@@ -3,6 +3,7 @@ import './App.scss'
 
 import muiCustomTheme from '@assets/styles/muiCustomTheme'
 import LanguageContextProvider from '@components/context/LanguageContext'
+import SnackbarContextProvider from '@components/context/SnackbarContext'
 import { ThemeProvider } from '@mui/material'
 import { BrowserRouter } from 'react-router-dom'
 
@@ -13,9 +14,11 @@ const App = () => (
   <ThemeProvider theme={muiCustomTheme}>
     <LanguageContextProvider>
       <AuthenticationContextProvider>
-        <BrowserRouter>
-          <MainLayout />
-        </BrowserRouter>
+        <SnackbarContextProvider>
+          <BrowserRouter>
+            <MainLayout />
+          </BrowserRouter>
+        </SnackbarContextProvider>
       </AuthenticationContextProvider>
     </LanguageContextProvider>
   </ThemeProvider>

@@ -27,6 +27,7 @@
     "no-admins": "No Admins",
     "unknown": "Unknown",
     "unnamed-site": "Unnamed site",
-    "admins-saved": "Admins saved successfully for {{siteName}}!"
+    "admins-saved": "Admins saved successfully for {{siteName}}!",
+    "site-deleted": "Site {{siteName}} was successfully deleted."
   }
 }
