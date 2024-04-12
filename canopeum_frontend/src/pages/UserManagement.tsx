@@ -59,13 +59,18 @@ const UserManagement = () => {
     setSelectedTab(tabType)
   }
 
-  const tabsDisplay = () => tabs
-    .filter(tab => !tab.roles || (currentUser && tab.roles.includes(currentUser.role)))
-    .map(tab => <SettingsTab
-      key={tab.type}
-      onClick={() => onTabClick(tab.type)}
-      selected={selectedTab === tab.type}
-    >{translate(`settings.tabs.${tab.translationKey}`)}</SettingsTab>)
+  const tabsDisplay = () =>
+    tabs
+      .filter(tab => !tab.roles || (currentUser && tab.roles.includes(currentUser.role)))
+      .map(tab => (
+        <SettingsTab
+          key={tab.type}
+          onClick={() => onTabClick(tab.type)}
+          selected={selectedTab === tab.type}
+        >
+          {translate(`settings.tabs.${tab.translationKey}`)}
+        </SettingsTab>
+      ))
 
   return (
     <div className='container py-3 h-100'>

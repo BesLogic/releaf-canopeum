@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 const ProfileSettings = () => {
   const { t: translate } = useTranslation()
 
-
   return (
     <div>
       <h2 className='text-light'>{translate('settings.profile-settings.title')}</h2>

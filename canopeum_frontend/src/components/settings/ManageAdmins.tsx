@@ -16,14 +16,18 @@ const ManageAdmins = () => {
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center">
+      <div className='d-flex justify-content-between align-items-center'>
         <h2 className='text-light'>{translate('settings.manage-admins.title')}</h2>
 
         <button className='btn btn-secondary' type='button'>{translate('settings.manage-admins.invite-admin')}</button>
       </div>
 
       <div className='mt-3 row gx-3 gy-3'>
-        {siteAdminList.map(admin => <div className='col-4' key={admin.id}><AdminCard admin={admin} /></div>)}
+        {siteAdminList.map(admin => (
+          <div className='col-4' key={admin.id}>
+            <AdminCard admin={admin} />
+          </div>
+        ))}
       </div>
     </div>
   )
