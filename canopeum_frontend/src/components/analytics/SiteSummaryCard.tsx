@@ -2,6 +2,7 @@ import SiteSponsorProgress from '@components/analytics/SiteSponsorProgress'
 import SiteSummaryActions from '@components/analytics/SiteSummaryActions'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import PrimaryIconBadge from '@components/PrimaryIconBadge'
+import { appRoutes } from '@constants/routes.constant'
 import type { SiteSummary, User } from '@services/api'
 import { type Dispatch, type SetStateAction, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -31,7 +32,7 @@ const SiteSummaryCard = ({ site, admins, onSiteChange }: Props) => {
       <div className='card h-100 w-100 py-3'>
         <div className='card-body d-flex flex-column h-100'>
           <div className='d-flex justify-content-between align-items-center card-title'>
-            <Link className='nav-link flex-grow-1 me-3' to={`/analytics/${site.id}`}>
+            <Link className='nav-link flex-grow-1 me-3' to={appRoutes.site(site.id)}>
               <div className='d-flex gap-1 align-items-center flex-grow-1'>
                 <PrimaryIconBadge type='school' />
                 <h5 className='mb-0 text-ellipsis'>{site.name ?? translate('analytics.site-summary.unnamed-site')}</h5>

@@ -35,15 +35,15 @@ const Home = () => {
           {isLoading
             ? <p>Loading...</p>
             : error
-              ? <p>Error: {error.message}</p>
-              : (
-                <div>
-                  <p>Example request from API:</p>
-                  <ul>
-                    {data.map(item => <li key={item.id}>{item.name}</li>)}
-                  </ul>
-                </div>
-              )}
+            ? <p>Error: {error.message}</p>
+            : (
+              <div>
+                <p>Example request from API:</p>
+                <ul>
+                  {data.map(item => <li key={item.id}>{item.name}</li>)}
+                </ul>
+              </div>
+            )}
         </div>
       </div>
     </div>

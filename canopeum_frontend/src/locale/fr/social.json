@@ -1,0 +1,17 @@
+{
+  "site-social-header": {
+    "follow": "Suivre",
+    "sponsors": "Commanditaires",
+    "public": "Publique"
+  },
+  "comments": {
+    "leave-a-comment": "Laisser un Commentaire",
+    "words_one": "mot",
+    "words_other": "mots",
+    "comments": "Commentaires",
+    "send": "Envoyer",
+    "comment-body-required": "Votre commentaire ne peut pas être vide.",
+    "comment-body-max-chars_one": "Votre commentaire ne peut pas contenir plus de {{count}} mots.",
+    "comment-body-max-chars_other": "Votre commentaire ne peut pas contenir plus de {{count}} mots."
+  }
+}

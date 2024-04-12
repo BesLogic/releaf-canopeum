@@ -18,7 +18,7 @@ type Props = {
 const SiteSummaryActions = ({ siteSummary, admins, onSiteChange }: Props) => {
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
-  const whisperRef = useRef<OverlayTriggerHandle>(null);
+  const whisperRef = useRef<OverlayTriggerHandle>(null)
   const [filteredAdmins, setFilteredAdmins] = useState(admins)
   const [selectedAdmins, setSelectedAdmins] = useState(siteSummary.admins.map(admin => admin.user))
 
@@ -116,13 +116,17 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange }: Props) => {
           onClick={onSelectAdminsCancel}
           style={{ minWidth: '6rem' }}
           type='button'
-        >Cancel</button>
+        >
+          Cancel
+        </button>
         <button
           className='btn btn-primary'
           onClick={onSaveAdmins}
           style={{ minWidth: '6rem' }}
           type='button'
-        >Save</button>
+        >
+          Save
+        </button>
       </div>
     </div>
   )

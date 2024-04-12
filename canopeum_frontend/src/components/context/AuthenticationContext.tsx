@@ -10,8 +10,8 @@ type IAuthenticationContext = {
 }
 
 export const AuthenticationContext = createContext<IAuthenticationContext>({
-  authenticate: (_: User) => {/* empty */ },
-  logout: () => {/* empty */ },
+  authenticate: (_: User) => {/* empty */},
+  logout: () => {/* empty */},
   isAuthenticated: false,
   currentUser: undefined,
 })

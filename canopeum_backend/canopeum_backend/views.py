@@ -21,6 +21,7 @@ from .serializers import (
     BatchSerializer,
     CommentSerializer,
     ContactSerializer,
+    CreateCommentSerializer,
     LikeSerializer,
     LoginUserSerializer,
     PostPostSerializer,
@@ -103,7 +104,7 @@ class SiteListAPIView(APIView):
 
     parser_classes = (MultiPartParser, FormParser)
 
-    @extend_schema(request=SiteSerializer, responses=SiteSerializer, operation_id="site_create")
+    @extend_schema(request=SiteSerializer, responses={201: SiteSerializer}, operation_id="site_create")
     def post(self, request):
         asset = AssetSerializer(data=request.data)
         if not asset.is_valid():
@@ -284,7 +285,7 @@ class PostListAPIView(APIView):
 
     parser_classes = (MultiPartParser, FormParser)
 
-    @extend_schema(request=PostPostSerializer, responses=PostSerializer, operation_id="post_create")
+    @extend_schema(request=PostPostSerializer, responses={201: PostSerializer}, operation_id="post_create")
     def post(self, request):
         assets = request.data.getlist("media")
         saved_assets = []
@@ -308,20 +309,22 @@ class PostListAPIView(APIView):
 class CommentListAPIView(APIView):
     @extend_schema(responses=CommentSerializer(many=True), operation_id="comment_all")
     def get(self, request, postId):
-        comments = Comment.objects.filter(post=postId)
+        comments = Comment.objects.filter(post=postId).order_by("-created_at")
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data)
 
-    @extend_schema(request=CommentSerializer, responses=CommentSerializer, operation_id="comment_create")
+    @extend_schema(request=CreateCommentSerializer, responses={201: CommentSerializer}, operation_id="comment_create")
     def post(self, request, postId):
         try:
             post = Post.objects.get(pk=postId)
+            user = User.objects.get(pk=request.user.id)
         except Post.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         serializer = CommentSerializer(data=request.data)
+
         if serializer.is_valid():
-            serializer.save(post=post)
+            serializer.save(post=post, user=user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -369,7 +372,7 @@ class ContactDetailAPIView(APIView):
 
 
 class WidgetListAPIView(APIView):
-    @extend_schema(request=WidgetSerializer, responses=WidgetSerializer, operation_id="widget_create")
+    @extend_schema(request=WidgetSerializer, responses={201: WidgetSerializer}, operation_id="widget_create")
     def post(self, request):
         serializer = WidgetSerializer(data=request.data)
         if serializer.is_valid():
@@ -404,7 +407,7 @@ class WidgetDetailAPIView(APIView):
 
 
 class LikeListAPIView(APIView):
-    @extend_schema(request=LikeSerializer, responses=LikeSerializer, operation_id="like_all")
+    @extend_schema(request=LikeSerializer, responses={201: LikeSerializer}, operation_id="like_all")
     def post(self, request):
         serializer = LikeSerializer(data=request.data)
         if serializer.is_valid():
@@ -420,7 +423,7 @@ class BatchListAPIView(APIView):
         serializer = BatchAnalyticsSerializer(batches, many=True)
         return Response(serializer.data)
 
-    @extend_schema(request=BatchSerializer, responses=BatchSerializer, operation_id="batch_create")
+    @extend_schema(request=BatchSerializer, responses={201: BatchSerializer}, operation_id="batch_create")
     def post(self, request):
         serializer = BatchSerializer(data=request.data)
         if serializer.is_valid():
@@ -460,14 +463,6 @@ class UserListAPIView(APIView):
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
-
-    @extend_schema(request=UserSerializer, responses=UserSerializer, operation_id="user_create")
-    def post(self, request):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AdminUsersListAPIView(APIView):

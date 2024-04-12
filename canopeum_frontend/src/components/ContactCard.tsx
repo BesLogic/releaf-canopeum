@@ -2,8 +2,8 @@ import facebookLogo from '@assets/icons/facebook-contact-logo.svg'
 import instagramLogo from '@assets/icons/instagram-contact-logo.svg'
 import linkedinLogo from '@assets/icons/linkedin-contact-logo.svg'
 import xLogo from '@assets/icons/x-contact-logo.svg'
-import { Link } from 'react-router-dom'
 import type { Contact } from '@services/api'
+import { Link } from 'react-router-dom'
 
 const ContactCard = (
   { contact, viewMode }: { readonly contact: Contact, readonly viewMode: 'admin' | 'user' | 'visitor' },
@@ -32,8 +32,8 @@ const ContactCard = (
           </div>
         </div>
         <div className='social-icons d-flex flex-row-reverse pt-3'>
-          {contact.linkedInLink && (
-            <Link target='_blank' to={contact.linkedInLink}>
+          {contact.linkedinLink && (
+            <Link target='_blank' to={contact.linkedinLink}>
               <img alt='linkedin-logo' className='px-2' src={linkedinLogo} />
             </Link>
           )}

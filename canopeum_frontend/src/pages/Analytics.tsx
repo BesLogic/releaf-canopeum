@@ -24,7 +24,7 @@ const Analytics = () => {
     if (currentUser?.role !== 'MegaAdmin') return
 
     void fetchAdmins()
-  }, [])
+  }, [currentUser?.role])
 
   const renderBatches = () =>
     siteSummaries.map(site => {
