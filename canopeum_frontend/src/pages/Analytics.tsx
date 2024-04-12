@@ -16,10 +16,6 @@ const Analytics = () => {
   const [siteSummaries, setSiteSummaries] = useState<SiteSummary[]>([])
   const [adminList, setAdminList] = useState<User[]>([])
 
-  if (siteSummaries.length > 0) {
-    console.log('siteSummaries[0].admins:', siteSummaries[0].admins)
-  }
-
   const fetchSites = async () => setSiteSummaries(await getApiClient().summaryClient.all())
   const fetchAdmins = async () => setAdminList(await getApiClient().userClient.allAdmins())
 
