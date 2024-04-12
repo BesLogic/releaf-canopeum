@@ -16,13 +16,14 @@ const AdminCard = ({ admin }: Props) => (
         <span className='ms-1'>{admin.email}</span>
       </h6>
 
-      {admin.sites.map(site => (
-        <div className="card-text d-flex align-items-center mt-3 text-primary" key={site.id}>
-          <span className="material-symbols-outlined">school</span>
-          <span className='ms-1'>{site.name ?? ''}</span>
-        </div>
-      ))}
-
+      <div className="card-text mt-3 d-flex flex-column gap-1">
+        {admin.sites.map(site => (
+          <div className="d-flex align-items-center text-primary" key={site.id}>
+            <span className="material-symbols-outlined">school</span>
+            <span className='ms-1'>{site.name ?? ''}</span>
+          </div>
+        ))}
+      </div>
     </div>
   </div>
 )
