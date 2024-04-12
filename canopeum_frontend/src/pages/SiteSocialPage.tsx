@@ -53,7 +53,8 @@ const SiteSocialPage = () => {
   }
 
   const addNewPost = (newPost: Post) => {
-    setPosts([...(posts || []), newPost])
+    console.log(newPost)
+    setPosts([newPost, ...(posts || [])])
   }
 
   useEffect((): void => {

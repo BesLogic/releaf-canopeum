@@ -316,7 +316,8 @@ class PostListAPIView(APIView):
             post = serializer.save()
             for asset_item in saved_assets:
                 post.media.add(asset_item.instance)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            new_post = PostSerializer(post)
+            return Response(new_post.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
