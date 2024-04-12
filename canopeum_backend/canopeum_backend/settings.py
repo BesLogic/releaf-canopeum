@@ -110,7 +110,7 @@ SPECTACULAR_SETTINGS = {
         "displayOperationId": True,
     },
     # Split components into request and response parts where appropriate
-    "COMPONENT_SPLIT_REQUEST": False,
+    "COMPONENT_SPLIT_REQUEST": True,
     # Aid client generator targets that have trouble with read-only properties.
     "COMPONENT_NO_READ_ONLY_REQUIRED": False,
     # Create separate components for PATCH endpoints (without required list)

@@ -201,7 +201,7 @@ class SiteAdminsAPIView(APIView):
 
         for existing_user in existing_admin_users:
             if existing_user not in updated_admin_users_list:
-                existing_site_admins.filter(user__id__exact=existing_user.id).delete()
+                existing_site_admins.filter(user__id__exact=existing_user.pk).delete()  # type: ignore
 
         serializer = SiteAdminSerializer(Siteadmin.objects.filter(site=site), many=True)
         return Response(serializer.data)
@@ -259,7 +259,21 @@ class PostListAPIView(APIView):
 
     parser_classes = (MultiPartParser, FormParser)
 
-    @extend_schema(request=PostPostSerializer, responses=PostSerializer, operation_id="post_create")
+    @extend_schema(
+        # request={"multipart/form-data": PostPostSerializer}, TODO: Add serializer for multipart/form-data
+        request={
+            "multipart/form-data": {
+                "type": "object",
+                "properties": {
+                    "site": {"type": "number"},
+                    "body": {"type": "string"},
+                    "media": {"type": "array", "items": {"type": "string", "format": "binary"}},
+                },
+            },
+        },
+        responses={201: PostSerializer},
+        operation_id="post_create",
+    )
     def post(self, request):
         assets = request.data.getlist("media")
         saved_assets = []
@@ -475,3 +489,24 @@ class UserCurrentUserAPIView(APIView):
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
+
+
+class TokenRefreshAPIView(APIView):
+    @extend_schema(responses=RefreshToken, operation_id="token_refresh")
+    def post(self, request):
+        refresh = RefreshToken(request.data.get("refresh"))
+        user = User.objects.get(pk=refresh["user_id"])
+        refresh["role"] = user.role.name
+        return Response({"refresh": str(refresh), "access": str(refresh.access_token)}, status=status.HTTP_200_OK)
+
+
+class TokenObtainPairAPIView(APIView):
+    @extend_schema(responses=UserSerializer, operation_id="token_obtain_pair")
+    def post(self, request):
+        user = cast(User, authenticate(username=request.data.get("username"), password=request.data.get("password")))
+        if user is not None:
+            refresh = cast(RefreshToken, RefreshToken.for_user(user))
+            if user.role is not None:
+                refresh["role"] = user.role.name
+            return Response({"refresh": str(refresh), "access": str(refresh.access_token)}, status=status.HTTP_200_OK)
+        return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)

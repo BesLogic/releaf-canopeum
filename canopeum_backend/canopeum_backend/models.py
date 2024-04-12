@@ -110,12 +110,13 @@ class Asset(models.Model):
 
 
 class Post(models.Model):
-    site = models.ForeignKey("Site", models.DO_NOTHING, blank=True, null=True)
-    body = models.TextField(blank=True, null=True)
+    site = models.ForeignKey("Site", models.DO_NOTHING, blank=False, null=False)
+    body = models.TextField(blank=False, null=False)
     like_count = models.IntegerField(blank=True, null=True)
     share_count = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
-    media = models.ManyToManyField(Asset, through="PostAsset")
+    # created_by = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
+    media = models.ManyToManyField(Asset, through="PostAsset", blank=True)
 
 
 class PostAsset(models.Model):

@@ -1,4 +1,4 @@
-import { redirect, Route, Routes, useLocation } from 'react-router-dom'
+import { Navigate, redirect, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 
 import Analytics from '../pages/Analytics'
 import AnalyticsSite from '../pages/AnalyticsSite'
@@ -20,20 +20,12 @@ const MainLayout = () => {
     <>
       {location.pathname !== '/login' && <Navbar />}
       <Routes>
-        <Route element={<Home />} path='/home' loader={() => isAuthenticated ? null : redirect('/login')} />
-        <Route element={<Home />} path='/' loader={() => isAuthenticated ? null : redirect('/login')} />
-        <Route element={<Analytics />} path='/analytics' loader={() => isAuthenticated ? null : redirect('/login')} />
-        <Route
-          element={<AnalyticsSite />}
-          path='/analytics/:siteId'
-          loader={() => isAuthenticated ? null : redirect('/login')}
-        />
-        <Route
-          element={<UserManagement />}
-          path='/user-management'
-          loader={() => isAuthenticated ? null : redirect('/login')}
-        />
-        <Route element={<Utilities />} path='/utilities' loader={() => isAuthenticated ? null : redirect('/login')} />
+        <Route element={isAuthenticated ? <Home /> : <Navigate to='/login' />} path={'/home'} />
+        <Route element={isAuthenticated ? <Home /> : <Navigate to='/login' />} path='/' />
+        <Route element={isAuthenticated ? <Analytics /> : <Navigate to='/login' />} path='/analytics' />
+        <Route element={isAuthenticated ? <AnalyticsSite /> : <Navigate to='/login' />} path='/analytics/:siteId' />
+        <Route element={isAuthenticated ? <UserManagement /> : <Navigate to='/login' />} path='/user-management' />
+        <Route element={isAuthenticated ? <Utilities /> : <Navigate to='/login' />} path='/utilities' />
 
         <Route element={<Login />} path='/login' />
         <Route element={<Map />} path='/map' />

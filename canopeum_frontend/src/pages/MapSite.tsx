@@ -51,6 +51,11 @@ const MapSite = () => {
     }
   }
 
+  const addNewPost = (newPost: Post) => {
+    console.log('fsdfvg', newPost)
+    setPosts([...(posts || []), newPost])
+  }
+
   useEffect((): void => {
     void fetchSiteData(Number(siteId) || 1)
     void fetchPosts(Number(siteId) || 1)
@@ -83,7 +88,7 @@ const MapSite = () => {
             <div className='rounded-2 d-flex flex-column gap-4'>
               {site && (
                 <>
-                  {viewMode == 'admin' && <CreatePostWidget site={site} />}
+                  {viewMode == 'admin' && <CreatePostWidget site={site} addNewPost={addNewPost} />}
                   <div className='d-flex flex-column gap-4'>
                     {isLoadingPosts
                       ? (
@@ -97,7 +102,10 @@ const MapSite = () => {
                           <p>{errorPosts.message}</p>
                         </div>
                       )
-                      : posts && posts?.map((post: Post) => <PostWidget key={post.id} post={post} />)}
+                      : posts &&
+                        posts?.sort((a: Post, b: Post) => a.createdAt - b.createdAt).map((post: Post) => (
+                          <PostWidget key={post.id} post={post} />
+                        ))}
                   </div>
                 </>
               )}

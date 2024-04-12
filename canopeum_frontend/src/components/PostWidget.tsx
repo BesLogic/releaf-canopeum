@@ -1,6 +1,7 @@
 import { getApiBaseUrl } from '@services/apiSettings'
 import type { Post } from '../services/api'
 import { formatDate } from '../utils/dateFormatter'
+import AssetGrid from '@components/AssetGrid'
 
 const PostWidget = (props: { readonly post: Post }) => {
   const { post } = props
@@ -21,6 +22,10 @@ const PostWidget = (props: { readonly post: Post }) => {
       </div>
 
       <div>{post.body}</div>
+
+      <div>
+        {post.media && <AssetGrid medias={post.media} />}
+      </div>
 
       <div className='d-flex justify-content-end gap-4'>
         <div className='d-flex gap-2'>

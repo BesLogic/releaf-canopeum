@@ -422,7 +422,7 @@ class SiteOverviewSerializer(serializers.ModelSerializer):
 class PostPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ("site", "body")
+        fields = ("site", "body", "media")
 
 
 class PostSerializer(serializers.ModelSerializer):
