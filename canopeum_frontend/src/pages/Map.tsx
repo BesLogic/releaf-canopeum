@@ -4,12 +4,13 @@ import EducationalFacilityPin from '@assets/icons/pins/educational-facility-pin.
 import FarmsLandPin from '@assets/icons/pins/farms-land-pin.svg'
 import IndegeniousCommunityPin from '@assets/icons/pins/indegenious-community-pin.svg'
 import ParkPin from '@assets/icons/pins/park-pin.svg'
+import { appRoutes } from '@constants/routes.constant'
+import { getApiBaseUrl } from '@services/apiSettings'
 import { useEffect, useState } from 'react'
 import ReactMap, { GeolocateControl, Marker, NavigationControl, ScaleControl, type ViewState } from 'react-map-gl/maplibre'
 import { Link } from 'react-router-dom'
 
 import type { SiteMap } from '../services/api'
-import { getApiBaseUrl } from '@services/apiSettings'
 import getApiClient from '../services/apiInterface'
 
 const pinMap: Record<number, string> = {
@@ -79,14 +80,14 @@ const Map = () => {
         >
           <div className='py-3 d-flex flex-column gap-3'>
             {sites.map(site => (
-              <Link id={`${site.id}`} key={site.id} to={`/map/${site.id}`}>
+              <Link id={`${site.id}`} key={site.id} to={appRoutes.siteSocial(site.id)}>
                 <div className={`card ${selectedSiteId === site.id && 'border border-secondary border-5'}`}>
                   <div className='row g-0'>
                     <div className='col-md-4'>
                       <img
                         alt=''
                         className='img-fluid rounded-start'
-                        src={getApiBaseUrl() + site.image?.asset}
+                        src={getApiBaseUrl() + site.image.asset}
                       />
                     </div>
                     <div className='col-md-8'>

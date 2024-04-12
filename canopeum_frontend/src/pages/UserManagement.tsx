@@ -35,7 +35,11 @@ const UserManagement = () => {
 
   const displayTabContent = () => {
     if (selectedTab === 'termsAndPolicies') {
-      return <div><h1>Terms And Policies</h1></div>
+      return (
+        <div>
+          <h1>Terms And Policies</h1>
+        </div>
+      )
     }
 
     if (selectedTab === 'manageAdmins' && currentUser?.role === 'MegaAdmin') {
@@ -65,17 +69,17 @@ const UserManagement = () => {
 
   return (
     <div className='container py-3 h-100'>
-      <div className="row">
-        <div className="col-3">
+      <div className='row'>
+        <div className='col-3'>
           <div className='bg-white rounded-2 py-3 px-4'>
-            <div className="py-3">
+            <div className='py-3'>
               <h4 className='text-center'>CANOPEUM</h4>
             </div>
 
             <div className='d-flex flex-column gap-2'>{tabsDisplay()}</div>
           </div>
         </div>
-        <div className="col-9">
+        <div className='col-9'>
           {displayTabContent()}
         </div>
       </div>

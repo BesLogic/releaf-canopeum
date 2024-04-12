@@ -1,6 +1,7 @@
 import SiteSponsorProgress from '@components/analytics/SiteSponsorProgress'
 import { LanguageContext } from '@components/context/LanguageContext'
 import CustomIconBadge from '@components/CustomIconBadge'
+import { appRoutes } from '@constants/routes.constant'
 import type { SiteSummary } from '@services/api'
 import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -33,7 +34,7 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
             </div>
           </div>
 
-          <Link className='nav-link' to={`/map/${siteSummary.id}`}>
+          <Link className='nav-link' to={appRoutes.siteSocial(siteSummary.id)}>
             <button className='btn btn-primary' type='button'>{translate('analyticsSite.social-page')}</button>
           </Link>
         </div>

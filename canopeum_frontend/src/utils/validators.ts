@@ -8,4 +8,4 @@ export const isValidEmail = (input: string) => new RegExp(emailRegex).test(input
 
 export const mustMatch = (input1: string, input2: string) => input1 === input2
 
-export type InputValidationError = 'email' | 'mustMatch' | 'password' | 'required'
+export type InputValidationError = 'email' | 'maximumChars' | 'mustMatch' | 'password' | 'required'

@@ -1,4 +1,4 @@
-import { createTheme } from '@mui/material';
+import { createTheme } from '@mui/material'
 
 import variables from './theme-variables.module.scss'
 
@@ -11,7 +11,6 @@ const muiCustomTheme = createTheme({
       contrastText: variables.success,
     },
   },
-});
-
+})
 
 export default muiCustomTheme

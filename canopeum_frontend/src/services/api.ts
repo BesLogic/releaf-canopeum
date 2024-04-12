@@ -1146,7 +1146,7 @@ export class CommentClient {
     return Promise.resolve<Comment[]>(null as any);
   }
 
-  create(postId: number, body: Comment | undefined): Promise<Comment> {
+  create(postId: number, body: CreateComment): Promise<Comment> {
     let url_ = this.baseUrl + "/social/posts/{postId}/comments/";
     if (postId === undefined || postId === null)
       throw new Error("The parameter 'postId' must be defined.");
@@ -1172,12 +1172,12 @@ export class CommentClient {
   protected processCreate(response: Response): Promise<Comment> {
     const status = response.status;
     let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 200) {
+    if (status === 201) {
       return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = Comment.fromJS(resultData200);
-        return result200;
+        let result201: any = null;
+        let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result201 = Comment.fromJS(resultData201);
+        return result201;
       });
     } else if (status !== 200 && status !== 204) {
       return response.text().then((_responseText) => {
@@ -2499,9 +2499,9 @@ export interface IBatchfertilizer {
 
 export class Comment implements IComment {
   readonly id!: number;
-  body?: string | undefined;
-  user?: number | undefined;
-  createdAt?: Date | undefined;
+  body!: string;
+  readonly authorUsername!: string;
+  readonly createdAt!: Date;
 
   [key: string]: any;
 
@@ -2522,8 +2522,8 @@ export class Comment implements IComment {
       }
       (<any>this).id = _data["id"];
       this.body = _data["body"];
-      this.user = _data["user"];
-      this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+      (<any>this).authorUsername = _data["authorUsername"];
+      (<any>this).createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
     }
   }
 
@@ -2542,7 +2542,7 @@ export class Comment implements IComment {
     }
     data["id"] = this.id;
     data["body"] = this.body;
-    data["user"] = this.user;
+    data["authorUsername"] = this.authorUsername;
     data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
     return data;
   }
@@ -2550,9 +2550,9 @@ export class Comment implements IComment {
 
 export interface IComment {
   id: number;
-  body?: string | undefined;
-  user?: number | undefined;
-  createdAt?: Date | undefined;
+  body: string;
+  authorUsername: string;
+  createdAt: Date;
 
   [key: string]: any;
 }
@@ -2753,6 +2753,54 @@ export interface ICoordinatesMap {
   latitude: string;
   longitude: string;
   address?: string | undefined;
+
+  [key: string]: any;
+}
+
+export class CreateComment implements ICreateComment {
+  body!: string;
+
+  [key: string]: any;
+
+  constructor(data?: ICreateComment) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property))
+          this[property] = _data[property];
+      }
+      this.body = _data["body"];
+    }
+  }
+
+  static fromJS(data: any): CreateComment {
+    data = typeof data === 'object' ? data : {};
+    let result = new CreateComment();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    data["body"] = this.body;
+    return data;
+  }
+}
+
+export interface ICreateComment {
+  body: string;
 
   [key: string]: any;
 }

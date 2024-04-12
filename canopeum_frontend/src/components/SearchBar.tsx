@@ -1,5 +1,5 @@
 import { type ChangeEvent, type KeyboardEvent, useEffect, useState } from 'react'
-import { useDebounce } from 'use-debounce';
+import { useDebounce } from 'use-debounce'
 
 type Props = {
   readonly initialValue?: string,
@@ -12,7 +12,7 @@ const DEFAULT_DEBOUNCE_TIME = 300
 
 const SearchBar = ({ initialValue, onChange }: Props) => {
   const [searchValue, setSearchValue] = useState(initialValue ?? '')
-  const [debouncedValue] = useDebounce(searchValue, DEFAULT_DEBOUNCE_TIME);
+  const [debouncedValue] = useDebounce(searchValue, DEFAULT_DEBOUNCE_TIME)
 
   useEffect(() => onChange(debouncedValue), [debouncedValue, onChange])
 

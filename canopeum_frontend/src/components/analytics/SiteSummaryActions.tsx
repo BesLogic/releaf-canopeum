@@ -15,7 +15,7 @@ type Props = {
 
 const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
   const { t: translate } = useTranslation()
-  const whisperRef = useRef<OverlayTriggerHandle>(null);
+  const whisperRef = useRef<OverlayTriggerHandle>(null)
   const [filteredAdmins, setFilteredAdmins] = useState(admins)
   const [selectedAdmins, setSelectedAdmins] = useState(siteSummary.admins.map(admin => admin.user))
   const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false)
@@ -27,10 +27,10 @@ const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
 
   const handleSnackbarClose = (_event: Event | SyntheticEvent, reason?: string) => {
     if (reason === 'clickaway') {
-      return;
+      return
     }
 
-    setShowSuccessSnackbar(false);
+    setShowSuccessSnackbar(false)
   }
 
   const onSearchAdmins = useCallback((query: string) =>
@@ -101,13 +101,17 @@ const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
           onClick={onSelectAdminsCancel}
           style={{ minWidth: '6rem' }}
           type='button'
-        >Cancel</button>
+        >
+          Cancel
+        </button>
         <button
           className='btn btn-primary'
           onClick={onSaveAdmins}
           style={{ minWidth: '6rem' }}
           type='button'
-        >Save</button>
+        >
+          Save
+        </button>
       </div>
     </div>
   )
@@ -144,6 +148,7 @@ const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
           </span>
         </button>
       </Whisper>
+
       <Snackbar
         autoHideDuration={5000}
         onClose={handleSnackbarClose}
@@ -151,9 +156,9 @@ const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
       >
         <Alert
           onClose={handleSnackbarClose}
-          severity="success"
+          severity='success'
           sx={{ width: '100%', boxShadow: 3 }}
-          variant="filled"
+          variant='filled'
         >
           {translate('analytics.site-summary.admins-saved', { siteName: siteSummary.name })}
         </Alert>
