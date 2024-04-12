@@ -1,7 +1,15 @@
 {
   "tabs": {
     "profile-settings": "Edit My Profile",
+    "manage-admins": "Manage Administrators",
     "terms-and-policies": "Terms & Policies",
     "logout": "Log Out"
+  },
+  "profile-settings": {
+    "title": "Edit My Profile"
+  },
+  "manage-admins": {
+    "title": "Manage Administrators",
+    "invite-admin": "Invite an Administrator"
   }
 }

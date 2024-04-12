@@ -1,7 +1,15 @@
 {
   "tabs": {
     "profile-settings": "Modifier Mon Profil",
+    "manage-admins": "Gérer les Administrateurs",
     "terms-and-policies": "Conditions & Politiques",
     "logout": "Se Déconnecter"
+  },
+  "profile-settings": {
+    "title": "Modifier Mon Profil"
+  },
+  "manage-admins": {
+    "title": "Gérer les Administrateurs",
+    "invite-admin": "Inviter un Administrateur"
   }
 }

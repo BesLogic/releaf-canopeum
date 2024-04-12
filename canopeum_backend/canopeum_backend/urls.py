@@ -53,8 +53,8 @@ urlpatterns = [
     path("analytics/sites/<int:siteId>/summary", views.SiteSummaryDetailAPIView.as_view(), name="site-summary-detail"),
     path(
         "analytics/sites/<int:siteId>/admins",
-        views.SiteAdminsAPIView.as_view(),
-        name="site-admin-list",
+        views.SiteDetailAdminsAPIView.as_view(),
+        name="site-detail-admin-list",
     ),
     # Batches
     path("analytics/batches/", views.BatchListAPIView.as_view(), name="batch-list"),
@@ -67,6 +67,12 @@ urlpatterns = [
     path("users/admins", views.AdminUsersListAPIView.as_view(), name="admin-user-list"),
     path("users/<int:userId>/", views.UserDetailAPIView.as_view(), name="user-detail"),
     path("users/current_user/", views.UserCurrentUserAPIView.as_view(), name="current-user"),
+    # Site admins
+    path(
+        "admin-user-sites/",
+        views.AdminUserSitesAPIView.as_view(),
+        name="site_admin-list",
+    ),
     # SWAGGER
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path("api/schema/swagger-ui/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),

@@ -8,6 +8,58 @@
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
+export class AdminUserSitesClient {
+  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+    this.http = http ? http : window as any;
+    this.baseUrl = baseUrl ?? "";
+  }
+
+  all(): Promise<AdminUserSites[]> {
+    let url_ = this.baseUrl + "/admin-user-sites/";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        "Accept": "application/json"
+      }
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processAll(_response);
+    });
+  }
+
+  protected processAll(response: Response): Promise<AdminUserSites[]> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        if (Array.isArray(resultData200)) {
+          result200 = [] as any;
+          for (let item of resultData200)
+            result200!.push(AdminUserSites.fromJS(item));
+        }
+        else {
+          result200 = <any>null;
+        }
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<AdminUserSites[]>(null as any);
+  }
+}
+
 export class BatchClient {
   private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
   private baseUrl: string;
@@ -1755,6 +1807,79 @@ export class UserClient {
     }
     return Promise.resolve<User>(null as any);
   }
+}
+
+export class AdminUserSites implements IAdminUserSites {
+  readonly id!: number;
+  /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
+  username!: string;
+  email!: string;
+  sites!: SiteName[];
+
+  [key: string]: any;
+
+  constructor(data?: IAdminUserSites) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    if (!data) {
+      this.sites = [];
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property))
+          this[property] = _data[property];
+      }
+      (<any>this).id = _data["id"];
+      this.username = _data["username"];
+      this.email = _data["email"];
+      if (Array.isArray(_data["sites"])) {
+        this.sites = [] as any;
+        for (let item of _data["sites"])
+          this.sites!.push(SiteName.fromJS(item));
+      }
+    }
+  }
+
+  static fromJS(data: any): AdminUserSites {
+    data = typeof data === 'object' ? data : {};
+    let result = new AdminUserSites();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    data["id"] = this.id;
+    data["username"] = this.username;
+    data["email"] = this.email;
+    if (Array.isArray(this.sites)) {
+      data["sites"] = [];
+      for (let item of this.sites)
+        data["sites"].push(item.toJSON());
+    }
+    return data;
+  }
+}
+
+export interface IAdminUserSites {
+  id: number;
+  /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
+  username: string;
+  email: string;
+  sites: SiteName[];
+
+  [key: string]: any;
 }
 
 export class Announcement implements IAnnouncement {
@@ -3739,6 +3864,58 @@ export interface ISiteMap {
   siteType: SiteType;
   coordinates: CoordinatesMap;
   image: Asset;
+
+  [key: string]: any;
+}
+
+export class SiteName implements ISiteName {
+  readonly id!: number;
+  name?: string | undefined;
+
+  [key: string]: any;
+
+  constructor(data?: ISiteName) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property))
+          this[property] = _data[property];
+      }
+      (<any>this).id = _data["id"];
+      this.name = _data["name"];
+    }
+  }
+
+  static fromJS(data: any): SiteName {
+    data = typeof data === 'object' ? data : {};
+    let result = new SiteName();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    data["id"] = this.id;
+    data["name"] = this.name;
+    return data;
+  }
+}
+
+export interface ISiteName {
+  id: number;
+  name?: string | undefined;
 
   [key: string]: any;
 }
