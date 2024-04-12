@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from canopeum_backend.permissions import MegaAdminPermission
+from canopeum_backend.permissions import MegaAdminPermission, MegaAdminPermissionReadOnly
 
 from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, Siteadmin, User, Widget
 from .serializers import (
@@ -119,6 +119,8 @@ class SiteListAPIView(APIView):
 
 
 class SiteDetailAPIView(APIView):
+    permission_classes = (MegaAdminPermissionReadOnly,)
+
     @extend_schema(request=SiteSerializer, responses=SiteSerializer, operation_id="site_detail")
     def get(self, request, siteId):
         try:
@@ -142,7 +144,7 @@ class SiteDetailAPIView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @extend_schema(responses=status.HTTP_204_NO_CONTENT, operation_id="site_delete")
+    @extend_schema(responses={status.HTTP_204_NO_CONTENT: None}, operation_id="site_delete")
     def delete(self, request, siteId):
         try:
             site = Site.objects.get(pk=siteId)

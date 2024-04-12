@@ -423,7 +423,7 @@ class SiteSummarySerializer(serializers.ModelSerializer):
     propagation_count = serializers.SerializerMethodField()
     progress = serializers.SerializerMethodField()
     sponsors = serializers.SerializerMethodField()
-    admins = SiteAdminSerializer(source="siteadmin_set", read_only=True, many=True)
+    admins = SiteAdminSerializer(source="siteadmin_set", many=True)
     batches = BatchAnalyticsSerializer(source="batch_set", read_only=True, many=True)
 
     class Meta:

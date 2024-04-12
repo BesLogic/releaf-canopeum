@@ -441,7 +441,10 @@ export class SiteClient {
     return Promise.resolve<Site>(null as any);
   }
 
-  delete(siteId: number): Promise<{ [key: string]: any; }> {
+  /**
+   * @return No response body
+   */
+  delete(siteId: number): Promise<void> {
     let url_ = this.baseUrl + "/analytics/sites/{siteId}/";
     if (siteId === undefined || siteId === null)
       throw new Error("The parameter 'siteId' must be defined.");
@@ -451,7 +454,6 @@ export class SiteClient {
     let options_: RequestInit = {
       method: "DELETE",
       headers: {
-        "Accept": "application/json"
       }
     };
 
@@ -460,31 +462,19 @@ export class SiteClient {
     });
   }
 
-  protected processDelete(response: Response): Promise<{ [key: string]: any; }> {
+  protected processDelete(response: Response): Promise<void> {
     const status = response.status;
     let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 200) {
+    if (status === 204) {
       return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        if (resultData200) {
-          result200 = {} as any;
-          for (let key in resultData200) {
-            if (resultData200.hasOwnProperty(key))
-              (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
-          }
-        }
-        else {
-          result200 = <any>null;
-        }
-        return result200;
+        return;
       });
     } else if (status !== 200 && status !== 204) {
       return response.text().then((_responseText) => {
         return throwException("An unexpected server error occurred.", status, _responseText, _headers);
       });
     }
-    return Promise.resolve<{ [key: string]: any; }>(null as any);
+    return Promise.resolve<void>(null as any);
   }
 
   updateAdmins(siteId: number, body: PatchedSiteAdminUpdateRequest | undefined): Promise<SiteAdmin[]> {
@@ -4138,7 +4128,7 @@ export class SiteSummary implements ISiteSummary {
   visitorCount?: number | undefined;
   readonly sponsors!: string[];
   readonly progress!: number;
-  readonly admins!: SiteAdmin[];
+  admins!: SiteAdmin[];
   readonly batches!: BatchAnalytics[];
 
   [key: string]: any;
@@ -4180,9 +4170,9 @@ export class SiteSummary implements ISiteSummary {
       }
       (<any>this).progress = _data["progress"];
       if (Array.isArray(_data["admins"])) {
-        (<any>this).admins = [] as any;
+        this.admins = [] as any;
         for (let item of _data["admins"])
-          (<any>this).admins!.push(SiteAdmin.fromJS(item));
+          this.admins!.push(SiteAdmin.fromJS(item));
       }
       if (Array.isArray(_data["batches"])) {
         (<any>this).batches = [] as any;
