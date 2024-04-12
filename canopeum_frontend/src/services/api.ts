@@ -371,50 +371,88 @@ export class SiteClient {
       return Promise.resolve<Site>(null as any);
   }
 
-  delete(siteId: number): Promise<{ [key: string]: any; }> {
-      let url_ = this.baseUrl + "/analytics/sites/{siteId}/";
-      if (siteId === undefined || siteId === null)
-          throw new Error("The parameter 'siteId' must be defined.");
-      url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
-      url_ = url_.replace(/[?&]$/, "");
+  /**
+   * @return No response body
+   */
+  delete(siteId: number): Promise<void> {
+    let url_ = this.baseUrl + "/analytics/sites/{siteId}/";
+    if (siteId === undefined || siteId === null)
+      throw new Error("The parameter 'siteId' must be defined.");
+    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+    url_ = url_.replace(/[?&]$/, "");
 
-      let options_: RequestInit = {
-          method: "DELETE",
-          headers: {
-              "Accept": "application/json"
-          }
-      };
+    let options_: RequestInit = {
+      method: "DELETE",
+      headers: {
+      }
+    };
 
       return this.http.fetch(url_, options_).then((_response: Response) => {
           return this.processDelete(_response);
       });
   }
 
-  protected processDelete(response: Response): Promise<{ [key: string]: any; }> {
-      const status = response.status;
-      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
-          return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          if (resultData200) {
-              result200 = {} as any;
-              for (let key in resultData200) {
-                  if (resultData200.hasOwnProperty(key))
-                      (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
-              }
-          }
-          else {
-              result200 = <any>null;
-          }
-          return result200;
-          });
-      } else if (status !== 200 && status !== 204) {
-          return response.text().then((_responseText) => {
-          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-          });
+  protected processDelete(response: Response): Promise<void> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 204) {
+      return response.text().then((_responseText) => {
+        return;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<void>(null as any);
+  }
+
+  updateAdmins(siteId: number, body: PatchedSiteAdminUpdateRequest | undefined): Promise<SiteAdmin[]> {
+    let url_ = this.baseUrl + "/analytics/sites/{siteId}/admins";
+    if (siteId === undefined || siteId === null)
+      throw new Error("The parameter 'siteId' must be defined.");
+    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
       }
-      return Promise.resolve<{ [key: string]: any; }>(null as any);
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processUpdateAdmins(_response);
+    });
+  }
+
+  protected processUpdateAdmins(response: Response): Promise<SiteAdmin[]> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        if (Array.isArray(resultData200)) {
+          result200 = [] as any;
+          for (let item of resultData200)
+            result200!.push(SiteAdmin.fromJS(item));
+        }
+        else {
+          result200 = <any>null;
+        }
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<SiteAdmin[]>(null as any);
   }
 
   summary(siteId: number): Promise<SiteSummary> {
@@ -530,65 +568,6 @@ export class SiteClient {
           });
       }
       return Promise.resolve<SiteSocial>(null as any);
-  }
-}
-
-export class AdminsClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-      this.http = http ? http : window as any;
-      this.baseUrl = baseUrl ?? "";
-  }
-
-  update(siteId: number, body: { [key: string]: any; } | undefined): Promise<SiteAdmin[]> {
-      let url_ = this.baseUrl + "/analytics/sites/{siteId}/admins";
-      if (siteId === undefined || siteId === null)
-          throw new Error("The parameter 'siteId' must be defined.");
-      url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
-      url_ = url_.replace(/[?&]$/, "");
-
-      const content_ = JSON.stringify(body);
-
-      let options_: RequestInit = {
-          body: content_,
-          method: "PATCH",
-          headers: {
-              "Content-Type": "application/json",
-              "Accept": "application/json"
-          }
-      };
-
-      return this.http.fetch(url_, options_).then((_response: Response) => {
-          return this.processUpdate(_response);
-      });
-  }
-
-  protected processUpdate(response: Response): Promise<SiteAdmin[]> {
-      const status = response.status;
-      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
-          return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          if (Array.isArray(resultData200)) {
-              result200 = [] as any;
-              for (let item of resultData200)
-                  result200!.push(SiteAdmin.fromJS(item));
-          }
-          else {
-              result200 = <any>null;
-          }
-          return result200;
-          });
-      } else if (status !== 200 && status !== 204) {
-          return response.text().then((_responseText) => {
-          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-          });
-      }
-      return Promise.resolve<SiteAdmin[]>(null as any);
   }
 }
 
@@ -716,9 +695,9 @@ export class AuthenticationClient {
       this.baseUrl = baseUrl ?? "";
   }
 
-  login(body: AuthUserRequest): Promise<User> {
-      let url_ = this.baseUrl + "/auth/login/";
-      url_ = url_.replace(/[?&]$/, "");
+  login(body: LoginUser): Promise<UserToken> {
+    let url_ = this.baseUrl + "/auth/login/";
+    url_ = url_.replace(/[?&]$/, "");
 
       const content_ = JSON.stringify(body);
 
@@ -736,22 +715,22 @@ export class AuthenticationClient {
       });
   }
 
-  protected processLogin(response: Response): Promise<User> {
-      const status = response.status;
-      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
-          return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = User.fromJS(resultData200);
-          return result200;
-          });
-      } else if (status !== 200 && status !== 204) {
-          return response.text().then((_responseText) => {
-          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-          });
-      }
-      return Promise.resolve<User>(null as any);
+  protected processLogin(response: Response): Promise<UserToken> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = UserToken.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<UserToken>(null as any);
   }
 
   logout(): Promise<{ [key: string]: any; }> {
@@ -797,9 +776,9 @@ export class AuthenticationClient {
       return Promise.resolve<{ [key: string]: any; }>(null as any);
   }
 
-  register(body: UserRequest): Promise<AuthUser> {
-      let url_ = this.baseUrl + "/auth/register/";
-      url_ = url_.replace(/[?&]$/, "");
+  register(body: RegisterUser): Promise<UserToken> {
+    let url_ = this.baseUrl + "/auth/register/";
+    url_ = url_.replace(/[?&]$/, "");
 
       const content_ = JSON.stringify(body);
 
@@ -817,22 +796,22 @@ export class AuthenticationClient {
       });
   }
 
-  protected processRegister(response: Response): Promise<AuthUser> {
-      const status = response.status;
-      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
-          return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = AuthUser.fromJS(resultData200);
-          return result200;
-          });
-      } else if (status !== 200 && status !== 204) {
-          return response.text().then((_responseText) => {
-          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-          });
-      }
-      return Promise.resolve<AuthUser>(null as any);
+  protected processRegister(response: Response): Promise<UserToken> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 201) {
+      return response.text().then((_responseText) => {
+        let result201: any = null;
+        let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result201 = UserToken.fromJS(resultData201);
+        return result201;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<UserToken>(null as any);
   }
 }
 
@@ -1093,12 +1072,12 @@ export class CommentClient {
       return Promise.resolve<Comment[]>(null as any);
   }
 
-  create(postId: number, body: CommentRequest | undefined): Promise<Comment> {
-      let url_ = this.baseUrl + "/social/posts/{postId}/comments/";
-      if (postId === undefined || postId === null)
-          throw new Error("The parameter 'postId' must be defined.");
-      url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
-      url_ = url_.replace(/[?&]$/, "");
+  create(postId: number, body: CreateComment): Promise<Comment> {
+    let url_ = this.baseUrl + "/social/posts/{postId}/comments/";
+    if (postId === undefined || postId === null)
+      throw new Error("The parameter 'postId' must be defined.");
+    url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
+    url_ = url_.replace(/[?&]$/, "");
 
       const content_ = JSON.stringify(body);
 
@@ -1117,21 +1096,21 @@ export class CommentClient {
   }
 
   protected processCreate(response: Response): Promise<Comment> {
-      const status = response.status;
-      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
-          return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = Comment.fromJS(resultData200);
-          return result200;
-          });
-      } else if (status !== 200 && status !== 204) {
-          return response.text().then((_responseText) => {
-          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-          });
-      }
-      return Promise.resolve<Comment>(null as any);
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 201) {
+      return response.text().then((_responseText) => {
+        let result201: any = null;
+        let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result201 = Comment.fromJS(resultData201);
+        return result201;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<Comment>(null as any);
   }
 
   /**
@@ -1680,6 +1659,47 @@ export class UserClient {
       return Promise.resolve<User>(null as any);
   }
 
+  allAdmins(): Promise<User[]> {
+    let url_ = this.baseUrl + "/users/admins";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        "Accept": "application/json"
+      }
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processAllAdmins(_response);
+    });
+  }
+
+  protected processAllAdmins(response: Response): Promise<User[]> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        if (Array.isArray(resultData200)) {
+          result200 = [] as any;
+          for (let item of resultData200)
+            result200!.push(User.fromJS(item));
+        }
+        else {
+          result200 = <any>null;
+        }
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<User[]>(null as any);
+  }
+
   current(): Promise<User> {
       let url_ = this.baseUrl + "/users/current_user/";
       url_ = url_.replace(/[?&]$/, "");
@@ -1867,174 +1887,6 @@ export class Asset implements IAsset {
 
 export interface IAsset {
   asset: string;
-
-  [key: string]: any;
-}
-
-export class AssetRequest implements IAssetRequest {
-  asset!: string;
-
-  [key: string]: any;
-
-  constructor(data?: IAssetRequest) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-  }
-
-  init(_data?: any) {
-      if (_data) {
-          for (var property in _data) {
-              if (_data.hasOwnProperty(property))
-                  this[property] = _data[property];
-          }
-          this.asset = _data["asset"];
-      }
-  }
-
-  static fromJS(data: any): AssetRequest {
-      data = typeof data === 'object' ? data : {};
-      let result = new AssetRequest();
-      result.init(data);
-      return result;
-  }
-
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      for (var property in this) {
-          if (this.hasOwnProperty(property))
-              data[property] = this[property];
-      }
-      data["asset"] = this.asset;
-      return data;
-  }
-}
-
-export interface IAssetRequest {
-  asset: string;
-
-  [key: string]: any;
-}
-
-export class AuthUser implements IAuthUser {
-  readonly id!: number;
-  /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
-  username!: string;
-  email?: string;
-  password!: string;
-
-  [key: string]: any;
-
-  constructor(data?: IAuthUser) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-  }
-
-  init(_data?: any) {
-      if (_data) {
-          for (var property in _data) {
-              if (_data.hasOwnProperty(property))
-                  this[property] = _data[property];
-          }
-          (<any>this).id = _data["id"];
-          this.username = _data["username"];
-          this.email = _data["email"];
-          this.password = _data["password"];
-      }
-  }
-
-  static fromJS(data: any): AuthUser {
-      data = typeof data === 'object' ? data : {};
-      let result = new AuthUser();
-      result.init(data);
-      return result;
-  }
-
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      for (var property in this) {
-          if (this.hasOwnProperty(property))
-              data[property] = this[property];
-      }
-      data["id"] = this.id;
-      data["username"] = this.username;
-      data["email"] = this.email;
-      data["password"] = this.password;
-      return data;
-  }
-}
-
-export interface IAuthUser {
-  id: number;
-  /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
-  username: string;
-  email?: string;
-  password: string;
-
-  [key: string]: any;
-}
-
-export class AuthUserRequest implements IAuthUserRequest {
-  /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
-  username!: string;
-  email?: string;
-  password!: string;
-
-  [key: string]: any;
-
-  constructor(data?: IAuthUserRequest) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-  }
-
-  init(_data?: any) {
-      if (_data) {
-          for (var property in _data) {
-              if (_data.hasOwnProperty(property))
-                  this[property] = _data[property];
-          }
-          this.username = _data["username"];
-          this.email = _data["email"];
-          this.password = _data["password"];
-      }
-  }
-
-  static fromJS(data: any): AuthUserRequest {
-      data = typeof data === 'object' ? data : {};
-      let result = new AuthUserRequest();
-      result.init(data);
-      return result;
-  }
-
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      for (var property in this) {
-          if (this.hasOwnProperty(property))
-              data[property] = this[property];
-      }
-      data["username"] = this.username;
-      data["email"] = this.email;
-      data["password"] = this.password;
-      return data;
-  }
-}
-
-export interface IAuthUserRequest {
-  /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
-  username: string;
-  email?: string;
-  password: string;
 
   [key: string]: any;
 }
@@ -2632,9 +2484,9 @@ export interface IBatchfertilizer {
 
 export class Comment implements IComment {
   readonly id!: number;
-  body?: string | undefined;
-  user?: number | undefined;
-  createdAt?: Date | undefined;
+  body!: string;
+  readonly authorUsername!: string;
+  readonly createdAt!: Date;
 
   [key: string]: any;
 
@@ -2658,6 +2510,11 @@ export class Comment implements IComment {
           this.user = _data["user"];
           this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
       }
+      (<any>this).id = _data["id"];
+      this.body = _data["body"];
+      (<any>this).authorUsername = _data["authorUsername"];
+      (<any>this).createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+    }
   }
 
   static fromJS(data: any): Comment {
@@ -2668,24 +2525,24 @@ export class Comment implements IComment {
   }
 
   toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      for (var property in this) {
-          if (this.hasOwnProperty(property))
-              data[property] = this[property];
-      }
-      data["id"] = this.id;
-      data["body"] = this.body;
-      data["user"] = this.user;
-      data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
-      return data;
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    data["id"] = this.id;
+    data["body"] = this.body;
+    data["authorUsername"] = this.authorUsername;
+    data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+    return data;
   }
 }
 
 export interface IComment {
   id: number;
-  body?: string | undefined;
-  user?: number | undefined;
-  createdAt?: Date | undefined;
+  body: string;
+  authorUsername: string;
+  createdAt: Date;
 
   [key: string]: any;
 }
@@ -3018,66 +2875,50 @@ export interface ICoordinatesMap {
   [key: string]: any;
 }
 
-export class CoordinatesRequest implements ICoordinatesRequest {
-  dmsLatitude?: string | undefined;
-  dmsLongitude?: string | undefined;
-  ddLatitude?: string | undefined;
-  ddLongitude?: string | undefined;
-  address?: string | undefined;
+export class CreateComment implements ICreateComment {
+  body!: string;
 
   [key: string]: any;
 
-  constructor(data?: ICoordinatesRequest) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
+  constructor(data?: ICreateComment) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
       }
+    }
   }
 
   init(_data?: any) {
-      if (_data) {
-          for (var property in _data) {
-              if (_data.hasOwnProperty(property))
-                  this[property] = _data[property];
-          }
-          this.dmsLatitude = _data["dmsLatitude"];
-          this.dmsLongitude = _data["dmsLongitude"];
-          this.ddLatitude = _data["ddLatitude"];
-          this.ddLongitude = _data["ddLongitude"];
-          this.address = _data["address"];
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property))
+          this[property] = _data[property];
       }
+      this.body = _data["body"];
+    }
   }
 
-  static fromJS(data: any): CoordinatesRequest {
-      data = typeof data === 'object' ? data : {};
-      let result = new CoordinatesRequest();
-      result.init(data);
-      return result;
+  static fromJS(data: any): CreateComment {
+    data = typeof data === 'object' ? data : {};
+    let result = new CreateComment();
+    result.init(data);
+    return result;
   }
 
   toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      for (var property in this) {
-          if (this.hasOwnProperty(property))
-              data[property] = this[property];
-      }
-      data["dmsLatitude"] = this.dmsLatitude;
-      data["dmsLongitude"] = this.dmsLongitude;
-      data["ddLatitude"] = this.ddLatitude;
-      data["ddLongitude"] = this.ddLongitude;
-      data["address"] = this.address;
-      return data;
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    data["body"] = this.body;
+    return data;
   }
 }
 
-export interface ICoordinatesRequest {
-  dmsLatitude?: string | undefined;
-  dmsLongitude?: string | undefined;
-  ddLatitude?: string | undefined;
-  ddLongitude?: string | undefined;
-  address?: string | undefined;
+export interface ICreateComment {
+  body: string;
 
   [key: string]: any;
 }
@@ -3138,9 +2979,62 @@ export interface ILike {
   [key: string]: any;
 }
 
-export class LikeRequest implements ILikeRequest {
-  user?: number | undefined;
-  post?: number | undefined;
+export class LoginUser implements ILoginUser {
+  email!: string;
+  password!: string;
+
+  [key: string]: any;
+
+  constructor(data?: ILoginUser) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property))
+          this[property] = _data[property];
+      }
+      this.email = _data["email"];
+      this.password = _data["password"];
+    }
+  }
+
+  static fromJS(data: any): LoginUser {
+    data = typeof data === 'object' ? data : {};
+    let result = new LoginUser();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    data["email"] = this.email;
+    data["password"] = this.password;
+    return data;
+  }
+}
+
+export interface ILoginUser {
+  email: string;
+  password: string;
+
+  [key: string]: any;
+}
+
+export class PatchedAnnouncement implements IPatchedAnnouncement {
+  readonly id?: number;
+  body?: string | undefined;
+  link?: string | undefined;
 
   [key: string]: any;
 
@@ -3478,7 +3372,65 @@ export interface IPatchedSiteRequest {
   [key: string]: any;
 }
 
-export class PatchedUserRequest implements IPatchedUserRequest {
+export class PatchedSiteAdminUpdateRequest implements IPatchedSiteAdminUpdateRequest {
+  ids?: number[];
+
+  [key: string]: any;
+
+  constructor(data?: IPatchedSiteAdminUpdateRequest) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property))
+          this[property] = _data[property];
+      }
+      if (Array.isArray(_data["ids"])) {
+        this.ids = [] as any;
+        for (let item of _data["ids"])
+          this.ids!.push(item);
+      }
+    }
+  }
+
+  static fromJS(data: any): PatchedSiteAdminUpdateRequest {
+    data = typeof data === 'object' ? data : {};
+    let result = new PatchedSiteAdminUpdateRequest();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    if (Array.isArray(this.ids)) {
+      data["ids"] = [];
+      for (let item of this.ids)
+        data["ids"].push(item);
+    }
+    return data;
+  }
+}
+
+export interface IPatchedSiteAdminUpdateRequest {
+  ids?: number[];
+
+  [key: string]: any;
+}
+
+export class PatchedUser implements IPatchedUser {
+  readonly id?: number;
+  readonly role?: string;
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;
@@ -3486,13 +3438,12 @@ export class PatchedUserRequest implements IPatchedUserRequest {
   username?: string;
   firstName?: string;
   lastName?: string;
-  email?: string;
   /** Designates whether the user can log into this admin site. */
   isStaff?: boolean;
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
   isActive?: boolean;
   dateJoined?: Date;
-  role?: number;
+  email?: string;
   /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
   groups?: number[];
   /** Specific permissions for this user. */
@@ -3536,6 +3487,28 @@ export class PatchedUserRequest implements IPatchedUserRequest {
                   this.userPermissions!.push(item);
           }
       }
+      (<any>this).id = _data["id"];
+      (<any>this).role = _data["role"];
+      this.lastLogin = _data["lastLogin"] ? new Date(_data["lastLogin"].toString()) : <any>undefined;
+      this.isSuperuser = _data["isSuperuser"];
+      this.username = _data["username"];
+      this.firstName = _data["firstName"];
+      this.lastName = _data["lastName"];
+      this.isStaff = _data["isStaff"];
+      this.isActive = _data["isActive"];
+      this.dateJoined = _data["dateJoined"] ? new Date(_data["dateJoined"].toString()) : <any>undefined;
+      this.email = _data["email"];
+      if (Array.isArray(_data["groups"])) {
+        this.groups = [] as any;
+        for (let item of _data["groups"])
+          this.groups!.push(item);
+      }
+      if (Array.isArray(_data["userPermissions"])) {
+        this.userPermissions = [] as any;
+        for (let item of _data["userPermissions"])
+          this.userPermissions!.push(item);
+      }
+    }
   }
 
   static fromJS(data: any): PatchedUserRequest {
@@ -3546,36 +3519,39 @@ export class PatchedUserRequest implements IPatchedUserRequest {
   }
 
   toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      for (var property in this) {
-          if (this.hasOwnProperty(property))
-              data[property] = this[property];
-      }
-      data["lastLogin"] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined;
-      data["isSuperuser"] = this.isSuperuser;
-      data["username"] = this.username;
-      data["firstName"] = this.firstName;
-      data["lastName"] = this.lastName;
-      data["email"] = this.email;
-      data["isStaff"] = this.isStaff;
-      data["isActive"] = this.isActive;
-      data["dateJoined"] = this.dateJoined ? this.dateJoined.toISOString() : <any>undefined;
-      data["role"] = this.role;
-      if (Array.isArray(this.groups)) {
-          data["groups"] = [];
-          for (let item of this.groups)
-              data["groups"].push(item);
-      }
-      if (Array.isArray(this.userPermissions)) {
-          data["userPermissions"] = [];
-          for (let item of this.userPermissions)
-              data["userPermissions"].push(item);
-      }
-      return data;
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    data["id"] = this.id;
+    data["role"] = this.role;
+    data["lastLogin"] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined;
+    data["isSuperuser"] = this.isSuperuser;
+    data["username"] = this.username;
+    data["firstName"] = this.firstName;
+    data["lastName"] = this.lastName;
+    data["isStaff"] = this.isStaff;
+    data["isActive"] = this.isActive;
+    data["dateJoined"] = this.dateJoined ? this.dateJoined.toISOString() : <any>undefined;
+    data["email"] = this.email;
+    if (Array.isArray(this.groups)) {
+      data["groups"] = [];
+      for (let item of this.groups)
+        data["groups"].push(item);
+    }
+    if (Array.isArray(this.userPermissions)) {
+      data["userPermissions"] = [];
+      for (let item of this.userPermissions)
+        data["userPermissions"].push(item);
+    }
+    return data;
   }
 }
 
-export interface IPatchedUserRequest {
+export interface IPatchedUser {
+  id?: number;
+  role?: string;
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;
@@ -3583,13 +3559,12 @@ export interface IPatchedUserRequest {
   username?: string;
   firstName?: string;
   lastName?: string;
-  email?: string;
   /** Designates whether the user can log into this admin site. */
   isStaff?: boolean;
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
   isActive?: boolean;
   dateJoined?: Date;
-  role?: number;
+  email?: string;
   /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
   groups?: number[];
   /** Specific permissions for this user. */
@@ -3742,6 +3717,125 @@ export interface IPost {
   commentCount: number;
   hasLiked: boolean;
   media: Asset[];
+
+  [key: string]: any;
+}
+
+export class PostPost implements IPostPost {
+  site?: number | undefined;
+  body?: string | undefined;
+
+  [key: string]: any;
+
+  constructor(data?: IPostPost) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property))
+          this[property] = _data[property];
+      }
+      this.site = _data["site"];
+      this.body = _data["body"];
+    }
+  }
+
+  static fromJS(data: any): PostPost {
+    data = typeof data === 'object' ? data : {};
+    let result = new PostPost();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    data["site"] = this.site;
+    data["body"] = this.body;
+    return data;
+  }
+}
+
+export interface IPostPost {
+  site?: number | undefined;
+  body?: string | undefined;
+
+  [key: string]: any;
+}
+
+export class RegisterUser implements IRegisterUser {
+  username!: string;
+  email!: string;
+  password!: string;
+  passwordConfirmation!: string;
+  role?: string;
+
+  [key: string]: any;
+
+  constructor(data?: IRegisterUser) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    if (!data) {
+      this.role = "User";
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property))
+          this[property] = _data[property];
+      }
+      this.username = _data["username"];
+      this.email = _data["email"];
+      this.password = _data["password"];
+      this.passwordConfirmation = _data["passwordConfirmation"];
+      this.role = _data["role"] !== undefined ? _data["role"] : "User";
+    }
+  }
+
+  static fromJS(data: any): RegisterUser {
+    data = typeof data === 'object' ? data : {};
+    let result = new RegisterUser();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    data["username"] = this.username;
+    data["email"] = this.email;
+    data["password"] = this.password;
+    data["passwordConfirmation"] = this.passwordConfirmation;
+    data["role"] = this.role;
+    return data;
+  }
+}
+
+export interface IRegisterUser {
+  username: string;
+  email: string;
+  password: string;
+  passwordConfirmation: string;
+  role?: string;
 
   [key: string]: any;
 }
@@ -4238,7 +4332,7 @@ export class SiteSummary implements ISiteSummary {
   visitorCount?: number | undefined;
   readonly sponsors!: string[];
   readonly progress!: number;
-  readonly admins!: SiteAdmin[];
+  admins!: SiteAdmin[];
   readonly batches!: BatchAnalytics[];
 
   [key: string]: any;
@@ -4290,6 +4384,31 @@ export class SiteSummary implements ISiteSummary {
                   (<any>this).batches!.push(BatchAnalytics.fromJS(item));
           }
       }
+      (<any>this).id = _data["id"];
+      this.name = _data["name"];
+      this.coordinate = _data["coordinate"] ? Coordinates.fromJS(_data["coordinate"]) : new Coordinates();
+      this.siteType = _data["siteType"] ? SiteType.fromJS(_data["siteType"]) : new SiteType();
+      (<any>this).plantCount = _data["plantCount"];
+      (<any>this).survivedCount = _data["survivedCount"];
+      (<any>this).propagationCount = _data["propagationCount"];
+      this.visitorCount = _data["visitorCount"];
+      if (Array.isArray(_data["sponsors"])) {
+        (<any>this).sponsors = [] as any;
+        for (let item of _data["sponsors"])
+          (<any>this).sponsors!.push(item);
+      }
+      (<any>this).progress = _data["progress"];
+      if (Array.isArray(_data["admins"])) {
+        this.admins = [] as any;
+        for (let item of _data["admins"])
+          this.admins!.push(SiteAdmin.fromJS(item));
+      }
+      if (Array.isArray(_data["batches"])) {
+        (<any>this).batches = [] as any;
+        for (let item of _data["batches"])
+          (<any>this).batches!.push(BatchAnalytics.fromJS(item));
+      }
+    }
   }
 
   static fromJS(data: any): SiteSummary {
@@ -4467,6 +4586,8 @@ export interface ISitetreespecies {
 }
 
 export class TokenObtainPair implements ITokenObtainPair {
+  email!: string;
+  password!: string;
   readonly access!: string;
   readonly refresh!: string;
 
@@ -4490,6 +4611,11 @@ export class TokenObtainPair implements ITokenObtainPair {
           (<any>this).access = _data["access"];
           (<any>this).refresh = _data["refresh"];
       }
+      this.email = _data["email"];
+      this.password = _data["password"];
+      (<any>this).access = _data["access"];
+      (<any>this).refresh = _data["refresh"];
+    }
   }
 
   static fromJS(data: any): TokenObtainPair {
@@ -4500,18 +4626,22 @@ export class TokenObtainPair implements ITokenObtainPair {
   }
 
   toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      for (var property in this) {
-          if (this.hasOwnProperty(property))
-              data[property] = this[property];
-      }
-      data["access"] = this.access;
-      data["refresh"] = this.refresh;
-      return data;
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    data["email"] = this.email;
+    data["password"] = this.password;
+    data["access"] = this.access;
+    data["refresh"] = this.refresh;
+    return data;
   }
 }
 
 export interface ITokenObtainPair {
+  email: string;
+  password: string;
   access: string;
   refresh: string;
 
@@ -4668,6 +4798,7 @@ export interface ITokenRefreshRequest {
 
 export class User implements IUser {
   readonly id!: number;
+  readonly role!: string;
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;
@@ -4675,13 +4806,12 @@ export class User implements IUser {
   username!: string;
   firstName?: string;
   lastName?: string;
-  email?: string;
   /** Designates whether the user can log into this admin site. */
   isStaff?: boolean;
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
   isActive?: boolean;
   dateJoined?: Date;
-  role?: number;
+  email!: string;
   /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
   groups?: number[];
   /** Specific permissions for this user. */
@@ -4726,6 +4856,28 @@ export class User implements IUser {
                   this.userPermissions!.push(item);
           }
       }
+      (<any>this).id = _data["id"];
+      (<any>this).role = _data["role"];
+      this.lastLogin = _data["lastLogin"] ? new Date(_data["lastLogin"].toString()) : <any>undefined;
+      this.isSuperuser = _data["isSuperuser"];
+      this.username = _data["username"];
+      this.firstName = _data["firstName"];
+      this.lastName = _data["lastName"];
+      this.isStaff = _data["isStaff"];
+      this.isActive = _data["isActive"];
+      this.dateJoined = _data["dateJoined"] ? new Date(_data["dateJoined"].toString()) : <any>undefined;
+      this.email = _data["email"];
+      if (Array.isArray(_data["groups"])) {
+        this.groups = [] as any;
+        for (let item of _data["groups"])
+          this.groups!.push(item);
+      }
+      if (Array.isArray(_data["userPermissions"])) {
+        this.userPermissions = [] as any;
+        for (let item of _data["userPermissions"])
+          this.userPermissions!.push(item);
+      }
+    }
   }
 
   static fromJS(data: any): User {
@@ -4736,38 +4888,39 @@ export class User implements IUser {
   }
 
   toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      for (var property in this) {
-          if (this.hasOwnProperty(property))
-              data[property] = this[property];
-      }
-      data["id"] = this.id;
-      data["lastLogin"] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined;
-      data["isSuperuser"] = this.isSuperuser;
-      data["username"] = this.username;
-      data["firstName"] = this.firstName;
-      data["lastName"] = this.lastName;
-      data["email"] = this.email;
-      data["isStaff"] = this.isStaff;
-      data["isActive"] = this.isActive;
-      data["dateJoined"] = this.dateJoined ? this.dateJoined.toISOString() : <any>undefined;
-      data["role"] = this.role;
-      if (Array.isArray(this.groups)) {
-          data["groups"] = [];
-          for (let item of this.groups)
-              data["groups"].push(item);
-      }
-      if (Array.isArray(this.userPermissions)) {
-          data["userPermissions"] = [];
-          for (let item of this.userPermissions)
-              data["userPermissions"].push(item);
-      }
-      return data;
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    data["id"] = this.id;
+    data["role"] = this.role;
+    data["lastLogin"] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined;
+    data["isSuperuser"] = this.isSuperuser;
+    data["username"] = this.username;
+    data["firstName"] = this.firstName;
+    data["lastName"] = this.lastName;
+    data["isStaff"] = this.isStaff;
+    data["isActive"] = this.isActive;
+    data["dateJoined"] = this.dateJoined ? this.dateJoined.toISOString() : <any>undefined;
+    data["email"] = this.email;
+    if (Array.isArray(this.groups)) {
+      data["groups"] = [];
+      for (let item of this.groups)
+        data["groups"].push(item);
+    }
+    if (Array.isArray(this.userPermissions)) {
+      data["userPermissions"] = [];
+      for (let item of this.userPermissions)
+        data["userPermissions"].push(item);
+    }
+    return data;
   }
 }
 
 export interface IUser {
   id: number;
+  role: string;
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;
@@ -4775,13 +4928,12 @@ export interface IUser {
   username: string;
   firstName?: string;
   lastName?: string;
-  email?: string;
   /** Designates whether the user can log into this admin site. */
   isStaff?: boolean;
   /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
   isActive?: boolean;
   dateJoined?: Date;
-  role?: number;
+  email: string;
   /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
   groups?: number[];
   /** Specific permissions for this user. */
@@ -4790,122 +4942,54 @@ export interface IUser {
   [key: string]: any;
 }
 
-export class UserRequest implements IUserRequest {
-  lastLogin?: Date | undefined;
-  /** Designates that this user has all permissions without explicitly assigning them. */
-  isSuperuser?: boolean;
-  /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
-  username!: string;
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  /** Designates whether the user can log into this admin site. */
-  isStaff?: boolean;
-  /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
-  isActive?: boolean;
-  dateJoined?: Date;
-  role?: number;
-  /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
-  groups?: number[];
-  /** Specific permissions for this user. */
-  userPermissions?: number[];
+export class UserToken implements IUserToken {
+  readonly refresh!: string;
+  readonly access!: string;
 
   [key: string]: any;
 
-  constructor(data?: IUserRequest) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
+  constructor(data?: IUserToken) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
       }
+    }
   }
 
   init(_data?: any) {
-      if (_data) {
-          for (var property in _data) {
-              if (_data.hasOwnProperty(property))
-                  this[property] = _data[property];
-          }
-          this.lastLogin = _data["lastLogin"] ? new Date(_data["lastLogin"].toString()) : <any>undefined;
-          this.isSuperuser = _data["isSuperuser"];
-          this.username = _data["username"];
-          this.firstName = _data["firstName"];
-          this.lastName = _data["lastName"];
-          this.email = _data["email"];
-          this.isStaff = _data["isStaff"];
-          this.isActive = _data["isActive"];
-          this.dateJoined = _data["dateJoined"] ? new Date(_data["dateJoined"].toString()) : <any>undefined;
-          this.role = _data["role"];
-          if (Array.isArray(_data["groups"])) {
-              this.groups = [] as any;
-              for (let item of _data["groups"])
-                  this.groups!.push(item);
-          }
-          if (Array.isArray(_data["userPermissions"])) {
-              this.userPermissions = [] as any;
-              for (let item of _data["userPermissions"])
-                  this.userPermissions!.push(item);
-          }
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property))
+          this[property] = _data[property];
       }
+      (<any>this).refresh = _data["refresh"];
+      (<any>this).access = _data["access"];
+    }
   }
 
-  static fromJS(data: any): UserRequest {
-      data = typeof data === 'object' ? data : {};
-      let result = new UserRequest();
-      result.init(data);
-      return result;
+  static fromJS(data: any): UserToken {
+    data = typeof data === 'object' ? data : {};
+    let result = new UserToken();
+    result.init(data);
+    return result;
   }
 
   toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      for (var property in this) {
-          if (this.hasOwnProperty(property))
-              data[property] = this[property];
-      }
-      data["lastLogin"] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined;
-      data["isSuperuser"] = this.isSuperuser;
-      data["username"] = this.username;
-      data["firstName"] = this.firstName;
-      data["lastName"] = this.lastName;
-      data["email"] = this.email;
-      data["isStaff"] = this.isStaff;
-      data["isActive"] = this.isActive;
-      data["dateJoined"] = this.dateJoined ? this.dateJoined.toISOString() : <any>undefined;
-      data["role"] = this.role;
-      if (Array.isArray(this.groups)) {
-          data["groups"] = [];
-          for (let item of this.groups)
-              data["groups"].push(item);
-      }
-      if (Array.isArray(this.userPermissions)) {
-          data["userPermissions"] = [];
-          for (let item of this.userPermissions)
-              data["userPermissions"].push(item);
-      }
-      return data;
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    data["refresh"] = this.refresh;
+    data["access"] = this.access;
+    return data;
   }
 }
 
-export interface IUserRequest {
-  lastLogin?: Date | undefined;
-  /** Designates that this user has all permissions without explicitly assigning them. */
-  isSuperuser?: boolean;
-  /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
-  username: string;
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  /** Designates whether the user can log into this admin site. */
-  isStaff?: boolean;
-  /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
-  isActive?: boolean;
-  dateJoined?: Date;
-  role?: number;
-  /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
-  groups?: number[];
-  /** Specific permissions for this user. */
-  userPermissions?: number[];
+export interface IUserToken {
+  refresh: string;
+  access: string;
 
   [key: string]: any;
 }

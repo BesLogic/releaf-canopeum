@@ -21,6 +21,7 @@
     "bootstrap": "^5.3.3",
     "i18next": "^23.10.1",
     "i18next-http-backend": "^2.5.0",
+    "jwt-decode": "4.0.0",
     "maplibre-gl": "^4.1.1",
     "material-icons": "^1.13.12",
     "react": "^18.2.0",
@@ -29,7 +30,7 @@
     "react-map-gl": "^7.1.7",
     "react-router-dom": "^6.22.3",
     "rsuite": "^5.58.1",
-    "jwt-decode": "4.0.0"
+    "use-debounce": "^10.0.0"
   },
   "// eslint-*": "Keep Keep these in sync with .pre-commit-config.yaml",
   "devDependencies": {

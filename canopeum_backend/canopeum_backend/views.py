@@ -1,7 +1,6 @@
 from typing import cast
 
 from django.contrib.auth import authenticate
-from django.contrib.auth.models import AbstractBaseUser
 from django.http import QueryDict
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
@@ -12,25 +11,31 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from canopeum_backend.permissions import MegaAdminPermission, MegaAdminPermissionReadOnly
+
 from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, Siteadmin, User, Widget
 from .serializers import (
     AnnouncementSerializer,
     AssetSerializer,
-    AuthUserSerializer,
     BatchAnalyticsSerializer,
     BatchSerializer,
     CommentSerializer,
     ContactSerializer,
+    CreateCommentSerializer,
     LikeSerializer,
+    LoginUserSerializer,
     PostPostSerializer,
     PostSerializer,
+    RegisterUserSerializer,
     SiteAdminSerializer,
+    SiteAdminUpdateRequestSerializer,
     SiteMapSerializer,
     SitePostSerializer,
     SiteSerializer,
     SiteSocialSerializer,
     SiteSummarySerializer,
     UserSerializer,
+    UserTokenSerializer,
     WidgetSerializer,
 )
 
@@ -38,34 +43,48 @@ from .serializers import (
 class LoginAPIView(APIView):
     permission_classes = (AllowAny,)
 
-    @extend_schema(request=AuthUserSerializer, responses=UserSerializer, operation_id="authentication_login")
+    @extend_schema(request=LoginUserSerializer, responses=UserTokenSerializer, operation_id="authentication_login")
     def post(self, request):
-        username = request.data.get("username")
+        email = request.data.get("email")
         password = request.data.get("password")
 
-        user = cast(User, authenticate(username=username, password=password))
+        user = cast(User, authenticate(email=email, password=password))
         if user is not None:
             refresh = cast(RefreshToken, RefreshToken.for_user(user))
+            refresh["username"] = user.username
+            refresh["email"] = user.email
+            refresh["id"] = user.pk
             if user.role is not None:
                 refresh["role"] = user.role.name
-            return Response({"refresh": str(refresh), "access": str(refresh.access_token)}, status=status.HTTP_200_OK)
+
+            serializer = UserTokenSerializer({"refresh": str(refresh), "access": str(refresh.access_token)})
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class RegisterAPIView(APIView):
     permission_classes = (AllowAny,)
 
-    @extend_schema(request=UserSerializer, responses=AuthUserSerializer, operation_id="authentication_register")
+    @extend_schema(
+        request=RegisterUserSerializer, responses={201: UserTokenSerializer}, operation_id="authentication_register"
+    )
     def post(self, request):
-        serializer = AuthUserSerializer(data=request.data)
-        if "role" not in request.data:
-            serializer.role = 1
+        # TODO(NicolasDontigny): Find out how to convert request body properties from camel case to lower snake case
+        request.data["password_confirmation"] = request.data.get("passwordConfirmation")
+        serializer = RegisterUserSerializer(data=request.data)
+
         if serializer.is_valid():
-            user = User.objects.create_user(**serializer.validated_data)
-            refresh = cast(RefreshToken, RefreshToken.for_user(cast(AbstractBaseUser, user)))
-            return Response(
-                {"refresh": str(refresh), "access": str(refresh.access_token)}, status=status.HTTP_201_CREATED
-            )
+            user = serializer.create_user()
+            if user is not None:
+                refresh = cast(RefreshToken, RefreshToken.for_user(user))
+                refresh["username"] = user.username
+                refresh["email"] = user.email
+                refresh["id"] = user.pk
+                if user.role is not None:
+                    refresh["role"] = user.role.name
+
+                serializer = UserTokenSerializer({"refresh": str(refresh), "access": str(refresh.access_token)})
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -85,7 +104,7 @@ class SiteListAPIView(APIView):
 
     parser_classes = (MultiPartParser, FormParser)
 
-    @extend_schema(request=SiteSerializer, responses=SiteSerializer, operation_id="site_create")
+    @extend_schema(request=SiteSerializer, responses={201: SiteSerializer}, operation_id="site_create")
     def post(self, request):
         asset = AssetSerializer(data=request.data)
         if not asset.is_valid():
@@ -99,6 +118,8 @@ class SiteListAPIView(APIView):
 
 
 class SiteDetailAPIView(APIView):
+    permission_classes = (MegaAdminPermissionReadOnly,)
+
     @extend_schema(request=SiteSerializer, responses=SiteSerializer, operation_id="site_detail")
     def get(self, request, siteId):
         try:
@@ -122,7 +143,7 @@ class SiteDetailAPIView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @extend_schema(responses=status.HTTP_204_NO_CONTENT, operation_id="site_delete")
+    @extend_schema(responses={status.HTTP_204_NO_CONTENT: None}, operation_id="site_delete")
     def delete(self, request, siteId):
         try:
             site = Site.objects.get(pk=siteId)
@@ -178,8 +199,13 @@ class SiteSummaryDetailAPIView(APIView):
 
 
 class SiteAdminsAPIView(APIView):
-    # TODO(NicolasDontigny): Find the best way to type the request as a list of integer ids
-    @extend_schema(request=list[str], responses=SiteAdminSerializer(many=True), operation_id="site_admins_update")
+    permission_classes = (MegaAdminPermission,)
+
+    @extend_schema(
+        request=SiteAdminUpdateRequestSerializer,
+        responses=SiteAdminSerializer(many=True),
+        operation_id="site_updateAdmins",
+    )
     def patch(self, request, siteId):
         try:
             site = Site.objects.get(pk=siteId)
@@ -189,7 +215,7 @@ class SiteAdminsAPIView(APIView):
         existing_site_admins = Siteadmin.objects.filter(site=site)
         existing_admin_users = [admin.user for admin in existing_site_admins]
 
-        admin_ids = request.data
+        admin_ids = request.data["ids"]
         updated_admin_users_list = User.objects.filter(id__in=admin_ids)
 
         for user in updated_admin_users_list:
@@ -297,20 +323,22 @@ class PostListAPIView(APIView):
 class CommentListAPIView(APIView):
     @extend_schema(responses=CommentSerializer(many=True), operation_id="comment_all")
     def get(self, request, postId):
-        comments = Comment.objects.filter(post=postId)
+        comments = Comment.objects.filter(post=postId).order_by("-created_at")
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data)
 
-    @extend_schema(request=CommentSerializer, responses=CommentSerializer, operation_id="comment_create")
+    @extend_schema(request=CreateCommentSerializer, responses={201: CommentSerializer}, operation_id="comment_create")
     def post(self, request, postId):
         try:
             post = Post.objects.get(pk=postId)
+            user = User.objects.get(pk=request.user.id)
         except Post.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         serializer = CommentSerializer(data=request.data)
+
         if serializer.is_valid():
-            serializer.save(post=post)
+            serializer.save(post=post, user=user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -358,7 +386,7 @@ class ContactDetailAPIView(APIView):
 
 
 class WidgetListAPIView(APIView):
-    @extend_schema(request=WidgetSerializer, responses=WidgetSerializer, operation_id="widget_create")
+    @extend_schema(request=WidgetSerializer, responses={201: WidgetSerializer}, operation_id="widget_create")
     def post(self, request):
         serializer = WidgetSerializer(data=request.data)
         if serializer.is_valid():
@@ -393,7 +421,7 @@ class WidgetDetailAPIView(APIView):
 
 
 class LikeListAPIView(APIView):
-    @extend_schema(request=LikeSerializer, responses=LikeSerializer, operation_id="like_all")
+    @extend_schema(request=LikeSerializer, responses={201: LikeSerializer}, operation_id="like_all")
     def post(self, request):
         serializer = LikeSerializer(data=request.data)
         if serializer.is_valid():
@@ -409,7 +437,7 @@ class BatchListAPIView(APIView):
         serializer = BatchAnalyticsSerializer(batches, many=True)
         return Response(serializer.data)
 
-    @extend_schema(request=BatchSerializer, responses=BatchSerializer, operation_id="batch_create")
+    @extend_schema(request=BatchSerializer, responses={201: BatchSerializer}, operation_id="batch_create")
     def post(self, request):
         serializer = BatchSerializer(data=request.data)
         if serializer.is_valid():
@@ -450,13 +478,15 @@ class UserListAPIView(APIView):
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
 
-    @extend_schema(request=UserSerializer, responses=UserSerializer, operation_id="user_create")
-    def post(self, request):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class AdminUsersListAPIView(APIView):
+    permission_classes = (MegaAdminPermission,)
+
+    @extend_schema(responses=UserSerializer(many=True), operation_id="user_allAdmins")
+    def get(self, request):
+        users = User.objects.filter(role__name__iexact="admin")
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
 
 
 class UserDetailAPIView(APIView):

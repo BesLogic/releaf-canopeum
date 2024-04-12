@@ -1,8 +1,8 @@
-import { getApiBaseUrl } from '@services/apiSettings'
 import { LanguageContext } from '@components/context/LanguageContext'
 import ToggleSwitch from '@components/inputs/ToggleSwitch'
 import PrimaryIconBadge from '@components/PrimaryIconBadge'
 import type { SiteSocial } from '@services/api'
+import { getApiBaseUrl } from '@services/apiSettings'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -18,8 +18,9 @@ const onFollowClick = () => {
 const updateSiteIsPublic = async (_: boolean) => {
   // TODO Implement site update when backend is ready
 }
-const SiteSummaryCard = ({ site, viewMode }: Props) => {
-  const { t } = useTranslation()
+
+const SiteSocialHeader = ({ site, viewMode }: Props) => {
+  const { t: translate } = useTranslation()
   const { translateValue } = useContext(LanguageContext)
   const [isPublic, setIsPublic] = useState(true)
 
@@ -31,7 +32,7 @@ const SiteSummaryCard = ({ site, viewMode }: Props) => {
         <div
           className='col-md-4'
           style={{
-            backgroundImage: `url('${getApiBaseUrl() + site.image?.asset}')`,
+            backgroundImage: `url('${getApiBaseUrl() + site.image.asset}')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
@@ -44,7 +45,7 @@ const SiteSummaryCard = ({ site, viewMode }: Props) => {
               <h1 className='fw-bold card-title'>{site.name}</h1>
               {viewMode === 'user' && (
                 <button className='btn btn-secondary' onClick={onFollowClick} type='button'>
-                  {t('mapSite.siteSummaryCard.follow')}
+                  {translate('social.site-social-header.follow')}
                 </button>
               )}
               {viewMode === 'admin' && (
@@ -52,19 +53,19 @@ const SiteSummaryCard = ({ site, viewMode }: Props) => {
                   additionalClassNames='fs-4'
                   checked={isPublic}
                   onChange={setIsPublic}
-                  text={t('mapSite.siteSummaryCard.public')}
+                  text={translate('social.site-social-header.public')}
                 />
               )}
             </div>
-            <div className='card-text d-flex flex-row gap-1'>
+            <div className='card-text d-flex flex-row align-items-center gap-1'>
               <PrimaryIconBadge type='school' />
-              <h4 className='fw-bold text-primary'>{translateValue(site.siteType)}</h4>
+              <h4 className='fw-bold text-primary mb-0'>{translateValue(site.siteType)}</h4>
             </div>
-            <p className='card-text'>{site.description ?? ''}</p>
+            <p className='card-text mt-2'>{site.description ?? ''}</p>
             <div className='container fw-bold'>
               <div className='mb-2'>
                 <span className='material-symbols-outlined align-middle'>person</span>
-                <span>{t('mapSite.siteSummaryCard.sponsors')}:</span>
+                <span>{translate('social.site-social-header.sponsors')}:</span>
               </div>
               <div className='row'>
                 {site.sponsors.map(sponsorName => (
@@ -79,4 +80,4 @@ const SiteSummaryCard = ({ site, viewMode }: Props) => {
   )
 }
 
-export default SiteSummaryCard
+export default SiteSocialHeader

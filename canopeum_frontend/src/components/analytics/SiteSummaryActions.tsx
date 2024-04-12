@@ -1,26 +1,39 @@
 import Checkbox from '@components/Checkbox'
+import { SnackbarContext } from '@components/context/SnackbarContext'
 import SearchBar from '@components/SearchBar'
-import type { SiteSummary, User } from '@services/api'
+import type { SiteSummary, User } from '@services/api';
+import { PatchedSiteAdminUpdateRequest } from '@services/api';
 import getApiClient from '@services/apiInterface'
-import { useState } from 'react'
+import { type Dispatch, type SetStateAction, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Dropdown, Popover, Whisper } from 'rsuite'
+import type { OverlayTriggerHandle } from 'rsuite/esm/internals/Overlay/OverlayTrigger'
 
 type Props = {
   readonly siteSummary: SiteSummary,
   readonly admins: User[],
+  readonly onSiteChange: Dispatch<SetStateAction<SiteSummary[]>>,
 }
 
-const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
+const SiteSummaryActions = ({ siteSummary, admins, onSiteChange }: Props) => {
+  const { t: translate } = useTranslation()
+  const { openAlertSnackbar } = useContext(SnackbarContext)
+  const whisperRef = useRef<OverlayTriggerHandle>(null)
   const [filteredAdmins, setFilteredAdmins] = useState(admins)
   const [selectedAdmins, setSelectedAdmins] = useState(siteSummary.admins.map(admin => admin.user))
 
-  const onSearchAdmins = (query: string) =>
+  useEffect(() => {
+    setFilteredAdmins(admins)
+    setSelectedAdmins(siteSummary.admins.map(admin => admin.user))
+  }, [siteSummary.admins, admins])
+
+  const onSearchAdmins = useCallback((query: string) =>
     setFilteredAdmins(admins.filter(admin =>
       admin
         .username
         .toLocaleLowerCase()
         .includes(query.toLocaleLowerCase())
-    ))
+    )), [admins])
 
   const onAdminSelectionChange = (adminId: number, isSelected: boolean) => {
     if (isSelected) {
@@ -36,15 +49,42 @@ const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
     }
   }
 
-  const onSaveAdmins = async () =>
-    await getApiClient()
-      .siteAdminsClient
-      .update(siteSummary.id, selectedAdmins.map(admin => admin.id))
-  // TODO(NicolasDontigny): Do we need to update the parent model here?
+  const onSaveAdmins = async () => {
+    const body = new PatchedSiteAdminUpdateRequest({ ids: selectedAdmins.map(admin => admin.id) })
+
+    const updatedAdmins = await getApiClient()
+      .siteClient
+      .updateAdmins(siteSummary.id, body)
+    // Update the parent model
+    onSiteChange(previous => previous.map(site => {
+      if (site.id === siteSummary.id) {
+        site.admins = updatedAdmins
+      }
+
+      return site
+    }))
+    whisperRef.current?.close()
+    openAlertSnackbar(translate('analytics.site-summary.admins-saved', { siteName: siteSummary.name }))
+  }
 
   const onSelectAdminsCancel = () => {
     setFilteredAdmins([...admins])
     setSelectedAdmins(siteSummary.admins.map(admin => admin.user))
+    whisperRef.current?.close()
+  }
+
+  const onDeleteSite = async () => {
+    whisperRef.current?.close()
+    try {
+      await getApiClient().siteClient.delete(siteSummary.id)
+      openAlertSnackbar(translate('analytics.site-summary.site-deleted', { siteName: siteSummary.name }))
+      onSiteChange(previous => previous.filter(site => site.id !== siteSummary.id))
+    } catch {
+      openAlertSnackbar(
+        translate('analytics.site-summary.site-deleted-error', { siteName: siteSummary.name }),
+        { severity: 'error' }
+      )
+    }
   }
 
   const administratorsSelection = (
@@ -76,13 +116,17 @@ const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
           onClick={onSelectAdminsCancel}
           style={{ minWidth: '6rem' }}
           type='button'
-        >Cancel</button>
+        >
+          Cancel
+        </button>
         <button
           className='btn btn-primary'
           onClick={onSaveAdmins}
           style={{ minWidth: '6rem' }}
           type='button'
-        >Save</button>
+        >
+          Save
+        </button>
       </div>
     </div>
   )
@@ -94,7 +138,7 @@ const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
           {administratorsSelection}
         </Dropdown.Menu>
         <Dropdown.Item>Edit Site Information</Dropdown.Item>
-        <Dropdown.Item>Delete</Dropdown.Item>
+        <Dropdown.Item onClick={onDeleteSite}>Delete</Dropdown.Item>
       </Dropdown.Menu>
     </Popover>
   )
@@ -102,6 +146,7 @@ const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
   return (
     <Whisper
       placement='auto'
+      ref={whisperRef}
       speaker={actionsPopover}
       trigger='click'
     >

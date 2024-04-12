@@ -1,6 +1,7 @@
 import BatchTable from '@components/analytics/BatchTable'
 import SiteSuccessRatesChart from '@components/analytics/SiteSuccessRatesChart'
 import SiteSummaryCard from '@components/analytics/SiteSummaryCard'
+import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { LanguageContext } from '@components/context/LanguageContext'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -11,18 +12,19 @@ import getApiClient from '../services/apiInterface'
 const Analytics = () => {
   const { t } = useTranslation()
   const { formatDate } = useContext(LanguageContext)
+  const { currentUser } = useContext(AuthenticationContext)
   const [siteSummaries, setSiteSummaries] = useState<SiteSummary[]>([])
-  const [admins, setAdmins] = useState<User[]>([])
+  const [adminList, setAdminList] = useState<User[]>([])
 
   const fetchSites = async () => setSiteSummaries(await getApiClient().summaryClient.all())
-  // TODO(NicolasDontigny): Once authentication + permissions are implemented,
-  // Use a new endpoint or query param to get only the admins here
-  const fetchAdmins = async () => setAdmins(await getApiClient().userClient.all())
+  const fetchAdmins = async () => setAdminList(await getApiClient().userClient.allAdmins())
 
   useEffect((): void => {
     void fetchSites()
+    if (currentUser?.role !== 'MegaAdmin') return
+
     void fetchAdmins()
-  }, [])
+  }, [currentUser?.role])
 
   const renderBatches = () =>
     siteSummaries.map(site => {
@@ -85,7 +87,12 @@ const Analytics = () => {
         </div>
 
         <div className='mt-2 row gx-3 gy-3 pb-3'>
-          {siteSummaries.map(site => <SiteSummaryCard admins={admins} key={`site-${site.id}-card`} site={site} />)}
+          {siteSummaries.map(site => <SiteSummaryCard
+            admins={adminList}
+            key={`site-${site.id}-card`}
+            onSiteChange={setSiteSummaries}
+            site={site}
+          />)}
         </div>
 
         <div className='mt-4 bg-white rounded p-3'>

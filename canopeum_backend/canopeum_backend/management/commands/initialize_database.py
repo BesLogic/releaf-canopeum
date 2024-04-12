@@ -280,7 +280,7 @@ class Command(BaseCommand):
             password="Adminbeslogic!",  # noqa: S106 MOCK_PASSWORD
             is_staff=True,
             is_superuser=True,
-            role=Role.objects.get(name="Admin"),
+            role=Role.objects.get(name="MegaAdmin"),
         )
         User.objects.create_user(
             username="Tyrion Lannister",
@@ -305,6 +305,12 @@ class Command(BaseCommand):
             email="oberyn@martell.com",
             password="oberyn123",  # noqa: S106 MOCK_PASSWORD
             role=Role.objects.get(name="Admin"),
+        )
+        User.objects.create_user(
+            username="Normal User",
+            email="normal@user.com",
+            password="normal123",  # noqa: S106 MOCK_PASSWORD
+            role=Role.objects.get(name="User"),
         )
 
     def create_siteadmins(self):

@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { BatchAnalytics } from '../services/api.ts'
-import { ensureError } from '../services/errors.ts'
 import getApiClient from '../services/apiInterface.ts'
+import { ensureError } from '../services/errors.ts'
 
 const Home = () => {
   const { t } = useTranslation()

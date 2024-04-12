@@ -1,18 +1,9 @@
 import { TokenRefresh, TokenRefreshRequest } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { jwtDecode } from 'jwt-decode'
+import type { User, UserRole } from '@models/User'
 import type { FunctionComponent, ReactNode } from 'react'
 import { createContext, memo, useCallback, useEffect, useMemo, useState } from 'react'
-
-export type UserRole = 'MegaAdmin' | 'Admin' | 'User'
-
-type User = {
-  firstname: string,
-  lastname: string,
-  email: string,
-  role: UserRole,
-  image: string,
-}
 
 type IAuthenticationContext = {
   authenticate: (user: User) => void,
@@ -33,7 +24,12 @@ const AuthenticationContextProvider: FunctionComponent<{ readonly children?: Rea
 
   const authenticate = useCallback((newUser: User) => setUser(newUser), [setUser])
 
-  const logout = useCallback(() => setUser(undefined), [setUser])
+  const logout = useCallback(() => {
+    sessionStorage.removeItem('token')
+    sessionStorage.removeItem('refreshToken')
+
+    setUser(undefined)
+  }, [setUser])
 
   const context = useMemo<IAuthenticationContext>(() => (
     {
