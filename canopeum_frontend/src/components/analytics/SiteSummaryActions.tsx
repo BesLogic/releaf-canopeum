@@ -1,9 +1,10 @@
 import Checkbox from '@components/Checkbox'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import SearchBar from '@components/SearchBar'
-import { PatchedSiteAdminUpdateRequest, type SiteSummary, type User } from '@services/api'
+import type { SiteSummary, User } from '@services/api';
+import { PatchedSiteAdminUpdateRequest } from '@services/api';
 import getApiClient from '@services/apiInterface'
-import { type SyntheticEvent, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { type Dispatch, type SetStateAction, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Dropdown, Popover, Whisper } from 'rsuite'
 import type { OverlayTriggerHandle } from 'rsuite/esm/internals/Overlay/OverlayTrigger'
@@ -11,9 +12,10 @@ import type { OverlayTriggerHandle } from 'rsuite/esm/internals/Overlay/OverlayT
 type Props = {
   readonly siteSummary: SiteSummary,
   readonly admins: User[],
+  readonly onSiteChange: Dispatch<SetStateAction<SiteSummary[]>>,
 }
 
-const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
+const SiteSummaryActions = ({ siteSummary, admins, onSiteChange }: Props) => {
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const whisperRef = useRef<OverlayTriggerHandle>(null);
@@ -50,10 +52,17 @@ const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
   const onSaveAdmins = async () => {
     const body = new PatchedSiteAdminUpdateRequest({ ids: selectedAdmins.map(admin => admin.id) })
 
-    await getApiClient()
+    const updatedAdmins = await getApiClient()
       .siteClient
       .updateAdmins(siteSummary.id, body)
-    // TODO(NicolasDontigny): Do we need to update the parent model here?
+    // Update the parent model
+    onSiteChange(previous => previous.map(site => {
+      if (site.id === siteSummary.id) {
+        site.admins = updatedAdmins
+      }
+
+      return site
+    }))
     whisperRef.current?.close()
     openAlertSnackbar(translate('analytics.site-summary.admins-saved', { siteName: siteSummary.name }))
   }
@@ -66,12 +75,16 @@ const SiteSummaryActions = ({ siteSummary, admins }: Props) => {
 
   const onDeleteSite = async () => {
     whisperRef.current?.close()
-    openAlertSnackbar(translate('analytics.site-summary.site-deleted', { siteName: siteSummary.name }))
-    // try {
-    //   await getApiClient().siteClient.delete(siteSummary.id)
-    // } catch {
-
-    // }
+    try {
+      await getApiClient().siteClient.delete(siteSummary.id)
+      openAlertSnackbar(translate('analytics.site-summary.site-deleted', { siteName: siteSummary.name }))
+      onSiteChange(previous => previous.filter(site => site.id !== siteSummary.id))
+    } catch {
+      openAlertSnackbar(
+        translate('analytics.site-summary.site-deleted-error', { siteName: siteSummary.name }),
+        { severity: 'error' }
+      )
+    }
   }
 
   const administratorsSelection = (

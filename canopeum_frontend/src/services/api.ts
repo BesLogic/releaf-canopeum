@@ -3903,7 +3903,7 @@ export class SiteSummary implements ISiteSummary {
   visitorCount?: number | undefined;
   readonly sponsors!: string[];
   readonly progress!: number;
-  readonly admins!: SiteAdmin[];
+  admins!: SiteAdmin[];
   readonly batches!: BatchAnalytics[];
 
   [key: string]: any;
@@ -3945,9 +3945,9 @@ export class SiteSummary implements ISiteSummary {
       }
       (<any>this).progress = _data["progress"];
       if (Array.isArray(_data["admins"])) {
-        (<any>this).admins = [] as any;
+        this.admins = [] as any;
         for (let item of _data["admins"])
-          (<any>this).admins!.push(SiteAdmin.fromJS(item));
+          this.admins!.push(SiteAdmin.fromJS(item));
       }
       if (Array.isArray(_data["batches"])) {
         (<any>this).batches = [] as any;

@@ -3,7 +3,7 @@ import SiteSummaryActions from '@components/analytics/SiteSummaryActions'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import PrimaryIconBadge from '@components/PrimaryIconBadge'
 import type { SiteSummary, User } from '@services/api'
-import { useContext } from 'react'
+import { type Dispatch, type SetStateAction, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
@@ -12,9 +12,10 @@ import CustomIcon from '../icons/CustomIcon'
 type Props = {
   readonly site: SiteSummary,
   readonly admins: User[],
+  readonly onSiteChange: Dispatch<SetStateAction<SiteSummary[]>>,
 }
 
-const SiteSummaryCard = ({ site, admins }: Props) => {
+const SiteSummaryCard = ({ site, admins, onSiteChange }: Props) => {
   const { t: translate } = useTranslation()
   const { currentUser } = useContext(AuthenticationContext)
 
@@ -37,7 +38,8 @@ const SiteSummaryCard = ({ site, admins }: Props) => {
               </div>
             </Link>
 
-            {currentUser?.role === 'MegaAdmin' && <SiteSummaryActions admins={admins} siteSummary={site} />}
+            {currentUser?.role === 'MegaAdmin' &&
+              <SiteSummaryActions admins={admins} onSiteChange={onSiteChange} siteSummary={site} />}
           </div>
 
           <div className='card-subtitle my-1'>
