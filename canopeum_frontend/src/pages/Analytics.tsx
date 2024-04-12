@@ -87,7 +87,12 @@ const Analytics = () => {
         </div>
 
         <div className='mt-2 row gx-3 gy-3 pb-3'>
-          {siteSummaries.map(site => <SiteSummaryCard admins={adminList} key={`site-${site.id}-card`} site={site} />)}
+          {siteSummaries.map(site => <SiteSummaryCard
+            admins={adminList}
+            key={`site-${site.id}-card`}
+            onSiteChange={setSiteSummaries}
+            site={site}
+          />)}
         </div>
 
         <div className='mt-4 bg-white rounded p-3'>
