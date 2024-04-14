@@ -1,17 +1,20 @@
-import { type ChangeEvent, useState } from 'react'
+import { type ChangeEvent, useState, useContext } from 'react'
 import { Asset, type FileParameter, type Post, type SiteSocial } from '../services/api'
 import { ensureError } from '@services/errors'
 import getApiClient from '@services/apiInterface'
 import textAreaAutoGrow from '../utils/textAreaAutoGrow'
 import { useTranslation } from 'react-i18next'
+import { SnackbarContext} from '@components/context/SnackbarContext'
 
 import { numberOfWordsInText } from '../utils/stringUtils'
 import type { InputValidationError } from '../utils/validators'
 import AssetGrid from './AssetGrid'
+import { assetFormatter } from '../utils/assetFormatter'
 
 const CreatePostWidget = (props: { readonly site: SiteSocial, addNewPost: (newPost: Post) => void }) => {
   const { site, addNewPost } = props
   const { t: translate } = useTranslation()
+  const { openAlertSnackbar } = useContext(SnackbarContext)
 
   const [isSendingPost, setIsSendingPost] = useState(false)
   const [errorSendingPost, setErrorSendingPost] = useState<Error | undefined>(undefined)
@@ -42,10 +45,27 @@ const CreatePostWidget = (props: { readonly site: SiteSocial, addNewPost: (newPo
     }
   }
 
-  const formatedFiles = (e: ChangeEvent<HTMLInputElement>) => {
-    Array.prototype.slice.call(e.target.files).forEach((file: File) => {
-      setFiles(prevFiles => [...prevFiles, { fileName: file.name, data: file }])
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    Array.prototype.slice.call(e.target.files).forEach(async (file: File) => {
+      if (!validateFile(file)) return
+      const compressedFile = await assetFormatter(file)
+      setFiles( prevFiles => [...prevFiles, compressedFile])
     })
+  }
+
+  const validateFile = (file: File) => {
+    console.log(file.size, file.type)
+    if (file.size > 1920 * 1920 * 10) {
+      openAlertSnackbar('File too large')
+      return false
+    }
+
+    if (file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'video/mp4') {
+      openAlertSnackbar('File type not supported')
+      return false
+    }
+
+    return true
   }
 
   const removeFile = (index: number) => {
@@ -99,7 +119,7 @@ const CreatePostWidget = (props: { readonly site: SiteSocial, addNewPost: (newPo
           <label className='material-symbols-outlined' htmlFor='file-input' style={{ cursor: 'pointer' }}>
             add_a_photo
           </label>
-          <input className='d-none' id='file-input' type='file' onChange={e => formatedFiles(e)} multiple={true} />
+          <input className='d-none' id='file-input' type='file' onChange={e => handleFileChange(e)} multiple={true} />
         </div>
         <textarea
           className='form-control pt-5 overflow-hidden'

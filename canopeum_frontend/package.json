@@ -19,6 +19,7 @@
     "@mui/x-charts": "^7.0.0",
     "@types/node": "^20.11.30",
     "bootstrap": "^5.3.3",
+    "browser-image-compression": "^2.0.2",
     "i18next": "^23.10.1",
     "i18next-http-backend": "^2.5.0",
     "jwt-decode": "4.0.0",
