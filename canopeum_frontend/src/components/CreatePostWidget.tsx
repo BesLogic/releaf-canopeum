@@ -1,20 +1,35 @@
 import { type ChangeEvent, useState } from 'react'
-import type { FileParameter, Post, SiteSocial } from '../services/api'
+import { Asset, type FileParameter, type Post, type SiteSocial } from '../services/api'
 import { ensureError } from '@services/errors'
 import getApiClient from '@services/apiInterface'
+import textAreaAutoGrow from '../utils/textAreaAutoGrow'
+import { useTranslation } from 'react-i18next'
+
+import { numberOfWordsInText } from '../utils/stringUtils'
+import type { InputValidationError } from '../utils/validators'
+import AssetGrid from './AssetGrid'
 
 const CreatePostWidget = (props: { readonly site: SiteSocial, addNewPost: (newPost: Post) => void }) => {
   const { site, addNewPost } = props
+  const { t: translate } = useTranslation()
 
   const [isSendingPost, setIsSendingPost] = useState(false)
   const [errorSendingPost, setErrorSendingPost] = useState<Error | undefined>(undefined)
   const [postBody, setPostBody] = useState<string>('')
+  const [postBodyNumberOfWords, setPostBodyNumberOfWords] = useState(0)
+  const [postBodyError, setPostBodyError] = useState<InputValidationError | undefined>()
   const [files, setFiles] = useState<FileParameter[]>([])
+
+  const MAXIMUM_WORDS_PER_POST = 3000
 
   const postSitePost = async (site: SiteSocial, body: string, files: FileParameter[]) => {
     setIsSendingPost(true)
     try {
       setIsSendingPost(true)
+
+      const isPostBodyValid = validatePostBody(true)
+      if (!isPostBodyValid) return
+
       const newPost = await getApiClient().postClient.create(1, body, files)
       setFiles([])
       addNewPost(newPost)
@@ -31,6 +46,41 @@ const CreatePostWidget = (props: { readonly site: SiteSocial, addNewPost: (newPo
     Array.prototype.slice.call(e.target.files).forEach((file: File) => {
       setFiles(prevFiles => [...prevFiles, { fileName: file.name, data: file }])
     })
+  }
+
+  const removeFile = (index: number) => {
+    setFiles(files.filter((_, i) => i !== index))
+  }
+
+  const handleCommentBodyChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    const bodyValue = event.target.value
+    const numberOfWords = numberOfWordsInText(bodyValue)
+
+    if (numberOfWords > MAXIMUM_WORDS_PER_POST) return
+
+    setPostBody(bodyValue)
+    setPostBodyNumberOfWords(numberOfWords)
+    textAreaAutoGrow(event.target)
+  }
+
+  const validatePostBody = (forceValidation = false) => {
+    if (!forceValidation && !isSendingPost) return false
+
+    if (!postBody) {
+      setPostBodyError('required')
+
+      return false
+    }
+
+    if (postBodyNumberOfWords > MAXIMUM_WORDS_PER_POST) {
+      setPostBodyError('maximumChars')
+
+      return false
+    }
+
+    setPostBodyError(undefined)
+
+    return true
   }
 
   return (
@@ -52,14 +102,37 @@ const CreatePostWidget = (props: { readonly site: SiteSocial, addNewPost: (newPo
           <input className='d-none' id='file-input' type='file' onChange={e => formatedFiles(e)} multiple={true} />
         </div>
         <textarea
-          className='form-control pt-5'
-          id='exampleFormControlTextarea1'
+          className='form-control pt-5 overflow-hidden'
+          style={{ resize: 'none' }}
           placeholder='Post a New Message...'
           value={postBody}
-          onChange={e => setPostBody(e.target.value)}
+          onChange={e => {
+            handleCommentBodyChange(e)
+          }}
         >
         </textarea>
+        <div className='max-words end-0 text-end' style={{ bottom: '-1.6rem' }}>
+          <span>{postBodyNumberOfWords}/{MAXIMUM_WORDS_PER_POST}</span>
+          <span className='ms-1'>{translate('social.comments.words', { count: MAXIMUM_WORDS_PER_POST })}</span>
+        </div>
+
+        {postBodyError === 'required' && (
+            <span className='help-block text-danger'>
+              {translate('social.posts.post-body-required')}
+            </span>
+          )}
+
+          {postBodyError === 'maximumChars' && (
+            <span className='help-block text-danger'>
+              {translate('social.posts.comment-body-max-chars', { count: MAXIMUM_WORDS_PER_POST })}
+            </span>
+          )}
       </div>
+      { files && 
+        <AssetGrid 
+          medias={files.map(file => (new Asset ({ asset: URL.createObjectURL(file.data), init: {}, toJSON: () => ({}) })))} 
+          isEditable={{ removeFile }} /> 
+      }
     </div>
   )
 }

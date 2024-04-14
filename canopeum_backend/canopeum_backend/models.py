@@ -122,7 +122,7 @@ class Post(models.Model):
     body = models.TextField(blank=False, null=False)
     like_count = models.IntegerField(blank=True, null=True)
     share_count = models.IntegerField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, blank=False, null=False)
     # created_by = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
     media = models.ManyToManyField(Asset, through="PostAsset", blank=True)
 

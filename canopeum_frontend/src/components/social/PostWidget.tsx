@@ -4,6 +4,7 @@ import { getApiBaseUrl } from '@services/apiSettings'
 import { useContext, useState } from 'react'
 
 import type { Post } from '../../services/api'
+import AssetGrid from '@components/AssetGrid'
 
 type Props = {
   readonly post: Post,
@@ -38,6 +39,10 @@ const PostWidget = ({ post }: Props) => {
         </div>
 
         <div>{post.body}</div>
+
+        <div>
+          {post.media && <AssetGrid medias={post.media} />}
+        </div>
 
         <div className='d-flex justify-content-end gap-4'>
           <button className='d-flex gap-2 unstyled-button' type='button'>
