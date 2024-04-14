@@ -2,25 +2,43 @@ import facebookLogo from '@assets/icons/facebook-contact-logo.svg'
 import instagramLogo from '@assets/icons/instagram-contact-logo.svg'
 import linkedinLogo from '@assets/icons/linkedin-contact-logo.svg'
 import xLogo from '@assets/icons/x-contact-logo.svg'
-import type { Contact } from '@services/api'
+import { type Contact,PatchedContact } from '@services/api'
+import getApiClient from '@services/apiInterface'
 import { Link } from 'react-router-dom'
 
 const ContactCard = (
-  { contact, viewMode }: { readonly contact: Contact, readonly viewMode: 'admin' | 'user' | 'visitor' },
+  { contact, site, viewMode }: { readonly contact: Contact, readonly site: string | undefined,
+    readonly viewMode: 'admin' | 'user' | 'visitor',
+    },
 ) => {
+  const editContact = async (event) => {
+    event.preventDefault();
+    const data: PatchedContact = new PatchedContact({
+      address: event.target.contact_address.value,
+      email: event.target.contact_email.value,
+      phone: event.target.contact_phone.value,
+    });
+    console.log(contact.id, Number.parseInt(`${site}`, 10), data);
+    getApiClient().contactClient.update(contact.id, Number.parseInt(`${site}`, 10), data)
+
+  }
   const renderContactCard = () => (
     <div className='card rounded px-3 py-2'>
       <div className='card-body'>
         <div className='d-flex justify-content-between align-items-center pb-3'>
           <h2 className='card-title'>Contact</h2>
           <div>
-            {viewMode === 'admin' && <span className='material-symbols-outlined text-primary fs-2'>edit_square</span>}
+            {viewMode === 'admin' &&
+            <button className='edit-btn bg-transparent'data-bs-target='#editContactModal'
+            data-bs-toggle='modal' type='button'>
+              <span className='material-symbols-outlined text-primary fs-2 pe-0'>edit_square</span>
+            </button>}
           </div>
         </div>
         <div className='info-section d-flex flex-column'>
-          <div className='card-text adress d-flex align-items-center pb-3 gap-2'>
+          <div className='card-text address d-flex align-items-center pb-3 gap-2'>
             <span className='material-symbols-outlined fs-4'>home_work</span>
-            <p className='mb-0'>{contact.address}</p>
+            <p className='mb-0'>{contact.phone}</p>
           </div>
           <div className='email d-flex align-items-center pb-3 gap-2'>
             <span className='material-symbols-outlined fs-4'>mail</span>
@@ -60,6 +78,43 @@ const ContactCard = (
   return (
     <div>
       {renderContactCard()}
+
+      <div
+          aria-hidden='true'
+          aria-labelledby='editContactModalLabel'
+          className='modal fade'
+          id='editContactModal'
+          tabIndex={-1}
+      >
+          <div className='modal-dialog'>
+            <div className='modal-content'>
+              <div className='modal-header'>
+                <h1 className='modal-title fs-5' id='exampleModalLabel'>Edit contact</h1>
+                <button aria-label='Close' className='btn-close' data-bs-dismiss='modal' type='button' />
+              </div>
+              <div className='modal-body d-flex justify-content-center'>
+                <form action="edit" className='col-8' onSubmit={editContact}>
+                  <div className='label-input'>
+                    <label htmlFor='contact-address'>Address</label> <br />
+                    <input id='contact-address' name='contact_address' placeholder={contact.address}
+                    type="text"/> <br />
+                  </div>
+                  <div className='label-input'>
+                  <label htmlFor='contact-email'>Email adress</label> <br />
+                    <input id='contact-email' name='contact_email' placeholder={contact.email} type="text" /> <br />
+                  </div>
+                  <div className='label-input'>
+                    <label htmlFor='contact-phone'>Phone number</label> <br />
+                    <input id='contact-phone' name='contact_phone' placeholder={contact.phone} type="text" /> <br />
+                  </div>
+                  <div className='modal-footer'>
+                    <button className='btn btn-primary' type='submit'>Save changes</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
     </div>
   )
 }
