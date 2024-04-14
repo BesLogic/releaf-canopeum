@@ -77,7 +77,7 @@ const SiteSocialPage = () => {
           <div className='col-4'>
             <div className='d-flex flex-column gap-4'>
               {site?.announcement && <AnnouncementCard announcement={site.announcement} viewMode={viewMode} />}
-              {site?.contact && <ContactCard contact={site.contact} viewMode={viewMode} />}
+              {site?.contact && <ContactCard contact={site.contact} site={siteId} viewMode={viewMode}/>}
             </div>
           </div>
           <div className='col-8'>
