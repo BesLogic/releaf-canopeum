@@ -52,7 +52,7 @@ const PostCommentsDialog = ({ open, postId, handleClose, viewMode }: Props) => {
       ? translate('social.comments.comment-deletion-confirm-self')
       : translate(
         'social.comments.comment-deletion-confirm-other',
-        { author: confirmCommentDeleteOpen.authorUsername }
+        { author: confirmCommentDeleteOpen.authorUsername },
       )
     setConfirmCommentText(text)
   }, [confirmCommentDeleteOpen, currentUser, translate])
@@ -126,48 +126,50 @@ const PostCommentsDialog = ({ open, postId, handleClose, viewMode }: Props) => {
     <>
       <Dialog fullWidth maxWidth='sm' onClose={handleClose} open={open}>
         <DialogContent className='pb-5'>
-          {viewMode !== 'visitor' && <div className='mb-5'>
-            <div className='d-flex justify-content-between align-items-center pb-1'>
-              <label className='form-label mb-0 flex-grow-1' htmlFor='new-comment-body-input'>
-                <h3 className='mb-0'>{translate('social.comments.leave-a-comment')}</h3>
-              </label>
+          {viewMode !== 'visitor' && (
+            <div className='mb-5'>
+              <div className='d-flex justify-content-between align-items-center pb-1'>
+                <label className='form-label mb-0 flex-grow-1' htmlFor='new-comment-body-input'>
+                  <h3 className='mb-0'>{translate('social.comments.leave-a-comment')}</h3>
+                </label>
 
-              <button className='btn btn-primary' onClick={postComment} type='button'>
-                {translate('social.comments.send')}
-              </button>
-            </div>
-
-            <div>
-              <div className='position-relative'>
-                <textarea
-                  className={`form-control ${commentBodyError && 'is-invalid'}`}
-                  id='new-comment-body-input'
-                  onBlur={() => validateCommentBody()}
-                  onChange={handleCommentBodyChange}
-                  rows={5}
-                  value={commentBody}
-                />
-                <div className='max-words position-absolute end-0 pe-2' style={{ bottom: '-1.6rem' }}>
-                  <span>{commentBodyNumberOfWords}/{MAXIMUM_WORDS_PER_COMMENT}</span>
-                  <span className='ms-1'>
-                    {translate('social.comments.words', { count: MAXIMUM_WORDS_PER_COMMENT })}
-                  </span>
-                </div>
+                <button className='btn btn-primary' onClick={postComment} type='button'>
+                  {translate('social.comments.send')}
+                </button>
               </div>
 
-              {commentBodyError === 'required' && (
-                <span className='help-block text-danger'>
-                  {translate('social.comments.comment-body-required')}
-                </span>
-              )}
+              <div>
+                <div className='position-relative'>
+                  <textarea
+                    className={`form-control ${commentBodyError && 'is-invalid'}`}
+                    id='new-comment-body-input'
+                    onBlur={() => validateCommentBody()}
+                    onChange={handleCommentBodyChange}
+                    rows={5}
+                    value={commentBody}
+                  />
+                  <div className='max-words position-absolute end-0 pe-2' style={{ bottom: '-1.6rem' }}>
+                    <span>{commentBodyNumberOfWords}/{MAXIMUM_WORDS_PER_COMMENT}</span>
+                    <span className='ms-1'>
+                      {translate('social.comments.words', { count: MAXIMUM_WORDS_PER_COMMENT })}
+                    </span>
+                  </div>
+                </div>
 
-              {commentBodyError === 'maximumChars' && (
-                <span className='help-block text-danger'>
-                  {translate('social.comments.comment-body-max-chars', { count: MAXIMUM_WORDS_PER_COMMENT })}
-                </span>
-              )}
+                {commentBodyError === 'required' && (
+                  <span className='help-block text-danger'>
+                    {translate('social.comments.comment-body-required')}
+                  </span>
+                )}
+
+                {commentBodyError === 'maximumChars' && (
+                  <span className='help-block text-danger'>
+                    {translate('social.comments.comment-body-max-chars', { count: MAXIMUM_WORDS_PER_COMMENT })}
+                  </span>
+                )}
+              </div>
             </div>
-          </div>}
+          )}
 
           <div className='d-flex align-items-center gap-1 fw-bold fs-5'>
             <span className='material-symbols-outlined'>sms</span>
@@ -175,16 +177,18 @@ const PostCommentsDialog = ({ open, postId, handleClose, viewMode }: Props) => {
           </div>
 
           <TransitionGroup className='mt-2 d-flex flex-column gap-3'>
-            {comments.map(comment => <CSSTransition
-              classNames='item-fadeinout'
-              key={comment.id}
-              timeout={400}
-            >
-              <PostComment
-                comment={comment}
-                onDelete={handleDeleteCommentClick}
-              />
-            </CSSTransition>)}
+            {comments.map(comment => (
+              <CSSTransition
+                classNames='item-fadeinout'
+                key={comment.id}
+                timeout={400}
+              >
+                <PostComment
+                  comment={comment}
+                  onDelete={handleDeleteCommentClick}
+                />
+              </CSSTransition>
+            ))}
           </TransitionGroup>
         </DialogContent>
       </Dialog>

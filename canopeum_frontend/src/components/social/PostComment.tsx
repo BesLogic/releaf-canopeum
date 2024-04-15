@@ -30,9 +30,11 @@ const PostComment = ({ comment, onDelete }: Props) => {
           </div>
         </div>
 
-        {canDeleteComment && <button className='unstyled-button' onClick={() => onDelete(comment)} type='button'>
-          <span className='material-symbols-outlined text-primary'>cancel</span>
-        </button>}
+        {canDeleteComment && (
+          <button className='unstyled-button' onClick={() => onDelete(comment)} type='button'>
+            <span className='material-symbols-outlined text-primary'>cancel</span>
+          </button>
+        )}
       </div>
 
       <div className='mt-1'>
