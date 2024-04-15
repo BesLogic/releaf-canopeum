@@ -1,4 +1,6 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
+import { PatchedUpdateUser } from '@services/api'
+import getApiClient from '@services/apiInterface'
 import { type InputValidationError, isValidEmail } from '@utils/validators'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -69,10 +71,16 @@ const EditProfile = () => {
   }
 
   const handleSaveProfile = async () => {
+    if (!currentUser) return
+
     const isFormValid = validateForm()
+    console.log('isFormValid:', isFormValid);
     if (!isFormValid) return
 
-    console.log('ACTION');
+    const updatedInfo = new PatchedUpdateUser({ username, email })
+    const updatedUser = await getApiClient().userClient.update(currentUser.id, updatedInfo)
+
+    // TODO(NicolasDontigny): Update currentUser in AuthenticationContext
   }
 
   return (

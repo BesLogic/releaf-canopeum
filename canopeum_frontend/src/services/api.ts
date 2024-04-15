@@ -134,12 +134,12 @@ export class BatchClient {
   protected processCreate(response: Response): Promise<Batch> {
     const status = response.status;
     let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 200) {
+    if (status === 201) {
       return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = Batch.fromJS(resultData200);
-        return result200;
+        let result201: any = null;
+        let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result201 = Batch.fromJS(resultData201);
+        return result201;
       });
     } else if (status !== 200 && status !== 204) {
       return response.text().then((_responseText) => {
@@ -348,12 +348,12 @@ export class SiteClient {
   protected processCreate(response: Response): Promise<Site> {
     const status = response.status;
     let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 200) {
+    if (status === 201) {
       return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = Site.fromJS(resultData200);
-        return result200;
+        let result201: any = null;
+        let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result201 = Site.fromJS(resultData201);
+        return result201;
       });
     } else if (status !== 200 && status !== 204) {
       return response.text().then((_responseText) => {
@@ -1066,12 +1066,12 @@ export class PostClient {
   protected processCreate(response: Response): Promise<Post> {
     const status = response.status;
     let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 200) {
+    if (status === 201) {
       return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = Post.fromJS(resultData200);
-        return result200;
+        let result201: any = null;
+        let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result201 = Post.fromJS(resultData201);
+        return result201;
       });
     } else if (status !== 200 && status !== 204) {
       return response.text().then((_responseText) => {
@@ -1253,12 +1253,12 @@ export class LikeClient {
   protected processAll(response: Response): Promise<Like> {
     const status = response.status;
     let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 200) {
+    if (status === 201) {
       return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = Like.fromJS(resultData200);
-        return result200;
+        let result201: any = null;
+        let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result201 = Like.fromJS(resultData201);
+        return result201;
       });
     } else if (status !== 200 && status !== 204) {
       return response.text().then((_responseText) => {
@@ -1457,12 +1457,12 @@ export class WidgetClient {
   protected processCreate(response: Response): Promise<Widget> {
     const status = response.status;
     let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 200) {
+    if (status === 201) {
       return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = Widget.fromJS(resultData200);
-        return result200;
+        let result201: any = null;
+        let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result201 = Widget.fromJS(resultData201);
+        return result201;
       });
     } else if (status !== 200 && status !== 204) {
       return response.text().then((_responseText) => {
@@ -1607,44 +1607,6 @@ export class UserClient {
     return Promise.resolve<User[]>(null as any);
   }
 
-  create(body: User): Promise<User> {
-    let url_ = this.baseUrl + "/users/";
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(body);
-
-    let options_: RequestInit = {
-      body: content_,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      }
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processCreate(_response);
-    });
-  }
-
-  protected processCreate(response: Response): Promise<User> {
-    const status = response.status;
-    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = User.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<User>(null as any);
-  }
-
   detail(userId: number): Promise<User> {
     let url_ = this.baseUrl + "/users/{userId}/";
     if (userId === undefined || userId === null)
@@ -1682,7 +1644,7 @@ export class UserClient {
     return Promise.resolve<User>(null as any);
   }
 
-  update(userId: number, body: PatchedUser | undefined): Promise<User> {
+  update(userId: number, body: PatchedUpdateUser | undefined): Promise<User> {
     let url_ = this.baseUrl + "/users/{userId}/";
     if (userId === undefined || userId === null)
       throw new Error("The parameter 'userId' must be defined.");
@@ -1804,7 +1766,7 @@ export class AdminUserSites implements IAdminUserSites {
   /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
   username!: string;
   email!: string;
-  sites!: SiteName[];
+  readonly sites!: SiteName[];
 
   [key: string]: any;
 
@@ -1830,9 +1792,9 @@ export class AdminUserSites implements IAdminUserSites {
       this.username = _data["username"];
       this.email = _data["email"];
       if (Array.isArray(_data["sites"])) {
-        this.sites = [] as any;
+        (<any>this).sites = [] as any;
         for (let item of _data["sites"])
-          this.sites!.push(SiteName.fromJS(item));
+          (<any>this).sites!.push(SiteName.fromJS(item));
       }
     }
   }
@@ -3279,30 +3241,14 @@ export interface IPatchedSiteAdminUpdateRequest {
   [key: string]: any;
 }
 
-export class PatchedUser implements IPatchedUser {
-  readonly id?: number;
-  readonly role?: string;
-  lastLogin?: Date | undefined;
-  /** Designates that this user has all permissions without explicitly assigning them. */
-  isSuperuser?: boolean;
+export class PatchedUpdateUser implements IPatchedUpdateUser {
   /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
   username?: string;
-  firstName?: string;
-  lastName?: string;
-  /** Designates whether the user can log into this admin site. */
-  isStaff?: boolean;
-  /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
-  isActive?: boolean;
-  dateJoined?: Date;
   email?: string;
-  /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
-  groups?: number[];
-  /** Specific permissions for this user. */
-  userPermissions?: number[];
 
   [key: string]: any;
 
-  constructor(data?: IPatchedUser) {
+  constructor(data?: IPatchedUpdateUser) {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property))
@@ -3317,33 +3263,14 @@ export class PatchedUser implements IPatchedUser {
         if (_data.hasOwnProperty(property))
           this[property] = _data[property];
       }
-      (<any>this).id = _data["id"];
-      (<any>this).role = _data["role"];
-      this.lastLogin = _data["lastLogin"] ? new Date(_data["lastLogin"].toString()) : <any>undefined;
-      this.isSuperuser = _data["isSuperuser"];
       this.username = _data["username"];
-      this.firstName = _data["firstName"];
-      this.lastName = _data["lastName"];
-      this.isStaff = _data["isStaff"];
-      this.isActive = _data["isActive"];
-      this.dateJoined = _data["dateJoined"] ? new Date(_data["dateJoined"].toString()) : <any>undefined;
       this.email = _data["email"];
-      if (Array.isArray(_data["groups"])) {
-        this.groups = [] as any;
-        for (let item of _data["groups"])
-          this.groups!.push(item);
-      }
-      if (Array.isArray(_data["userPermissions"])) {
-        this.userPermissions = [] as any;
-        for (let item of _data["userPermissions"])
-          this.userPermissions!.push(item);
-      }
     }
   }
 
-  static fromJS(data: any): PatchedUser {
+  static fromJS(data: any): PatchedUpdateUser {
     data = typeof data === 'object' ? data : {};
-    let result = new PatchedUser();
+    let result = new PatchedUpdateUser();
     result.init(data);
     return result;
   }
@@ -3354,51 +3281,16 @@ export class PatchedUser implements IPatchedUser {
       if (this.hasOwnProperty(property))
         data[property] = this[property];
     }
-    data["id"] = this.id;
-    data["role"] = this.role;
-    data["lastLogin"] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined;
-    data["isSuperuser"] = this.isSuperuser;
     data["username"] = this.username;
-    data["firstName"] = this.firstName;
-    data["lastName"] = this.lastName;
-    data["isStaff"] = this.isStaff;
-    data["isActive"] = this.isActive;
-    data["dateJoined"] = this.dateJoined ? this.dateJoined.toISOString() : <any>undefined;
     data["email"] = this.email;
-    if (Array.isArray(this.groups)) {
-      data["groups"] = [];
-      for (let item of this.groups)
-        data["groups"].push(item);
-    }
-    if (Array.isArray(this.userPermissions)) {
-      data["userPermissions"] = [];
-      for (let item of this.userPermissions)
-        data["userPermissions"].push(item);
-    }
     return data;
   }
 }
 
-export interface IPatchedUser {
-  id?: number;
-  role?: string;
-  lastLogin?: Date | undefined;
-  /** Designates that this user has all permissions without explicitly assigning them. */
-  isSuperuser?: boolean;
+export interface IPatchedUpdateUser {
   /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
   username?: string;
-  firstName?: string;
-  lastName?: string;
-  /** Designates whether the user can log into this admin site. */
-  isStaff?: boolean;
-  /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
-  isActive?: boolean;
-  dateJoined?: Date;
   email?: string;
-  /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
-  groups?: number[];
-  /** Specific permissions for this user. */
-  userPermissions?: number[];
 
   [key: string]: any;
 }

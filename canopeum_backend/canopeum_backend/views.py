@@ -35,6 +35,7 @@ from .serializers import (
     SiteSerializer,
     SiteSocialSerializer,
     SiteSummarySerializer,
+    UpdateUserSerializer,
     UserSerializer,
     UserTokenSerializer,
     WidgetSerializer,
@@ -503,7 +504,7 @@ class UserDetailAPIView(APIView):
         serializer = UserSerializer(user)
         return Response(serializer.data)
 
-    @extend_schema(request=UserSerializer, responses=UserSerializer, operation_id="user_update")
+    @extend_schema(request=UpdateUserSerializer, responses=UserSerializer, operation_id="user_update")
     def patch(self, request, userId):
         try:
             user = User.objects.get(pk=userId)
