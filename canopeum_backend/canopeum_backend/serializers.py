@@ -204,6 +204,25 @@ class SiteSerializer(serializers.ModelSerializer):
         return SitetreespeciesSerializer(obj.sitetreespecies_set.all(), many=True).data
 
 
+class SiteNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Site
+        fields = ("id", "name")
+
+
+class AdminUserSitesSerializer(serializers.ModelSerializer):
+    sites = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ("id", "username", "email", "sites")
+
+    @extend_schema_field(SiteNameSerializer(many=True))
+    def get_sites(self, obj):
+        sites_list = [siteadmin.site for siteadmin in obj.siteadmin_set.all()]
+        return SiteNameSerializer(sites_list, many=True).data
+
+
 class SiteSocialSerializer(serializers.ModelSerializer):
     site_type = SiteTypeSerializer()
     contact = ContactSerializer()

@@ -15,6 +15,7 @@ from canopeum_backend.permissions import MegaAdminPermission, MegaAdminPermissio
 
 from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, Siteadmin, User, Widget
 from .serializers import (
+    AdminUserSitesSerializer,
     AnnouncementSerializer,
     AssetSerializer,
     BatchAnalyticsSerializer,
@@ -198,7 +199,7 @@ class SiteSummaryDetailAPIView(APIView):
         return Response(serializer.data)
 
 
-class SiteAdminsAPIView(APIView):
+class SiteDetailAdminsAPIView(APIView):
     permission_classes = (MegaAdminPermission,)
 
     @extend_schema(
@@ -230,6 +231,19 @@ class SiteAdminsAPIView(APIView):
                 existing_site_admins.filter(user__id__exact=existing_user.id).delete()
 
         serializer = SiteAdminSerializer(Siteadmin.objects.filter(site=site), many=True)
+        return Response(serializer.data)
+
+
+class AdminUserSitesAPIView(APIView):
+    permission_classes = (MegaAdminPermission,)
+
+    @extend_schema(
+        responses=AdminUserSitesSerializer(many=True),
+        operation_id="admin-user-sites_all",
+    )
+    def get(self, request):
+        adminusers = User.objects.filter(role__name__exact="Admin")
+        serializer = AdminUserSitesSerializer(adminusers, many=True)
         return Response(serializer.data)
 
 

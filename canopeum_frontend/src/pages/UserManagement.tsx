@@ -1,15 +1,22 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import EditProfile from '@components/settings/EditProfile'
+import ManageAdmins from '@components/settings/ManageAdmins'
 import SettingsTab from '@components/settings/SettingsTab'
+import type { UserRole } from '@models/User'
 import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-type UserManagementTab = 'editProfile' | 'logout' | 'termsAndPolicies'
+type UserManagementTab = 'editProfile' | 'logout' | 'manageAdmins' | 'termsAndPolicies'
 
-const tabs: { type: UserManagementTab, translationKey: string }[] = [
+const tabs: { type: UserManagementTab, translationKey: string, roles?: UserRole[] }[] = [
   {
     type: 'editProfile',
     translationKey: 'edit-profile',
+  },
+  {
+    type: 'manageAdmins',
+    translationKey: 'manage-admins',
+    roles: ['MegaAdmin'],
   },
   {
     type: 'termsAndPolicies',
@@ -23,16 +30,20 @@ const tabs: { type: UserManagementTab, translationKey: string }[] = [
 
 const UserManagement = () => {
   const { t: translate } = useTranslation()
-  const { logout } = useContext(AuthenticationContext)
+  const { logout, currentUser } = useContext(AuthenticationContext)
   const [selectedTab, setSelectedTab] = useState<UserManagementTab>('editProfile')
 
-  const displayRightTab = () => {
+  const displayTabContent = () => {
     if (selectedTab === 'termsAndPolicies') {
       return (
         <div>
           <h1>Terms And Policies</h1>
         </div>
       )
+    }
+
+    if (selectedTab === 'manageAdmins' && currentUser?.role === 'MegaAdmin') {
+      return <ManageAdmins />
     }
 
     return <EditProfile />
@@ -48,6 +59,19 @@ const UserManagement = () => {
     setSelectedTab(tabType)
   }
 
+  const tabsDisplay = () =>
+    tabs
+      .filter(tab => !tab.roles || (currentUser && tab.roles.includes(currentUser.role)))
+      .map(tab => (
+        <SettingsTab
+          key={tab.type}
+          onClick={() => onTabClick(tab.type)}
+          selected={selectedTab === tab.type}
+        >
+          {translate(`settings.tabs.${tab.translationKey}`)}
+        </SettingsTab>
+      ))
+
   return (
     <div className='container py-3 h-100'>
       <div className='row' style={{ height: '80vh' }}>
@@ -57,22 +81,12 @@ const UserManagement = () => {
               <h4 className='text-center'>CANOPEUM</h4>
             </div>
 
-            <div className='d-flex flex-column gap-2'>
-              {tabs.map(tab => (
-                <SettingsTab
-                  key={tab.type}
-                  onClick={() => onTabClick(tab.type)}
-                  selected={selectedTab === tab.type}
-                >
-                  {translate(`settings.tabs.${tab.translationKey}`)}
-                </SettingsTab>
-              ))}
-            </div>
+            <div className='d-flex flex-column gap-2'>{tabsDisplay()}</div>
           </div>
         </div>
 
         <div className='col-7 px-5'>
-          {displayRightTab()}
+          {displayTabContent()}
         </div>
       </div>
     </div>
