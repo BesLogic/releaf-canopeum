@@ -7,13 +7,12 @@ type ConfirmationAction = 'cancel' | 'delete' | 'ok'
 type Props = {
   readonly actions: ConfirmationAction[],
   readonly children: ReactNode,
-  readonly confirmText?: string,
   readonly onClose: (proceed: boolean) => void,
   readonly open: boolean,
   readonly title: string,
 }
 
-const ConfirmationDialog = ({ actions, children, confirmText, onClose, open, title }: Props) => {
+const ConfirmationDialog = ({ actions, children, onClose, open, title }: Props) => {
   const { t: translate } = useTranslation()
 
   const renderActionButton = (action: ConfirmationAction) => {
@@ -25,22 +24,22 @@ const ConfirmationDialog = ({ actions, children, confirmText, onClose, open, tit
         buttonClasses += ' btn-outline-danger'
         buttonText = translate('generic.delete')
 
-        break;
+        break
       }
       case 'cancel': {
         buttonClasses += ' btn-outline-dark'
         buttonText = translate('generic.cancel')
 
-        break;
+        break
       }
-      case 'ok': {
+      // action "ok"
+      default: {
         buttonClasses += ' btn-outline-primary'
         buttonText = translate('generic.ok')
         proceed = true
 
-        break;
+        break
       }
-      // No default
     }
 
     return (
