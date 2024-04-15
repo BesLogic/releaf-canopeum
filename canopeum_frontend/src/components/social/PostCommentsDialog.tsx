@@ -8,6 +8,7 @@ import { type Comment, CreateComment } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { type ChangeEvent, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { CSSTransition, TransitionGroup } from 'react-transition-group'
 
 import { numberOfWordsInText } from '../../utils/stringUtils'
 import type { InputValidationError } from '../../utils/validators'
@@ -113,7 +114,6 @@ const PostCommentsDialog = ({ open, postId, handleClose, viewMode }: Props) => {
   const handleDeleteCommentClick = (commentToDelete: Comment) => setConfirmCommentDeleteOpen(commentToDelete)
 
   const handleConfirmDeleteAction = (proceedWithDelete: boolean) => {
-    console.log('proceedWithDelete:', proceedWithDelete);
     const commentToDelete = confirmCommentDeleteOpen
     setConfirmCommentDeleteOpen(undefined)
 
@@ -149,7 +149,9 @@ const PostCommentsDialog = ({ open, postId, handleClose, viewMode }: Props) => {
                 />
                 <div className='max-words position-absolute end-0 pe-2' style={{ bottom: '-1.6rem' }}>
                   <span>{commentBodyNumberOfWords}/{MAXIMUM_WORDS_PER_COMMENT}</span>
-                  <span className='ms-1'>{translate('social.comments.words', { count: MAXIMUM_WORDS_PER_COMMENT })}</span>
+                  <span className='ms-1'>
+                    {translate('social.comments.words', { count: MAXIMUM_WORDS_PER_COMMENT })}
+                  </span>
                 </div>
               </div>
 
@@ -172,13 +174,18 @@ const PostCommentsDialog = ({ open, postId, handleClose, viewMode }: Props) => {
             <span>{translate('social.comments.comments')} ({comments.length})</span>
           </div>
 
-          <div className='mt-2 d-flex flex-column gap-3'>
-            {comments.map(comment => <PostComment
-              comment={comment}
+          <TransitionGroup className='mt-2 d-flex flex-column gap-3'>
+            {comments.map(comment => <CSSTransition
+              classNames='item-fadeinout'
               key={comment.id}
-              onDelete={handleDeleteCommentClick}
-            />)}
-          </div>
+              timeout={400}
+            >
+              <PostComment
+                comment={comment}
+                onDelete={handleDeleteCommentClick}
+              />
+            </CSSTransition>)}
+          </TransitionGroup>
         </DialogContent>
       </Dialog>
 
