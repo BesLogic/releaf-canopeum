@@ -1,4 +1,5 @@
 import { SnackbarContext } from '@components/context/SnackbarContext'
+import ConfirmationDialog from '@components/dialogs/ConfirmationDialog'
 import PostComment from '@components/social/PostComment'
 import { Dialog, DialogContent } from '@mui/material'
 import { type Comment, CreateComment } from '@services/api'
@@ -21,6 +22,7 @@ const PostCommentsDialog = ({ open, postId, handleClose }: Props) => {
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const [comments, setComments] = useState<Comment[]>([])
+  const [confirmCommentDeleteOpen, setConfirmCommentDeleteOpen] = useState<Comment | undefined>()
 
   const [commentBody, setCommentBody] = useState('')
   const [commentBodyNumberOfWords, setCommentBodyNumberOfWords] = useState(0)
@@ -74,6 +76,8 @@ const PostCommentsDialog = ({ open, postId, handleClose }: Props) => {
     const newComment = await getApiClient().commentClient.create(postId, createComment)
 
     setComments(previous => [newComment, ...previous])
+    setCommentBody('')
+    setCommentBodyNumberOfWords(0)
   }
 
   const deleteComment = async (commentToDelete: Comment) => {
@@ -85,58 +89,87 @@ const PostCommentsDialog = ({ open, postId, handleClose }: Props) => {
     }
   }
 
+  const handleDeleteCommentClick = (commentToDelete: Comment) => setConfirmCommentDeleteOpen(commentToDelete)
+
+  const handleConfirmDeleteAction = (proceedWithDelete: boolean) => {
+    const commentToDelete = confirmCommentDeleteOpen
+    setConfirmCommentDeleteOpen(undefined)
+
+    if (!proceedWithDelete || !commentToDelete) return
+
+    void deleteComment(commentToDelete)
+  }
+
   return (
-    <Dialog fullWidth maxWidth='sm' onClose={handleClose} open={open}>
-      <DialogContent className='pb-5'>
-        <div className='d-flex justify-content-between align-items-center pb-1'>
-          <label className='form-label mb-0 flex-grow-1' htmlFor='new-comment-body-input'>
-            <h3 className='mb-0'>{translate('social.comments.leave-a-comment')}</h3>
-          </label>
+    <>
+      <Dialog fullWidth maxWidth='sm' onClose={handleClose} open={open}>
+        <DialogContent className='pb-5'>
+          <div className='d-flex justify-content-between align-items-center pb-1'>
+            <label className='form-label mb-0 flex-grow-1' htmlFor='new-comment-body-input'>
+              <h3 className='mb-0'>{translate('social.comments.leave-a-comment')}</h3>
+            </label>
 
-          <button className='btn btn-primary' onClick={postComment} type='button'>
-            {translate('social.comments.send')}
-          </button>
-        </div>
-
-        <div>
-          <div className='position-relative'>
-            <textarea
-              className={`form-control ${commentBodyError && 'is-invalid'}`}
-              id='new-comment-body-input'
-              onBlur={() => validateCommentBody()}
-              onChange={handleCommentBodyChange}
-              rows={5}
-              value={commentBody}
-            />
-            <div className='max-words position-absolute end-0 pe-2' style={{ bottom: '-1.6rem' }}>
-              <span>{commentBodyNumberOfWords}/{MAXIMUM_WORDS_PER_COMMENT}</span>
-              <span className='ms-1'>{translate('social.comments.words', { count: MAXIMUM_WORDS_PER_COMMENT })}</span>
-            </div>
+            <button className='btn btn-primary' onClick={postComment} type='button'>
+              {translate('social.comments.send')}
+            </button>
           </div>
 
-          {commentBodyError === 'required' && (
-            <span className='help-block text-danger'>
-              {translate('social.comments.comment-body-required')}
-            </span>
-          )}
+          <div>
+            <div className='position-relative'>
+              <textarea
+                className={`form-control ${commentBodyError && 'is-invalid'}`}
+                id='new-comment-body-input'
+                onBlur={() => validateCommentBody()}
+                onChange={handleCommentBodyChange}
+                rows={5}
+                value={commentBody}
+              />
+              <div className='max-words position-absolute end-0 pe-2' style={{ bottom: '-1.6rem' }}>
+                <span>{commentBodyNumberOfWords}/{MAXIMUM_WORDS_PER_COMMENT}</span>
+                <span className='ms-1'>{translate('social.comments.words', { count: MAXIMUM_WORDS_PER_COMMENT })}</span>
+              </div>
+            </div>
 
-          {commentBodyError === 'maximumChars' && (
-            <span className='help-block text-danger'>
-              {translate('social.comments.comment-body-max-chars', { count: MAXIMUM_WORDS_PER_COMMENT })}
-            </span>
-          )}
-        </div>
+            {commentBodyError === 'required' && (
+              <span className='help-block text-danger'>
+                {translate('social.comments.comment-body-required')}
+              </span>
+            )}
 
-        <div className='mt-5 d-flex align-items-center gap-1 fw-bold fs-5'>
-          <span className='material-symbols-outlined'>sms</span>
-          <span>{translate('social.comments.comments')} ({comments.length})</span>
-        </div>
+            {commentBodyError === 'maximumChars' && (
+              <span className='help-block text-danger'>
+                {translate('social.comments.comment-body-max-chars', { count: MAXIMUM_WORDS_PER_COMMENT })}
+              </span>
+            )}
+          </div>
 
-        <div className='mt-2 d-flex flex-column gap-3'>
-          {comments.map(comment => <PostComment comment={comment} key={comment.id} onDelete={deleteComment} />)}
-        </div>
-      </DialogContent>
-    </Dialog>
+          <div className='mt-5 d-flex align-items-center gap-1 fw-bold fs-5'>
+            <span className='material-symbols-outlined'>sms</span>
+            <span>{translate('social.comments.comments')} ({comments.length})</span>
+          </div>
+
+          <div className='mt-2 d-flex flex-column gap-3'>
+            {comments.map(comment => <PostComment
+              comment={comment}
+              key={comment.id}
+              onDelete={handleDeleteCommentClick}
+            />)}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <ConfirmationDialog
+        confirmText={translate('generic.delete')}
+        onClose={handleConfirmDeleteAction}
+        open={!!confirmCommentDeleteOpen}
+        title={translate('social.comments.comment-deletion-confirm-title')}
+      >
+        {translate(
+          'social.comments.comment-deletion-confirm-content',
+          { author: confirmCommentDeleteOpen?.authorUsername ?? '' }
+        )}
+      </ConfirmationDialog>
+    </>
   )
 }
 
