@@ -535,6 +535,10 @@ class CommentSerializer(serializers.ModelSerializer):
     def get_author_username(self, obj):
         return obj.user.username
 
+class LikePostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Like
+        fields = ("post",)
 
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:

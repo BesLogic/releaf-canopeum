@@ -22,6 +22,7 @@ from .serializers import (
     CommentSerializer,
     ContactSerializer,
     CreateCommentSerializer,
+    LikePostSerializer,
     LikeSerializer,
     LoginUserSerializer,
     PostPostSerializer,
@@ -422,13 +423,34 @@ class WidgetDetailAPIView(APIView):
 
 
 class LikeListAPIView(APIView):
-    @extend_schema(request=LikeSerializer, responses={201: LikeSerializer}, operation_id="like_all")
-    def post(self, request):
+    @extend_schema(request='', responses={201: LikeSerializer}, operation_id="like_likePost")
+    def post(self, request, postId):
+        try:
+            post = Post.objects.get(pk=postId)
+            user = User.objects.get(pk=request.user.id)
+        except Post.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = LikeSerializer(data=request.data)
+        serializer.initial_data["post"] = post.id
+        serializer.initial_data["user"] = user.id
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @extend_schema(responses={201: LikeSerializer},operation_id="like_delete")
+    def delete(self, request, postId):
+        try:
+            post = Post.objects.get(pk=postId)
+        except Post.DoesNotExist:
+            return Response(status='sef')
+        try:
+            like = Like.objects.get(post=post)
+        except Like.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        like.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class BatchListAPIView(APIView):

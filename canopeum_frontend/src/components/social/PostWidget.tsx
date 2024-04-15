@@ -3,21 +3,30 @@ import PostCommentsDialog from '@components/social/PostCommentsDialog'
 import { getApiBaseUrl } from '@services/apiSettings'
 import { useContext, useState } from 'react'
 
-import type { Post } from '../../services/api'
+import { type Post } from '../../services/api'
 import AssetGrid from '@components/AssetGrid'
 import TextExpansion from '@components/inputs/textExpansion'
+import getApiClient from '@services/apiInterface'
 
-type Props = {
-  readonly post: Post,
-}
-
-const PostWidget = ({ post }: Props) => {
+const PostWidget = ({ post }: Post) => {
   const { formatDate } = useContext(LanguageContext)
   const [commentsModalOpen, setCommentsModalOpen] = useState(false)
 
   const openPostComments = () => setCommentsModalOpen(true)
 
   const handleCommentsModalClose = () => setCommentsModalOpen(false)
+
+  const likePost = async () => {
+    if (post.hasLiked) {
+      await getApiClient().likeClient.delete(post.id)
+      post.hasLiked = false
+      post.likeCount -= 1
+    } else {
+      await getApiClient().likeClient.likePost(post.id, {})
+      post.hasLiked = true
+      post.likeCount += 1
+    }
+  }
 
   return (
     <>
@@ -40,12 +49,17 @@ const PostWidget = ({ post }: Props) => {
         </div>
 
         <TextExpansion text={post.body} maxLength={700} />
-          
+
         {post.media.length > 0 && <AssetGrid medias={post.media} />}
 
         <div className='d-flex justify-content-end gap-4'>
           <button className='d-flex gap-2 unstyled-button' type='button'>
-            <span className='material-symbols-outlined'>eco</span>
+            <span
+              className={'material-symbols-outlined' + (post.hasLiked == true ? ' fill-icon' : '')}
+              onClick={likePost}
+            >
+              eco
+            </span>
             <div>{post.likeCount}</div>
           </button>
 

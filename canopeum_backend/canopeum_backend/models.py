@@ -17,7 +17,7 @@ class User(AbstractUser):
         unique=True,
     )
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS: ClassVar[list[str]] = []
+    REQUIRED_FIELDS: ClassVar[list[str]] = [] # type: ignore
     role = models.ForeignKey(Role, models.DO_NOTHING, null=False, default=1)  # type: ignore
 
 
@@ -182,8 +182,8 @@ class Widget(models.Model):
 
 
 class Like(models.Model):
-    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
-    post = models.ForeignKey(Post, models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(User, models.DO_NOTHING)
+    post = models.ForeignKey(Post, models.DO_NOTHING, unique=True)
 
 
 class Internationalization(models.Model):
