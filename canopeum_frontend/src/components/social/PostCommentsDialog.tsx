@@ -1,8 +1,9 @@
+import { SnackbarContext } from '@components/context/SnackbarContext'
 import PostComment from '@components/social/PostComment'
 import { Dialog, DialogContent } from '@mui/material'
 import { type Comment, CreateComment } from '@services/api'
 import getApiClient from '@services/apiInterface'
-import { type ChangeEvent, useEffect, useState } from 'react'
+import { type ChangeEvent, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { numberOfWordsInText } from '../../utils/stringUtils'
@@ -18,6 +19,7 @@ const MAXIMUM_WORDS_PER_COMMENT = 100
 
 const PostCommentsDialog = ({ open, postId, handleClose }: Props) => {
   const { t: translate } = useTranslation()
+  const { openAlertSnackbar } = useContext(SnackbarContext)
   const [comments, setComments] = useState<Comment[]>([])
 
   const [commentBody, setCommentBody] = useState('')
@@ -74,6 +76,15 @@ const PostCommentsDialog = ({ open, postId, handleClose }: Props) => {
     setComments(previous => [newComment, ...previous])
   }
 
+  const deleteComment = async (commentToDelete: Comment) => {
+    try {
+      await getApiClient().commentClient.delete(commentToDelete.id, postId)
+      setComments(previous => previous.filter(comment => comment.id !== commentToDelete.id))
+    } catch {
+      openAlertSnackbar(translate('social.comments.comment-deletion-error'), { severity: 'error' })
+    }
+  }
+
   return (
     <Dialog fullWidth maxWidth='sm' onClose={handleClose} open={open}>
       <DialogContent className='pb-5'>
@@ -122,7 +133,7 @@ const PostCommentsDialog = ({ open, postId, handleClose }: Props) => {
         </div>
 
         <div className='mt-2 d-flex flex-column gap-3'>
-          {comments.map(comment => <PostComment comment={comment} key={comment.id} />)}
+          {comments.map(comment => <PostComment comment={comment} key={comment.id} onDelete={deleteComment} />)}
         </div>
       </DialogContent>
     </Dialog>

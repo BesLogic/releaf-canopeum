@@ -12,6 +12,7 @@
     "send": "Send",
     "comment-body-required": "Your comment cannot be empty.",
     "comment-body-max-chars_one": "Your comment cannot contain more than {{count}} words.",
-    "comment-body-max-chars_other": "Your comment cannot contain more than {{count}} words."
+    "comment-body-max-chars_other": "Your comment cannot contain more than {{count}} words.",
+    "comment-deletion-error": "There was a problem while trying to delete the comment."
   }
 }

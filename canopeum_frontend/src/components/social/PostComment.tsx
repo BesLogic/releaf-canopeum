@@ -4,9 +4,10 @@ import { useContext } from 'react'
 
 type Props = {
   readonly comment: Comment,
+  readonly onDelete: (comment: Comment) => void,
 }
 
-const PostComment = ({ comment }: Props) => {
+const PostComment = ({ comment, onDelete }: Props) => {
   const { formatDate } = useContext(LanguageContext)
 
   return (
@@ -21,7 +22,7 @@ const PostComment = ({ comment }: Props) => {
           </div>
         </div>
 
-        <button className='unstyled-button' type='button'>
+        <button className='unstyled-button' onClick={() => onDelete(comment)} type='button'>
           <span className='material-symbols-outlined text-primary'>cancel</span>
         </button>
       </div>

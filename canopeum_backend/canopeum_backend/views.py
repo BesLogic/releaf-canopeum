@@ -273,14 +273,13 @@ class PostListAPIView(APIView):
         parameters=[OpenApiParameter(name="siteId", type=OpenApiTypes.INT, location=OpenApiParameter.QUERY)],
     )
     def get(self, request):
-        comment_count = Comment.objects.filter(post=request.data.get("id")).count()
         if request.user.is_authenticated:
             has_liked = Like.objects.filter(post=request.data.get("id"), user=request.user).exists()
         else:
             has_liked = False
         site_id = request.GET.get("siteId", "")
         posts = Post.objects.filter(site=site_id) if not site_id else Post.objects.all()
-        serializer = PostSerializer(posts, many=True, context={"comment_count": comment_count, "has_liked": has_liked})
+        serializer = PostSerializer(posts, many=True, context={"has_liked": has_liked})
         return Response(serializer.data)
 
     parser_classes = (MultiPartParser, FormParser)
@@ -331,9 +330,9 @@ class CommentListAPIView(APIView):
 
 class CommentDetailAPIView(APIView):
     @extend_schema(operation_id="comment_delete")
-    def delete(self, request, pk):
+    def delete(self, request, postId, commentId):
         try:
-            comment = Comment.objects.get(pk=pk)
+            comment = Comment.objects.get(pk=commentId)
         except Comment.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
