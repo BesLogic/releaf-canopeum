@@ -18,6 +18,7 @@ const useLogin = () => {
       : 'User'
 
     authenticate({
+      id: decodedToken.id,
       email: decodedToken.email,
       firstname: decodedToken.firstname,
       image: '',

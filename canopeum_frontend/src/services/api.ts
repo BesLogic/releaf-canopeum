@@ -82,12 +82,12 @@ export class BatchClient {
   protected processCreate(response: Response): Promise<Batch> {
     const status = response.status;
     let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 200) {
+    if (status === 201) {
       return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = Batch.fromJS(resultData200);
-        return result200;
+        let result201: any = null;
+        let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result201 = Batch.fromJS(resultData201);
+        return result201;
       });
     } else if (status !== 200 && status !== 204) {
       return response.text().then((_responseText) => {
@@ -296,12 +296,12 @@ export class SiteClient {
   protected processCreate(response: Response): Promise<Site> {
     const status = response.status;
     let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 200) {
+    if (status === 201) {
       return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = Site.fromJS(resultData200);
-        return result200;
+        let result201: any = null;
+        let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result201 = Site.fromJS(resultData201);
+        return result201;
       });
     } else if (status !== 200 && status !== 204) {
       return response.text().then((_responseText) => {
@@ -1014,12 +1014,12 @@ export class PostClient {
   protected processCreate(response: Response): Promise<Post> {
     const status = response.status;
     let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 200) {
+    if (status === 201) {
       return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = Post.fromJS(resultData200);
-        return result200;
+        let result201: any = null;
+        let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result201 = Post.fromJS(resultData201);
+        return result201;
       });
     } else if (status !== 200 && status !== 204) {
       return response.text().then((_responseText) => {
@@ -1201,12 +1201,12 @@ export class LikeClient {
   protected processAll(response: Response): Promise<Like> {
     const status = response.status;
     let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 200) {
+    if (status === 201) {
       return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = Like.fromJS(resultData200);
-        return result200;
+        let result201: any = null;
+        let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result201 = Like.fromJS(resultData201);
+        return result201;
       });
     } else if (status !== 200 && status !== 204) {
       return response.text().then((_responseText) => {
@@ -1405,12 +1405,12 @@ export class WidgetClient {
   protected processCreate(response: Response): Promise<Widget> {
     const status = response.status;
     let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 200) {
+    if (status === 201) {
       return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = Widget.fromJS(resultData200);
-        return result200;
+        let result201: any = null;
+        let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result201 = Widget.fromJS(resultData201);
+        return result201;
       });
     } else if (status !== 200 && status !== 204) {
       return response.text().then((_responseText) => {
@@ -1553,44 +1553,6 @@ export class UserClient {
       });
     }
     return Promise.resolve<User[]>(null as any);
-  }
-
-  create(body: User): Promise<User> {
-    let url_ = this.baseUrl + "/users/";
-    url_ = url_.replace(/[?&]$/, "");
-
-    const content_ = JSON.stringify(body);
-
-    let options_: RequestInit = {
-      body: content_,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      }
-    };
-
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processCreate(_response);
-    });
-  }
-
-  protected processCreate(response: Response): Promise<User> {
-    const status = response.status;
-    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = User.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<User>(null as any);
   }
 
   detail(userId: number): Promise<User> {
@@ -2365,6 +2327,7 @@ export interface IBatchfertilizer {
 export class Comment implements IComment {
   readonly id!: number;
   body!: string;
+  readonly authorId!: string;
   readonly authorUsername!: string;
   readonly createdAt!: Date;
 
@@ -2387,6 +2350,7 @@ export class Comment implements IComment {
       }
       (<any>this).id = _data["id"];
       this.body = _data["body"];
+      (<any>this).authorId = _data["authorId"];
       (<any>this).authorUsername = _data["authorUsername"];
       (<any>this).createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
     }
@@ -2407,6 +2371,7 @@ export class Comment implements IComment {
     }
     data["id"] = this.id;
     data["body"] = this.body;
+    data["authorId"] = this.authorId;
     data["authorUsername"] = this.authorUsername;
     data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
     return data;
@@ -2416,6 +2381,7 @@ export class Comment implements IComment {
 export interface IComment {
   id: number;
   body: string;
+  authorId: string;
   authorUsername: string;
   createdAt: Date;
 

@@ -14,7 +14,7 @@ const ConfirmationDialog = ({ children, confirmText, onClose, open, title }: Pro
   const { t: translate } = useTranslation()
 
   return (
-    <Dialog fullWidth maxWidth='xs' onClose={onClose} open={open}>
+    <Dialog fullWidth maxWidth='xs' onClose={() => onClose(false)} open={open}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent className='pb-5'>
         {children}

@@ -1,5 +1,6 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import SiteSocialHeader from '@components/social/SiteSocialHeader'
+import type { PageViewMode } from '@models/types/PageViewMode'
 import type { Post, SiteSocial } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { ensureError } from '@services/errors'
@@ -20,9 +21,9 @@ const SiteSocialPage = () => {
 
   const [isLoadingPosts, setIsLoadingPosts] = useState(true)
   const [errorPosts, setErrorPosts] = useState<Error | undefined>(undefined)
-  const [posts, setPosts] = useState<Post[]>()
+  const [posts, setPosts] = useState<Post[]>([])
 
-  const viewMode = currentUser
+  const viewMode: PageViewMode = currentUser
     ? currentUser.role === 'User'
       ? 'user'
       : 'admin'
@@ -66,12 +67,12 @@ const SiteSocialPage = () => {
           </div>
         )
         : error
-        ? (
-          <div className='bg-white rounded-2 2 py-2'>
-            <p>{error.message}</p>
-          </div>
-        )
-        : (site && <SiteSocialHeader site={site} viewMode={viewMode} />)}
+          ? (
+            <div className='bg-white rounded-2 2 py-2'>
+              <p>{error.message}</p>
+            </div>
+          )
+          : (site && <SiteSocialHeader site={site} viewMode={viewMode} />)}
       <div className='container px-0'>
         <div className='row'>
           <div className='col-4'>
@@ -93,12 +94,12 @@ const SiteSocialPage = () => {
                         </div>
                       )
                       : errorPosts
-                      ? (
-                        <div className='bg-white rounded-2 2 py-2'>
-                          <p>{errorPosts.message}</p>
-                        </div>
-                      )
-                      : posts?.map((post: Post) => <PostWidget key={post.id} post={post} />)}
+                        ? (
+                          <div className='bg-white rounded-2 2 py-2'>
+                            <p>{errorPosts.message}</p>
+                          </div>
+                        )
+                        : posts.map((post: Post) => <PostWidget key={post.id} post={post} viewMode={viewMode} />)}
                   </div>
                 </>
               )}

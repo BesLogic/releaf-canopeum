@@ -1,5 +1,6 @@
 import { LanguageContext } from '@components/context/LanguageContext'
 import PostCommentsDialog from '@components/social/PostCommentsDialog'
+import type { PageViewMode } from '@models/types/PageViewMode'
 import { getApiBaseUrl } from '@services/apiSettings'
 import { useContext, useState } from 'react'
 
@@ -7,9 +8,10 @@ import type { Post } from '../../services/api'
 
 type Props = {
   readonly post: Post,
+  readonly viewMode: PageViewMode,
 }
 
-const PostWidget = ({ post }: Props) => {
+const PostWidget = ({ post, viewMode }: Props) => {
   const { formatDate } = useContext(LanguageContext)
   const [commentsModalOpen, setCommentsModalOpen] = useState(false)
 
@@ -61,7 +63,12 @@ const PostWidget = ({ post }: Props) => {
         </div>
       </div>
 
-      <PostCommentsDialog handleClose={handleCommentsModalClose} open={commentsModalOpen} postId={post.id} />
+      <PostCommentsDialog
+        handleClose={handleCommentsModalClose}
+        open={commentsModalOpen}
+        postId={post.id}
+        viewMode={viewMode}
+      />
     </>
   )
 }

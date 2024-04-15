@@ -2,12 +2,16 @@ import facebookLogo from '@assets/icons/facebook-contact-logo.svg'
 import instagramLogo from '@assets/icons/instagram-contact-logo.svg'
 import linkedinLogo from '@assets/icons/linkedin-contact-logo.svg'
 import xLogo from '@assets/icons/x-contact-logo.svg'
+import type { PageViewMode } from '@models/types/PageViewMode'
 import type { Contact } from '@services/api'
 import { Link } from 'react-router-dom'
 
-const ContactCard = (
-  { contact, viewMode }: { readonly contact: Contact, readonly viewMode: 'admin' | 'user' | 'visitor' },
-) => {
+type Props = {
+  readonly contact: Contact,
+  readonly viewMode: PageViewMode,
+}
+
+const ContactCard = ({ contact, viewMode }: Props) => {
   const renderContactCard = () => (
     <div className='card rounded px-3 py-2'>
       <div className='card-body'>

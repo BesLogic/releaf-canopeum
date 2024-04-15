@@ -1,10 +1,14 @@
+import type { PageViewMode } from '@models/types/PageViewMode'
 import { Link } from 'react-router-dom'
 
 import type { Announcement } from '../services/api'
 
-const AnnouncementCard = (
-  { announcement, viewMode }: { readonly announcement: Announcement, readonly viewMode: 'admin' | 'user' | 'visitor' },
-) => (
+type Props = {
+  readonly announcement: Announcement,
+  readonly viewMode: PageViewMode,
+}
+
+const AnnouncementCard = ({ announcement, viewMode }: Props) => (
   <div className='card rounded px-3 py-2'>
     <div className='card-body'>
       <div className='d-flex justify-content-between align-items-center pb-3'>

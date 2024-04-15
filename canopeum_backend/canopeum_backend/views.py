@@ -6,12 +6,12 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import status
 from rest_framework.parsers import FormParser, MultiPartParser
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from canopeum_backend.permissions import MegaAdminPermission, MegaAdminPermissionReadOnly
+from canopeum_backend.permissions import DeleteCommentPermission, MegaAdminPermission, MegaAdminPermissionReadOnly
 
 from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, Siteadmin, User, Widget
 from .serializers import (
@@ -234,6 +234,8 @@ class SiteAdminsAPIView(APIView):
 
 
 class SiteSocialDetailAPIView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
     @extend_schema(request=SiteSocialSerializer, responses=SiteSocialSerializer, operation_id="site_social")
     def get(self, request, siteId):
         try:
@@ -249,6 +251,8 @@ class SiteSocialDetailAPIView(APIView):
 
 
 class SiteSocialListAPIView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
     @extend_schema(
         request=SiteSocialSerializer(many=True), responses=SiteSocialSerializer, operation_id="site_social_all"
     )
@@ -259,6 +263,8 @@ class SiteSocialListAPIView(APIView):
 
 
 class SiteMapListAPIView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
     @extend_schema(responses=SiteMapSerializer(many=True), operation_id="site_map")
     def get(self, request):
         sites = Site.objects.all()
@@ -267,6 +273,8 @@ class SiteMapListAPIView(APIView):
 
 
 class PostListAPIView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
     @extend_schema(
         responses=PostSerializer(many=True),
         operation_id="post_all",
@@ -306,6 +314,8 @@ class PostListAPIView(APIView):
 
 
 class CommentListAPIView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
     @extend_schema(responses=CommentSerializer(many=True), operation_id="comment_all")
     def get(self, request, postId):
         comments = Comment.objects.filter(post=postId).order_by("-created_at")
@@ -329,6 +339,8 @@ class CommentListAPIView(APIView):
 
 
 class CommentDetailAPIView(APIView):
+    permission_classes = (DeleteCommentPermission,)
+
     @extend_schema(operation_id="comment_delete")
     def delete(self, request, postId, commentId):
         try:
