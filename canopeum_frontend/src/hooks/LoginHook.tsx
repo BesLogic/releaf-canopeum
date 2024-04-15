@@ -4,13 +4,17 @@ import { jwtDecode } from 'jwt-decode'
 import { useContext } from 'react'
 
 const useLogin = () => {
-  const { authenticate, isAuthenticated } = useContext(AuthenticationContext)
+  const { authenticate, isAuthenticated, loadSession } = useContext(AuthenticationContext)
 
   const authenticateUser = (accessToken?: string) => {
     if (isAuthenticated) return
 
     const accessTokenToDecode = accessToken ?? sessionStorage.getItem('token')
-    if (!accessTokenToDecode) return
+    if (!accessTokenToDecode) {
+      loadSession()
+
+      return
+    }
 
     const decodedToken = jwtDecode<User>(accessTokenToDecode)
     const userRole = isUserRole(decodedToken.role)

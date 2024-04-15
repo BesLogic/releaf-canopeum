@@ -1,5 +1,5 @@
 import { appRoutes } from '@constants/routes.constant'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect } from 'react'
 import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
 
 import useLogin from '../hooks/LoginHook'
@@ -33,10 +33,10 @@ const NotAuthenticatedRoutes = () => {
 }
 
 const AuthenticatedRoutes = () => {
-  const { isAuthenticated } = useContext(AuthenticationContext)
+  const { isAuthenticated, isSessionLoaded } = useContext(AuthenticationContext)
 
   return (
-    isAuthenticated
+    isAuthenticated || !isSessionLoaded
       ? <Outlet />
       : <Navigate to={appRoutes.login} />
   )
@@ -44,40 +44,30 @@ const AuthenticatedRoutes = () => {
 
 const MainLayout = () => {
   const { authenticateUser } = useLogin()
-  const [sessionStorageChecked, setSessionStorageChecked] = useState(false)
 
   // Try authenticating user on app start if token was saved in sessionStorage
-  useEffect(() => {
-    authenticateUser()
-    // TODO(NicolasDontigny): This is a temporary workaround, because when loading the app,
-    // We first check in sessionStorage if the user is logged in, but the route guards immediately redirect to /login
-    setSessionStorageChecked(true)
-  }, [authenticateUser])
+  useEffect(() => authenticateUser(), [authenticateUser])
 
   return (
     <Routes>
-      {sessionStorageChecked && (
-        <>
-          <Route element={<NotAuthenticatedRoutes />}>
-            <Route element={<Login />} path='/login' />
-            <Route element={<Register />} path='/register' />
-          </Route>
+      <Route element={<NotAuthenticatedRoutes />}>
+        <Route element={<Login />} path='/login' />
+        <Route element={<Register />} path='/register' />
+      </Route>
 
-          <Route element={<NavbarLayout />}>
-            <Route element={<AuthenticatedRoutes />}>
-              <Route element={<Home />} path='/home' />
-              <Route element={<Home />} path='/' />
-              <Route element={<Analytics />} path='/sites' />
-              <Route element={<AnalyticsSite />} path='/sites/:siteId' />
-              <Route element={<SiteSocialPage />} path='/sites/:siteId/social' />
-              <Route element={<UserManagement />} path='/user-management' />
-              <Route element={<Utilities />} path='/utilities' />
-            </Route>
+      <Route element={<NavbarLayout />}>
+        <Route element={<AuthenticatedRoutes />}>
+          <Route element={<Home />} path='/home' />
+          <Route element={<Home />} path='/' />
+          <Route element={<Analytics />} path='/sites' />
+          <Route element={<AnalyticsSite />} path='/sites/:siteId' />
+          <Route element={<SiteSocialPage />} path='/sites/:siteId/social' />
+          <Route element={<UserManagement />} path='/user-management' />
+          <Route element={<Utilities />} path='/utilities' />
+        </Route>
 
-            <Route element={<Map />} path='/map' />
-          </Route>
-        </>
-      )}
+        <Route element={<Map />} path='/map' />
+      </Route>
     </Routes>
   )
 }

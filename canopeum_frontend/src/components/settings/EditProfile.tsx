@@ -18,6 +18,13 @@ const EditProfile = () => {
   const [changesToSave, setChangesToSave] = useState(false)
 
   useEffect(() => {
+    if (changesToSave) return
+
+    setUsername(currentUser?.username ?? '')
+    setEmail(currentUser?.email ?? '')
+  }, [currentUser, changesToSave])
+
+  useEffect(() => {
     if (!currentUser) return
 
     setChangesToSave(username !== currentUser.username || email !== currentUser.email)
@@ -74,7 +81,6 @@ const EditProfile = () => {
     if (!currentUser) return
 
     const isFormValid = validateForm()
-    console.log('isFormValid:', isFormValid);
     if (!isFormValid) return
 
     const updatedInfo = new PatchedUpdateUser({ username, email })
