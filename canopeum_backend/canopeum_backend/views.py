@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from canopeum_backend.permissions import MegaAdminPermission, MegaAdminPermissionReadOnly
+from canopeum_backend.permissions import CurrentUserPermission, MegaAdminPermission, MegaAdminPermissionReadOnly
 
 from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, Siteadmin, User, Widget
 from .serializers import (
@@ -490,23 +490,27 @@ class AdminUsersListAPIView(APIView):
 
 
 class UserDetailAPIView(APIView):
+    permission_classes = (CurrentUserPermission,)
+
     @extend_schema(request=UserSerializer, responses=UserSerializer, operation_id="user_detail")
-    def get(self, request, pk):
+    def get(self, request, userId):
         try:
-            user = User.objects.get(pk=pk)
+            user = User.objects.get(pk=userId)
         except User.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+        self.check_object_permissions(request, user)
         serializer = UserSerializer(user)
         return Response(serializer.data)
 
     @extend_schema(request=UserSerializer, responses=UserSerializer, operation_id="user_update")
-    def patch(self, request, pk):
+    def patch(self, request, userId):
         try:
-            user = User.objects.get(pk=pk)
+            user = User.objects.get(pk=userId)
         except User.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+        self.check_object_permissions(request, user)
         serializer = UserSerializer(user, data=request.data)
         if serializer.is_valid():
             serializer.save()
