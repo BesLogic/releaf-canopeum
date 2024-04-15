@@ -1,7 +1,10 @@
 {
   "tabs": {
-    "profile-settings": "Edit My Profile",
+    "edit-profile": "Edit My Profile",
     "terms-and-policies": "Terms & Policies",
     "logout": "Log Out"
+  },
+  "edit-profile": {
+    "title": "Edit My Profile"
   }
 }

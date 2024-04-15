@@ -1,15 +1,15 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
-import ProfileSettings from '@components/settings/ProfileSettings'
+import EditProfile from '@components/settings/EditProfile'
 import SettingsTab from '@components/settings/SettingsTab'
 import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-type UserManagementTab = 'logout' | 'profileSettings' | 'termsAndPolicies'
+type UserManagementTab = 'editProfile' | 'logout' | 'termsAndPolicies'
 
 const tabs: { type: UserManagementTab, translationKey: string }[] = [
   {
-    type: 'profileSettings',
-    translationKey: 'profile-settings',
+    type: 'editProfile',
+    translationKey: 'edit-profile',
   },
   {
     type: 'termsAndPolicies',
@@ -24,7 +24,7 @@ const tabs: { type: UserManagementTab, translationKey: string }[] = [
 const UserManagement = () => {
   const { t: translate } = useTranslation()
   const { logout } = useContext(AuthenticationContext)
-  const [selectedTab, setSelectedTab] = useState<UserManagementTab>('profileSettings')
+  const [selectedTab, setSelectedTab] = useState<UserManagementTab>('editProfile')
 
   const displayRightTab = () => {
     if (selectedTab === 'termsAndPolicies') {
@@ -35,7 +35,7 @@ const UserManagement = () => {
       )
     }
 
-    return <ProfileSettings />
+    return <EditProfile />
   }
 
   const onTabClick = (tabType: UserManagementTab) => {
@@ -50,9 +50,9 @@ const UserManagement = () => {
 
   return (
     <div className='container py-3 h-100'>
-      <div className='row'>
-        <div className='col-4'>
-          <div className='bg-white rounded-2 py-3 px-4'>
+      <div className='row' style={{ height: '80vh' }}>
+        <div className='col-3 h-100'>
+          <div className='bg-white rounded-2 py-3 px-4 h-100'>
             <div className='py-3'>
               <h4 className='text-center'>CANOPEUM</h4>
             </div>
@@ -70,7 +70,8 @@ const UserManagement = () => {
             </div>
           </div>
         </div>
-        <div className='col-8'>
+
+        <div className='col-7 px-5'>
           {displayRightTab()}
         </div>
       </div>

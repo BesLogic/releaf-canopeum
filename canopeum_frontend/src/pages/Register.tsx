@@ -12,6 +12,7 @@ import { type InputValidationError, isValidEmail, isValidPassword, mustMatch } f
 const Register = () => {
   const { authenticateUser } = useLogin()
   const { t: translate } = useTranslation()
+
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
