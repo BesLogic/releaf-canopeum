@@ -194,6 +194,7 @@ const PostCommentsDialog = ({ open, postId, handleClose, viewMode }: Props) => {
       </Dialog>
 
       <ConfirmationDialog
+        actions={['cancel', 'delete']}
         confirmText={translate('generic.delete')}
         onClose={handleConfirmDeleteAction}
         open={!!confirmCommentDeleteOpen}

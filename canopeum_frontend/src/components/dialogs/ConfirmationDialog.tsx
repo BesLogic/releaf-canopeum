@@ -2,7 +2,10 @@ import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
+type ConfirmationAction = 'cancel' | 'delete' | 'ok'
+
 type Props = {
+  readonly actions: ConfirmationAction[],
   readonly children: ReactNode,
   readonly confirmText?: string,
   readonly onClose: (proceed: boolean) => void,
@@ -10,8 +13,42 @@ type Props = {
   readonly title: string,
 }
 
-const ConfirmationDialog = ({ children, confirmText, onClose, open, title }: Props) => {
+const ConfirmationDialog = ({ actions, children, confirmText, onClose, open, title }: Props) => {
   const { t: translate } = useTranslation()
+
+  const renderActionButton = (action: ConfirmationAction) => {
+    let buttonClasses = 'btn'
+    let buttonText = ''
+    let proceed = false
+    switch (action) {
+      case 'delete': {
+        buttonClasses += ' btn-outline-danger'
+        buttonText = translate('generic.delete')
+
+        break;
+      }
+      case 'cancel': {
+        buttonClasses += ' btn-outline-dark'
+        buttonText = translate('generic.cancel')
+
+        break;
+      }
+      case 'ok': {
+        buttonClasses += ' btn-outline-primary'
+        buttonText = translate('generic.ok')
+        proceed = true
+
+        break;
+      }
+      // No default
+    }
+
+    return (
+      <button className={buttonClasses} onClick={() => onClose(proceed)} type='button'>
+        {buttonText}
+      </button>
+    )
+  }
 
   return (
     <Dialog fullWidth maxWidth='xs' onClose={() => onClose(false)} open={open}>
@@ -20,12 +57,7 @@ const ConfirmationDialog = ({ children, confirmText, onClose, open, title }: Pro
         {children}
       </DialogContent>
       <DialogActions>
-        <button className='btn btn-outline-danger' onClick={() => onClose(false)} type='button'>
-          {translate('generic.cancel')}
-        </button>
-        <button className='btn btn-outline-success' onClick={() => onClose(true)} type='button'>
-          {confirmText ?? translate('generic.ok')}
-        </button>
+        {actions.map(action => renderActionButton(action))}
       </DialogActions>
     </Dialog>
   )
