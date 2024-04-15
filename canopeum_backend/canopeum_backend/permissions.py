@@ -5,7 +5,6 @@ class DeleteCommentPermission(permissions.BasePermission):
     """Deleting a comment is only allowed for admins or the comment's author."""
 
     def has_object_permission(self, request, view, obj):
-        print("DELETE COMMENT PERMISSION")
         current_user_role = request.user.role.name
         return current_user_role in {"MegaAdmin", "Admin"} or obj.user == request.user
 
