@@ -11,6 +11,7 @@ export default ({ mode }: { mode: string }) => {
         '@assets': '/src/assets',
         '@components': '/src/components',
         '@constants': '/src/constants',
+        '@models': '/src/models',
         '@services': '/src/services',
         '@utils': '/src/utils',
       },

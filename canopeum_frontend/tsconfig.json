@@ -16,6 +16,9 @@
       "@constants/*": [
         "./src/constants/*"
       ],
+      "@models/*": [
+        "./src/models/*"
+      ],
       "@services/*": [
         "./src/services/*"
       ],
