@@ -141,6 +141,7 @@ const EditProfile = () => {
           <div className='form-actions d-flex justify-content-between align-items-center gap-5'>
             <button
               className='btn btn-outline-primary flex-grow-1'
+              disabled={!changesToSave}
               onClick={handleCancel}
               type='button'
             >
