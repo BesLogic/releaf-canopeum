@@ -1,23 +1,35 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext.tsx'
+import PostWidget from '@components/social/PostWidget.tsx'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import type { BatchAnalytics } from '../services/api.ts'
+import type { Post } from '../services/api.ts'
 import getApiClient from '../services/apiInterface.ts'
-import { ensureError } from '../services/errors.ts'
 
 const Home = () => {
-  const { t } = useTranslation()
+  const { t: translate } = useTranslation()
   const { currentUser } = useContext(AuthenticationContext)
+  const [newsPosts, setNewsPosts] = useState<Post[]>([])
 
-  useEffect((): void => {
-  }, [])
+  const fetchNewsPosts = async () => setNewsPosts(await getApiClient().newsClient.all())
+
+  useEffect(() => void fetchNewsPosts(), [])
+
+  if (!currentUser) return (<div />)
+
+
 
   return (
     <div>
-      <div className='container mt-2 d-flex flex-column gap-2'>
-        <div className='bg-white rounded-2 px-3 py-2'>
-          <h1>{t('home.title', { username: currentUser?.firstname })}</h1>
+      <div className='container py-4 px-5'>
+        <div>
+          <h1 className="text-light">{translate('home.title', { username: currentUser.username })}</h1>
+
+          <h6 className="text-light">{translate('home.subtitle')}</h6>
+        </div>
+
+        <div className="mt-4 d-flex flex-column gap-2">
+          {newsPosts.map(post => <PostWidget key={post.id} post={post} viewMode='user' />)}
         </div>
       </div>
     </div>

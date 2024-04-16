@@ -343,6 +343,7 @@ class PostListAPIView(APIView):
     )
     def get(self, request):
         if request.user.is_authenticated:
+            # TODO(NicolasDontigny): Move this logic in the PostSerializer as a SerializerMethodField
             has_liked = Like.objects.filter(post=request.data.get("id"), user=request.user).exists()
         else:
             has_liked = False
@@ -372,6 +373,19 @@ class PostListAPIView(APIView):
                 post.media.add(asset_item.instance)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class NewsListApiView(APIView):
+    @extend_schema(
+        responses=PostSerializer(many=True),
+        operation_id="news_all",
+    )
+    def get(self, request):
+        followed_sites = SiteFollower.objects.filter(user=request.user).values_list("site")
+
+        posts = Post.objects.filter(site__in=followed_sites).order_by("-created_at")
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
 
 
 class CommentListAPIView(APIView):
