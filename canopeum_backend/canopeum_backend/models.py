@@ -150,6 +150,12 @@ class Siteadmin(models.Model):
     site = models.ForeignKey(Site, models.DO_NOTHING, blank=True, null=True)
 
 
+class SiteFollower(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, models.DO_NOTHING)
+    site = models.ForeignKey(Site, models.DO_NOTHING)
+
+
 class Sitetreespecies(models.Model):
     site = models.ForeignKey(Site, models.DO_NOTHING, blank=True, null=True)
     tree_type = models.ForeignKey("Treetype", models.DO_NOTHING, blank=True, null=True)

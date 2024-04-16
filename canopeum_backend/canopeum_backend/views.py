@@ -13,7 +13,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from canopeum_backend.permissions import MegaAdminPermission, MegaAdminPermissionReadOnly
 
-from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, Siteadmin, User, Widget
+from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, Siteadmin, SiteFollower, User, Widget
 from .serializers import (
     AnnouncementSerializer,
     AssetSerializer,
@@ -231,6 +231,23 @@ class SiteAdminsAPIView(APIView):
 
         serializer = SiteAdminSerializer(Siteadmin.objects.filter(site=site), many=True)
         return Response(serializer.data)
+
+
+class SiteFollowersAPIView(APIView):
+    @extend_schema(responses={201: None}, operation_id="site-followers_create")
+    def post(self, request, siteId):
+        try:
+            site = Site.objects.get(pk=siteId)
+        except Site.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        site_follower, created = SiteFollower.objects.get_or_create(user=request.user, site=site)
+        if created:
+            site_follower.save()
+
+            return Response(None, status=status.HTTP_201_CREATED)
+
+        return Response("Current user is already following this site", status=status.HTTP_400_BAD_REQUEST)
 
 
 class SiteSocialDetailAPIView(APIView):

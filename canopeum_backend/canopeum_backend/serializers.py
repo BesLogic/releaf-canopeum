@@ -21,6 +21,7 @@ from .models import (
     Role,
     Site,
     Siteadmin,
+    SiteFollower,
     Sitetreespecies,
     Sitetype,
     Treetype,
@@ -383,6 +384,15 @@ class SiteAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Siteadmin
         fields = ("user",)
+
+
+class SiteFollowerSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    site = SiteSerializer()
+
+    class Meta:
+        model = SiteFollower
+        fields = ("user", "site")
 
 
 class IntegerListFieldSerializer(serializers.ListField):
