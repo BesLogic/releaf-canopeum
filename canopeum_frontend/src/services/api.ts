@@ -2452,7 +2452,7 @@ export interface IBatchfertilizer {
 export class Comment implements IComment {
   readonly id!: number;
   body!: string;
-  readonly authorId!: string;
+  readonly authorId!: number;
   readonly authorUsername!: string;
   readonly createdAt!: Date;
 
@@ -2506,7 +2506,7 @@ export class Comment implements IComment {
 export interface IComment {
   id: number;
   body: string;
-  authorId: string;
+  authorId: number;
   authorUsername: string;
   createdAt: Date;
 

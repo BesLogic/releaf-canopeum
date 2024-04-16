@@ -560,6 +560,7 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ("id", "body", "author_id", "author_username", "created_at")
 
+    @extend_schema_field(int)
     def get_author_id(self, obj):
         return obj.user.id
 
