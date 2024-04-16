@@ -19,7 +19,7 @@ const Home = () => {
     setIsLoading(false)
   }, [setNewsPosts, setIsLoading])
 
-  useEffect(() => void fetchNewsPosts(), [])
+  useEffect(() => void fetchNewsPosts(), [fetchNewsPosts])
 
   if (!currentUser) return <div />
 
