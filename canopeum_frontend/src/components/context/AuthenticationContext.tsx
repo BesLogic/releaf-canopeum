@@ -1,4 +1,3 @@
-
 import type { TokenRefresh, User } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import type { FunctionComponent, ReactNode } from 'react'
@@ -20,12 +19,12 @@ type IAuthenticationContext = {
 }
 
 export const AuthenticationContext = createContext<IAuthenticationContext>({
-  initAuth: () => new Promise(() => {/* empty */ }),
-  authenticate: (_: User) => {/* empty */ },
-  updateUser: (_: User) => {/* empty */ },
-  storeToken: (_: TokenRefresh, __: boolean) => {/* empty */ },
-  logout: () => {/* empty */ },
-  loadSession: () => {/* empty */ },
+  initAuth: () => new Promise(() => {/* empty */}),
+  authenticate: (_: User) => {/* empty */},
+  updateUser: (_: User) => {/* empty */},
+  storeToken: (_: TokenRefresh, __: boolean) => {/* empty */},
+  logout: () => {/* empty */},
+  loadSession: () => {/* empty */},
   isAuthenticated: false,
   isSessionLoaded: false,
   currentUser: undefined,

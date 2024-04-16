@@ -104,7 +104,7 @@ const EditProfile = () => {
                 className='form-control'
                 id='username'
                 onBlur={() => validateUsername()}
-                onChange={(event) => setUsername(event.target.value)}
+                onChange={event => setUsername(event.target.value)}
                 type='text'
                 value={username}
               />
@@ -121,7 +121,7 @@ const EditProfile = () => {
                 className='form-control'
                 id='email'
                 onBlur={() => validateEmail()}
-                onChange={(event) => setEmail(event.target.value)}
+                onChange={event => setEmail(event.target.value)}
                 type='email'
                 value={email}
               />
@@ -143,13 +143,17 @@ const EditProfile = () => {
               className='btn btn-outline-primary flex-grow-1'
               onClick={handleCancel}
               type='button'
-            >{translate('generic.cancel')}</button>
+            >
+              {translate('generic.cancel')}
+            </button>
             <button
               className='btn btn-primary flex-grow-1'
               disabled={!changesToSave}
               onClick={handleSaveProfile}
               type='button'
-            >{translate('generic.save')}</button>
+            >
+              {translate('generic.save')}
+            </button>
           </div>
         </div>
       </div>

@@ -15,7 +15,7 @@ const muiCustomTheme = createTheme({
       main: variables.secondary,
       dark: variables.secondary,
       contrastText: variables.secondary,
-    }
+    },
   },
 })
 
