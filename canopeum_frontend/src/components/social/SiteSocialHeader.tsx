@@ -5,7 +5,7 @@ import type { PageViewMode } from '@models/types/PageViewMode'
 import type { SiteSocial } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { getApiBaseUrl } from '@services/apiSettings'
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next'
 
 type Props = {
@@ -21,13 +21,21 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
   const { t: translate } = useTranslation()
   const { translateValue } = useContext(LanguageContext)
   const [isPublic, setIsPublic] = useState(true)
-  const [isFollowing, setIsFollowing] = useState(false)
+  const [isFollowing, setIsFollowing] = useState<boolean | undefined>()
+
+  const fetchIsFollowing = useCallback(
+    async () => setIsFollowing(await getApiClient().siteClient.isFollowing(site.id)),
+    [site, setIsFollowing]
+  )
 
   useEffect(() => void updateSiteIsPublic(isPublic), [isPublic])
 
+  useEffect(() => void fetchIsFollowing(), [fetchIsFollowing])
+
   const onFollowClick = async () => {
     if (isFollowing) {
-      // UN FOLLOW HERE
+      await getApiClient().siteClient.unfollow(site.id)
+      setIsFollowing(false)
     } else {
       await getApiClient().siteClient.follow(site.id)
       setIsFollowing(true)
@@ -49,9 +57,9 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
         </div>
         <div className='col-md-8'>
           <div className='card-body'>
-            <div className='d-flex flex-row justify-content-between'>
+            <div className='d-flex flex-row justify-content-between align-items-center'>
               <h1 className='fw-bold card-title'>{site.name}</h1>
-              {viewMode === 'user' && (
+              {viewMode === 'user' && isFollowing !== undefined && (
                 <button
                   className='btn btn-secondary'
                   onClick={onFollowClick}

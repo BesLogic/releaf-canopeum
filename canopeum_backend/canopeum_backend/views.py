@@ -249,6 +249,29 @@ class SiteFollowersAPIView(APIView):
 
         return Response("Current user is already following this site", status=status.HTTP_400_BAD_REQUEST)
 
+    @extend_schema(operation_id="site_unfollow")
+    def delete(self, request, siteId):
+        try:
+            site_follower = SiteFollower.objects.get(site_id__exact=siteId, user=request.user)
+        except SiteFollower.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        site_follower.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class SiteFollowersCurrentUserAPIView(APIView):
+    @extend_schema(responses={200: bool}, operation_id="site_isFollowing")
+    def get(self, request, siteId):
+        try:
+            site = Site.objects.get(pk=siteId)
+        except Site.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        site_followers = SiteFollower.objects.filter(site=site, user=request.user)
+        is_following = site_followers.exists()
+        return Response(is_following, status=status.HTTP_200_OK)
+
 
 class SiteSocialDetailAPIView(APIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)

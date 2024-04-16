@@ -61,6 +61,11 @@ urlpatterns = [
         views.SiteFollowersAPIView.as_view(),
         name="site-followers-list",
     ),
+    path(
+        "analytics/sites/<int:siteId>/followers/current-user/",
+        views.SiteFollowersCurrentUserAPIView.as_view(),
+        name="site-followers-current-user",
+    ),
     # Batches
     path("analytics/batches/", views.BatchListAPIView.as_view(), name="batch-list"),
     path("analytics/batches/<int:batchId>/", views.BatchDetailAPIView.as_view(), name="batch-detail"),
