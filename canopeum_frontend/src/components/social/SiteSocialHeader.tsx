@@ -5,7 +5,7 @@ import type { PageViewMode } from '@models/types/PageViewMode'
 import type { SiteSocial } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { getApiBaseUrl } from '@services/apiSettings'
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 type Props = {
@@ -25,7 +25,7 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
 
   const fetchIsFollowing = useCallback(
     async () => setIsFollowing(await getApiClient().siteClient.isFollowing(site.id)),
-    [site, setIsFollowing]
+    [site, setIsFollowing],
   )
 
   useEffect(() => void updateSiteIsPublic(isPublic), [isPublic])

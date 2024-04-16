@@ -17,12 +17,13 @@ type Props = {
   readonly postId: number,
   readonly open: boolean,
   readonly handleClose: () => void,
+  readonly onCommentAction: (action: 'added' | 'deleted') => void,
   readonly viewMode: PageViewMode,
 }
 
 const MAXIMUM_WORDS_PER_COMMENT = 100
 
-const PostCommentsDialog = ({ open, postId, handleClose, viewMode }: Props) => {
+const PostCommentsDialog = ({ open, postId, handleClose, onCommentAction, viewMode }: Props) => {
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const { currentUser } = useContext(AuthenticationContext)
@@ -100,12 +101,14 @@ const PostCommentsDialog = ({ open, postId, handleClose, viewMode }: Props) => {
     setComments(previous => [newComment, ...previous])
     setCommentBody('')
     setCommentBodyNumberOfWords(0)
+    onCommentAction('added')
   }
 
   const deleteComment = async (commentToDelete: Comment) => {
     try {
       await getApiClient().commentClient.delete(commentToDelete.id, postId)
       setComments(previous => previous.filter(comment => comment.id !== commentToDelete.id))
+      onCommentAction('deleted')
     } catch {
       openAlertSnackbar(translate('social.comments.comment-deletion-error'), { severity: 'error' })
     }

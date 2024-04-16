@@ -19,6 +19,10 @@ const PostWidget = ({ post, viewMode }: Props) => {
 
   const handleCommentsModalClose = () => setCommentsModalOpen(false)
 
+  const handleCommentCountChange = (action: 'added' | 'deleted') => (action === 'added'
+    ? (post.commentCount as any) += 1
+    : (post.commentCount as any) -= 1)
+
   return (
     <>
       <div className='bg-white rounded-2 px-5 py-4 d-flex flex-column gap-3'>
@@ -43,7 +47,7 @@ const PostWidget = ({ post, viewMode }: Props) => {
 
         <div className='d-flex justify-content-end gap-4'>
           <button className='d-flex gap-2 unstyled-button' type='button'>
-            <span className='material-symbols-outlined'>eco</span>
+            <span className='material-symbols-outlined text-primary'>eco</span>
             <div>{post.likeCount}</div>
           </button>
 
@@ -52,12 +56,12 @@ const PostWidget = ({ post, viewMode }: Props) => {
             onClick={openPostComments}
             type='button'
           >
-            <span className='material-symbols-outlined'>sms</span>
+            <span className='material-symbols-outlined text-primary'>sms</span>
             <div>{post.commentCount}</div>
           </button>
 
           <button className='d-flex gap-2 unstyled-button' type='button'>
-            <span className='material-symbols-outlined'>share</span>
+            <span className='material-symbols-outlined text-primary'>share</span>
             <div>{post.shareCount}</div>
           </button>
         </div>
@@ -65,6 +69,7 @@ const PostWidget = ({ post, viewMode }: Props) => {
 
       <PostCommentsDialog
         handleClose={handleCommentsModalClose}
+        onCommentAction={handleCommentCountChange}
         open={commentsModalOpen}
         postId={post.id}
         viewMode={viewMode}

@@ -3524,7 +3524,7 @@ export interface IPatchedWidget {
 export class Post implements IPost {
   readonly id!: number;
   site!: SiteOverview;
-  createdAt?: Date | undefined;
+  readonly createdAt!: Date;
   body?: string | undefined;
   likeCount?: number | undefined;
   shareCount?: number | undefined;
@@ -3555,7 +3555,7 @@ export class Post implements IPost {
       }
       (<any>this).id = _data["id"];
       this.site = _data["site"] ? SiteOverview.fromJS(_data["site"]) : new SiteOverview();
-      this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+      (<any>this).createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
       this.body = _data["body"];
       this.likeCount = _data["likeCount"];
       this.shareCount = _data["shareCount"];
@@ -3602,7 +3602,7 @@ export class Post implements IPost {
 export interface IPost {
   id: number;
   site: SiteOverview;
-  createdAt?: Date | undefined;
+  createdAt: Date;
   body?: string | undefined;
   likeCount?: number | undefined;
   shareCount?: number | undefined;

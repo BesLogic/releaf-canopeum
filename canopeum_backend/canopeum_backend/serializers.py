@@ -546,7 +546,7 @@ class PostSerializer(serializers.ModelSerializer):
             "media",
         )
 
-    @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
+    @extend_schema_field(serializers.IntegerField())
     def get_comment_count(self, obj):
         return obj.comment_set.count()
 
