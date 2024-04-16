@@ -664,5 +664,6 @@ $accordion-button-active-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3
 
 :export {
   primary: map-get($theme-colors, primary);
+  secondary: map-get($theme-colors, secondary);
   success: map-get($theme-colors, success);
 }

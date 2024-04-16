@@ -23,6 +23,7 @@ const ConfirmationDialog = ({ actions, children, onClose, open, title }: Props) 
       case 'delete': {
         buttonClasses += ' btn-outline-danger'
         buttonText = translate('generic.delete')
+        proceed = true
 
         break
       }

@@ -6,8 +6,18 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
+class RoleName(models.TextChoices):
+    USER = "User"
+    ADMIN = "Admin"
+    MEGAADMIN = "MegaAdmin"
+
+
 class Role(models.Model):
-    name = models.TextField(blank=True, null=True)
+    name = models.CharField(
+        max_length=9,
+        choices=RoleName.choices,
+        default=RoleName.USER,
+    )
 
 
 class User(AbstractUser):

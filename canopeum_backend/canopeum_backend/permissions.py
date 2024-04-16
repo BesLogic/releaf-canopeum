@@ -28,3 +28,10 @@ class MegaAdminPermissionReadOnly(permissions.BasePermission):
             return True
         current_user_role = request.user.role.name
         return current_user_role == "MegaAdmin"
+
+
+class CurrentUserPermission(permissions.BasePermission):
+    """Permission specific to a user, only allowed for this authenticated user."""
+
+    def has_object_permission(self, request, view, obj):
+        return obj == request.user

@@ -9,12 +9,19 @@ from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from canopeum_backend.permissions import DeleteCommentPermission, MegaAdminPermission, MegaAdminPermissionReadOnly
+from canopeum_backend.permissions import (
+    CurrentUserPermission,
+    DeleteCommentPermission,
+    MegaAdminPermission,
+    MegaAdminPermissionReadOnly,
+)
 
 from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, Siteadmin, SiteFollower, User, Widget
 from .serializers import (
+    AdminUserSitesSerializer,
     AnnouncementSerializer,
     AssetSerializer,
     BatchAnalyticsSerializer,
@@ -34,6 +41,7 @@ from .serializers import (
     SiteSerializer,
     SiteSocialSerializer,
     SiteSummarySerializer,
+    UpdateUserSerializer,
     UserSerializer,
     UserTokenSerializer,
     WidgetSerializer,
@@ -51,13 +59,12 @@ class LoginAPIView(APIView):
         user = cast(User, authenticate(email=email, password=password))
         if user is not None:
             refresh = cast(RefreshToken, RefreshToken.for_user(user))
-            refresh["username"] = user.username
-            refresh["email"] = user.email
-            refresh["id"] = user.pk
-            if user.role is not None:
-                refresh["role"] = user.role.name
 
-            serializer = UserTokenSerializer({"refresh": str(refresh), "access": str(refresh.access_token)})
+            refresh_serializer = TokenRefreshSerializer({"refresh": str(refresh), "access": str(refresh.access_token)})
+            user_serializer = UserSerializer(user)
+            serializer = UserTokenSerializer(data={"token": refresh_serializer.data, "user": user_serializer.data})
+            serializer.is_valid()
+
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -77,13 +84,14 @@ class RegisterAPIView(APIView):
             user = serializer.create_user()
             if user is not None:
                 refresh = cast(RefreshToken, RefreshToken.for_user(user))
-                refresh["username"] = user.username
-                refresh["email"] = user.email
-                refresh["id"] = user.pk
-                if user.role is not None:
-                    refresh["role"] = user.role.name
 
-                serializer = UserTokenSerializer({"refresh": str(refresh), "access": str(refresh.access_token)})
+                refresh_serializer = TokenRefreshSerializer({
+                    "refresh": str(refresh),
+                    "access": str(refresh.access_token),
+                })
+                user_serializer = UserSerializer(user)
+                serializer = UserTokenSerializer(data={"token": refresh_serializer.data, "user": user_serializer.data})
+                serializer.is_valid()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -198,7 +206,7 @@ class SiteSummaryDetailAPIView(APIView):
         return Response(serializer.data)
 
 
-class SiteAdminsAPIView(APIView):
+class SiteDetailAdminsAPIView(APIView):
     permission_classes = (MegaAdminPermission,)
 
     @extend_schema(
@@ -271,6 +279,19 @@ class SiteFollowersCurrentUserAPIView(APIView):
         site_followers = SiteFollower.objects.filter(site=site, user=request.user)
         is_following = site_followers.exists()
         return Response(is_following, status=status.HTTP_200_OK)
+
+
+class AdminUserSitesAPIView(APIView):
+    permission_classes = (MegaAdminPermission,)
+
+    @extend_schema(
+        responses=AdminUserSitesSerializer(many=True),
+        operation_id="admin-user-sites_all",
+    )
+    def get(self, request):
+        adminusers = User.objects.filter(role__name__exact="Admin")
+        serializer = AdminUserSitesSerializer(adminusers, many=True)
+        return Response(serializer.data)
 
 
 class SiteSocialDetailAPIView(APIView):
@@ -528,23 +549,27 @@ class AdminUsersListAPIView(APIView):
 
 
 class UserDetailAPIView(APIView):
+    permission_classes = (CurrentUserPermission,)
+
     @extend_schema(request=UserSerializer, responses=UserSerializer, operation_id="user_detail")
-    def get(self, request, pk):
+    def get(self, request, userId):
         try:
-            user = User.objects.get(pk=pk)
+            user = User.objects.get(pk=userId)
         except User.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+        self.check_object_permissions(request, user)
         serializer = UserSerializer(user)
         return Response(serializer.data)
 
-    @extend_schema(request=UserSerializer, responses=UserSerializer, operation_id="user_update")
-    def patch(self, request, pk):
+    @extend_schema(request=UpdateUserSerializer, responses=UserSerializer, operation_id="user_update")
+    def patch(self, request, userId):
         try:
-            user = User.objects.get(pk=pk)
+            user = User.objects.get(pk=userId)
         except User.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+        self.check_object_permissions(request, user)
         serializer = UserSerializer(user, data=request.data)
         if serializer.is_valid():
             serializer.save()
