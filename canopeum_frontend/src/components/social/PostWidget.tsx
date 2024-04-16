@@ -23,9 +23,9 @@ const PostWidget = ({ post, viewMode }: Props) => {
     /* eslint-disable @typescript-eslint/no-explicit-any -- Temporary workaround.
     We want the post commentCount property to be read-only; figure out how to do so with the NSwag models generation */
     if (action === 'added') {
-      ; (post.commentCount as any) += 1
+      (post.commentCount as any) += 1
     } else {
-      ; (post.commentCount as any) -= 1
+      (post.commentCount as any) -= 1
     }
     /* eslint-enable @typescript-eslint/no-explicit-any */
   }
