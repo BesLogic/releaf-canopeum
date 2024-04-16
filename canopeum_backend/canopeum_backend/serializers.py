@@ -215,7 +215,7 @@ class SiteSocialSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Site
-        fields = ("name", "site_type", "image", "description", "contact", "announcement", "sponsors", "widget")
+        fields = ("id", "name", "site_type", "image", "description", "contact", "announcement", "sponsors", "widget")
 
     # Bug in the extend_schema_field type annotation, they should allow
     # base python types supported by open api specs

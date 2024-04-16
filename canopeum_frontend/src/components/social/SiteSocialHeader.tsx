@@ -2,6 +2,7 @@ import { LanguageContext } from '@components/context/LanguageContext'
 import ToggleSwitch from '@components/inputs/ToggleSwitch'
 import PrimaryIconBadge from '@components/PrimaryIconBadge'
 import type { SiteSocial } from '@services/api'
+import getApiClient from '@services/apiInterface'
 import { getApiBaseUrl } from '@services/apiSettings'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -9,10 +10,6 @@ import { useTranslation } from 'react-i18next'
 type Props = {
   readonly viewMode: 'admin' | 'user' | 'visitor',
   readonly site: SiteSocial,
-}
-
-const onFollowClick = () => {
-  // TODO implement follow here when backend is available
 }
 
 const updateSiteIsPublic = async (_: boolean) => {
@@ -23,8 +20,18 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
   const { t: translate } = useTranslation()
   const { translateValue } = useContext(LanguageContext)
   const [isPublic, setIsPublic] = useState(true)
+  const [isFollowing, setIsFollowing] = useState(false)
 
   useEffect(() => void updateSiteIsPublic(isPublic), [isPublic])
+
+  const onFollowClick = async () => {
+    if (isFollowing) {
+      // UN FOLLOW HERE
+    } else {
+      await getApiClient().siteClient.follow(site.id)
+      setIsFollowing(true)
+    }
+  }
 
   return (
     <div className='card'>
@@ -44,8 +51,14 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
             <div className='d-flex flex-row justify-content-between'>
               <h1 className='fw-bold card-title'>{site.name}</h1>
               {viewMode === 'user' && (
-                <button className='btn btn-secondary' onClick={onFollowClick} type='button'>
-                  {translate('social.site-social-header.follow')}
+                <button
+                  className='btn btn-secondary'
+                  onClick={onFollowClick}
+                  type='button'
+                >
+                  {isFollowing
+                    ? translate('social.site-social-header.unfollow')
+                    : translate('social.site-social-header.follow')}
                 </button>
               )}
               {viewMode === 'admin' && (

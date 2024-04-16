@@ -234,7 +234,7 @@ class SiteAdminsAPIView(APIView):
 
 
 class SiteFollowersAPIView(APIView):
-    @extend_schema(responses={201: None}, operation_id="site-followers_create")
+    @extend_schema(responses={201: None}, operation_id="site_follow")
     def post(self, request, siteId):
         try:
             site = Site.objects.get(pk=siteId)
