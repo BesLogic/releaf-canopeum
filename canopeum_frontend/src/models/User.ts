@@ -4,6 +4,7 @@ export const isUserRole = (role: string | undefined): role is UserRole =>
   role === 'Admin' || role === 'MegaAdmin' || role === 'User'
 
 export type User = {
+  id: string,
   firstname: string,
   lastname: string,
   email: string,

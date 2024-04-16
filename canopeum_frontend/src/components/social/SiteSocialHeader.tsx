@@ -1,6 +1,7 @@
 import { LanguageContext } from '@components/context/LanguageContext'
 import ToggleSwitch from '@components/inputs/ToggleSwitch'
 import PrimaryIconBadge from '@components/PrimaryIconBadge'
+import type { PageViewMode } from '@models/types/PageViewMode'
 import type { SiteSocial } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { getApiBaseUrl } from '@services/apiSettings'
@@ -8,7 +9,7 @@ import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 type Props = {
-  readonly viewMode: 'admin' | 'user' | 'visitor',
+  readonly viewMode: PageViewMode,
   readonly site: SiteSocial,
 }
 

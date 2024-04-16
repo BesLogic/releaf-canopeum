@@ -535,12 +535,16 @@ class CreateCommentSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    author_id = serializers.SerializerMethodField()
     author_username = serializers.SerializerMethodField()
     # TODO(NicolasDontigny): Add user avatar image here once implemented
 
     class Meta:
         model = Comment
-        fields = ("id", "body", "author_username", "created_at")
+        fields = ("id", "body", "author_id", "author_username", "created_at")
+
+    def get_author_id(self, obj):
+        return obj.user.id
 
     def get_author_username(self, obj):
         return obj.user.username

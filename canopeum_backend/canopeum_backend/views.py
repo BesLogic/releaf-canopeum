@@ -6,12 +6,12 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import status
 from rest_framework.parsers import FormParser, MultiPartParser
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from canopeum_backend.permissions import MegaAdminPermission, MegaAdminPermissionReadOnly
+from canopeum_backend.permissions import DeleteCommentPermission, MegaAdminPermission, MegaAdminPermissionReadOnly
 
 from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, Siteadmin, SiteFollower, User, Widget
 from .serializers import (
@@ -251,6 +251,8 @@ class SiteFollowersAPIView(APIView):
 
 
 class SiteSocialDetailAPIView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
     @extend_schema(request=SiteSocialSerializer, responses=SiteSocialSerializer, operation_id="site_social")
     def get(self, request, siteId):
         try:
@@ -266,6 +268,8 @@ class SiteSocialDetailAPIView(APIView):
 
 
 class SiteSocialListAPIView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
     @extend_schema(
         request=SiteSocialSerializer(many=True), responses=SiteSocialSerializer, operation_id="site_social_all"
     )
@@ -276,6 +280,8 @@ class SiteSocialListAPIView(APIView):
 
 
 class SiteMapListAPIView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
     @extend_schema(responses=SiteMapSerializer(many=True), operation_id="site_map")
     def get(self, request):
         sites = Site.objects.all()
@@ -284,20 +290,21 @@ class SiteMapListAPIView(APIView):
 
 
 class PostListAPIView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
     @extend_schema(
         responses=PostSerializer(many=True),
         operation_id="post_all",
         parameters=[OpenApiParameter(name="siteId", type=OpenApiTypes.INT, location=OpenApiParameter.QUERY)],
     )
     def get(self, request):
-        comment_count = Comment.objects.filter(post=request.data.get("id")).count()
         if request.user.is_authenticated:
             has_liked = Like.objects.filter(post=request.data.get("id"), user=request.user).exists()
         else:
             has_liked = False
         site_id = request.GET.get("siteId", "")
         posts = Post.objects.filter(site=site_id) if not site_id else Post.objects.all()
-        serializer = PostSerializer(posts, many=True, context={"comment_count": comment_count, "has_liked": has_liked})
+        serializer = PostSerializer(posts, many=True, context={"has_liked": has_liked})
         return Response(serializer.data)
 
     parser_classes = (MultiPartParser, FormParser)
@@ -324,6 +331,8 @@ class PostListAPIView(APIView):
 
 
 class CommentListAPIView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
     @extend_schema(responses=CommentSerializer(many=True), operation_id="comment_all")
     def get(self, request, postId):
         comments = Comment.objects.filter(post=postId).order_by("-created_at")
@@ -347,13 +356,16 @@ class CommentListAPIView(APIView):
 
 
 class CommentDetailAPIView(APIView):
+    permission_classes = (DeleteCommentPermission,)
+
     @extend_schema(operation_id="comment_delete")
-    def delete(self, request, pk):
+    def delete(self, request, postId, commentId):
         try:
-            comment = Comment.objects.get(pk=pk)
+            comment = Comment.objects.get(pk=commentId)
         except Comment.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+        self.check_object_permissions(request, comment)
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
