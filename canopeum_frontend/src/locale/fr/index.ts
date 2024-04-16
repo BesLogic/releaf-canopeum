@@ -8,13 +8,13 @@ import socialJSON from './social.json'
 
 const frJSON = {
   translation: {
-    generic: { ...genericJSON },
-    auth: { ...authJSON },
-    home: { ...homeJSON },
     analytics: { ...analyticsJSON },
     analyticsSite: { ...analyticsSiteJSON },
-    social: { ...socialJSON },
+    auth: { ...authJSON },
+    generic: { ...genericJSON },
+    home: { ...homeJSON },
     settings: { ...settingsJSON },
+    social: { ...socialJSON },
   },
 }
 

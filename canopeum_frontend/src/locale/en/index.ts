@@ -8,13 +8,13 @@ import socialJSON from './social.json'
 
 const enJSON = {
   translation: {
+    analytics: { ...analyticsJSON },
+    analyticsSite: { ...analyticsSiteJSON },
     auth: { ...authJSON },
     generic: { ...genericJSON },
     home: { ...homeJSON },
-    analytics: { ...analyticsJSON },
-    analyticsSite: { ...analyticsSiteJSON },
-    social: { ...socialJSON },
     settings: { ...settingsJSON },
+    social: { ...socialJSON },
   },
 }
 

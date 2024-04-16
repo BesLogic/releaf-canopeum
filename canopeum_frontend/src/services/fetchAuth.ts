@@ -3,7 +3,9 @@ import { STORAGE_ACCESS_TOKEN_KEY } from '@components/context/AuthenticationCont
 const fetchAuth = async (url: string, options: RequestInit) => {
   const token = sessionStorage.getItem(STORAGE_ACCESS_TOKEN_KEY) ?? localStorage.getItem(STORAGE_ACCESS_TOKEN_KEY)
   const headers = new Headers(options.headers)
-  headers.set('Authorization', `Bearer ${token}`)
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`)
+  }
 
   return fetch(url, { ...options, headers })
 }

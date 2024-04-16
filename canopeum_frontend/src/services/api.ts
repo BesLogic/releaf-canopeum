@@ -2452,6 +2452,7 @@ export interface IBatchfertilizer {
 export class Comment implements IComment {
   readonly id!: number;
   body!: string;
+  readonly authorId!: string;
   readonly authorUsername!: string;
   readonly createdAt!: Date;
 
@@ -2474,6 +2475,7 @@ export class Comment implements IComment {
       }
       (<any>this).id = _data["id"];
       this.body = _data["body"];
+      (<any>this).authorId = _data["authorId"];
       (<any>this).authorUsername = _data["authorUsername"];
       (<any>this).createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
     }
@@ -2494,6 +2496,7 @@ export class Comment implements IComment {
     }
     data["id"] = this.id;
     data["body"] = this.body;
+    data["authorId"] = this.authorId;
     data["authorUsername"] = this.authorUsername;
     data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
     return data;
@@ -2503,6 +2506,7 @@ export class Comment implements IComment {
 export interface IComment {
   id: number;
   body: string;
+  authorId: string;
   authorUsername: string;
   createdAt: Date;
 

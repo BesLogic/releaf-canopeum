@@ -65,11 +65,12 @@ const MainLayout = () => {
           <Route element={<Home />} path='/' />
           <Route element={<Analytics />} path='/sites' />
           <Route element={<AnalyticsSite />} path='/sites/:siteId' />
-          <Route element={<SiteSocialPage />} path='/sites/:siteId/social' />
           <Route element={<UserManagement />} path='/user-management' />
           <Route element={<Utilities />} path='/utilities' />
         </Route>
 
+        {/* The following routes are accessible to Visitors without any authentication */}
+        <Route element={<SiteSocialPage />} path='/sites/:siteId/social' />
         <Route element={<Map />} path='/map' />
       </Route>
     </Routes>
