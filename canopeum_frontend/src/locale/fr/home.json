@@ -1,3 +1,4 @@
 {
-  "home": "Accueil"
+  "title": "Bonjour {{username}},",
+  "subtitle": "Voici les dernières nouvelles de toutes les organisations que vous avez suivies:"
 }

@@ -46,7 +46,7 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
     <div className='card'>
       <div className='row g-0'>
         <div
-          className='col-md-4'
+          className='col-md-3'
           style={{
             backgroundImage: `url('${getApiBaseUrl() + site.image.asset}')`,
             backgroundSize: 'cover',
@@ -55,7 +55,7 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
         >
           {/* TODO: Fixing type asset */}
         </div>
-        <div className='col-md-8'>
+        <div className='col-md-9'>
           <div className='card-body'>
             <div className='d-flex flex-row justify-content-between align-items-center'>
               <h1 className='fw-bold card-title'>{site.name}</h1>

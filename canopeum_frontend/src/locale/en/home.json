@@ -1,3 +1,4 @@
 {
-  "home": "Home"
+  "title": "Hello {{username}},",
+  "subtitle": "Here's the latest news of all organizations you followed:"
 }
