@@ -6,7 +6,8 @@
     "logout": "Se Déconnecter"
   },
   "edit-profile": {
-    "title": "Modifier Mon Profil"
+    "title": "Modifier Mon Profil",
+    "profile-saved": "Profil sauvegardé avec succès!"
   },
   "manage-admins": {
     "title": "Gérer les Administrateurs",

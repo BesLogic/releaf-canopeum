@@ -10,6 +10,7 @@ export const STORAGE_REFRESH_TOKEN_KEY = 'refreshToken'
 type IAuthenticationContext = {
   initAuth: () => Promise<void>,
   authenticate: (user: User) => void,
+  updateUser: (user: User) => void,
   storeToken: (token: TokenRefresh, remember: boolean) => void,
   logout: () => void,
   loadSession: () => void,
@@ -21,6 +22,7 @@ type IAuthenticationContext = {
 export const AuthenticationContext = createContext<IAuthenticationContext>({
   initAuth: () => new Promise(() => {/* empty */ }),
   authenticate: (_: User) => {/* empty */ },
+  updateUser: (_: User) => {/* empty */ },
   storeToken: (_: TokenRefresh, __: boolean) => {/* empty */ },
   logout: () => {/* empty */ },
   loadSession: () => {/* empty */ },
@@ -49,6 +51,8 @@ const AuthenticationContextProvider: FunctionComponent<{ readonly children?: Rea
     setUser(newUser)
     loadSession()
   }, [setUser, loadSession])
+
+  const updateUser = useCallback((updatedUser: User) => setUser(updatedUser), [setUser])
 
   const initAuth = useCallback(async () => {
     const accessToken = sessionStorage.getItem(STORAGE_ACCESS_TOKEN_KEY) ??
@@ -83,11 +87,12 @@ const AuthenticationContextProvider: FunctionComponent<{ readonly children?: Rea
       isSessionLoaded,
       initAuth,
       authenticate,
+      updateUser,
       storeToken,
       loadSession,
       logout,
     }
-  ), [initAuth, authenticate, user, logout, isSessionLoaded])
+  ), [initAuth, authenticate, updateUser, loadSession, user, logout, isSessionLoaded])
 
   return (
     <AuthenticationContext.Provider

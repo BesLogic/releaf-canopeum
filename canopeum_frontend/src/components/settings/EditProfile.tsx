@@ -1,4 +1,5 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
+import { SnackbarContext } from '@components/context/SnackbarContext'
 import { PatchedUpdateUser } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { type InputValidationError, isValidEmail } from '@utils/validators'
@@ -7,7 +8,8 @@ import { useTranslation } from 'react-i18next'
 
 const EditProfile = () => {
   const { t: translate } = useTranslation()
-  const { currentUser } = useContext(AuthenticationContext)
+  const { currentUser, updateUser } = useContext(AuthenticationContext)
+  const { openAlertSnackbar } = useContext(SnackbarContext)
 
   const [username, setUsername] = useState(currentUser?.username ?? '')
   const [email, setEmail] = useState(currentUser?.email ?? '')
@@ -85,8 +87,8 @@ const EditProfile = () => {
 
     const updatedInfo = new PatchedUpdateUser({ username, email })
     const updatedUser = await getApiClient().userClient.update(currentUser.id, updatedInfo)
-
-    // TODO(NicolasDontigny): Update currentUser in AuthenticationContext
+    updateUser(updatedUser)
+    openAlertSnackbar(translate('settings.edit-profile.profile-saved'), { severity: 'success' })
   }
 
   return (

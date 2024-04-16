@@ -6,7 +6,8 @@
     "logout": "Log Out"
   },
   "edit-profile": {
-    "title": "Edit My Profile"
+    "title": "Edit My Profile",
+    "profile-saved": "Profile successfully saved!"
   },
   "manage-admins": {
     "title": "Manage Administrators",
