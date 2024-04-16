@@ -3566,6 +3566,8 @@ export interface IRegisterUser {
   [key: string]: any;
 }
 
+export type RoleEnum = "User" | "Admin" | "MegaAdmin";
+
 export class Site implements ISite {
   readonly id!: number;
   siteType!: SiteType;
@@ -4362,7 +4364,7 @@ export interface ITokenRefresh {
 
 export class User implements IUser {
   readonly id!: number;
-  readonly role!: string;
+  readonly role!: RoleEnum;
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;
@@ -4462,7 +4464,7 @@ export class User implements IUser {
 
 export interface IUser {
   id: number;
-  role: string;
+  role: RoleEnum;
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;
@@ -4485,8 +4487,8 @@ export interface IUser {
 }
 
 export class UserToken implements IUserToken {
-  readonly refresh!: string;
-  readonly access!: string;
+  token!: TokenRefresh;
+  user!: User;
 
   [key: string]: any;
 
@@ -4497,6 +4499,10 @@ export class UserToken implements IUserToken {
           (<any>this)[property] = (<any>data)[property];
       }
     }
+    if (!data) {
+      this.token = new TokenRefresh();
+      this.user = new User();
+    }
   }
 
   init(_data?: any) {
@@ -4505,8 +4511,8 @@ export class UserToken implements IUserToken {
         if (_data.hasOwnProperty(property))
           this[property] = _data[property];
       }
-      (<any>this).refresh = _data["refresh"];
-      (<any>this).access = _data["access"];
+      this.token = _data["token"] ? TokenRefresh.fromJS(_data["token"]) : new TokenRefresh();
+      this.user = _data["user"] ? User.fromJS(_data["user"]) : new User();
     }
   }
 
@@ -4523,15 +4529,15 @@ export class UserToken implements IUserToken {
       if (this.hasOwnProperty(property))
         data[property] = this[property];
     }
-    data["refresh"] = this.refresh;
-    data["access"] = this.access;
+    data["token"] = this.token ? this.token.toJSON() : <any>undefined;
+    data["user"] = this.user ? this.user.toJSON() : <any>undefined;
     return data;
   }
 }
 
 export interface IUserToken {
-  refresh: string;
-  access: string;
+  token: TokenRefresh;
+  user: User;
 
   [key: string]: any;
 }
@@ -4596,115 +4602,12 @@ export interface IWidget {
   [key: string]: any;
 }
 
-export enum Format {
-  Json = "json",
-  Yaml = "yaml",
-}
+export type Format = "json" | "yaml";
 
-export enum Lang {
-  Af = "af",
-  Ar = "ar",
-  ArDz = "ar-dz",
-  Ast = "ast",
-  Az = "az",
-  Be = "be",
-  Bg = "bg",
-  Bn = "bn",
-  Br = "br",
-  Bs = "bs",
-  Ca = "ca",
-  Ckb = "ckb",
-  Cs = "cs",
-  Cy = "cy",
-  Da = "da",
-  De = "de",
-  Dsb = "dsb",
-  El = "el",
-  En = "en",
-  EnAu = "en-au",
-  EnGb = "en-gb",
-  Eo = "eo",
-  Es = "es",
-  EsAr = "es-ar",
-  EsCo = "es-co",
-  EsMx = "es-mx",
-  EsNi = "es-ni",
-  EsVe = "es-ve",
-  Et = "et",
-  Eu = "eu",
-  Fa = "fa",
-  Fi = "fi",
-  Fr = "fr",
-  Fy = "fy",
-  Ga = "ga",
-  Gd = "gd",
-  Gl = "gl",
-  He = "he",
-  Hi = "hi",
-  Hr = "hr",
-  Hsb = "hsb",
-  Hu = "hu",
-  Hy = "hy",
-  Ia = "ia",
-  Id = "id",
-  Ig = "ig",
-  Io = "io",
-  Is = "is",
-  It = "it",
-  Ja = "ja",
-  Ka = "ka",
-  Kab = "kab",
-  Kk = "kk",
-  Km = "km",
-  Kn = "kn",
-  Ko = "ko",
-  Ky = "ky",
-  Lb = "lb",
-  Lt = "lt",
-  Lv = "lv",
-  Mk = "mk",
-  Ml = "ml",
-  Mn = "mn",
-  Mr = "mr",
-  Ms = "ms",
-  My = "my",
-  Nb = "nb",
-  Ne = "ne",
-  Nl = "nl",
-  Nn = "nn",
-  Os = "os",
-  Pa = "pa",
-  Pl = "pl",
-  Pt = "pt",
-  PtBr = "pt-br",
-  Ro = "ro",
-  Ru = "ru",
-  Sk = "sk",
-  Sl = "sl",
-  Sq = "sq",
-  Sr = "sr",
-  SrLatn = "sr-latn",
-  Sv = "sv",
-  Sw = "sw",
-  Ta = "ta",
-  Te = "te",
-  Tg = "tg",
-  Th = "th",
-  Tk = "tk",
-  Tr = "tr",
-  Tt = "tt",
-  Udm = "udm",
-  Ug = "ug",
-  Uk = "uk",
-  Ur = "ur",
-  Uz = "uz",
-  Vi = "vi",
-  ZhHans = "zh-hans",
-  ZhHant = "zh-hant",
-}
+export type Lang = "af" | "ar" | "ar-dz" | "ast" | "az" | "be" | "bg" | "bn" | "br" | "bs" | "ca" | "ckb" | "cs" | "cy" | "da" | "de" | "dsb" | "el" | "en" | "en-au" | "en-gb" | "eo" | "es" | "es-ar" | "es-co" | "es-mx" | "es-ni" | "es-ve" | "et" | "eu" | "fa" | "fi" | "fr" | "fy" | "ga" | "gd" | "gl" | "he" | "hi" | "hr" | "hsb" | "hu" | "hy" | "ia" | "id" | "ig" | "io" | "is" | "it" | "ja" | "ka" | "kab" | "kk" | "km" | "kn" | "ko" | "ky" | "lb" | "lt" | "lv" | "mk" | "ml" | "mn" | "mr" | "ms" | "my" | "nb" | "ne" | "nl" | "nn" | "os" | "pa" | "pl" | "pt" | "pt-br" | "ro" | "ru" | "sk" | "sl" | "sq" | "sr" | "sr-latn" | "sv" | "sw" | "ta" | "te" | "tg" | "th" | "tk" | "tr" | "tt" | "udm" | "ug" | "uk" | "ur" | "uz" | "vi" | "zh-hans" | "zh-hant";
 
 export class ApiException extends Error {
-  message: string;
+  override message: string;
   status: number;
   response: string;
   headers: { [key: string]: any; };

@@ -2,13 +2,13 @@ import { AuthenticationContext } from '@components/context/AuthenticationContext
 import EditProfile from '@components/settings/EditProfile'
 import ManageAdmins from '@components/settings/ManageAdmins'
 import SettingsTab from '@components/settings/SettingsTab'
-import type { UserRole } from '@models/User'
+import type { RoleEnum } from '@services/api'
 import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 type UserManagementTab = 'editProfile' | 'logout' | 'manageAdmins' | 'termsAndPolicies'
 
-const tabs: { type: UserManagementTab, translationKey: string, roles?: UserRole[] }[] = [
+const tabs: { type: UserManagementTab, translationKey: string, roles?: RoleEnum[] }[] = [
   {
     type: 'editProfile',
     translationKey: 'edit-profile',

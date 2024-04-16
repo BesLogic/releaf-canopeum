@@ -2,6 +2,7 @@ from django.contrib.auth.password_validation import validate_password
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 
 from .models import (
     Announcement,
@@ -19,6 +20,7 @@ from .models import (
     Mulchlayertype,
     Post,
     Role,
+    RoleName,
     Site,
     Siteadmin,
     Sitetreespecies,
@@ -85,16 +87,17 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         exclude = ("password",)
 
+    @extend_schema_field(RoleName)
     def get_role(self, obj):
         return obj.role.name
 
 
 class UserTokenSerializer(serializers.Serializer):
-    refresh = serializers.StringRelatedField()
-    access = serializers.StringRelatedField()
+    token = TokenRefreshSerializer()
+    user = UserSerializer()
 
     class Meta:
-        fields = ("refresh", "access")
+        fields = ("token", "user")
 
 
 class CoordinatesSerializer(serializers.ModelSerializer):

@@ -2,10 +2,10 @@ import { appRoutes } from '@constants/routes.constant'
 import { useContext, useEffect } from 'react'
 import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
 
-import useLogin from '../hooks/LoginHook'
 import Analytics from '../pages/Analytics'
 import AnalyticsSite from '../pages/AnalyticsSite'
 import Home from '../pages/Home'
+import LoadingPage from '../pages/LoadingPage'
 import Login from '../pages/Login'
 import Map from '../pages/Map'
 import Register from '../pages/Register'
@@ -35,18 +35,22 @@ const NotAuthenticatedRoutes = () => {
 const AuthenticatedRoutes = () => {
   const { isAuthenticated, isSessionLoaded } = useContext(AuthenticationContext)
 
+  if (!isSessionLoaded) {
+    return <LoadingPage />
+  }
+
   return (
-    isAuthenticated || !isSessionLoaded
+    isAuthenticated
       ? <Outlet />
       : <Navigate to={appRoutes.login} />
   )
 }
 
 const MainLayout = () => {
-  const { authenticateUser } = useLogin()
+  const { initAuth } = useContext(AuthenticationContext)
 
-  // Try authenticating user on app start if token was saved in sessionStorage
-  useEffect(() => authenticateUser(), [authenticateUser])
+  // Try authenticating user on app start if token was saved in storage
+  useEffect(() => void initAuth(), [initAuth])
 
   return (
     <Routes>

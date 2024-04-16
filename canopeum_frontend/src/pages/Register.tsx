@@ -1,16 +1,16 @@
 import AuthPageLayout from '@components/auth/AuthPageLayout'
+import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { appRoutes } from '@constants/routes.constant'
 import { RegisterUser } from '@services/api'
 import getApiClient from '@services/apiInterface'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
-import useLogin from '../hooks/LoginHook'
 import { type InputValidationError, isValidEmail, isValidPassword, mustMatch } from '../utils/validators'
 
 const Register = () => {
-  const { authenticateUser } = useLogin()
+  const { authenticate, storeToken } = useContext(AuthenticationContext)
   const { t: translate } = useTranslation()
 
   const [username, setUsername] = useState('')
@@ -117,10 +117,10 @@ const Register = () => {
           passwordConfirmation,
         }),
       )
-      sessionStorage.setItem('token', response.access)
-      sessionStorage.setItem('refreshToken', response.refresh)
 
-      authenticateUser(response.access)
+      authenticate(response.user)
+      const rememberMe = false
+      storeToken(response.token, rememberMe)
     } catch {
       setRegistrationError(translate('auth.sign-up-error'))
     }
