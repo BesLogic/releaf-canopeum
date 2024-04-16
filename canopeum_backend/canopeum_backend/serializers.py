@@ -87,8 +87,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         exclude = ("password",)
 
-    @extend_schema_field(RoleName)
-    def get_role(self, obj):
+    def get_role(self, obj) -> RoleName:
         return obj.role.name
 
 

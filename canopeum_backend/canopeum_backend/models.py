@@ -7,9 +7,9 @@ from django.db import models
 
 
 class RoleName(models.TextChoices):
-    USER = "User", "User"
-    ADMIN = "Admin", "Admin"
-    MEGAADMIN = "MegaAdmin", "MegaAdmin"
+    USER = "User"
+    ADMIN = "Admin"
+    MEGAADMIN = "MegaAdmin"
 
 
 class Role(models.Model):
