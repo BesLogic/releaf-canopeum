@@ -19,7 +19,20 @@ from canopeum_backend.permissions import (
     MegaAdminPermissionReadOnly,
 )
 
-from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, Siteadmin, SiteFollower, User, Widget
+from .models import (
+    Announcement,
+    Batch,
+    Comment,
+    Contact,
+    Like,
+    Post,
+    RoleName,
+    Site,
+    Siteadmin,
+    SiteFollower,
+    User,
+    Widget,
+)
 from .serializers import (
     AdminUserSitesSerializer,
     AnnouncementSerializer,
@@ -291,7 +304,7 @@ class AdminUserSitesAPIView(APIView):
     def get(self, request):
         # Get unique user values
         adminusers = list({siteadmin.user for siteadmin in Siteadmin.objects.all()})
-        serializer = AdminUserSitesSerializer(adminusers, many=True)
+        serializer = AdminUserSitesSerializer(sorted(adminusers, key=lambda user: user.username), many=True)
         return Response(serializer.data)
 
 
@@ -548,17 +561,17 @@ class BatchDetailAPIView(APIView):
 class UserListAPIView(APIView):
     @extend_schema(responses=UserSerializer(many=True), operation_id="user_all")
     def get(self, request):
-        users = User.objects.all()
+        users = User.objects.all().order_by("username")
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
 
 
-class AdminUsersListAPIView(APIView):
+class SiteManagersListAPIView(APIView):
     permission_classes = (MegaAdminPermission,)
 
-    @extend_schema(responses=UserSerializer(many=True), operation_id="user_allAdmins")
+    @extend_schema(responses=UserSerializer(many=True), operation_id="user_allSiteManagers")
     def get(self, request):
-        users = User.objects.filter(role__name__iexact="admin")
+        users = User.objects.filter(role__name__iexact=RoleName.SITEMANAGER).order_by("username")
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
 

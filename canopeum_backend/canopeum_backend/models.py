@@ -8,12 +8,13 @@ from django.db import models
 
 class RoleName(models.TextChoices):
     USER = "User"
+    SITEMANAGER = "SiteManager"
     MEGAADMIN = "MegaAdmin"
 
 
 class Role(models.Model):
     name = models.CharField(
-        max_length=9,
+        max_length=11,
         choices=RoleName.choices,
         default=RoleName.USER,
     )

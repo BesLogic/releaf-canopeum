@@ -17,7 +17,7 @@ const Analytics = () => {
   const [adminList, setAdminList] = useState<User[]>([])
 
   const fetchSites = async () => setSiteSummaries(await getApiClient().summaryClient.all())
-  const fetchAdmins = async () => setAdminList(await getApiClient().userClient.allAdmins())
+  const fetchAdmins = async () => setAdminList(await getApiClient().userClient.allSiteManagers())
 
   useEffect((): void => {
     void fetchSites()
