@@ -1,16 +1,25 @@
+import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { LanguageContext } from '@components/context/LanguageContext'
 import type { Comment } from '@services/api'
-import { useContext } from 'react'
+import { createRef, useContext } from 'react'
 
 type Props = {
   readonly comment: Comment,
+  readonly onDelete: (comment: Comment) => void,
 }
 
-const PostComment = ({ comment }: Props) => {
+const PostComment = ({ comment, onDelete }: Props) => {
   const { formatDate } = useContext(LanguageContext)
+  const { currentUser } = useContext(AuthenticationContext)
+  const ref = createRef<HTMLDivElement>()
+
+  const canDeleteComment = currentUser && (
+    ['Admin', 'MegaAdmin'].includes(currentUser.role) ||
+    comment.authorId === currentUser.id
+  )
 
   return (
-    <div className='bg-lightgreen p-2'>
+    <div className='bg-lightgreen p-2' ref={ref}>
       <div className='d-flex justify-content-between align-items-center'>
         <div className='d-flex align-items-center gap-2'>
           <span className='material-symbols-outlined fill-icon icon-5xl'>account_circle</span>
@@ -21,9 +30,11 @@ const PostComment = ({ comment }: Props) => {
           </div>
         </div>
 
-        <button className='unstyled-button' type='button'>
-          <span className='material-symbols-outlined text-primary'>cancel</span>
-        </button>
+        {canDeleteComment && (
+          <button className='unstyled-button' onClick={() => onDelete(comment)} type='button'>
+            <span className='material-symbols-outlined text-primary'>cancel</span>
+          </button>
+        )}
       </div>
 
       <div className='mt-1'>

@@ -21,6 +21,10 @@
   border-radius: 5px;
 }
 
+.page-container {
+  padding: 2rem 12rem;
+}
+
 body {
   background-image: url('@assets/images/TreeBackground.png');
 }
@@ -215,4 +219,20 @@ a.nav-link:active,
 a.nav-link:focus,
 a.nav-link:hover {
   text-decoration: none;
+}
+
+// Used for CSSTransition, important to add classNames item-fadeinout
+.item-fadeinout-enter {
+  opacity: 0;
+}
+.item-fadeinout-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+.item-fadeinout-exit {
+  opacity: 1;
+}
+.item-fadeinout-exit-active {
+  opacity: 0;
+  transition: opacity 500ms ease-in;
 }

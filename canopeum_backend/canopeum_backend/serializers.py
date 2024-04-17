@@ -2,6 +2,7 @@ from django.contrib.auth.password_validation import validate_password
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 
 from .models import (
     Announcement,
@@ -19,8 +20,10 @@ from .models import (
     Mulchlayertype,
     Post,
     Role,
+    RoleName,
     Site,
     Siteadmin,
+    SiteFollower,
     Sitetreespecies,
     Sitetype,
     Treetype,
@@ -33,6 +36,12 @@ class LoginUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("email", "password")
+
+
+class UpdateUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("username", "email")
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
@@ -79,16 +88,16 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         exclude = ("password",)
 
-    def get_role(self, obj):
+    def get_role(self, obj) -> RoleName:
         return obj.role.name
 
 
 class UserTokenSerializer(serializers.Serializer):
-    refresh = serializers.StringRelatedField()
-    access = serializers.StringRelatedField()
+    token = TokenRefreshSerializer()
+    user = UserSerializer()
 
     class Meta:
-        fields = ("refresh", "access")
+        fields = ("token", "user")
 
 
 class CoordinatesSerializer(serializers.ModelSerializer):
@@ -204,6 +213,25 @@ class SiteSerializer(serializers.ModelSerializer):
         return SitetreespeciesSerializer(obj.sitetreespecies_set.all(), many=True).data
 
 
+class SiteNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Site
+        fields = ("id", "name")
+
+
+class AdminUserSitesSerializer(serializers.ModelSerializer):
+    sites = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ("id", "username", "email", "sites")
+
+    @extend_schema_field(SiteNameSerializer(many=True))
+    def get_sites(self, obj):
+        sites_list = [siteadmin.site for siteadmin in obj.siteadmin_set.all()]
+        return SiteNameSerializer(sites_list, many=True).data
+
+
 class SiteSocialSerializer(serializers.ModelSerializer):
     site_type = SiteTypeSerializer()
     contact = ContactSerializer()
@@ -214,7 +242,7 @@ class SiteSocialSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Site
-        fields = ("name", "site_type", "image", "description", "contact", "announcement", "sponsors", "widget")
+        fields = ("id", "name", "site_type", "image", "description", "contact", "announcement", "sponsors", "widget")
 
     # Bug in the extend_schema_field type annotation, they should allow
     # base python types supported by open api specs
@@ -385,6 +413,15 @@ class SiteAdminSerializer(serializers.ModelSerializer):
         fields = ("user",)
 
 
+class SiteFollowerSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    site = SiteSerializer()
+
+    class Meta:
+        model = SiteFollower
+        fields = ("user", "site")
+
+
 class IntegerListFieldSerializer(serializers.ListField):
     child = serializers.IntegerField()
 
@@ -509,7 +546,7 @@ class PostSerializer(serializers.ModelSerializer):
             "media",
         )
 
-    @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
+    @extend_schema_field(serializers.IntegerField())
     def get_comment_count(self, obj):
         return obj.comment_set.count()
 
@@ -530,12 +567,17 @@ class CreateCommentSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    author_id = serializers.SerializerMethodField()
     author_username = serializers.SerializerMethodField()
     # TODO(NicolasDontigny): Add user avatar image here once implemented
 
     class Meta:
         model = Comment
-        fields = ("id", "body", "author_username", "created_at")
+        fields = ("id", "body", "author_id", "author_username", "created_at")
+
+    @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
+    def get_author_id(self, obj):
+        return obj.user.id
 
     def get_author_username(self, obj):
         return obj.user.username

@@ -1,5 +1,6 @@
 import { LanguageContext } from '@components/context/LanguageContext'
 import PostCommentsDialog from '@components/social/PostCommentsDialog'
+import type { PageViewMode } from '@models/types/PageViewMode'
 import { getApiBaseUrl } from '@services/apiSettings'
 import { useContext, useState } from 'react'
 
@@ -8,8 +9,8 @@ import AssetGrid from '@components/AssetGrid'
 import TextExpansion from '@components/inputs/textExpansion'
 import getApiClient from '@services/apiInterface'
 
-const PostWidget = (props: { post: Post, likePostEvent: (postId: number) => void }) => {
-  const { post, likePostEvent } = props
+const PostWidget = (props: { post: Post, likePostEvent: (postId: number) => void }, viewMode: PageViewMode) => {
+  const { post, likePostEvent, viewMode } = props
 
   const { formatDate } = useContext(LanguageContext)
   const [commentsModalOpen, setCommentsModalOpen] = useState(false)
@@ -28,6 +29,17 @@ const PostWidget = (props: { post: Post, likePostEvent: (postId: number) => void
     }
   }
 
+  const handleCommentCountChange = (action: 'added' | 'deleted') => {
+    /* eslint-disable @typescript-eslint/no-explicit-any -- Temporary workaround.
+    We want the post commentCount property to be read-only; figure out how to do so with the NSwag models generation */
+    if (action === 'added') {
+      ;(post.commentCount as any) += 1
+    } else {
+      ;(post.commentCount as any) -= 1
+    }
+    /* eslint-enable @typescript-eslint/no-explicit-any */
+  }
+
   return (
     <>
       <div className='bg-white rounded-2 px-5 py-4 d-flex flex-column gap-3'>
@@ -40,11 +52,9 @@ const PostWidget = (props: { post: Post, likePostEvent: (postId: number) => void
           />
           <div className='d-flex flex-column'>
             <h6 className='text-uppercase fw-bold mb-1'>{post.site.name}</h6>
-            {post.createdAt && (
-              <span className='text-muted initialism'>
-                {formatDate(post.createdAt, { dateStyle: 'short' })}
-              </span>
-            )}
+            <span className='text-muted initialism'>
+              {formatDate(post.createdAt, { dateStyle: 'short' })}
+            </span>
           </div>
         </div>
 
@@ -68,18 +78,24 @@ const PostWidget = (props: { post: Post, likePostEvent: (postId: number) => void
             onClick={openPostComments}
             type='button'
           >
-            <span className='material-symbols-outlined'>sms</span>
+            <span className='material-symbols-outlined text-primary'>sms</span>
             <div>{post.commentCount}</div>
           </button>
 
           <button className='d-flex gap-2 unstyled-button' type='button'>
-            <span className='material-symbols-outlined'>share</span>
+            <span className='material-symbols-outlined text-primary'>share</span>
             <div>{post.shareCount}</div>
           </button>
         </div>
       </div>
 
-      <PostCommentsDialog handleClose={handleCommentsModalClose} open={commentsModalOpen} postId={post.id} />
+      <PostCommentsDialog
+        handleClose={handleCommentsModalClose}
+        onCommentAction={handleCommentCountChange}
+        open={commentsModalOpen}
+        postId={post.id}
+        viewMode={viewMode}
+      />
     </>
   )
 }

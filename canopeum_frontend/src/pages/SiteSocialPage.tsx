@@ -1,5 +1,6 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import SiteSocialHeader from '@components/social/SiteSocialHeader'
+import type { PageViewMode } from '@models/types/PageViewMode'
 import type { Post, SiteSocial } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { ensureError } from '@services/errors'
@@ -20,9 +21,9 @@ const SiteSocialPage = () => {
 
   const [isLoadingPosts, setIsLoadingPosts] = useState(true)
   const [errorPosts, setErrorPosts] = useState<Error | undefined>(undefined)
-  const [posts, setPosts] = useState<Post[]>()
+  const [posts, setPosts] = useState<Post[]>([])
 
-  const viewMode = currentUser
+  const viewMode: PageViewMode = currentUser
     ? currentUser.role === 'User'
       ? 'user'
       : 'admin'
@@ -114,7 +115,7 @@ const SiteSocialPage = () => {
                       : posts &&
                         posts?.sort((a: Post, b: Post) =>
                           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-                        ).map((post: Post) => <PostWidget post={post} likePostEvent={likePost} />)}
+                        ).map((post: Post) => <PostWidget post={post} likePostEvent={likePost} viewMode={viewMode} />)}
                   </div>
                 </>
               )}

@@ -1,8 +1,8 @@
 import Checkbox from '@components/Checkbox'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import SearchBar from '@components/SearchBar'
-import type { SiteSummary, User } from '@services/api';
-import { PatchedSiteAdminUpdateRequest } from '@services/api';
+import type { SiteSummary, User } from '@services/api'
+import { PatchedSiteAdminUpdateRequest } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { type Dispatch, type SetStateAction, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -56,13 +56,15 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange }: Props) => {
       .siteClient
       .updateAdmins(siteSummary.id, body)
     // Update the parent model
-    onSiteChange(previous => previous.map(site => {
-      if (site.id === siteSummary.id) {
-        site.admins = updatedAdmins
-      }
+    onSiteChange(previous =>
+      previous.map(site => {
+        if (site.id === siteSummary.id) {
+          site.admins = updatedAdmins
+        }
 
-      return site
-    }))
+        return site
+      })
+    )
     whisperRef.current?.close()
     openAlertSnackbar(translate('analytics.site-summary.admins-saved', { siteName: siteSummary.name }))
   }
@@ -82,7 +84,7 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange }: Props) => {
     } catch {
       openAlertSnackbar(
         translate('analytics.site-summary.site-deleted-error', { siteName: siteSummary.name }),
-        { severity: 'error' }
+        { severity: 'error' },
       )
     }
   }
