@@ -1,10 +1,10 @@
-import { type ChangeEvent, useState, useContext } from 'react'
+import { type ChangeEvent, useContext, useState } from 'react'
 import { Asset, type FileParameter, type Post, type SiteSocial } from '../services/api'
 import { ensureError } from '@services/errors'
 import getApiClient from '@services/apiInterface'
 import textAreaAutoGrow from '../utils/textAreaAutoGrow'
 import { useTranslation } from 'react-i18next'
-import { SnackbarContext} from '@components/context/SnackbarContext'
+import { SnackbarContext } from '@components/context/SnackbarContext'
 
 import { numberOfWordsInText } from '../utils/stringUtils'
 import type { InputValidationError } from '../utils/validators'
@@ -49,7 +49,7 @@ const CreatePostWidget = (props: { readonly site: SiteSocial, addNewPost: (newPo
     Array.prototype.slice.call(e.target.files).forEach(async (file: File) => {
       if (!validateFile(file)) return
       const compressedFile = await assetFormatter(file)
-      setFiles( prevFiles => [...prevFiles, compressedFile])
+      setFiles(prevFiles => [...prevFiles, compressedFile])
     })
   }
 
@@ -137,22 +137,26 @@ const CreatePostWidget = (props: { readonly site: SiteSocial, addNewPost: (newPo
         </div>
 
         {postBodyError === 'required' && (
-            <span className='help-block text-danger'>
-              {translate('social.posts.post-body-required')}
-            </span>
-          )}
+          <span className='help-block text-danger'>
+            {translate('social.posts.post-body-required')}
+          </span>
+        )}
 
-          {postBodyError === 'maximumChars' && (
-            <span className='help-block text-danger'>
-              {translate('social.posts.comment-body-max-chars', { count: MAXIMUM_WORDS_PER_POST })}
-            </span>
-          )}
+        {postBodyError === 'maximumChars' && (
+          <span className='help-block text-danger'>
+            {translate('social.posts.comment-body-max-chars', { count: MAXIMUM_WORDS_PER_POST })}
+          </span>
+        )}
       </div>
-      { files && 
-        <AssetGrid 
-          medias={files.map(file => (new Asset ({ asset: URL.createObjectURL(file.data), init: {}, toJSON: () => ({}) })))} 
-          isEditable={{ removeFile }} /> 
-      }
+      {files.length > 0 &&
+        (
+          <AssetGrid
+            medias={files.map(
+              file => (new Asset({ asset: URL.createObjectURL(file.data), init: {}, toJSON: () => ({}) }))
+            )}
+            isEditable={{ removeFile }}
+          />
+        )}
     </div>
   )
 }

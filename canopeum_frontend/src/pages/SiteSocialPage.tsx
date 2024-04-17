@@ -53,7 +53,16 @@ const SiteSocialPage = () => {
   }
 
   const addNewPost = (newPost: Post) => {
-    setPosts([newPost, ...(posts || [])])
+    setPosts([newPost, ...posts || []])
+  }
+
+  const likePost = async (postId: number) => {
+    const post = posts?.find(post => post.id === postId)
+    if (!post) return
+    const newPost = { ...post, hasLiked: !post.hasLiked }
+    newPost.likeCount = post.likeCount && (post.hasLiked ? post.likeCount - 1 : post.likeCount + 1)
+    posts?.splice(posts.indexOf(post), 1)
+    setPosts([newPost as Post, ...posts || []])
   }
 
   useEffect((): void => {
@@ -105,7 +114,7 @@ const SiteSocialPage = () => {
                       : posts &&
                         posts?.sort((a: Post, b: Post) =>
                           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-                        ).map((post: Post) => <PostWidget key={post.id} post={post} />)}
+                        ).map((post: Post) => <PostWidget post={post} likePostEvent={likePost} />)}
                   </div>
                 </>
               )}

@@ -8,7 +8,9 @@ import AssetGrid from '@components/AssetGrid'
 import TextExpansion from '@components/inputs/textExpansion'
 import getApiClient from '@services/apiInterface'
 
-const PostWidget = ({ post }: Post) => {
+const PostWidget = (props: { post: Post, likePostEvent: (postId: number) => void }) => {
+  const { post, likePostEvent } = props
+
   const { formatDate } = useContext(LanguageContext)
   const [commentsModalOpen, setCommentsModalOpen] = useState(false)
 
@@ -18,13 +20,11 @@ const PostWidget = ({ post }: Post) => {
 
   const likePost = async () => {
     if (post.hasLiked) {
-      await getApiClient().likeClient.delete(post.id)
-      post.hasLiked = false
-      post.likeCount -= 1
+      await getApiClient().likeClient.delete(post.id!)
+      likePostEvent(post.id!)
     } else {
-      await getApiClient().likeClient.likePost(post.id, {})
-      post.hasLiked = true
-      post.likeCount += 1
+      await getApiClient().likeClient.likePost(post.id!, {})
+      likePostEvent(post.id!)
     }
   }
 

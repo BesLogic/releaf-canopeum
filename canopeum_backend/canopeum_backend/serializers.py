@@ -515,7 +515,12 @@ class PostSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(bool)  # pyright: ignore[reportArgumentType]
     def get_has_liked(self, obj):
-        return self.context.get("has_liked")
+        user = self.context["request"].user
+        if user.is_anonymous:
+            return False
+        if not hasattr(obj, "like"):
+            return False
+        return Like.objects.filter(user=user).exists()
 
 
 class CreateCommentSerializer(serializers.ModelSerializer):
@@ -535,10 +540,12 @@ class CommentSerializer(serializers.ModelSerializer):
     def get_author_username(self, obj):
         return obj.user.username
 
+
 class LikePostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
         fields = ("post",)
+
 
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:

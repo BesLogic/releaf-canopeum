@@ -22,7 +22,6 @@ from .serializers import (
     CommentSerializer,
     ContactSerializer,
     CreateCommentSerializer,
-    LikePostSerializer,
     LikeSerializer,
     LoginUserSerializer,
     PostPostSerializer,
@@ -274,14 +273,9 @@ class PostListAPIView(APIView):
         parameters=[OpenApiParameter(name="siteId", type=OpenApiTypes.INT, location=OpenApiParameter.QUERY)],
     )
     def get(self, request):
-        comment_count = Comment.objects.filter(post=request.data.get("id")).count()
-        if request.user.is_authenticated:
-            has_liked = Like.objects.filter(post=request.data.get("id"), user=request.user).exists()
-        else:
-            has_liked = False
         site_id = request.GET.get("siteId", "")
         posts = Post.objects.filter(site=site_id) if not site_id else Post.objects.all()
-        serializer = PostSerializer(posts, many=True, context={"comment_count": comment_count, "has_liked": has_liked})
+        serializer = PostSerializer(posts, many=True, context={"request": request})
         return Response(serializer.data)
 
     parser_classes = (MultiPartParser, FormParser)
@@ -317,7 +311,7 @@ class PostListAPIView(APIView):
             post = serializer.save()
             for asset_item in saved_assets:
                 post.media.add(asset_item.instance)
-            new_post = PostSerializer(post)
+            new_post = PostSerializer(post, context={"request": request})
             return Response(new_post.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -423,7 +417,7 @@ class WidgetDetailAPIView(APIView):
 
 
 class LikeListAPIView(APIView):
-    @extend_schema(request='', responses={201: LikeSerializer}, operation_id="like_likePost")
+    @extend_schema(request="", responses={201: LikeSerializer}, operation_id="like_likePost")
     def post(self, request, postId):
         try:
             post = Post.objects.get(pk=postId)
@@ -438,12 +432,12 @@ class LikeListAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @extend_schema(responses={201: LikeSerializer},operation_id="like_delete")
+    @extend_schema(responses={201: LikeSerializer}, operation_id="like_delete")
     def delete(self, request, postId):
         try:
             post = Post.objects.get(pk=postId)
         except Post.DoesNotExist:
-            return Response(status='sef')
+            return Response(status="sef")
         try:
             like = Like.objects.get(post=post)
         except Like.DoesNotExist:

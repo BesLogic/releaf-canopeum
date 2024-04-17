@@ -17,7 +17,7 @@ class User(AbstractUser):
         unique=True,
     )
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS: ClassVar[list[str]] = [] # type: ignore
+    REQUIRED_FIELDS: ClassVar[list[str]] = []  # type: ignore
     role = models.ForeignKey(Role, models.DO_NOTHING, null=False, default=1)  # type: ignore
 
 
@@ -120,8 +120,8 @@ class Asset(models.Model):
 class Post(models.Model):
     site = models.ForeignKey("Site", models.DO_NOTHING, blank=False, null=False)
     body = models.TextField(blank=False, null=False)
-    like_count = models.IntegerField(blank=True, null=True)
-    share_count = models.IntegerField(blank=True, null=True)
+    like_count = models.IntegerField(default=0)
+    share_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True, blank=False, null=False)
     # created_by = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
     media = models.ManyToManyField(Asset, through="PostAsset", blank=True)
@@ -182,8 +182,8 @@ class Widget(models.Model):
 
 
 class Like(models.Model):
-    user = models.ForeignKey(User, models.DO_NOTHING)
-    post = models.ForeignKey(Post, models.DO_NOTHING, unique=True)
+    user = models.OneToOneField(User, models.DO_NOTHING)
+    post = models.OneToOneField(Post, models.DO_NOTHING)
 
 
 class Internationalization(models.Model):
