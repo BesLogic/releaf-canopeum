@@ -16,9 +16,7 @@ const CreatePostWidget = (props: { readonly site: SiteSocial }) => {
       </div>
       <div className='position-relative'>
         <div className='position-absolute top-0 left-0 m-3 d-flex gap-3 fs-3'>
-          <span className='material-symbols-outlined'>mood</span>
           <span className='material-symbols-outlined'>add_a_photo</span>
-          <span className='material-symbols-outlined'>smart_display</span>
         </div>
         <textarea className='form-control pt-5' id='exampleFormControlTextarea1' placeholder='Post a New Message...'>
         </textarea>
