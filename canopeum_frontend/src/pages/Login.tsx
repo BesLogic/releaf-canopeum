@@ -1,19 +1,21 @@
 import AuthPageLayout from '@components/auth/AuthPageLayout'
+import Checkbox from '@components/Checkbox'
+import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { appRoutes } from '@constants/routes.constant'
 import { LoginUser } from '@services/api'
 import getApiClient from '@services/apiInterface'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
-import useLogin from '../hooks/LoginHook'
 import type { InputValidationError } from '../utils/validators'
 
 const Login = () => {
-  const { authenticateUser } = useLogin()
+  const { authenticate, storeToken } = useContext(AuthenticationContext)
   const { t: translate } = useTranslation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [rememberMe, setRememberMe] = useState(false)
 
   const [emailError, setEmailError] = useState<InputValidationError | undefined>()
   const [passwordError, setPasswordError] = useState<InputValidationError | undefined>()
@@ -64,10 +66,9 @@ const Login = () => {
           password,
         }),
       )
-      sessionStorage.setItem('token', response.access)
-      sessionStorage.setItem('refreshToken', response.refresh)
 
-      authenticateUser(response.access)
+      authenticate(response.user)
+      storeToken(response.token, rememberMe)
     } catch {
       setLoginError(translate('auth.log-in-error'))
     }
@@ -112,6 +113,18 @@ const Login = () => {
             </span>
           )}
         </div>
+
+        <div>
+          <Checkbox
+            checked={rememberMe}
+            id='remember-me'
+            onChange={(_value, isChecked) => setRememberMe(isChecked)}
+            value='remember-me'
+          >
+            Remember Me
+          </Checkbox>
+        </div>
+
         {loginError && <span className='help-block text-danger'>{loginError}</span>}
 
         <div className='w-100'>

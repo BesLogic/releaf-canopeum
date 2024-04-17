@@ -13,6 +13,7 @@ export default ({ mode }: { mode: string }) => {
         '@constants': '/src/constants',
         '@models': '/src/models',
         '@services': '/src/services',
+        '@utils': '/src/utils',
       },
     },
     server: {

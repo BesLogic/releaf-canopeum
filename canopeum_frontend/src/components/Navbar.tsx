@@ -5,6 +5,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import { AuthenticationContext } from './context/AuthenticationContext'
 
+export const NAVBAR_HEIGHT = 55
+
 const Navbar = () => {
   const { i18n: { changeLanguage, language } } = useTranslation()
   const [currentLanguage, setCurrentLanguage] = useState(language)
@@ -31,7 +33,7 @@ const Navbar = () => {
   }, [isAuthenticated, navigate, logout])
 
   return (
-    <nav className='navbar navbar-expand-lg bg-primary'>
+    <nav className='navbar navbar-expand-lg bg-primary' style={{ height: `${NAVBAR_HEIGHT}px` }}>
       <div className='container'>
         <Link to={appRoutes.home}>
           <img alt='Logo' className='navbar-logo' src='/Releaf_Logo.svg' style={{ transition: 'all .5s' }} />

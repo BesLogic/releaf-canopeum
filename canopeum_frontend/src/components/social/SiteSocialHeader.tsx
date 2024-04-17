@@ -3,17 +3,14 @@ import ToggleSwitch from '@components/inputs/ToggleSwitch'
 import PrimaryIconBadge from '@components/PrimaryIconBadge'
 import type { PageViewMode } from '@models/types/PageViewMode'
 import type { SiteSocial } from '@services/api'
+import getApiClient from '@services/apiInterface'
 import { getApiBaseUrl } from '@services/apiSettings'
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 type Props = {
   readonly viewMode: PageViewMode,
   readonly site: SiteSocial,
-}
-
-const onFollowClick = () => {
-  // TODO implement follow here when backend is available
 }
 
 const updateSiteIsPublic = async (_: boolean) => {
@@ -24,14 +21,32 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
   const { t: translate } = useTranslation()
   const { translateValue } = useContext(LanguageContext)
   const [isPublic, setIsPublic] = useState(true)
+  const [isFollowing, setIsFollowing] = useState<boolean | undefined>()
+
+  const fetchIsFollowing = useCallback(
+    async () => setIsFollowing(await getApiClient().siteClient.isFollowing(site.id)),
+    [site, setIsFollowing],
+  )
 
   useEffect(() => void updateSiteIsPublic(isPublic), [isPublic])
+
+  useEffect(() => void fetchIsFollowing(), [fetchIsFollowing])
+
+  const onFollowClick = async () => {
+    if (isFollowing) {
+      await getApiClient().siteClient.unfollow(site.id)
+      setIsFollowing(false)
+    } else {
+      await getApiClient().siteClient.follow(site.id)
+      setIsFollowing(true)
+    }
+  }
 
   return (
     <div className='card'>
       <div className='row g-0'>
         <div
-          className='col-md-4'
+          className='col-md-3'
           style={{
             backgroundImage: `url('${getApiBaseUrl() + site.image.asset}')`,
             backgroundSize: 'cover',
@@ -40,13 +55,19 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
         >
           {/* TODO: Fixing type asset */}
         </div>
-        <div className='col-md-8'>
+        <div className='col-md-9'>
           <div className='card-body'>
-            <div className='d-flex flex-row justify-content-between'>
+            <div className='d-flex flex-row justify-content-between align-items-center'>
               <h1 className='fw-bold card-title'>{site.name}</h1>
-              {viewMode === 'user' && (
-                <button className='btn btn-secondary' onClick={onFollowClick} type='button'>
-                  {translate('social.site-social-header.follow')}
+              {viewMode === 'user' && isFollowing !== undefined && (
+                <button
+                  className='btn btn-secondary'
+                  onClick={onFollowClick}
+                  type='button'
+                >
+                  {isFollowing
+                    ? translate('social.site-social-header.unfollow')
+                    : translate('social.site-social-header.follow')}
                 </button>
               )}
               {viewMode === 'admin' && (

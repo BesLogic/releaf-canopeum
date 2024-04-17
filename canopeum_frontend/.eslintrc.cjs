@@ -12,6 +12,7 @@ module.exports = {
   },
   ignorePatterns: [
     '.eslintrc.cjs',
+    'typings.d.ts',
     // Auto-generated
     'src/services/api.ts',
   ],

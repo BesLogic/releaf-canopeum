@@ -6,8 +6,18 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
+class RoleName(models.TextChoices):
+    USER = "User"
+    ADMIN = "Admin"
+    MEGAADMIN = "MegaAdmin"
+
+
 class Role(models.Model):
-    name = models.TextField(blank=True, null=True)
+    name = models.CharField(
+        max_length=9,
+        choices=RoleName.choices,
+        default=RoleName.USER,
+    )
 
 
 class User(AbstractUser):
@@ -122,7 +132,7 @@ class Post(models.Model):
     body = models.TextField(blank=True, null=True)
     like_count = models.IntegerField(blank=True, null=True)
     share_count = models.IntegerField(blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     media = models.ManyToManyField(Asset, through="PostAsset")
 
 
@@ -148,6 +158,12 @@ class Site(models.Model):
 class Siteadmin(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
     site = models.ForeignKey(Site, models.DO_NOTHING, blank=True, null=True)
+
+
+class SiteFollower(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, models.DO_NOTHING)
+    site = models.ForeignKey(Site, models.DO_NOTHING)
 
 
 class Sitetreespecies(models.Model):

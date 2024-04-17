@@ -8,6 +8,58 @@
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
+export class AdminUserSitesClient {
+  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+    this.http = http ? http : window as any;
+    this.baseUrl = baseUrl ?? "";
+  }
+
+  all(): Promise<AdminUserSites[]> {
+    let url_ = this.baseUrl + "/admin-user-sites/";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        "Accept": "application/json"
+      }
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processAll(_response);
+    });
+  }
+
+  protected processAll(response: Response): Promise<AdminUserSites[]> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        if (Array.isArray(resultData200)) {
+          result200 = [] as any;
+          for (let item of resultData200)
+            result200!.push(AdminUserSites.fromJS(item));
+        }
+        else {
+          result200 = <any>null;
+        }
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<AdminUserSites[]>(null as any);
+  }
+}
+
 export class BatchClient {
   private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
   private baseUrl: string;
@@ -473,6 +525,116 @@ export class SiteClient {
     return Promise.resolve<SiteAdmin[]>(null as any);
   }
 
+  /**
+   * @return No response body
+   */
+  follow(siteId: number): Promise<void> {
+    let url_ = this.baseUrl + "/analytics/sites/{siteId}/followers/";
+    if (siteId === undefined || siteId === null)
+      throw new Error("The parameter 'siteId' must be defined.");
+    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "POST",
+      headers: {
+      }
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processFollow(_response);
+    });
+  }
+
+  protected processFollow(response: Response): Promise<void> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 201) {
+      return response.text().then((_responseText) => {
+        return;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<void>(null as any);
+  }
+
+  /**
+   * @return No response body
+   */
+  unfollow(siteId: number): Promise<void> {
+    let url_ = this.baseUrl + "/analytics/sites/{siteId}/followers/";
+    if (siteId === undefined || siteId === null)
+      throw new Error("The parameter 'siteId' must be defined.");
+    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "DELETE",
+      headers: {
+      }
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processUnfollow(_response);
+    });
+  }
+
+  protected processUnfollow(response: Response): Promise<void> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 204) {
+      return response.text().then((_responseText) => {
+        return;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<void>(null as any);
+  }
+
+  isFollowing(siteId: number): Promise<boolean> {
+    let url_ = this.baseUrl + "/analytics/sites/{siteId}/followers/current-user/";
+    if (siteId === undefined || siteId === null)
+      throw new Error("The parameter 'siteId' must be defined.");
+    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        "Accept": "application/json"
+      }
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processIsFollowing(_response);
+    });
+  }
+
+  protected processIsFollowing(response: Response): Promise<boolean> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = resultData200 !== undefined ? resultData200 : <any>null;
+
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<boolean>(null as any);
+  }
+
   summary(siteId: number): Promise<SiteSummary> {
     let url_ = this.baseUrl + "/analytics/sites/{siteId}/summary";
     if (siteId === undefined || siteId === null)
@@ -928,6 +1090,58 @@ export class RefreshClient {
       });
     }
     return Promise.resolve<TokenRefresh>(null as any);
+  }
+}
+
+export class NewsClient {
+  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+    this.http = http ? http : window as any;
+    this.baseUrl = baseUrl ?? "";
+  }
+
+  all(): Promise<Post[]> {
+    let url_ = this.baseUrl + "/news/";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_: RequestInit = {
+      method: "GET",
+      headers: {
+        "Accept": "application/json"
+      }
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processAll(_response);
+    });
+  }
+
+  protected processAll(response: Response): Promise<Post[]> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        if (Array.isArray(resultData200)) {
+          result200 = [] as any;
+          for (let item of resultData200)
+            result200!.push(Post.fromJS(item));
+        }
+        else {
+          result200 = <any>null;
+        }
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<Post[]>(null as any);
   }
 }
 
@@ -1592,7 +1806,7 @@ export class UserClient {
     return Promise.resolve<User>(null as any);
   }
 
-  update(userId: number, body: PatchedUser | undefined): Promise<User> {
+  update(userId: number, body: PatchedUpdateUser | undefined): Promise<User> {
     let url_ = this.baseUrl + "/users/{userId}/";
     if (userId === undefined || userId === null)
       throw new Error("The parameter 'userId' must be defined.");
@@ -1707,6 +1921,79 @@ export class UserClient {
     }
     return Promise.resolve<User>(null as any);
   }
+}
+
+export class AdminUserSites implements IAdminUserSites {
+  readonly id!: number;
+  /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
+  username!: string;
+  email!: string;
+  readonly sites!: SiteName[];
+
+  [key: string]: any;
+
+  constructor(data?: IAdminUserSites) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    if (!data) {
+      this.sites = [];
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property))
+          this[property] = _data[property];
+      }
+      (<any>this).id = _data["id"];
+      this.username = _data["username"];
+      this.email = _data["email"];
+      if (Array.isArray(_data["sites"])) {
+        (<any>this).sites = [] as any;
+        for (let item of _data["sites"])
+          (<any>this).sites!.push(SiteName.fromJS(item));
+      }
+    }
+  }
+
+  static fromJS(data: any): AdminUserSites {
+    data = typeof data === 'object' ? data : {};
+    let result = new AdminUserSites();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    data["id"] = this.id;
+    data["username"] = this.username;
+    data["email"] = this.email;
+    if (Array.isArray(this.sites)) {
+      data["sites"] = [];
+      for (let item of this.sites)
+        data["sites"].push(item.toJSON());
+    }
+    return data;
+  }
+}
+
+export interface IAdminUserSites {
+  id: number;
+  /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
+  username: string;
+  email: string;
+  sites: SiteName[];
+
+  [key: string]: any;
 }
 
 export class Announcement implements IAnnouncement {
@@ -2327,7 +2614,7 @@ export interface IBatchfertilizer {
 export class Comment implements IComment {
   readonly id!: number;
   body!: string;
-  readonly authorId!: string;
+  readonly authorId!: number;
   readonly authorUsername!: string;
   readonly createdAt!: Date;
 
@@ -2381,7 +2668,7 @@ export class Comment implements IComment {
 export interface IComment {
   id: number;
   body: string;
-  authorId: string;
+  authorId: number;
   authorUsername: string;
   createdAt: Date;
 
@@ -3120,30 +3407,14 @@ export interface IPatchedSiteAdminUpdateRequest {
   [key: string]: any;
 }
 
-export class PatchedUser implements IPatchedUser {
-  readonly id?: number;
-  readonly role?: string;
-  lastLogin?: Date | undefined;
-  /** Designates that this user has all permissions without explicitly assigning them. */
-  isSuperuser?: boolean;
+export class PatchedUpdateUser implements IPatchedUpdateUser {
   /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
   username?: string;
-  firstName?: string;
-  lastName?: string;
-  /** Designates whether the user can log into this admin site. */
-  isStaff?: boolean;
-  /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
-  isActive?: boolean;
-  dateJoined?: Date;
   email?: string;
-  /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
-  groups?: number[];
-  /** Specific permissions for this user. */
-  userPermissions?: number[];
 
   [key: string]: any;
 
-  constructor(data?: IPatchedUser) {
+  constructor(data?: IPatchedUpdateUser) {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property))
@@ -3158,33 +3429,14 @@ export class PatchedUser implements IPatchedUser {
         if (_data.hasOwnProperty(property))
           this[property] = _data[property];
       }
-      (<any>this).id = _data["id"];
-      (<any>this).role = _data["role"];
-      this.lastLogin = _data["lastLogin"] ? new Date(_data["lastLogin"].toString()) : <any>undefined;
-      this.isSuperuser = _data["isSuperuser"];
       this.username = _data["username"];
-      this.firstName = _data["firstName"];
-      this.lastName = _data["lastName"];
-      this.isStaff = _data["isStaff"];
-      this.isActive = _data["isActive"];
-      this.dateJoined = _data["dateJoined"] ? new Date(_data["dateJoined"].toString()) : <any>undefined;
       this.email = _data["email"];
-      if (Array.isArray(_data["groups"])) {
-        this.groups = [] as any;
-        for (let item of _data["groups"])
-          this.groups!.push(item);
-      }
-      if (Array.isArray(_data["userPermissions"])) {
-        this.userPermissions = [] as any;
-        for (let item of _data["userPermissions"])
-          this.userPermissions!.push(item);
-      }
     }
   }
 
-  static fromJS(data: any): PatchedUser {
+  static fromJS(data: any): PatchedUpdateUser {
     data = typeof data === 'object' ? data : {};
-    let result = new PatchedUser();
+    let result = new PatchedUpdateUser();
     result.init(data);
     return result;
   }
@@ -3195,51 +3447,16 @@ export class PatchedUser implements IPatchedUser {
       if (this.hasOwnProperty(property))
         data[property] = this[property];
     }
-    data["id"] = this.id;
-    data["role"] = this.role;
-    data["lastLogin"] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined;
-    data["isSuperuser"] = this.isSuperuser;
     data["username"] = this.username;
-    data["firstName"] = this.firstName;
-    data["lastName"] = this.lastName;
-    data["isStaff"] = this.isStaff;
-    data["isActive"] = this.isActive;
-    data["dateJoined"] = this.dateJoined ? this.dateJoined.toISOString() : <any>undefined;
     data["email"] = this.email;
-    if (Array.isArray(this.groups)) {
-      data["groups"] = [];
-      for (let item of this.groups)
-        data["groups"].push(item);
-    }
-    if (Array.isArray(this.userPermissions)) {
-      data["userPermissions"] = [];
-      for (let item of this.userPermissions)
-        data["userPermissions"].push(item);
-    }
     return data;
   }
 }
 
-export interface IPatchedUser {
-  id?: number;
-  role?: string;
-  lastLogin?: Date | undefined;
-  /** Designates that this user has all permissions without explicitly assigning them. */
-  isSuperuser?: boolean;
+export interface IPatchedUpdateUser {
   /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
   username?: string;
-  firstName?: string;
-  lastName?: string;
-  /** Designates whether the user can log into this admin site. */
-  isStaff?: boolean;
-  /** Designates whether this user should be treated as active. Unselect this instead of deleting accounts. */
-  isActive?: boolean;
-  dateJoined?: Date;
   email?: string;
-  /** The groups this user belongs to. A user will get all permissions granted to each of their groups. */
-  groups?: number[];
-  /** Specific permissions for this user. */
-  userPermissions?: number[];
 
   [key: string]: any;
 }
@@ -3307,7 +3524,7 @@ export interface IPatchedWidget {
 export class Post implements IPost {
   readonly id!: number;
   site!: SiteOverview;
-  createdAt?: Date | undefined;
+  readonly createdAt!: Date;
   body?: string | undefined;
   likeCount?: number | undefined;
   shareCount?: number | undefined;
@@ -3338,7 +3555,7 @@ export class Post implements IPost {
       }
       (<any>this).id = _data["id"];
       this.site = _data["site"] ? SiteOverview.fromJS(_data["site"]) : new SiteOverview();
-      this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+      (<any>this).createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
       this.body = _data["body"];
       this.likeCount = _data["likeCount"];
       this.shareCount = _data["shareCount"];
@@ -3385,7 +3602,7 @@ export class Post implements IPost {
 export interface IPost {
   id: number;
   site: SiteOverview;
-  createdAt?: Date | undefined;
+  createdAt: Date;
   body?: string | undefined;
   likeCount?: number | undefined;
   shareCount?: number | undefined;
@@ -3514,6 +3731,8 @@ export interface IRegisterUser {
 
   [key: string]: any;
 }
+
+export type RoleEnum = "User" | "Admin" | "MegaAdmin";
 
 export class Site implements ISite {
   readonly id!: number;
@@ -3747,6 +3966,58 @@ export interface ISiteMap {
   [key: string]: any;
 }
 
+export class SiteName implements ISiteName {
+  readonly id!: number;
+  name?: string | undefined;
+
+  [key: string]: any;
+
+  constructor(data?: ISiteName) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property))
+          this[property] = _data[property];
+      }
+      (<any>this).id = _data["id"];
+      this.name = _data["name"];
+    }
+  }
+
+  static fromJS(data: any): SiteName {
+    data = typeof data === 'object' ? data : {};
+    let result = new SiteName();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    data["id"] = this.id;
+    data["name"] = this.name;
+    return data;
+  }
+}
+
+export interface ISiteName {
+  id: number;
+  name?: string | undefined;
+
+  [key: string]: any;
+}
+
 export class SiteOverview implements ISiteOverview {
   readonly id!: number;
   name?: string | undefined;
@@ -3807,6 +4078,7 @@ export interface ISiteOverview {
 }
 
 export class SiteSocial implements ISiteSocial {
+  readonly id!: number;
   name?: string | undefined;
   siteType!: SiteType;
   image!: Asset;
@@ -3841,6 +4113,7 @@ export class SiteSocial implements ISiteSocial {
         if (_data.hasOwnProperty(property))
           this[property] = _data[property];
       }
+      (<any>this).id = _data["id"];
       this.name = _data["name"];
       this.siteType = _data["siteType"] ? SiteType.fromJS(_data["siteType"]) : new SiteType();
       this.image = _data["image"] ? Asset.fromJS(_data["image"]) : new Asset();
@@ -3873,6 +4146,7 @@ export class SiteSocial implements ISiteSocial {
       if (this.hasOwnProperty(property))
         data[property] = this[property];
     }
+    data["id"] = this.id;
     data["name"] = this.name;
     data["siteType"] = this.siteType ? this.siteType.toJSON() : <any>undefined;
     data["image"] = this.image ? this.image.toJSON() : <any>undefined;
@@ -3894,6 +4168,7 @@ export class SiteSocial implements ISiteSocial {
 }
 
 export interface ISiteSocial {
+  id: number;
   name?: string | undefined;
   siteType: SiteType;
   image: Asset;
@@ -4259,7 +4534,7 @@ export interface ITokenRefresh {
 
 export class User implements IUser {
   readonly id!: number;
-  readonly role!: string;
+  readonly role!: RoleEnum;
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;
@@ -4359,7 +4634,7 @@ export class User implements IUser {
 
 export interface IUser {
   id: number;
-  role: string;
+  role: RoleEnum;
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;
@@ -4382,8 +4657,8 @@ export interface IUser {
 }
 
 export class UserToken implements IUserToken {
-  readonly refresh!: string;
-  readonly access!: string;
+  token!: TokenRefresh;
+  user!: User;
 
   [key: string]: any;
 
@@ -4394,6 +4669,10 @@ export class UserToken implements IUserToken {
           (<any>this)[property] = (<any>data)[property];
       }
     }
+    if (!data) {
+      this.token = new TokenRefresh();
+      this.user = new User();
+    }
   }
 
   init(_data?: any) {
@@ -4402,8 +4681,8 @@ export class UserToken implements IUserToken {
         if (_data.hasOwnProperty(property))
           this[property] = _data[property];
       }
-      (<any>this).refresh = _data["refresh"];
-      (<any>this).access = _data["access"];
+      this.token = _data["token"] ? TokenRefresh.fromJS(_data["token"]) : new TokenRefresh();
+      this.user = _data["user"] ? User.fromJS(_data["user"]) : new User();
     }
   }
 
@@ -4420,15 +4699,15 @@ export class UserToken implements IUserToken {
       if (this.hasOwnProperty(property))
         data[property] = this[property];
     }
-    data["refresh"] = this.refresh;
-    data["access"] = this.access;
+    data["token"] = this.token ? this.token.toJSON() : <any>undefined;
+    data["user"] = this.user ? this.user.toJSON() : <any>undefined;
     return data;
   }
 }
 
 export interface IUserToken {
-  refresh: string;
-  access: string;
+  token: TokenRefresh;
+  user: User;
 
   [key: string]: any;
 }
@@ -4493,115 +4772,12 @@ export interface IWidget {
   [key: string]: any;
 }
 
-export enum Format {
-  Json = "json",
-  Yaml = "yaml",
-}
+export type Format = "json" | "yaml";
 
-export enum Lang {
-  Af = "af",
-  Ar = "ar",
-  ArDz = "ar-dz",
-  Ast = "ast",
-  Az = "az",
-  Be = "be",
-  Bg = "bg",
-  Bn = "bn",
-  Br = "br",
-  Bs = "bs",
-  Ca = "ca",
-  Ckb = "ckb",
-  Cs = "cs",
-  Cy = "cy",
-  Da = "da",
-  De = "de",
-  Dsb = "dsb",
-  El = "el",
-  En = "en",
-  EnAu = "en-au",
-  EnGb = "en-gb",
-  Eo = "eo",
-  Es = "es",
-  EsAr = "es-ar",
-  EsCo = "es-co",
-  EsMx = "es-mx",
-  EsNi = "es-ni",
-  EsVe = "es-ve",
-  Et = "et",
-  Eu = "eu",
-  Fa = "fa",
-  Fi = "fi",
-  Fr = "fr",
-  Fy = "fy",
-  Ga = "ga",
-  Gd = "gd",
-  Gl = "gl",
-  He = "he",
-  Hi = "hi",
-  Hr = "hr",
-  Hsb = "hsb",
-  Hu = "hu",
-  Hy = "hy",
-  Ia = "ia",
-  Id = "id",
-  Ig = "ig",
-  Io = "io",
-  Is = "is",
-  It = "it",
-  Ja = "ja",
-  Ka = "ka",
-  Kab = "kab",
-  Kk = "kk",
-  Km = "km",
-  Kn = "kn",
-  Ko = "ko",
-  Ky = "ky",
-  Lb = "lb",
-  Lt = "lt",
-  Lv = "lv",
-  Mk = "mk",
-  Ml = "ml",
-  Mn = "mn",
-  Mr = "mr",
-  Ms = "ms",
-  My = "my",
-  Nb = "nb",
-  Ne = "ne",
-  Nl = "nl",
-  Nn = "nn",
-  Os = "os",
-  Pa = "pa",
-  Pl = "pl",
-  Pt = "pt",
-  PtBr = "pt-br",
-  Ro = "ro",
-  Ru = "ru",
-  Sk = "sk",
-  Sl = "sl",
-  Sq = "sq",
-  Sr = "sr",
-  SrLatn = "sr-latn",
-  Sv = "sv",
-  Sw = "sw",
-  Ta = "ta",
-  Te = "te",
-  Tg = "tg",
-  Th = "th",
-  Tk = "tk",
-  Tr = "tr",
-  Tt = "tt",
-  Udm = "udm",
-  Ug = "ug",
-  Uk = "uk",
-  Ur = "ur",
-  Uz = "uz",
-  Vi = "vi",
-  ZhHans = "zh-hans",
-  ZhHant = "zh-hant",
-}
+export type Lang = "af" | "ar" | "ar-dz" | "ast" | "az" | "be" | "bg" | "bn" | "br" | "bs" | "ca" | "ckb" | "cs" | "cy" | "da" | "de" | "dsb" | "el" | "en" | "en-au" | "en-gb" | "eo" | "es" | "es-ar" | "es-co" | "es-mx" | "es-ni" | "es-ve" | "et" | "eu" | "fa" | "fi" | "fr" | "fy" | "ga" | "gd" | "gl" | "he" | "hi" | "hr" | "hsb" | "hu" | "hy" | "ia" | "id" | "ig" | "io" | "is" | "it" | "ja" | "ka" | "kab" | "kk" | "km" | "kn" | "ko" | "ky" | "lb" | "lt" | "lv" | "mk" | "ml" | "mn" | "mr" | "ms" | "my" | "nb" | "ne" | "nl" | "nn" | "os" | "pa" | "pl" | "pt" | "pt-br" | "ro" | "ru" | "sk" | "sl" | "sq" | "sr" | "sr-latn" | "sv" | "sw" | "ta" | "te" | "tg" | "th" | "tk" | "tr" | "tt" | "udm" | "ug" | "uk" | "ur" | "uz" | "vi" | "zh-hans" | "zh-hant";
 
 export class ApiException extends Error {
-  message: string;
+  override message: string;
   status: number;
   response: string;
   headers: { [key: string]: any; };
