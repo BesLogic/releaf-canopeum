@@ -270,6 +270,7 @@ class Command(BaseCommand):
 
     def create_roles(self):
         Role.objects.create(name="User")
+        Role.objects.create(name="SiteManager")
         Role.objects.create(name="MegaAdmin")
 
     def create_users(self):
@@ -285,19 +286,19 @@ class Command(BaseCommand):
             username="TyrionLannister",
             email="tyrion@lannister.com",
             password="tyrion123",  # noqa: S106 MOCK_PASSWORD
-            role=Role.objects.get(name="User"),
+            role=Role.objects.get(name="SiteManager"),
         )
         User.objects.create_user(
             username="DaenerysTargaryen",
             email="daenerys@targaryen.com",
             password="daenerys123",  # noqa: S106 MOCK_PASSWORD
-            role=Role.objects.get(name="User"),
+            role=Role.objects.get(name="SiteManager"),
         )
         User.objects.create_user(
             username="JonSnow",
             email="jon@snow.com",
             password="jon123",  # noqa: S106 MOCK_PASSWORD
-            role=Role.objects.get(name="User"),
+            role=Role.objects.get(name="SiteManager"),
         )
         User.objects.create_user(
             username="OberynMartell",

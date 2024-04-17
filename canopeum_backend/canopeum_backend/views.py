@@ -240,7 +240,7 @@ class SiteDetailAdminsAPIView(APIView):
         updated_admin_users_list = User.objects.filter(id__in=admin_ids)
 
         for user in updated_admin_users_list:
-            if user not in existing_admin_users:
+            if user not in existing_admin_users and user.role.name == RoleName.SITEMANAGER:
                 Siteadmin.objects.create(
                     user=user,
                     site=site,
@@ -302,9 +302,8 @@ class AdminUserSitesAPIView(APIView):
         operation_id="admin-user-sites_all",
     )
     def get(self, request):
-        # Get unique user values
-        adminusers = list({siteadmin.user for siteadmin in Siteadmin.objects.all()})
-        serializer = AdminUserSitesSerializer(sorted(adminusers, key=lambda user: user.username), many=True)
+        site_manager_users = User.objects.filter(role__name__iexact=RoleName.SITEMANAGER).order_by("username")
+        serializer = AdminUserSitesSerializer(site_manager_users, many=True)
         return Response(serializer.data)
 
 
