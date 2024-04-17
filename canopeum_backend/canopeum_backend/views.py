@@ -289,7 +289,8 @@ class AdminUserSitesAPIView(APIView):
         operation_id="admin-user-sites_all",
     )
     def get(self, request):
-        adminusers = Siteadmin.objects.values_list("user").distinct()
+        # Get unique user values
+        adminusers = list({siteadmin.user for siteadmin in Siteadmin.objects.all()})
         serializer = AdminUserSitesSerializer(adminusers, many=True)
         return Response(serializer.data)
 
