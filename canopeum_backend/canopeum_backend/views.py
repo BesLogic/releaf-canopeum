@@ -289,7 +289,7 @@ class AdminUserSitesAPIView(APIView):
         operation_id="admin-user-sites_all",
     )
     def get(self, request):
-        adminusers = User.objects.filter(role__name__exact="Admin")
+        adminusers = Siteadmin.objects.values_list("user").distinct()
         serializer = AdminUserSitesSerializer(adminusers, many=True)
         return Response(serializer.data)
 

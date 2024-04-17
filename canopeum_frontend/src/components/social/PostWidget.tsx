@@ -1,6 +1,5 @@
 import { LanguageContext } from '@components/context/LanguageContext'
 import PostCommentsDialog from '@components/social/PostCommentsDialog'
-import type { PageViewMode } from '@models/types/PageViewMode'
 import { getApiBaseUrl } from '@services/apiSettings'
 import { useContext, useState } from 'react'
 
@@ -8,10 +7,9 @@ import type { Post } from '../../services/api'
 
 type Props = {
   readonly post: Post,
-  readonly viewMode: PageViewMode,
 }
 
-const PostWidget = ({ post, viewMode }: Props) => {
+const PostWidget = ({ post }: Props) => {
   const { formatDate } = useContext(LanguageContext)
   const [commentsModalOpen, setCommentsModalOpen] = useState(false)
 
@@ -23,9 +21,9 @@ const PostWidget = ({ post, viewMode }: Props) => {
     /* eslint-disable @typescript-eslint/no-explicit-any -- Temporary workaround.
     We want the post commentCount property to be read-only; figure out how to do so with the NSwag models generation */
     if (action === 'added') {
-      ;(post.commentCount as any) += 1
+      ; (post.commentCount as any) += 1
     } else {
-      ;(post.commentCount as any) -= 1
+      ; (post.commentCount as any) -= 1
     }
     /* eslint-enable @typescript-eslint/no-explicit-any */
   }
@@ -77,7 +75,6 @@ const PostWidget = ({ post, viewMode }: Props) => {
         onCommentAction={handleCommentCountChange}
         open={commentsModalOpen}
         postId={post.id}
-        viewMode={viewMode}
       />
     </>
   )

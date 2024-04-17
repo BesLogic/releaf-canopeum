@@ -270,7 +270,6 @@ class Command(BaseCommand):
 
     def create_roles(self):
         Role.objects.create(name="User")
-        Role.objects.create(name="Admin")
         Role.objects.create(name="MegaAdmin")
 
     def create_users(self):
@@ -283,31 +282,31 @@ class Command(BaseCommand):
             role=Role.objects.get(name="MegaAdmin"),
         )
         User.objects.create_user(
-            username="Tyrion Lannister",
+            username="TyrionLannister",
             email="tyrion@lannister.com",
             password="tyrion123",  # noqa: S106 MOCK_PASSWORD
-            role=Role.objects.get(name="Admin"),
+            role=Role.objects.get(name="User"),
         )
         User.objects.create_user(
-            username="Daenerys Targaryen",
+            username="DaenerysTargaryen",
             email="daenerys@targaryen.com",
             password="daenerys123",  # noqa: S106 MOCK_PASSWORD
-            role=Role.objects.get(name="Admin"),
+            role=Role.objects.get(name="User"),
         )
         User.objects.create_user(
-            username="Jon Snow",
+            username="JonSnow",
             email="jon@snow.com",
             password="jon123",  # noqa: S106 MOCK_PASSWORD
-            role=Role.objects.get(name="Admin"),
+            role=Role.objects.get(name="User"),
         )
         User.objects.create_user(
-            username="Oberyn Martell",
+            username="OberynMartell",
             email="oberyn@martell.com",
             password="oberyn123",  # noqa: S106 MOCK_PASSWORD
-            role=Role.objects.get(name="Admin"),
+            role=Role.objects.get(name="User"),
         )
         User.objects.create_user(
-            username="Normal User",
+            username="NormalUser",
             email="normal@user.com",
             password="normal123",  # noqa: S106 MOCK_PASSWORD
             role=Role.objects.get(name="User"),

@@ -1200,14 +1200,18 @@ export class PostClient {
     return Promise.resolve<Post[]>(null as any);
   }
 
-  create(site: number | null | undefined, body: string | null | undefined): Promise<Post> {
+  create(site: number | undefined, body: string | undefined): Promise<Post> {
     let url_ = this.baseUrl + "/social/posts/";
     url_ = url_.replace(/[?&]$/, "");
 
     let content_ = "";
-    if (site !== undefined)
+    if (site === null)
+      throw new Error("The parameter 'site' cannot be null.");
+    else if (site !== undefined)
       content_ += encodeURIComponent("site") + "=" + encodeURIComponent("" + site) + "&";
-    if (body !== undefined)
+    if (body === null)
+      throw new Error("The parameter 'body' cannot be null.");
+    else if (body !== undefined)
       content_ += encodeURIComponent("body") + "=" + encodeURIComponent("" + body) + "&";
     content_ = content_.replace(/&$/, "");
 
@@ -3525,7 +3529,7 @@ export class Post implements IPost {
   readonly id!: number;
   site!: SiteOverview;
   readonly createdAt!: Date;
-  body?: string | undefined;
+  body!: string;
   likeCount?: number | undefined;
   shareCount?: number | undefined;
   readonly commentCount!: number;
@@ -3603,7 +3607,7 @@ export interface IPost {
   id: number;
   site: SiteOverview;
   createdAt: Date;
-  body?: string | undefined;
+  body: string;
   likeCount?: number | undefined;
   shareCount?: number | undefined;
   commentCount: number;
@@ -3614,8 +3618,8 @@ export interface IPost {
 }
 
 export class PostPost implements IPostPost {
-  site?: number | undefined;
-  body?: string | undefined;
+  site!: number;
+  body!: string;
 
   [key: string]: any;
 
@@ -3659,8 +3663,8 @@ export class PostPost implements IPostPost {
 }
 
 export interface IPostPost {
-  site?: number | undefined;
-  body?: string | undefined;
+  site: number;
+  body: string;
 
   [key: string]: any;
 }
@@ -3732,7 +3736,10 @@ export interface IRegisterUser {
   [key: string]: any;
 }
 
-export type RoleEnum = "User" | "Admin" | "MegaAdmin";
+export enum RoleEnum {
+  User = "User",
+  MegaAdmin = "MegaAdmin",
+}
 
 export class Site implements ISite {
   readonly id!: number;
@@ -4535,6 +4542,7 @@ export interface ITokenRefresh {
 export class User implements IUser {
   readonly id!: number;
   readonly role!: RoleEnum;
+  readonly adminSiteIds!: number[];
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;
@@ -4562,6 +4570,9 @@ export class User implements IUser {
           (<any>this)[property] = (<any>data)[property];
       }
     }
+    if (!data) {
+      this.adminSiteIds = [];
+    }
   }
 
   init(_data?: any) {
@@ -4572,6 +4583,11 @@ export class User implements IUser {
       }
       (<any>this).id = _data["id"];
       (<any>this).role = _data["role"];
+      if (Array.isArray(_data["adminSiteIds"])) {
+        (<any>this).adminSiteIds = [] as any;
+        for (let item of _data["adminSiteIds"])
+          (<any>this).adminSiteIds!.push(item);
+      }
       this.lastLogin = _data["lastLogin"] ? new Date(_data["lastLogin"].toString()) : <any>undefined;
       this.isSuperuser = _data["isSuperuser"];
       this.username = _data["username"];
@@ -4609,6 +4625,11 @@ export class User implements IUser {
     }
     data["id"] = this.id;
     data["role"] = this.role;
+    if (Array.isArray(this.adminSiteIds)) {
+      data["adminSiteIds"] = [];
+      for (let item of this.adminSiteIds)
+        data["adminSiteIds"].push(item);
+    }
     data["lastLogin"] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined;
     data["isSuperuser"] = this.isSuperuser;
     data["username"] = this.username;
@@ -4635,6 +4656,7 @@ export class User implements IUser {
 export interface IUser {
   id: number;
   role: RoleEnum;
+  adminSiteIds: number[];
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;
@@ -4772,12 +4794,115 @@ export interface IWidget {
   [key: string]: any;
 }
 
-export type Format = "json" | "yaml";
+export enum Format {
+  Json = "json",
+  Yaml = "yaml",
+}
 
-export type Lang = "af" | "ar" | "ar-dz" | "ast" | "az" | "be" | "bg" | "bn" | "br" | "bs" | "ca" | "ckb" | "cs" | "cy" | "da" | "de" | "dsb" | "el" | "en" | "en-au" | "en-gb" | "eo" | "es" | "es-ar" | "es-co" | "es-mx" | "es-ni" | "es-ve" | "et" | "eu" | "fa" | "fi" | "fr" | "fy" | "ga" | "gd" | "gl" | "he" | "hi" | "hr" | "hsb" | "hu" | "hy" | "ia" | "id" | "ig" | "io" | "is" | "it" | "ja" | "ka" | "kab" | "kk" | "km" | "kn" | "ko" | "ky" | "lb" | "lt" | "lv" | "mk" | "ml" | "mn" | "mr" | "ms" | "my" | "nb" | "ne" | "nl" | "nn" | "os" | "pa" | "pl" | "pt" | "pt-br" | "ro" | "ru" | "sk" | "sl" | "sq" | "sr" | "sr-latn" | "sv" | "sw" | "ta" | "te" | "tg" | "th" | "tk" | "tr" | "tt" | "udm" | "ug" | "uk" | "ur" | "uz" | "vi" | "zh-hans" | "zh-hant";
+export enum Lang {
+  Af = "af",
+  Ar = "ar",
+  ArDz = "ar-dz",
+  Ast = "ast",
+  Az = "az",
+  Be = "be",
+  Bg = "bg",
+  Bn = "bn",
+  Br = "br",
+  Bs = "bs",
+  Ca = "ca",
+  Ckb = "ckb",
+  Cs = "cs",
+  Cy = "cy",
+  Da = "da",
+  De = "de",
+  Dsb = "dsb",
+  El = "el",
+  En = "en",
+  EnAu = "en-au",
+  EnGb = "en-gb",
+  Eo = "eo",
+  Es = "es",
+  EsAr = "es-ar",
+  EsCo = "es-co",
+  EsMx = "es-mx",
+  EsNi = "es-ni",
+  EsVe = "es-ve",
+  Et = "et",
+  Eu = "eu",
+  Fa = "fa",
+  Fi = "fi",
+  Fr = "fr",
+  Fy = "fy",
+  Ga = "ga",
+  Gd = "gd",
+  Gl = "gl",
+  He = "he",
+  Hi = "hi",
+  Hr = "hr",
+  Hsb = "hsb",
+  Hu = "hu",
+  Hy = "hy",
+  Ia = "ia",
+  Id = "id",
+  Ig = "ig",
+  Io = "io",
+  Is = "is",
+  It = "it",
+  Ja = "ja",
+  Ka = "ka",
+  Kab = "kab",
+  Kk = "kk",
+  Km = "km",
+  Kn = "kn",
+  Ko = "ko",
+  Ky = "ky",
+  Lb = "lb",
+  Lt = "lt",
+  Lv = "lv",
+  Mk = "mk",
+  Ml = "ml",
+  Mn = "mn",
+  Mr = "mr",
+  Ms = "ms",
+  My = "my",
+  Nb = "nb",
+  Ne = "ne",
+  Nl = "nl",
+  Nn = "nn",
+  Os = "os",
+  Pa = "pa",
+  Pl = "pl",
+  Pt = "pt",
+  PtBr = "pt-br",
+  Ro = "ro",
+  Ru = "ru",
+  Sk = "sk",
+  Sl = "sl",
+  Sq = "sq",
+  Sr = "sr",
+  SrLatn = "sr-latn",
+  Sv = "sv",
+  Sw = "sw",
+  Ta = "ta",
+  Te = "te",
+  Tg = "tg",
+  Th = "th",
+  Tk = "tk",
+  Tr = "tr",
+  Tt = "tt",
+  Udm = "udm",
+  Ug = "ug",
+  Uk = "uk",
+  Ur = "ur",
+  Uz = "uz",
+  Vi = "vi",
+  ZhHans = "zh-hans",
+  ZhHant = "zh-hant",
+}
 
 export class ApiException extends Error {
-  override message: string;
+  message: string;
   status: number;
   response: string;
   headers: { [key: string]: any; };

@@ -13,7 +13,7 @@ import CreatePostWidget from '../components/CreatePostWidget'
 import PostWidget from '../components/social/PostWidget'
 
 const SiteSocialPage = () => {
-  const { siteId } = useParams()
+  const { siteId: siteIdParam } = useParams()
   const { currentUser } = useContext(AuthenticationContext)
   const [isLoadingSite, setIsLoadingSite] = useState(true)
   const [error, setError] = useState<Error | undefined>(undefined)
@@ -23,10 +23,14 @@ const SiteSocialPage = () => {
   const [errorPosts, setErrorPosts] = useState<Error | undefined>(undefined)
   const [posts, setPosts] = useState<Post[]>([])
 
+  const siteId = siteIdParam
+    ? Number.parseInt(siteIdParam, 10) || 0
+    : 0
+
   const viewMode: PageViewMode = currentUser
-    ? currentUser.role === 'User'
-      ? 'user'
-      : 'admin'
+    ? (currentUser.role === 'MegaAdmin' || currentUser.adminSiteIds.includes(siteId))
+      ? 'admin'
+      : 'user'
     : 'visitor'
 
   const fetchSiteData = async (parsedSiteId: number) => {
@@ -54,8 +58,8 @@ const SiteSocialPage = () => {
   }
 
   useEffect((): void => {
-    void fetchSiteData(Number(siteId) || 1)
-    void fetchPosts(Number(siteId) || 1)
+    void fetchSiteData(siteId)
+    void fetchPosts(siteId)
   }, [siteId])
 
   return (
@@ -67,12 +71,12 @@ const SiteSocialPage = () => {
           </div>
         )
         : error
-        ? (
-          <div className='bg-white rounded-2 2 py-2'>
-            <p>{error.message}</p>
-          </div>
-        )
-        : (site && <SiteSocialHeader site={site} viewMode={viewMode} />)}
+          ? (
+            <div className='bg-white rounded-2 2 py-2'>
+              <p>{error.message}</p>
+            </div>
+          )
+          : (site && <SiteSocialHeader site={site} viewMode={viewMode} />)}
       <div className='container px-0'>
         <div className='row'>
           <div className='col-4'>
@@ -94,12 +98,12 @@ const SiteSocialPage = () => {
                         </div>
                       )
                       : errorPosts
-                      ? (
-                        <div className='bg-white rounded-2 2 py-2'>
-                          <p>{errorPosts.message}</p>
-                        </div>
-                      )
-                      : posts.map((post: Post) => <PostWidget key={post.id} post={post} viewMode={viewMode} />)}
+                        ? (
+                          <div className='bg-white rounded-2 2 py-2'>
+                            <p>{errorPosts.message}</p>
+                          </div>
+                        )
+                        : posts.map((post: Post) => <PostWidget key={post.id} post={post} />)}
                   </div>
                 </>
               )}

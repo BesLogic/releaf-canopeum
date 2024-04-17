@@ -8,7 +8,6 @@ from django.db import models
 
 class RoleName(models.TextChoices):
     USER = "User"
-    ADMIN = "Admin"
     MEGAADMIN = "MegaAdmin"
 
 
@@ -75,13 +74,6 @@ class BatchSupportedSpecies(models.Model):
     tree_type = models.ForeignKey("Treetype", models.DO_NOTHING, blank=True, null=True)
 
 
-class Comment(models.Model):
-    body = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, models.DO_NOTHING)
-    post = models.ForeignKey("Post", models.DO_NOTHING)
-
-
 class Contact(models.Model):
     address = models.TextField(blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
@@ -127,20 +119,6 @@ class Asset(models.Model):
     asset = models.FileField(upload_to=upload_to, null=False)
 
 
-class Post(models.Model):
-    site = models.ForeignKey("Site", models.DO_NOTHING, blank=True, null=True)
-    body = models.TextField(blank=True, null=True)
-    like_count = models.IntegerField(blank=True, null=True)
-    share_count = models.IntegerField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    media = models.ManyToManyField(Asset, through="PostAsset")
-
-
-class PostAsset(models.Model):
-    post = models.ForeignKey(Post, models.DO_NOTHING, null=False)
-    asset = models.ForeignKey(Asset, models.DO_NOTHING, null=False)
-
-
 class Site(models.Model):
     name = models.TextField(blank=True, null=True)
     site_type = models.ForeignKey("Sitetype", models.DO_NOTHING, blank=True, null=True)
@@ -155,9 +133,30 @@ class Site(models.Model):
     image = models.ForeignKey(Asset, models.DO_NOTHING, blank=True, null=True)
 
 
+class Post(models.Model):
+    site = models.ForeignKey(Site, models.DO_NOTHING)
+    body = models.TextField()
+    like_count = models.IntegerField(blank=True, null=True)
+    share_count = models.IntegerField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    media = models.ManyToManyField(Asset, through="PostAsset")
+
+
+class Comment(models.Model):
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, models.DO_NOTHING)
+    post = models.ForeignKey(Post, models.DO_NOTHING)
+
+
+class PostAsset(models.Model):
+    post = models.ForeignKey(Post, models.DO_NOTHING, null=False)
+    asset = models.ForeignKey(Asset, models.DO_NOTHING, null=False)
+
+
 class Siteadmin(models.Model):
-    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
-    site = models.ForeignKey(Site, models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(User, models.DO_NOTHING)
+    site = models.ForeignKey(Site, models.DO_NOTHING)
 
 
 class SiteFollower(models.Model):

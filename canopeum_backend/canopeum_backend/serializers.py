@@ -83,13 +83,18 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     role = serializers.SerializerMethodField()
+    admin_site_ids = serializers.SerializerMethodField()
 
     class Meta:
         model = User
         exclude = ("password",)
 
-    def get_role(self, obj) -> RoleName:
+    def get_role(self, obj: User) -> RoleName:
         return obj.role.name
+
+    @extend_schema_field(list[int])  # pyright: ignore[reportArgumentType]
+    def get_admin_site_ids(self, obj: User):
+        return [siteadmin.site.id for siteadmin in Siteadmin.objects.filter(user=obj)]
 
 
 class UserTokenSerializer(serializers.Serializer):

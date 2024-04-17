@@ -34,7 +34,7 @@ const Home = () => {
 
     return (
       <div className='d-flex flex-column gap-3'>
-        {newsPosts.map(post => <PostWidget key={post.id} post={post} viewMode='user' />)}
+        {newsPosts.map(post => <PostWidget key={post.id} post={post} />)}
       </div>
     )
   }

@@ -13,6 +13,7 @@ const PostComment = ({ comment, onDelete }: Props) => {
   const { currentUser } = useContext(AuthenticationContext)
   const ref = createRef<HTMLDivElement>()
 
+  // TODO(Add admin site here)
   const canDeleteComment = currentUser && (
     ['Admin', 'MegaAdmin'].includes(currentUser.role) ||
     comment.authorId === currentUser.id
