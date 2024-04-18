@@ -14,49 +14,49 @@ export class AdminUserSitesClient {
   protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
   constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : window as any;
-    this.baseUrl = baseUrl ?? "";
+      this.http = http ? http : window as any;
+      this.baseUrl = baseUrl ?? "";
   }
 
   all(): Promise<AdminUserSites[]> {
-    let url_ = this.baseUrl + "/admin-user-sites/";
-    url_ = url_.replace(/[?&]$/, "");
+      let url_ = this.baseUrl + "/admin-user-sites/";
+      url_ = url_.replace(/[?&]$/, "");
 
-    let options_: RequestInit = {
-      method: "GET",
-      headers: {
-        "Accept": "application/json"
-      }
-    };
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
 
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processAll(_response);
-    });
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processAll(_response);
+      });
   }
 
   protected processAll(response: Response): Promise<AdminUserSites[]> {
-    const status = response.status;
-    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        if (Array.isArray(resultData200)) {
-          result200 = [] as any;
-          for (let item of resultData200)
-            result200!.push(AdminUserSites.fromJS(item));
-        }
-        else {
-          result200 = <any>null;
-        }
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<AdminUserSites[]>(null as any);
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          if (Array.isArray(resultData200)) {
+              result200 = [] as any;
+              for (let item of resultData200)
+                  result200!.push(AdminUserSites.fromJS(item));
+          }
+          else {
+              result200 = <any>null;
+          }
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<AdminUserSites[]>(null as any);
   }
 }
 
@@ -529,110 +529,110 @@ export class SiteClient {
    * @return No response body
    */
   follow(siteId: number): Promise<void> {
-    let url_ = this.baseUrl + "/analytics/sites/{siteId}/followers/";
-    if (siteId === undefined || siteId === null)
-      throw new Error("The parameter 'siteId' must be defined.");
-    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
-    url_ = url_.replace(/[?&]$/, "");
+      let url_ = this.baseUrl + "/analytics/sites/{siteId}/followers/";
+      if (siteId === undefined || siteId === null)
+          throw new Error("The parameter 'siteId' must be defined.");
+      url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+      url_ = url_.replace(/[?&]$/, "");
 
-    let options_: RequestInit = {
-      method: "POST",
-      headers: {
-      }
-    };
+      let options_: RequestInit = {
+          method: "POST",
+          headers: {
+          }
+      };
 
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processFollow(_response);
-    });
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processFollow(_response);
+      });
   }
 
   protected processFollow(response: Response): Promise<void> {
-    const status = response.status;
-    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 201) {
-      return response.text().then((_responseText) => {
-        return;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<void>(null as any);
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 201) {
+          return response.text().then((_responseText) => {
+          return;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<void>(null as any);
   }
 
   /**
    * @return No response body
    */
   unfollow(siteId: number): Promise<void> {
-    let url_ = this.baseUrl + "/analytics/sites/{siteId}/followers/";
-    if (siteId === undefined || siteId === null)
-      throw new Error("The parameter 'siteId' must be defined.");
-    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
-    url_ = url_.replace(/[?&]$/, "");
+      let url_ = this.baseUrl + "/analytics/sites/{siteId}/followers/";
+      if (siteId === undefined || siteId === null)
+          throw new Error("The parameter 'siteId' must be defined.");
+      url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+      url_ = url_.replace(/[?&]$/, "");
 
-    let options_: RequestInit = {
-      method: "DELETE",
-      headers: {
-      }
-    };
+      let options_: RequestInit = {
+          method: "DELETE",
+          headers: {
+          }
+      };
 
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processUnfollow(_response);
-    });
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processUnfollow(_response);
+      });
   }
 
   protected processUnfollow(response: Response): Promise<void> {
-    const status = response.status;
-    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 204) {
-      return response.text().then((_responseText) => {
-        return;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<void>(null as any);
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 204) {
+          return response.text().then((_responseText) => {
+          return;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<void>(null as any);
   }
 
   isFollowing(siteId: number): Promise<boolean> {
-    let url_ = this.baseUrl + "/analytics/sites/{siteId}/followers/current-user/";
-    if (siteId === undefined || siteId === null)
-      throw new Error("The parameter 'siteId' must be defined.");
-    url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
-    url_ = url_.replace(/[?&]$/, "");
+      let url_ = this.baseUrl + "/analytics/sites/{siteId}/followers/current-user/";
+      if (siteId === undefined || siteId === null)
+          throw new Error("The parameter 'siteId' must be defined.");
+      url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+      url_ = url_.replace(/[?&]$/, "");
 
-    let options_: RequestInit = {
-      method: "GET",
-      headers: {
-        "Accept": "application/json"
-      }
-    };
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
 
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processIsFollowing(_response);
-    });
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processIsFollowing(_response);
+      });
   }
 
   protected processIsFollowing(response: Response): Promise<boolean> {
-    const status = response.status;
-    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = resultData200 !== undefined ? resultData200 : <any>null;
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+              result200 = resultData200 !== undefined ? resultData200 : <any>null;
 
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<boolean>(null as any);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<boolean>(null as any);
   }
 
   summary(siteId: number): Promise<SiteSummary> {
@@ -1099,49 +1099,49 @@ export class NewsClient {
   protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
   constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-    this.http = http ? http : window as any;
-    this.baseUrl = baseUrl ?? "";
+      this.http = http ? http : window as any;
+      this.baseUrl = baseUrl ?? "";
   }
 
   all(): Promise<Post[]> {
-    let url_ = this.baseUrl + "/news/";
-    url_ = url_.replace(/[?&]$/, "");
+      let url_ = this.baseUrl + "/news/";
+      url_ = url_.replace(/[?&]$/, "");
 
-    let options_: RequestInit = {
-      method: "GET",
-      headers: {
-        "Accept": "application/json"
-      }
-    };
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
 
-    return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processAll(_response);
-    });
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processAll(_response);
+      });
   }
 
   protected processAll(response: Response): Promise<Post[]> {
-    const status = response.status;
-    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-        if (Array.isArray(resultData200)) {
-          result200 = [] as any;
-          for (let item of resultData200)
-            result200!.push(Post.fromJS(item));
-        }
-        else {
-          result200 = <any>null;
-        }
-        return result200;
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-      });
-    }
-    return Promise.resolve<Post[]>(null as any);
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          if (Array.isArray(resultData200)) {
+              result200 = [] as any;
+              for (let item of resultData200)
+                  result200!.push(Post.fromJS(item));
+          }
+          else {
+              result200 = <any>null;
+          }
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<Post[]>(null as any);
   }
 }
 
@@ -1849,7 +1849,7 @@ export class UserClient {
       return Promise.resolve<User>(null as any);
   }
 
-  update(userId: number, body: PatchedUser | undefined): Promise<User> {
+  update(userId: number, body: PatchedUpdateUser | undefined): Promise<User> {
       let url_ = this.baseUrl + "/users/{userId}/";
       if (userId === undefined || userId === null)
           throw new Error("The parameter 'userId' must be defined.");
@@ -1976,56 +1976,56 @@ export class AdminUserSites implements IAdminUserSites {
   [key: string]: any;
 
   constructor(data?: IAdminUserSites) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
       }
-    }
-    if (!data) {
-      this.sites = [];
-    }
+      if (!data) {
+          this.sites = [];
+      }
   }
 
   init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property))
-          this[property] = _data[property];
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          this.username = _data["username"];
+          this.email = _data["email"];
+          if (Array.isArray(_data["sites"])) {
+              (<any>this).sites = [] as any;
+              for (let item of _data["sites"])
+                  (<any>this).sites!.push(SiteName.fromJS(item));
+          }
       }
-      (<any>this).id = _data["id"];
-      this.username = _data["username"];
-      this.email = _data["email"];
-      if (Array.isArray(_data["sites"])) {
-        (<any>this).sites = [] as any;
-        for (let item of _data["sites"])
-          (<any>this).sites!.push(SiteName.fromJS(item));
-      }
-    }
   }
 
   static fromJS(data: any): AdminUserSites {
-    data = typeof data === 'object' ? data : {};
-    let result = new AdminUserSites();
-    result.init(data);
-    return result;
+      data = typeof data === 'object' ? data : {};
+      let result = new AdminUserSites();
+      result.init(data);
+      return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property))
-        data[property] = this[property];
-    }
-    data["id"] = this.id;
-    data["username"] = this.username;
-    data["email"] = this.email;
-    if (Array.isArray(this.sites)) {
-      data["sites"] = [];
-      for (let item of this.sites)
-        data["sites"].push(item.toJSON());
-    }
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["username"] = this.username;
+      data["email"] = this.email;
+      if (Array.isArray(this.sites)) {
+          data["sites"] = [];
+          for (let item of this.sites)
+              data["sites"].push(item.toJSON());
+      }
+      return data;
   }
 }
 
@@ -2680,6 +2680,7 @@ export class Comment implements IComment {
           }
           (<any>this).id = _data["id"];
           this.body = _data["body"];
+          (<any>this).authorId = _data["authorId"];
           (<any>this).authorUsername = _data["authorUsername"];
           (<any>this).createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
       }
@@ -2700,6 +2701,7 @@ export class Comment implements IComment {
       }
       data["id"] = this.id;
       data["body"] = this.body;
+      data["authorId"] = this.authorId;
       data["authorUsername"] = this.authorUsername;
       data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
       return data;
@@ -3455,7 +3457,7 @@ export class PatchedUpdateUser implements IPatchedUpdateUser {
 
   [key: string]: any;
 
-  constructor(data?: IPatchedUser) {
+  constructor(data?: IPatchedUpdateUser) {
       if (data) {
           for (var property in data) {
               if (data.hasOwnProperty(property))
@@ -3470,33 +3472,14 @@ export class PatchedUpdateUser implements IPatchedUpdateUser {
               if (_data.hasOwnProperty(property))
                   this[property] = _data[property];
           }
-          (<any>this).id = _data["id"];
-          (<any>this).role = _data["role"];
-          this.lastLogin = _data["lastLogin"] ? new Date(_data["lastLogin"].toString()) : <any>undefined;
-          this.isSuperuser = _data["isSuperuser"];
           this.username = _data["username"];
-          this.firstName = _data["firstName"];
-          this.lastName = _data["lastName"];
-          this.isStaff = _data["isStaff"];
-          this.isActive = _data["isActive"];
-          this.dateJoined = _data["dateJoined"] ? new Date(_data["dateJoined"].toString()) : <any>undefined;
           this.email = _data["email"];
-          if (Array.isArray(_data["groups"])) {
-              this.groups = [] as any;
-              for (let item of _data["groups"])
-                  this.groups!.push(item);
-          }
-          if (Array.isArray(_data["userPermissions"])) {
-              this.userPermissions = [] as any;
-              for (let item of _data["userPermissions"])
-                  this.userPermissions!.push(item);
-          }
       }
   }
 
-  static fromJS(data: any): PatchedUser {
+  static fromJS(data: any): PatchedUpdateUser {
       data = typeof data === 'object' ? data : {};
-      let result = new PatchedUser();
+      let result = new PatchedUpdateUser();
       result.init(data);
       return result;
   }
@@ -3507,27 +3490,8 @@ export class PatchedUpdateUser implements IPatchedUpdateUser {
           if (this.hasOwnProperty(property))
               data[property] = this[property];
       }
-      data["id"] = this.id;
-      data["role"] = this.role;
-      data["lastLogin"] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined;
-      data["isSuperuser"] = this.isSuperuser;
       data["username"] = this.username;
-      data["firstName"] = this.firstName;
-      data["lastName"] = this.lastName;
-      data["isStaff"] = this.isStaff;
-      data["isActive"] = this.isActive;
-      data["dateJoined"] = this.dateJoined ? this.dateJoined.toISOString() : <any>undefined;
       data["email"] = this.email;
-      if (Array.isArray(this.groups)) {
-          data["groups"] = [];
-          for (let item of this.groups)
-              data["groups"].push(item);
-      }
-      if (Array.isArray(this.userPermissions)) {
-          data["userPermissions"] = [];
-          for (let item of this.userPermissions)
-              data["userPermissions"].push(item);
-      }
       return data;
   }
 }
@@ -3759,7 +3723,11 @@ export interface IRegisterUser {
   [key: string]: any;
 }
 
-export type RoleEnum = "User" | "Admin" | "MegaAdmin";
+export enum RoleEnum {
+  User = "User",
+  Admin = "Admin",
+  MegaAdmin = "MegaAdmin",
+}
 
 export class Site implements ISite {
   readonly id!: number;
@@ -4000,41 +3968,41 @@ export class SiteName implements ISiteName {
   [key: string]: any;
 
   constructor(data?: ISiteName) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
       }
-    }
   }
 
   init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property))
-          this[property] = _data[property];
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          this.name = _data["name"];
       }
-      (<any>this).id = _data["id"];
-      this.name = _data["name"];
-    }
   }
 
   static fromJS(data: any): SiteName {
-    data = typeof data === 'object' ? data : {};
-    let result = new SiteName();
-    result.init(data);
-    return result;
+      data = typeof data === 'object' ? data : {};
+      let result = new SiteName();
+      result.init(data);
+      return result;
   }
 
   toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    for (var property in this) {
-      if (this.hasOwnProperty(property))
-        data[property] = this[property];
-    }
-    data["id"] = this.id;
-    data["name"] = this.name;
-    return data;
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["name"] = this.name;
+      return data;
   }
 }
 
@@ -4140,6 +4108,7 @@ export class SiteSocial implements ISiteSocial {
               if (_data.hasOwnProperty(property))
                   this[property] = _data[property];
           }
+          (<any>this).id = _data["id"];
           this.name = _data["name"];
           this.siteType = _data["siteType"] ? SiteType.fromJS(_data["siteType"]) : new SiteType();
           this.image = _data["image"] ? Asset.fromJS(_data["image"]) : new Asset();
@@ -4172,6 +4141,7 @@ export class SiteSocial implements ISiteSocial {
           if (this.hasOwnProperty(property))
               data[property] = this[property];
       }
+      data["id"] = this.id;
       data["name"] = this.name;
       data["siteType"] = this.siteType ? this.siteType.toJSON() : <any>undefined;
       data["image"] = this.image ? this.image.toJSON() : <any>undefined;
@@ -4694,6 +4664,10 @@ export class UserToken implements IUserToken {
                   (<any>this)[property] = (<any>data)[property];
           }
       }
+      if (!data) {
+          this.token = new TokenRefresh();
+          this.user = new User();
+      }
   }
 
   init(_data?: any) {
@@ -4702,8 +4676,8 @@ export class UserToken implements IUserToken {
               if (_data.hasOwnProperty(property))
                   this[property] = _data[property];
           }
-          (<any>this).refresh = _data["refresh"];
-          (<any>this).access = _data["access"];
+          this.token = _data["token"] ? TokenRefresh.fromJS(_data["token"]) : new TokenRefresh();
+          this.user = _data["user"] ? User.fromJS(_data["user"]) : new User();
       }
   }
 
@@ -4720,8 +4694,8 @@ export class UserToken implements IUserToken {
           if (this.hasOwnProperty(property))
               data[property] = this[property];
       }
-      data["refresh"] = this.refresh;
-      data["access"] = this.access;
+      data["token"] = this.token ? this.token.toJSON() : <any>undefined;
+      data["user"] = this.user ? this.user.toJSON() : <any>undefined;
       return data;
   }
 }
@@ -4793,7 +4767,10 @@ export interface IWidget {
   [key: string]: any;
 }
 
-export type Format = "json" | "yaml";
+export enum Format {
+  Json = "json",
+  Yaml = "yaml",
+}
 
 export enum Lang {
   Af = "af",
@@ -4903,7 +4880,7 @@ export interface FileParameter {
 }
 
 export class ApiException extends Error {
-  override message: string;
+  message: string;
   status: number;
   response: string;
   headers: { [key: string]: any; };

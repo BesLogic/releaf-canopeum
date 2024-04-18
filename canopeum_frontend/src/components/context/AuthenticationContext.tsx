@@ -1,9 +1,7 @@
-import { TokenRefresh } from '@services/api'
+import type { TokenRefresh, User } from '@services/api'
 import getApiClient from '@services/apiInterface'
-import { jwtDecode } from 'jwt-decode'
-import type { User, UserRole } from '@models/User'
 import type { FunctionComponent, ReactNode } from 'react'
-import { createContext, memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { createContext, memo, useCallback, useMemo, useState } from 'react'
 
 export const STORAGE_ACCESS_TOKEN_KEY = 'token'
 export const STORAGE_REFRESH_TOKEN_KEY = 'refreshToken'
@@ -94,26 +92,6 @@ const AuthenticationContextProvider: FunctionComponent<{ readonly children?: Rea
       logout,
     }
   ), [initAuth, authenticate, updateUser, loadSession, user, logout, isSessionLoaded])
-
-  useEffect(() => {
-    const token = sessionStorage.getItem('token')
-    if (token) {
-      getApiClient().refreshClient.create(
-        new TokenRefresh({ access: token, refresh: sessionStorage.getItem('refreshToken') ?? '' }),
-      )
-        .then((response: TokenRefresh) => {
-          const decodedToken = jwtDecode(response.access) as { role: UserRole }
-          authenticate({
-            email: response.email ?? '',
-            firstname: response.firstName ?? '',
-            image: '',
-            lastname: response.lastName ?? '',
-            role: decodedToken.role as UserRole,
-          })
-        })
-        .catch(() => logout())
-    }
-  }, [])
 
   return (
     <AuthenticationContext.Provider

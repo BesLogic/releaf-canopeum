@@ -342,11 +342,6 @@ class PostListAPIView(APIView):
         parameters=[OpenApiParameter(name="siteId", type=OpenApiTypes.INT, location=OpenApiParameter.QUERY)],
     )
     def get(self, request):
-        if request.user.is_authenticated:
-            # TODO(NicolasDontigny): Move this logic in the PostSerializer as a SerializerMethodField
-            has_liked = Like.objects.filter(post=request.data.get("id"), user=request.user).exists()
-        else:
-            has_liked = False
         site_id = request.GET.get("siteId", "")
         posts = Post.objects.filter(site=site_id) if not site_id else Post.objects.all()
         serializer = PostSerializer(posts, many=True, context={"request": request})

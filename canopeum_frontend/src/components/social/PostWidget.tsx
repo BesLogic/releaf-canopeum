@@ -1,7 +1,6 @@
 import { LanguageContext } from '@components/context/LanguageContext'
 import PostCommentsDialog from '@components/social/PostCommentsDialog'
 import type { PageViewMode } from '@models/types/PageViewMode'
-import { getApiBaseUrl } from '@services/apiSettings'
 import { useContext, useState } from 'react'
 
 import { type Post } from '../../services/api'
@@ -9,7 +8,7 @@ import AssetGrid from '@components/AssetGrid'
 import TextExpansion from '@components/inputs/textExpansion'
 import getApiClient from '@services/apiInterface'
 
-const PostWidget = (props: { post: Post, likePostEvent: (postId: number) => void }, viewMode: PageViewMode) => {
+const PostWidget = (props: { post: Post, likePostEvent: (postId: number) => void, viewMode: PageViewMode }) => {
   const { post, likePostEvent, viewMode } = props
 
   const { formatDate } = useContext(LanguageContext)
@@ -47,7 +46,7 @@ const PostWidget = (props: { post: Post, likePostEvent: (postId: number) => void
           <img
             alt='site'
             className='rounded-circle'
-            src={getApiBaseUrl() + post.site.image.asset}
+            src={post.site.image.asset}
             style={{ height: '48px', width: '48px' }}
           />
           <div className='d-flex flex-column'>
