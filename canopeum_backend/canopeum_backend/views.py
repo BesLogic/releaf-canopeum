@@ -651,13 +651,15 @@ class UserInvitationListAPIView(APIView):
     @extend_schema(
         request=CreateUserInvitationSerializer,
         responses=UserInvitationSerializer,
-        operation_id="user-invitation_all",
+        operation_id="user-invitation_create",
     )
     def post(self, request):
-        site_ids = request.data.get("site_ids")
+        site_ids = request.data.get("siteIds")
+        if site_ids is None:
+            return Response("SITE_IDS_INVALID", status=status.HTTP_400_BAD_REQUEST)
         email = request.data.get("email")
-        if User.objects.get(email=email) is not None:
-            return Response("A user with this email already exists", status=status.HTTP_400_BAD_REQUEST)
+        if User.objects.filter(email=email).exists():
+            return Response("EMAIL_TAKEN", status=status.HTTP_400_BAD_REQUEST)
         code = secrets.token_urlsafe(32)
         user_invitation = UserInvitation.objects.create(
             code=code,

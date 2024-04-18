@@ -121,7 +121,7 @@ class Asset(models.Model):
 
 
 class Site(models.Model):
-    name = models.TextField(blank=True, null=True)
+    name = models.TextField()
     site_type = models.ForeignKey("Sitetype", models.DO_NOTHING, blank=True, null=True)
     coordinate = models.ForeignKey(Coordinate, models.DO_NOTHING, blank=True, null=True)
     description = models.TextField(blank=True, null=True)

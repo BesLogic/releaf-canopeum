@@ -11,6 +11,10 @@
   },
   "manage-admins": {
     "title": "Gérer les Administrateurs",
-    "invite-admin": "Inviter un Administrateur"
+    "invite-admin": "Inviter un Administrateur",
+    "generate-link": "Générer un Lien",
+    "copy-link": "Copier le Lien",
+    "assign-to-label": "Assigner à",
+    "generate-link-error": "Une erreur est survenue en essayant de générer le lien."
   }
 }

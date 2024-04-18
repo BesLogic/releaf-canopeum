@@ -278,7 +278,7 @@ export class SiteClient {
     return Promise.resolve<Site[]>(null as any);
   }
 
-  create(id: number | undefined, siteType: SiteType | undefined, coordinate: Coordinates | undefined, siteTreeSpecies: Sitetreespecies[] | undefined, contact: Contact | undefined, announcement: Announcement | undefined, image: Asset | undefined, name: string | null | undefined, description: string | null | undefined, size: string | null | undefined, researchPartnership: boolean | null | undefined, visibleMap: boolean | null | undefined, visitorCount: number | null | undefined): Promise<Site> {
+  create(id: number | undefined, siteType: SiteType | undefined, coordinate: Coordinates | undefined, siteTreeSpecies: Sitetreespecies[] | undefined, contact: Contact | undefined, announcement: Announcement | undefined, image: Asset | undefined, name: string | undefined, description: string | null | undefined, size: string | null | undefined, researchPartnership: boolean | null | undefined, visibleMap: boolean | null | undefined, visitorCount: number | null | undefined): Promise<Site> {
     let url_ = this.baseUrl + "/analytics/sites/";
     url_ = url_.replace(/[?&]$/, "");
 
@@ -317,7 +317,9 @@ export class SiteClient {
       throw new Error("The parameter 'image' cannot be null.");
     else if (image !== undefined)
       content_ += encodeURIComponent("image") + "=" + encodeURIComponent("" + image) + "&";
-    if (name !== undefined)
+    if (name === null)
+      throw new Error("The parameter 'name' cannot be null.");
+    else if (name !== undefined)
       content_ += encodeURIComponent("name") + "=" + encodeURIComponent("" + name) + "&";
     if (description !== undefined)
       content_ += encodeURIComponent("description") + "=" + encodeURIComponent("" + description) + "&";
@@ -1761,6 +1763,55 @@ export class WidgetClient {
   }
 }
 
+export class UserInvitationClient {
+  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+    this.http = http ? http : window as any;
+    this.baseUrl = baseUrl ?? "";
+  }
+
+  create(body: CreateUserInvitation): Promise<UserInvitation> {
+    let url_ = this.baseUrl + "/user-invitations/";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(body);
+
+    let options_: RequestInit = {
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }
+    };
+
+    return this.http.fetch(url_, options_).then((_response: Response) => {
+      return this.processCreate(_response);
+    });
+  }
+
+  protected processCreate(response: Response): Promise<UserInvitation> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = UserInvitation.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<UserInvitation>(null as any);
+  }
+}
+
 export class UserClient {
   private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
   private baseUrl: string;
@@ -1895,7 +1946,7 @@ export class UserClient {
     url_ = url_.replace(/[?&]$/, "");
 
     let options_: RequestInit = {
-      method: "GET",
+      method: "POST",
       headers: {
         "Accept": "application/json"
       }
@@ -2970,6 +3021,69 @@ export interface ICreateComment {
   [key: string]: any;
 }
 
+export class CreateUserInvitation implements ICreateUserInvitation {
+  siteIds!: number[];
+  email!: string;
+
+  [key: string]: any;
+
+  constructor(data?: ICreateUserInvitation) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    if (!data) {
+      this.siteIds = [];
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property))
+          this[property] = _data[property];
+      }
+      if (Array.isArray(_data["siteIds"])) {
+        this.siteIds = [] as any;
+        for (let item of _data["siteIds"])
+          this.siteIds!.push(item);
+      }
+      this.email = _data["email"];
+    }
+  }
+
+  static fromJS(data: any): CreateUserInvitation {
+    data = typeof data === 'object' ? data : {};
+    let result = new CreateUserInvitation();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    if (Array.isArray(this.siteIds)) {
+      data["siteIds"] = [];
+      for (let item of this.siteIds)
+        data["siteIds"].push(item);
+    }
+    data["email"] = this.email;
+    return data;
+  }
+}
+
+export interface ICreateUserInvitation {
+  siteIds: number[];
+  email: string;
+
+  [key: string]: any;
+}
+
 export class Like implements ILike {
   readonly id!: number;
   user!: number;
@@ -3302,7 +3416,7 @@ export class PatchedSite implements IPatchedSite {
   contact?: Contact;
   announcement?: Announcement;
   image?: Asset;
-  name?: string | undefined;
+  name?: string;
   description?: string | undefined;
   size?: string | undefined;
   researchPartnership?: boolean | undefined;
@@ -3388,7 +3502,7 @@ export interface IPatchedSite {
   contact?: Contact;
   announcement?: Announcement;
   image?: Asset;
-  name?: string | undefined;
+  name?: string;
   description?: string | undefined;
   size?: string | undefined;
   researchPartnership?: boolean | undefined;
@@ -3737,7 +3851,7 @@ export class Site implements ISite {
   contact!: Contact;
   announcement!: Announcement;
   image!: Asset;
-  name?: string | undefined;
+  name!: string;
   description?: string | undefined;
   size?: string | undefined;
   researchPartnership?: boolean | undefined;
@@ -3831,7 +3945,7 @@ export interface ISite {
   contact: Contact;
   announcement: Announcement;
   image: Asset;
-  name?: string | undefined;
+  name: string;
   description?: string | undefined;
   size?: string | undefined;
   researchPartnership?: boolean | undefined;
@@ -3894,7 +4008,7 @@ export interface ISiteAdmin {
 
 export class SiteMap implements ISiteMap {
   readonly id!: number;
-  name?: string | undefined;
+  name!: string;
   siteType!: SiteType;
   readonly coordinates!: CoordinatesMap;
   image!: Asset;
@@ -3953,7 +4067,7 @@ export class SiteMap implements ISiteMap {
 
 export interface ISiteMap {
   id: number;
-  name?: string | undefined;
+  name: string;
   siteType: SiteType;
   coordinates: CoordinatesMap;
   image: Asset;
@@ -3963,7 +4077,7 @@ export interface ISiteMap {
 
 export class SiteName implements ISiteName {
   readonly id!: number;
-  name?: string | undefined;
+  name!: string;
 
   [key: string]: any;
 
@@ -4008,14 +4122,14 @@ export class SiteName implements ISiteName {
 
 export interface ISiteName {
   id: number;
-  name?: string | undefined;
+  name: string;
 
   [key: string]: any;
 }
 
 export class SiteOverview implements ISiteOverview {
   readonly id!: number;
-  name?: string | undefined;
+  name!: string;
   image!: Asset;
 
   [key: string]: any;
@@ -4066,7 +4180,7 @@ export class SiteOverview implements ISiteOverview {
 
 export interface ISiteOverview {
   id: number;
-  name?: string | undefined;
+  name: string;
   image: Asset;
 
   [key: string]: any;
@@ -4074,7 +4188,7 @@ export interface ISiteOverview {
 
 export class SiteSocial implements ISiteSocial {
   readonly id!: number;
-  name?: string | undefined;
+  name!: string;
   siteType!: SiteType;
   image!: Asset;
   description?: string | undefined;
@@ -4164,7 +4278,7 @@ export class SiteSocial implements ISiteSocial {
 
 export interface ISiteSocial {
   id: number;
-  name?: string | undefined;
+  name: string;
   siteType: SiteType;
   image: Asset;
   description?: string | undefined;
@@ -4178,7 +4292,7 @@ export interface ISiteSocial {
 
 export class SiteSummary implements ISiteSummary {
   readonly id!: number;
-  name?: string | undefined;
+  name!: string;
   coordinate!: Coordinates;
   siteType!: SiteType;
   readonly plantCount!: number;
@@ -4284,7 +4398,7 @@ export class SiteSummary implements ISiteSummary {
 
 export interface ISiteSummary {
   id: number;
-  name?: string | undefined;
+  name: string;
   coordinate: Coordinates;
   siteType: SiteType;
   plantCount: number;
@@ -4662,6 +4776,58 @@ export interface IUser {
   groups?: number[];
   /** Specific permissions for this user. */
   userPermissions?: number[];
+
+  [key: string]: any;
+}
+
+export class UserInvitation implements IUserInvitation {
+  readonly id!: number;
+  code!: string;
+
+  [key: string]: any;
+
+  constructor(data?: IUserInvitation) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property))
+          this[property] = _data[property];
+      }
+      (<any>this).id = _data["id"];
+      this.code = _data["code"];
+    }
+  }
+
+  static fromJS(data: any): UserInvitation {
+    data = typeof data === 'object' ? data : {};
+    let result = new UserInvitation();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    for (var property in this) {
+      if (this.hasOwnProperty(property))
+        data[property] = this[property];
+    }
+    data["id"] = this.id;
+    data["code"] = this.code;
+    return data;
+  }
+}
+
+export interface IUserInvitation {
+  id: number;
+  code: string;
 
   [key: string]: any;
 }

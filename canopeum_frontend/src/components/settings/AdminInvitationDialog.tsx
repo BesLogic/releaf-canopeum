@@ -1,4 +1,10 @@
-import { Dialog, DialogContent } from '@mui/material'
+import MultipleSelectChip, { type SelectionItem } from '@components/inputs/MultipleSelectChip'
+import { Dialog, DialogContent, DialogTitle } from '@mui/material'
+import { CreateUserInvitation } from '@services/api'
+import getApiClient from '@services/apiInterface'
+import { getApiBaseUrl } from '@services/apiSettings'
+import { type InputValidationError, isValidEmail } from '@utils/validators'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 type Props = {
@@ -9,11 +15,157 @@ type Props = {
 const AdminInvitationDialog = ({ open, handleClose }: Props) => {
   const { t: translate } = useTranslation()
 
+  const [siteOptions, setSiteOptions] = useState<SelectionItem<number>[]>([])
+  const [invitationLink, setInvitationLink] = useState<string>()
+
+  const [email, setEmail] = useState('')
+  const [siteIds, setSiteIds] = useState<number[]>([])
+
+  const [emailError, setEmailError] = useState<InputValidationError | undefined>()
+  const [generateLinkError, setGenerateLinkError] = useState<string>()
+
+  const fetchAllSites = async () => {
+    const sites = await getApiClient().siteClient.all()
+    setSiteOptions(sites.map(site => ({ displayText: site.name, value: site.id })))
+  }
+
+  useEffect(() => void fetchAllSites(), [])
+
+  const validateEmail = () => {
+    if (!email) {
+      setEmailError('required')
+
+      return false
+    }
+
+    if (!isValidEmail(email)) {
+      setEmailError('email')
+
+      return false
+    }
+
+    setEmailError(undefined)
+
+    return true
+  }
+
+  const validateForm = () =>
+    // Do not return directly the method calls; we need each of them to be called before returning the result
+    validateEmail()
+
+
+  const handleGenerateLinkClick = async () => {
+    const isFormValid = validateForm()
+    if (!isFormValid) return
+
+    try {
+      const createUserInvitation = new CreateUserInvitation({
+        email,
+        siteIds,
+      })
+      const response = await getApiClient().userInvitationClient.create(createUserInvitation)
+
+      setInvitationLink(`${getApiBaseUrl()}/register?code=${response.code}`)
+    } catch {
+      setGenerateLinkError(translate('settings.manage-admins.generate-link-error'))
+    }
+  }
+
+  const handleCopyLinkClick = () => {
+    console.log('COPY');
+  }
+
+  const handleCancel = () => {
+    setInvitationLink(undefined)
+    setEmail('')
+    setSiteIds([])
+
+    handleClose()
+  }
+
+  const renderInvitationContent = () => {
+    if (invitationLink) {
+      return (
+        <div>
+          <span>{invitationLink}</span>
+        </div>
+      )
+    }
+
+    return (<div className='w-100'>
+      <div className='w-100'>
+        <label htmlFor='email-input'>{translate('auth.email-label')}</label>
+        <input
+          aria-describedby='email'
+          className={`form-control ${emailError && 'is-invalid'} `}
+          id='email-input'
+          onBlur={() => validateEmail()}
+          onChange={event => setEmail(event.target.value)}
+          type='email'
+        />
+        {emailError === 'required' && (
+          <span className='help-block text-danger'>
+            {translate('auth.email-error-required')}
+          </span>
+        )}
+        {emailError === 'email' && (
+          <span className='help-block text-danger'>
+            {translate('auth.email-error-format')}
+          </span>
+        )}
+      </div>
+
+      <MultipleSelectChip
+        classes='mt-4'
+        label={`${translate('settings.manage-admins.assign-to-label')}*`}
+        onChange={ids => setSiteIds(ids)}
+        options={siteOptions}
+      />
+
+      {generateLinkError && <div className='mt-3'>
+        <span className='help-block text-danger'>{generateLinkError}</span>
+      </div>}
+    </div>)
+  }
+
+  const renderActionButton = () => {
+    if (invitationLink) {
+      return (
+        <button
+          className='btn btn-primary'
+          onClick={handleCopyLinkClick}
+          type='button'>
+          {translate('settings.manage-admins.copy-link')}
+        </button>
+      )
+    }
+
+    return (<button
+      className='btn btn-primary'
+      onClick={handleGenerateLinkClick}
+      type='button'>
+      {translate('settings.manage-admins.generate-link')}
+    </button>)
+  }
+
   return (
     <Dialog fullWidth maxWidth='sm' onClose={handleClose} open={open}>
-      <DialogContent className='pb-5'>
-        <div>
-          <span>{translate('')}</span>
+      <DialogTitle className='text-center'>{translate('settings.manage-admins.invite-admin')}</DialogTitle>
+      <DialogContent>
+        <div className='d-flex flex-column justify-content-between m-auto' style={{ width: '80%' }}>
+          {renderInvitationContent()}
+
+          <div className='mt-5 d-flex justify-content-between align-items-center'>
+            <button
+              className='btn btn-outline-primary'
+              onClick={handleCancel}
+              type='button'
+            >
+              {translate('generic.cancel')}
+            </button>
+
+            {renderActionButton()}
+          </div>
         </div>
       </DialogContent>
     </Dialog>
