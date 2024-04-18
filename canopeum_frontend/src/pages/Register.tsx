@@ -1,6 +1,7 @@
 import AuthPageLayout from '@components/auth/AuthPageLayout'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { appRoutes } from '@constants/routes.constant'
+import type { UserInvitation } from '@services/api';
 import { RegisterUser } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { useContext, useEffect, useState } from 'react'
@@ -26,9 +27,13 @@ const Register = () => {
 
   const [registrationError, setRegistrationError] = useState<string | undefined>(undefined)
 
+  const [userInvitation, setUserInvitation] = useState<UserInvitation>()
+
   const fetchUserInvitation = async (code: string) => {
-    const response = await getApiClient().userInvitationClient.detail(code)
-    console.log('USER INVITATION:', response);
+    const userInvitation = await getApiClient().userInvitationClient.detail(code)
+    // TODO(NicolasDontigny): Validate expiration date
+    setUserInvitation(userInvitation)
+    setEmail(userInvitation.email)
   }
 
   useEffect(() => {
@@ -170,10 +175,12 @@ const Register = () => {
             <input
               aria-describedby='email'
               className={`form-control ${emailError && 'is-invalid'} `}
+              disabled={!!userInvitation}
               id='email-input'
               onBlur={() => validateEmail()}
               onChange={event => setEmail(event.target.value)}
               type='email'
+              value={email}
             />
             {emailError === 'required' && (
               <span className='help-block text-danger'>
