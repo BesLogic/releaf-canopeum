@@ -1,21 +1,34 @@
+import AssetGrid from '@components/AssetGrid'
 import { LanguageContext } from '@components/context/LanguageContext'
+import TextExpansion from '@components/inputs/textExpansion'
 import PostCommentsDialog from '@components/social/PostCommentsDialog'
-import { getApiBaseUrl } from '@services/apiSettings'
+import getApiClient from '@services/apiInterface'
 import { useContext, useState } from 'react'
 
 import type { Post } from '../../services/api'
 
 type Props = {
   readonly post: Post,
+  readonly likePostEvent: (postId: number) => void,
 }
 
-const PostWidget = ({ post }: Props) => {
+const PostWidget = ({ post, likePostEvent }: Props) => {
   const { formatDate } = useContext(LanguageContext)
   const [commentsModalOpen, setCommentsModalOpen] = useState(false)
 
   const openPostComments = () => setCommentsModalOpen(true)
 
   const handleCommentsModalClose = () => setCommentsModalOpen(false)
+
+  const likePost = async () => {
+    if (post.hasLiked) {
+      await getApiClient().likeClient.delete(post.id)
+      likePostEvent(post.id)
+    } else {
+      await getApiClient().likeClient.likePost(post.id, {})
+      likePostEvent(post.id)
+    }
+  }
 
   const handleCommentCountChange = (action: 'added' | 'deleted') => {
     /* eslint-disable @typescript-eslint/no-explicit-any -- Temporary workaround.
@@ -35,7 +48,7 @@ const PostWidget = ({ post }: Props) => {
           <img
             alt='site'
             className='rounded-circle'
-            src={getApiBaseUrl() + post.site.image.asset}
+            src={post.site.image.asset}
             style={{ height: '48px', width: '48px' }}
           />
           <div className='d-flex flex-column'>
@@ -46,11 +59,20 @@ const PostWidget = ({ post }: Props) => {
           </div>
         </div>
 
-        <div>{post.body}</div>
+        <TextExpansion maxLength={700} text={post.body} />
+
+        {post.media.length > 0 && <AssetGrid medias={post.media} />}
 
         <div className='d-flex justify-content-end gap-4'>
           <button className='d-flex gap-2 unstyled-button' type='button'>
-            <span className='material-symbols-outlined text-primary'>eco</span>
+            <span
+              className={`material-symbols-outlined${post.hasLiked
+                ? ' fill-icon'
+                : ''}`}
+              onClick={likePost}
+            >
+              eco
+            </span>
             <div>{post.likeCount}</div>
           </button>
 

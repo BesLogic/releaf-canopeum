@@ -528,12 +528,13 @@ class SiteOverviewSerializer(serializers.ModelSerializer):
 class PostPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ("site", "body")
+        fields = ("site", "body", "media")
 
 
 class PostSerializer(serializers.ModelSerializer):
     site = SiteOverviewSerializer()
     comment_count = serializers.SerializerMethodField()
+    like_count = serializers.SerializerMethodField()
     has_liked = serializers.SerializerMethodField()
     media = AssetSerializer(many=True)
 
@@ -555,9 +556,18 @@ class PostSerializer(serializers.ModelSerializer):
     def get_comment_count(self, obj):
         return obj.comment_set.count()
 
+    @extend_schema_field(serializers.IntegerField())
+    def get_like_count(self, obj):
+        return Like.objects.filter(post=obj).count()
+
     @extend_schema_field(bool)  # pyright: ignore[reportArgumentType]
     def get_has_liked(self, obj):
-        return self.context.get("has_liked")
+        user = self.context["request"].user
+        if user.is_anonymous:
+            return False
+        if not hasattr(obj, "like"):
+            return False
+        return Like.objects.filter(user=user).exists()
 
 
 class CreateCommentSerializer(serializers.ModelSerializer):
@@ -581,6 +591,12 @@ class CommentSerializer(serializers.ModelSerializer):
 
     def get_author_username(self, obj):
         return obj.user.username
+
+
+class LikePostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Like
+        fields = ("post",)
 
 
 class LikeSerializer(serializers.ModelSerializer):

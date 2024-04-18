@@ -1,6 +1,6 @@
 import fetchAuth from '@services/fetchAuth'
 
-import { AdminUserSitesClient, AnnouncementClient, AuthenticationClient, BatchClient, CommentClient, ContactClient, LikeClient, NewsClient, PostClient, SiteClient, SocialClient, SummaryClient, UserClient, WidgetClient } from './api'
+import { AdminUserSitesClient, AnnouncementClient, AuthenticationClient, BatchClient, CommentClient, ContactClient, LikeClient, NewsClient, PostClient, RefreshClient, SiteClient, SocialClient, SummaryClient, TokenClient, UserClient, WidgetClient } from './api'
 import { getApiBaseUrl } from './apiSettings'
 
 const getApiClient = () => ({
@@ -18,6 +18,8 @@ const getApiClient = () => ({
   announcementClient: new AnnouncementClient(getApiBaseUrl(), { fetch: fetchAuth }),
   contactClient: new ContactClient(getApiBaseUrl(), { fetch: fetchAuth }),
   widgetClient: new WidgetClient(getApiBaseUrl(), { fetch: fetchAuth }),
+  tokenClient: new TokenClient(getApiBaseUrl(), { fetch: fetchAuth }),
+  refreshClient: new RefreshClient(getApiBaseUrl(), { fetch: fetchAuth }),
 })
 
 export default getApiClient

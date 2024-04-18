@@ -249,7 +249,6 @@ class Command(BaseCommand):
         post = Post.objects.create(
             site=Site.objects.get(name="Canopeum"),
             body="Canopeum is a park in Montreal",
-            like_count=10,
             share_count=5,
             created_at=timezone.now(),
         )

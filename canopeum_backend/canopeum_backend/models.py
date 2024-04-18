@@ -27,7 +27,7 @@ class User(AbstractUser):
         unique=True,
     )
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS: ClassVar[list[str]] = []
+    REQUIRED_FIELDS: ClassVar[list[str]] = []  # type: ignore
     role = models.ForeignKey(Role, models.DO_NOTHING, null=False, default=1)  # type: ignore
 
 
@@ -135,12 +135,17 @@ class Site(models.Model):
 
 
 class Post(models.Model):
-    site = models.ForeignKey(Site, models.DO_NOTHING)
-    body = models.TextField()
-    like_count = models.IntegerField(blank=True, null=True)
-    share_count = models.IntegerField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    media = models.ManyToManyField(Asset, through="PostAsset")
+    site = models.ForeignKey("Site", models.DO_NOTHING, blank=False, null=False)
+    body = models.TextField(blank=False, null=False)
+    share_count = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True, blank=False, null=False)
+    # created_by = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
+    media = models.ManyToManyField(Asset, through="PostAsset", blank=True)
+
+
+class PostAsset(models.Model):
+    post = models.ForeignKey(Post, models.DO_NOTHING, null=False)
+    asset = models.ForeignKey(Asset, models.DO_NOTHING, null=False)
 
 
 class Comment(models.Model):
@@ -148,11 +153,6 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, models.DO_NOTHING)
     post = models.ForeignKey(Post, models.DO_NOTHING)
-
-
-class PostAsset(models.Model):
-    post = models.ForeignKey(Post, models.DO_NOTHING, null=False)
-    asset = models.ForeignKey(Asset, models.DO_NOTHING, null=False)
 
 
 class Siteadmin(models.Model):
@@ -197,8 +197,8 @@ class Widget(models.Model):
 
 
 class Like(models.Model):
-    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
-    post = models.ForeignKey(Post, models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(User, models.DO_NOTHING)
+    post = models.OneToOneField(Post, models.DO_NOTHING)
 
 
 class Internationalization(models.Model):
