@@ -98,7 +98,7 @@ const SiteSocialPage = () => {
             <div className='rounded-2 d-flex flex-column gap-4'>
               {site && (
                 <>
-                  {viewMode == 'admin' && <CreatePostWidget site={site} addNewPost={addNewPost} />}
+                  {viewMode == 'admin' && <CreatePostWidget addNewPost={addNewPost} />}
                   <div className='d-flex flex-column gap-4'>
                     {isLoadingPosts
                       ? (

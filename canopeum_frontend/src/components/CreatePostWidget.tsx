@@ -1,6 +1,5 @@
 import { type ChangeEvent, useContext, useState } from 'react'
-import { Asset, type FileParameter, type Post, type SiteSocial } from '../services/api'
-import { ensureError } from '@services/errors'
+import { Asset, type FileParameter, type Post } from '../services/api'
 import getApiClient from '@services/apiInterface'
 import textAreaAutoGrow from '../utils/textAreaAutoGrow'
 import { useTranslation } from 'react-i18next'
@@ -11,8 +10,8 @@ import type { InputValidationError } from '../utils/validators'
 import AssetGrid from './AssetGrid'
 import { assetFormatter } from '../utils/assetFormatter'
 
-const CreatePostWidget = (props: { readonly site: SiteSocial, addNewPost: (newPost: Post) => void }) => {
-  const { site, addNewPost } = props
+const CreatePostWidget = (props: { addNewPost: (newPost: Post) => void }) => {
+  const { addNewPost } = props
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
 
