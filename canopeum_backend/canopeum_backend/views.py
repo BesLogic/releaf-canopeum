@@ -1,27 +1,49 @@
+from typing import cast
+
 from django.contrib.auth import authenticate
-from django.contrib.auth.models import User
-from drf_spectacular.utils import extend_schema
+from django.http import QueryDict
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import status
-from rest_framework.authtoken.models import Token
-from rest_framework.permissions import AllowAny
+from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, Widget
+from canopeum_backend.permissions import (
+    CurrentUserPermission,
+    DeleteCommentPermission,
+    MegaAdminPermission,
+    MegaAdminPermissionReadOnly,
+)
+
+from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, Siteadmin, SiteFollower, User, Widget
 from .serializers import (
+    AdminUserSitesSerializer,
     AnnouncementSerializer,
-    AuthUserSerializer,
+    AssetSerializer,
     BatchAnalyticsSerializer,
     BatchSerializer,
     CommentSerializer,
     ContactSerializer,
+    CreateCommentSerializer,
     LikeSerializer,
+    LoginUserSerializer,
+    PostPostSerializer,
     PostSerializer,
+    RegisterUserSerializer,
+    SiteAdminSerializer,
+    SiteAdminUpdateRequestSerializer,
     SiteMapSerializer,
+    SitePostSerializer,
     SiteSerializer,
     SiteSocialSerializer,
     SiteSummarySerializer,
+    UpdateUserSerializer,
     UserSerializer,
+    UserTokenSerializer,
     WidgetSerializer,
 )
 
@@ -29,28 +51,48 @@ from .serializers import (
 class LoginAPIView(APIView):
     permission_classes = (AllowAny,)
 
-    @extend_schema(request=AuthUserSerializer, responses=UserSerializer, operation_id="authentication_login")
+    @extend_schema(request=LoginUserSerializer, responses=UserTokenSerializer, operation_id="authentication_login")
     def post(self, request):
-        username = request.data.get("username")
+        email = request.data.get("email")
         password = request.data.get("password")
 
-        user = authenticate(username=username, password=password)
+        user = cast(User, authenticate(email=email, password=password))
         if user is not None:
-            token, _ = Token.objects.get_or_create(user=user)
-            return Response({"token": token.key}, status=status.HTTP_200_OK)
+            refresh = cast(RefreshToken, RefreshToken.for_user(user))
+
+            refresh_serializer = TokenRefreshSerializer({"refresh": str(refresh), "access": str(refresh.access_token)})
+            user_serializer = UserSerializer(user)
+            serializer = UserTokenSerializer(data={"token": refresh_serializer.data, "user": user_serializer.data})
+            serializer.is_valid()
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class RegisterAPIView(APIView):
     permission_classes = (AllowAny,)
 
-    @extend_schema(request=UserSerializer, responses=AuthUserSerializer, operation_id="authentication_register")
+    @extend_schema(
+        request=RegisterUserSerializer, responses={201: UserTokenSerializer}, operation_id="authentication_register"
+    )
     def post(self, request):
-        serializer = UserSerializer(data=request.data)
+        # TODO(NicolasDontigny): Find out how to convert request body properties from camel case to lower snake case
+        request.data["password_confirmation"] = request.data.get("passwordConfirmation")
+        serializer = RegisterUserSerializer(data=request.data)
+
         if serializer.is_valid():
-            user = serializer.save()
-            token, _ = Token.objects.get_or_create(user=user)
-            return Response({"token": token.key}, status=status.HTTP_201_CREATED)
+            user = serializer.create_user()
+            if user is not None:
+                refresh = cast(RefreshToken, RefreshToken.for_user(user))
+
+                refresh_serializer = TokenRefreshSerializer({
+                    "refresh": str(refresh),
+                    "access": str(refresh.access_token),
+                })
+                user_serializer = UserSerializer(user)
+                serializer = UserTokenSerializer(data={"token": refresh_serializer.data, "user": user_serializer.data})
+                serializer.is_valid()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -68,20 +110,28 @@ class SiteListAPIView(APIView):
         serializer = SiteSerializer(sites, many=True)
         return Response(serializer.data)
 
-    @extend_schema(request=SiteSerializer, responses=SiteSerializer, operation_id="site_create")
+    parser_classes = (MultiPartParser, FormParser)
+
+    @extend_schema(request=SiteSerializer, responses={201: SiteSerializer}, operation_id="site_create")
     def post(self, request):
-        serializer = SiteSerializer(data=request.data)
+        asset = AssetSerializer(data=request.data)
+        if not asset.is_valid():
+            return Response(data=asset.errors, status=status.HTTP_400_BAD_REQUEST)
+        asset = asset.save()
+        serializer = SitePostSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(image=asset)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class SiteDetailAPIView(APIView):
+    permission_classes = (MegaAdminPermissionReadOnly,)
+
     @extend_schema(request=SiteSerializer, responses=SiteSerializer, operation_id="site_detail")
     def get(self, request, siteId):
         try:
-            site = Site.objects.get(pk=siteId)
+            site = Site.objects.prefetch_related("image").get(pk=siteId)
         except Site.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -101,7 +151,7 @@ class SiteDetailAPIView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @extend_schema(responses=status.HTTP_204_NO_CONTENT, operation_id="site_delete")
+    @extend_schema(responses={status.HTTP_204_NO_CONTENT: None}, operation_id="site_delete")
     def delete(self, request, siteId):
         try:
             site = Site.objects.get(pk=siteId)
@@ -156,7 +206,97 @@ class SiteSummaryDetailAPIView(APIView):
         return Response(serializer.data)
 
 
+class SiteDetailAdminsAPIView(APIView):
+    permission_classes = (MegaAdminPermission,)
+
+    @extend_schema(
+        request=SiteAdminUpdateRequestSerializer,
+        responses=SiteAdminSerializer(many=True),
+        operation_id="site_updateAdmins",
+    )
+    def patch(self, request, siteId):
+        try:
+            site = Site.objects.get(pk=siteId)
+        except Site.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        existing_site_admins = Siteadmin.objects.filter(site=site)
+        existing_admin_users = [admin.user for admin in existing_site_admins]
+
+        admin_ids = request.data["ids"]
+        updated_admin_users_list = User.objects.filter(id__in=admin_ids)
+
+        for user in updated_admin_users_list:
+            if user not in existing_admin_users:
+                Siteadmin.objects.create(
+                    user=user,
+                    site=site,
+                )
+
+        for existing_user in existing_admin_users:
+            if existing_user not in updated_admin_users_list:
+                existing_site_admins.filter(user__id__exact=existing_user.id).delete()
+
+        serializer = SiteAdminSerializer(Siteadmin.objects.filter(site=site), many=True)
+        return Response(serializer.data)
+
+
+class SiteFollowersAPIView(APIView):
+    @extend_schema(responses={201: None}, operation_id="site_follow")
+    def post(self, request, siteId):
+        try:
+            site = Site.objects.get(pk=siteId)
+        except Site.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        site_follower, created = SiteFollower.objects.get_or_create(user=request.user, site=site)
+        if created:
+            site_follower.save()
+
+            return Response(None, status=status.HTTP_201_CREATED)
+
+        return Response("Current user is already following this site", status=status.HTTP_400_BAD_REQUEST)
+
+    @extend_schema(operation_id="site_unfollow")
+    def delete(self, request, siteId):
+        try:
+            site_follower = SiteFollower.objects.get(site_id__exact=siteId, user=request.user)
+        except SiteFollower.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        site_follower.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class SiteFollowersCurrentUserAPIView(APIView):
+    @extend_schema(responses={200: bool}, operation_id="site_isFollowing")
+    def get(self, request, siteId):
+        try:
+            site = Site.objects.get(pk=siteId)
+        except Site.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        site_followers = SiteFollower.objects.filter(site=site, user=request.user)
+        is_following = site_followers.exists()
+        return Response(is_following, status=status.HTTP_200_OK)
+
+
+class AdminUserSitesAPIView(APIView):
+    permission_classes = (MegaAdminPermission,)
+
+    @extend_schema(
+        responses=AdminUserSitesSerializer(many=True),
+        operation_id="admin-user-sites_all",
+    )
+    def get(self, request):
+        adminusers = User.objects.filter(role__name__exact="Admin")
+        serializer = AdminUserSitesSerializer(adminusers, many=True)
+        return Response(serializer.data)
+
+
 class SiteSocialDetailAPIView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
     @extend_schema(request=SiteSocialSerializer, responses=SiteSocialSerializer, operation_id="site_social")
     def get(self, request, siteId):
         try:
@@ -172,6 +312,8 @@ class SiteSocialDetailAPIView(APIView):
 
 
 class SiteSocialListAPIView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
     @extend_schema(
         request=SiteSocialSerializer(many=True), responses=SiteSocialSerializer, operation_id="site_social_all"
     )
@@ -182,6 +324,8 @@ class SiteSocialListAPIView(APIView):
 
 
 class SiteMapListAPIView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
     @extend_schema(responses=SiteMapSerializer(many=True), operation_id="site_map")
     def get(self, request):
         sites = Site.objects.all()
@@ -190,53 +334,96 @@ class SiteMapListAPIView(APIView):
 
 
 class PostListAPIView(APIView):
-    @extend_schema(responses=PostSerializer(many=True), operation_id="post_all")
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    @extend_schema(
+        responses=PostSerializer(many=True),
+        operation_id="post_all",
+        parameters=[OpenApiParameter(name="siteId", type=OpenApiTypes.INT, location=OpenApiParameter.QUERY)],
+    )
     def get(self, request):
-        comment_count = Comment.objects.filter(post=request.data.get("id")).count()
-        has_liked = Like.objects.filter(post=request.data.get("id"), user=request.user).exists()
+        if request.user.is_authenticated:
+            # TODO(NicolasDontigny): Move this logic in the PostSerializer as a SerializerMethodField
+            has_liked = Like.objects.filter(post=request.data.get("id"), user=request.user).exists()
+        else:
+            has_liked = False
         site_id = request.GET.get("siteId", "")
         posts = Post.objects.filter(site=site_id) if not site_id else Post.objects.all()
-        serializer = PostSerializer(posts, many=True, context={"comment_count": comment_count, "has_liked": has_liked})
+        serializer = PostSerializer(posts, many=True, context={"has_liked": has_liked})
         return Response(serializer.data)
 
-    @extend_schema(request=PostSerializer, responses=PostSerializer, operation_id="post_create")
+    parser_classes = (MultiPartParser, FormParser)
+
+    @extend_schema(request=PostPostSerializer, responses={201: PostSerializer}, operation_id="post_create")
     def post(self, request):
-        serializer = PostSerializer(data=request.data)
+        assets = request.data.getlist("media")
+        saved_assets = []
+        for asset_item in assets:
+            q = QueryDict("", mutable=True)
+            q.update({"image": asset_item})
+            asset = AssetSerializer(data=q)
+            if not asset.is_valid():
+                return Response(data=asset.errors, status=status.HTTP_400_BAD_REQUEST)
+            asset.save()
+            saved_assets.append(asset)
+        serializer = PostPostSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            post = serializer.save()
+            for asset_item in saved_assets:
+                post.media.add(asset_item.instance)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class NewsListApiView(APIView):
+    @extend_schema(
+        responses=PostSerializer(many=True),
+        operation_id="news_all",
+    )
+    def get(self, request):
+        followed_sites = SiteFollower.objects.filter(user=request.user).values_list("site")
+
+        posts = Post.objects.filter(site__in=followed_sites).order_by("-created_at")
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
+
+
 class CommentListAPIView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
     @extend_schema(responses=CommentSerializer(many=True), operation_id="comment_all")
     def get(self, request, postId):
-        comments = Comment.objects.filter(post=postId)
+        comments = Comment.objects.filter(post=postId).order_by("-created_at")
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data)
 
-    @extend_schema(request=CommentSerializer, responses=CommentSerializer, operation_id="comment_create")
+    @extend_schema(request=CreateCommentSerializer, responses={201: CommentSerializer}, operation_id="comment_create")
     def post(self, request, postId):
         try:
             post = Post.objects.get(pk=postId)
+            user = User.objects.get(pk=request.user.id)
         except Post.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         serializer = CommentSerializer(data=request.data)
+
         if serializer.is_valid():
-            serializer.save(post=post)
+            serializer.save(post=post, user=user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CommentDetailAPIView(APIView):
+    permission_classes = (DeleteCommentPermission,)
+
     @extend_schema(operation_id="comment_delete")
-    def delete(self, request, pk):
+    def delete(self, request, postId, commentId):
         try:
-            comment = Comment.objects.get(pk=pk)
+            comment = Comment.objects.get(pk=commentId)
         except Comment.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+        self.check_object_permissions(request, comment)
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -272,7 +459,7 @@ class ContactDetailAPIView(APIView):
 
 
 class WidgetListAPIView(APIView):
-    @extend_schema(request=WidgetSerializer, responses=WidgetSerializer, operation_id="widget-create")
+    @extend_schema(request=WidgetSerializer, responses={201: WidgetSerializer}, operation_id="widget_create")
     def post(self, request):
         serializer = WidgetSerializer(data=request.data)
         if serializer.is_valid():
@@ -307,7 +494,7 @@ class WidgetDetailAPIView(APIView):
 
 
 class LikeListAPIView(APIView):
-    @extend_schema(request=LikeSerializer, responses=LikeSerializer, operation_id="like_all")
+    @extend_schema(request=LikeSerializer, responses={201: LikeSerializer}, operation_id="like_all")
     def post(self, request):
         serializer = LikeSerializer(data=request.data)
         if serializer.is_valid():
@@ -323,7 +510,7 @@ class BatchListAPIView(APIView):
         serializer = BatchAnalyticsSerializer(batches, many=True)
         return Response(serializer.data)
 
-    @extend_schema(request=BatchSerializer, responses=BatchSerializer, operation_id="batch_create")
+    @extend_schema(request=BatchSerializer, responses={201: BatchSerializer}, operation_id="batch_create")
     def post(self, request):
         serializer = BatchSerializer(data=request.data)
         if serializer.is_valid():
@@ -364,33 +551,39 @@ class UserListAPIView(APIView):
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
 
-    @extend_schema(request=UserSerializer, responses=UserSerializer, operation_id="user_create")
-    def post(self, request):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class AdminUsersListAPIView(APIView):
+    permission_classes = (MegaAdminPermission,)
+
+    @extend_schema(responses=UserSerializer(many=True), operation_id="user_allAdmins")
+    def get(self, request):
+        users = User.objects.filter(role__name__iexact="admin")
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
 
 
 class UserDetailAPIView(APIView):
+    permission_classes = (CurrentUserPermission,)
+
     @extend_schema(request=UserSerializer, responses=UserSerializer, operation_id="user_detail")
-    def get(self, request, pk):
+    def get(self, request, userId):
         try:
-            user = User.objects.get(pk=pk)
+            user = User.objects.get(pk=userId)
         except User.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+        self.check_object_permissions(request, user)
         serializer = UserSerializer(user)
         return Response(serializer.data)
 
-    @extend_schema(request=UserSerializer, responses=UserSerializer, operation_id="user_update")
-    def patch(self, request, pk):
+    @extend_schema(request=UpdateUserSerializer, responses=UserSerializer, operation_id="user_update")
+    def patch(self, request, userId):
         try:
-            user = User.objects.get(pk=pk)
+            user = User.objects.get(pk=userId)
         except User.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+        self.check_object_permissions(request, user)
         serializer = UserSerializer(user, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -399,7 +592,7 @@ class UserDetailAPIView(APIView):
 
 
 class UserCurrentUserAPIView(APIView):
-    @extend_schema(responses=UserSerializer, operation_id="user_current_user")
+    @extend_schema(responses=UserSerializer, operation_id="user_current")
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)

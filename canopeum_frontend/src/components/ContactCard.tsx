@@ -2,16 +2,24 @@ import facebookLogo from '@assets/icons/facebook-contact-logo.svg'
 import instagramLogo from '@assets/icons/instagram-contact-logo.svg'
 import linkedinLogo from '@assets/icons/linkedin-contact-logo.svg'
 import xLogo from '@assets/icons/x-contact-logo.svg'
-import { Link } from 'react-router-dom'
+import type { PageViewMode } from '@models/types/PageViewMode'
 import type { Contact } from '@services/api'
+import { Link } from 'react-router-dom'
 
-const ContactCard = ({ contact }: { readonly contact: Contact }) => {
+type Props = {
+  readonly contact: Contact,
+  readonly viewMode: PageViewMode,
+}
+
+const ContactCard = ({ contact, viewMode }: Props) => {
   const renderContactCard = () => (
     <div className='card rounded px-3 py-2'>
       <div className='card-body'>
         <div className='d-flex justify-content-between align-items-center pb-3'>
           <h2 className='card-title'>Contact</h2>
-          <span className='material-symbols-outlined text-primary fs-2'>edit_square</span>
+          <div>
+            {viewMode === 'admin' && <span className='material-symbols-outlined text-primary fs-2'>edit_square</span>}
+          </div>
         </div>
         <div className='info-section d-flex flex-column'>
           <div className='card-text adress d-flex align-items-center pb-3 gap-2'>
@@ -28,8 +36,8 @@ const ContactCard = ({ contact }: { readonly contact: Contact }) => {
           </div>
         </div>
         <div className='social-icons d-flex flex-row-reverse pt-3'>
-          {contact.linkedInLink && (
-            <Link target='_blank' to={contact.linkedInLink}>
+          {contact.linkedinLink && (
+            <Link target='_blank' to={contact.linkedinLink}>
               <img alt='linkedin-logo' className='px-2' src={linkedinLogo} />
             </Link>
           )}

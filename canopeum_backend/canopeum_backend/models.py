@@ -1,5 +1,34 @@
-from django.conf import settings
+from datetime import datetime
+from typing import ClassVar
+
+import pytz
+from django.contrib.auth.models import AbstractUser
 from django.db import models
+
+
+class RoleName(models.TextChoices):
+    USER = "User"
+    ADMIN = "Admin"
+    MEGAADMIN = "MegaAdmin"
+
+
+class Role(models.Model):
+    name = models.CharField(
+        max_length=9,
+        choices=RoleName.choices,
+        default=RoleName.USER,
+    )
+
+
+class User(AbstractUser):
+    email = models.EmailField(
+        verbose_name="email address",
+        max_length=255,
+        unique=True,
+    )
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS: ClassVar[list[str]] = []
+    role = models.ForeignKey(Role, models.DO_NOTHING, null=False, default=1)  # type: ignore
 
 
 class Announcement(models.Model):
@@ -10,6 +39,7 @@ class Announcement(models.Model):
 class Batch(models.Model):
     site = models.ForeignKey("Site", models.DO_NOTHING, blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
     name = models.TextField(blank=True, null=True)
     sponsor = models.TextField(blank=True, null=True)
     size = models.TextField(blank=True, null=True)
@@ -46,10 +76,10 @@ class BatchSupportedSpecies(models.Model):
 
 
 class Comment(models.Model):
-    body = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
-    auth_user = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING, blank=True, null=True)
-    post = models.ForeignKey("Post", models.DO_NOTHING, blank=True, null=True)
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, models.DO_NOTHING)
+    post = models.ForeignKey("Post", models.DO_NOTHING)
 
 
 class Contact(models.Model):
@@ -79,10 +109,6 @@ class FertilizertypeInternationalization(models.Model):
     fr = models.TextField(db_column="FR", blank=True, null=True)
 
 
-class Image(models.Model):
-    path = models.TextField(blank=True, null=True)
-
-
 class Mulchlayertype(models.Model):
     name = models.ForeignKey("MulchlayertypeInternationalization", models.DO_NOTHING, blank=True, null=True)
 
@@ -92,23 +118,32 @@ class MulchlayertypeInternationalization(models.Model):
     fr = models.TextField(db_column="FR", blank=True, null=True)
 
 
+def upload_to(_, filename):
+    now = datetime.now(pytz.utc).strftime("%Y%m%d%H%M%S%f")
+    return f"{now}{filename}"
+
+
+class Asset(models.Model):
+    asset = models.FileField(upload_to=upload_to, null=False)
+
+
 class Post(models.Model):
     site = models.ForeignKey("Site", models.DO_NOTHING, blank=True, null=True)
     body = models.TextField(blank=True, null=True)
     like_count = models.IntegerField(blank=True, null=True)
     share_count = models.IntegerField(blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    media = models.ManyToManyField(Asset, through="PostAsset")
 
 
-class Postimage(models.Model):
-    image = models.ForeignKey(Image, models.DO_NOTHING, blank=True, null=True)
-    post = models.ForeignKey(Post, models.DO_NOTHING, blank=True, null=True)
+class PostAsset(models.Model):
+    post = models.ForeignKey(Post, models.DO_NOTHING, null=False)
+    asset = models.ForeignKey(Asset, models.DO_NOTHING, null=False)
 
 
 class Site(models.Model):
     name = models.TextField(blank=True, null=True)
     site_type = models.ForeignKey("Sitetype", models.DO_NOTHING, blank=True, null=True)
-    image = models.ForeignKey(Image, models.DO_NOTHING, blank=True, null=True)
     coordinate = models.ForeignKey(Coordinate, models.DO_NOTHING, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     size = models.TextField(blank=True, null=True)
@@ -117,16 +152,18 @@ class Site(models.Model):
     visitor_count = models.IntegerField(blank=True, null=True)
     contact = models.ForeignKey(Contact, models.DO_NOTHING, blank=True, null=True)
     announcement = models.ForeignKey(Announcement, models.DO_NOTHING, blank=True, null=True)
+    image = models.ForeignKey(Asset, models.DO_NOTHING, blank=True, null=True)
 
 
 class Siteadmin(models.Model):
-    auth_user = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
     site = models.ForeignKey(Site, models.DO_NOTHING, blank=True, null=True)
 
 
-class Siteimage(models.Model):
-    image = models.ForeignKey(Image, models.DO_NOTHING, blank=True, null=True)
-    site = models.ForeignKey(Site, models.DO_NOTHING, blank=True, null=True)
+class SiteFollower(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, models.DO_NOTHING)
+    site = models.ForeignKey(Site, models.DO_NOTHING)
 
 
 class Sitetreespecies(models.Model):
@@ -160,7 +197,7 @@ class Widget(models.Model):
 
 
 class Like(models.Model):
-    auth_user = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
     post = models.ForeignKey(Post, models.DO_NOTHING, blank=True, null=True)
 
 

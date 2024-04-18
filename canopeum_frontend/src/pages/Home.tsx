@@ -1,50 +1,56 @@
-import { useEffect, useState } from 'react'
+import { AuthenticationContext } from '@components/context/AuthenticationContext.tsx'
+import PostWidget from '@components/social/PostWidget.tsx'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import type { BatchAnalytics } from '../services/api.ts'
-import api from '../services/apiInterface.ts'
-import { ensureError } from '../services/errors.ts'
+import type { Post } from '../services/api.ts'
+import getApiClient from '../services/apiInterface.ts'
+import LoadingPage from './LoadingPage.tsx'
 
 const Home = () => {
-  const { t } = useTranslation()
-  const [data, setData] = useState<BatchAnalytics[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<Error | undefined>(undefined)
+  const { t: translate } = useTranslation()
+  const { currentUser } = useContext(AuthenticationContext)
+  const [isLoading, setIsLoading] = useState(true)
+  const [newsPosts, setNewsPosts] = useState<Post[]>([])
 
-  const fetchData = async () => {
-    setIsLoading(true)
-    try {
-      const response = await api().analytics.batches()
-      setData(response)
-    } catch (error_: unknown) {
-      setError(ensureError(error_))
-    } finally {
-      setIsLoading(false)
+  const fetchNewsPosts = useCallback(async () => {
+    const response = await getApiClient().newsClient.all()
+    setNewsPosts(response)
+    setIsLoading(false)
+  }, [setNewsPosts, setIsLoading])
+
+  useEffect(() => void fetchNewsPosts(), [fetchNewsPosts])
+
+  if (!currentUser) return <div />
+
+  const renderPosts = () => {
+    if (newsPosts.length === 0) {
+      return (
+        <div className='bg-white rounded-2 px-5 py-4 d-flex flex-column gap-3'>
+          <span>{translate('home.no-news')}</span>
+        </div>
+      )
     }
+
+    return (
+      <div className='d-flex flex-column gap-3'>
+        {newsPosts.map(post => <PostWidget key={post.id} post={post} viewMode='user' />)}
+      </div>
+    )
   }
 
-  useEffect((): void => {
-    void fetchData()
-  }, [])
+  if (isLoading) return <LoadingPage />
 
   return (
     <div>
-      <div className='container mt-2 d-flex flex-column gap-2'>
-        <div className='bg-white rounded-2 px-3 py-2'>
-          <h1>{t('home.home')}</h1>
-          {isLoading
-            ? <p>Loading...</p>
-            : error
-            ? <p>Error: {error.message}</p>
-            : (
-              <div>
-                <p>Example request from API:</p>
-                <ul>
-                  {data.map(item => <li key={item.id}>{item.name}</li>)}
-                </ul>
-              </div>
-            )}
+      <div className='page-container'>
+        <div className='mb-4'>
+          <h1 className='text-light'>{translate('home.title', { username: currentUser.username })}</h1>
+
+          <h6 className='text-light'>{translate('home.subtitle')}</h6>
         </div>
+
+        {renderPosts()}
       </div>
     </div>
   )

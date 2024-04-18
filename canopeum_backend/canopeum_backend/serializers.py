@@ -1,9 +1,12 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 
 from .models import (
     Announcement,
+    Asset,
     Batch,
     Batchfertilizer,
     BatchSeed,
@@ -16,24 +19,85 @@ from .models import (
     Like,
     Mulchlayertype,
     Post,
+    Role,
+    RoleName,
     Site,
+    Siteadmin,
+    SiteFollower,
     Sitetreespecies,
     Sitetype,
     Treetype,
+    User,
     Widget,
 )
 
 
-class AuthUserSerializer(serializers.ModelSerializer):
+class LoginUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("id", "username", "email", "password")
+        fields = ("email", "password")
+
+
+class UpdateUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("username", "email")
+
+
+class RegisterUserSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(required=True, validators=[UniqueValidator(queryset=User.objects.all())])
+    email = serializers.EmailField(required=True, validators=[UniqueValidator(queryset=User.objects.all())])
+
+    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    password_confirmation = serializers.CharField(write_only=True, required=True)
+    role = serializers.CharField(required=False, default="User")
+
+    class Meta:
+        model = User
+        fields = ("username", "email", "password", "password_confirmation", "role")
+
+    def validate(self, attrs):
+        if attrs["password"] != attrs["password_confirmation"]:
+            raise serializers.ValidationError({"password": "Password fields didn't match."})
+
+        return attrs
+
+    def create_user(self):
+        if self.validated_data is not dict:
+            raise serializers.ValidationError("RegisterUser validated data is invalid")
+        role_name = self.validated_data.get("role", "User")
+        role = Role.objects.get(name=role_name)
+        if role is None:
+            role = Role.objects.get(name="User")
+        user = User.objects.create(
+            username=self.validated_data["username"],
+            email=self.validated_data["email"],
+            role=role,
+        )
+
+        user.set_password(self.validated_data["password"])
+        user.save()
+
+        return user
 
 
 class UserSerializer(serializers.ModelSerializer):
+    role = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = "__all__"
+        exclude = ("password",)
+
+    def get_role(self, obj) -> RoleName:
+        return obj.role.name
+
+
+class UserTokenSerializer(serializers.Serializer):
+    token = TokenRefreshSerializer()
+    user = UserSerializer()
+
+    class Meta:
+        fields = ("token", "user")
 
 
 class CoordinatesSerializer(serializers.ModelSerializer):
@@ -111,12 +175,34 @@ class SitetreespeciesSerializer(serializers.ModelSerializer):
         return TreeTypeSerializer(obj.tree_type).data.get("fr", None)
 
 
+class AssetSerializer(serializers.ModelSerializer):
+    asset = serializers.FileField()
+
+    class Meta:
+        model = Asset
+        fields = ("asset",)
+
+    def to_internal_value(self, data):
+        # Map 'image' field to 'asset' field in incoming data
+        if "image" in data:
+            data["asset"] = data["image"]
+            del data["image"]
+        return super().to_internal_value(data)
+
+
+class SitePostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Site
+        fields = ("id", "name", "description", "image")
+
+
 class SiteSerializer(serializers.ModelSerializer):
     site_type = SiteTypeSerializer()
     coordinate = CoordinatesSerializer()
     site_tree_species = serializers.SerializerMethodField()
     contact = ContactSerializer()
     announcement = AnnouncementSerializer()
+    image = AssetSerializer()
 
     class Meta:
         model = Site
@@ -127,16 +213,36 @@ class SiteSerializer(serializers.ModelSerializer):
         return SitetreespeciesSerializer(obj.sitetreespecies_set.all(), many=True).data
 
 
+class SiteNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Site
+        fields = ("id", "name")
+
+
+class AdminUserSitesSerializer(serializers.ModelSerializer):
+    sites = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ("id", "username", "email", "sites")
+
+    @extend_schema_field(SiteNameSerializer(many=True))
+    def get_sites(self, obj):
+        sites_list = [siteadmin.site for siteadmin in obj.siteadmin_set.all()]
+        return SiteNameSerializer(sites_list, many=True).data
+
+
 class SiteSocialSerializer(serializers.ModelSerializer):
     site_type = SiteTypeSerializer()
     contact = ContactSerializer()
     announcement = AnnouncementSerializer()
     widget = serializers.SerializerMethodField()
     sponsors = serializers.SerializerMethodField()
+    image = AssetSerializer()
 
     class Meta:
         model = Site
-        fields = ("name", "site_type", "image", "description", "contact", "announcement", "sponsors", "widget")
+        fields = ("id", "name", "site_type", "image", "description", "contact", "announcement", "sponsors", "widget")
 
     # Bug in the extend_schema_field type annotation, they should allow
     # base python types supported by open api specs
@@ -240,6 +346,7 @@ class BatchAnalyticsSerializer(serializers.ModelSerializer):
     seed_collected_count = serializers.SerializerMethodField()
     seeds = serializers.SerializerMethodField()
     species = serializers.SerializerMethodField()
+    updated_at = serializers.DateTimeField()
 
     class Meta:
         model = Batch
@@ -248,6 +355,7 @@ class BatchAnalyticsSerializer(serializers.ModelSerializer):
             "name",
             "size",
             "soil_condition",
+            "sponsor",
             "fertilizers",
             "mulch_layers",
             "supported_species",
@@ -257,6 +365,7 @@ class BatchAnalyticsSerializer(serializers.ModelSerializer):
             "seed_collected_count",
             "seeds",
             "species",
+            "updated_at",
         )
 
     @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
@@ -296,25 +405,60 @@ class BatchAnalyticsSerializer(serializers.ModelSerializer):
         return BatchSpeciesSerializer(obj.batchspecies_set.all(), many=True).data
 
 
+class SiteAdminSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = Siteadmin
+        fields = ("user",)
+
+
+class SiteFollowerSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    site = SiteSerializer()
+
+    class Meta:
+        model = SiteFollower
+        fields = ("user", "site")
+
+
+class IntegerListFieldSerializer(serializers.ListField):
+    child = serializers.IntegerField()
+
+
+class SiteAdminUpdateRequestSerializer(serializers.Serializer):
+    ids = IntegerListFieldSerializer()
+
+    class Meta:
+        fields = ("ids",)
+
+
 class SiteSummarySerializer(serializers.ModelSerializer):
     site_type = SiteTypeSerializer()
+    coordinate = CoordinatesSerializer()
     plant_count = serializers.SerializerMethodField()
     survived_count = serializers.SerializerMethodField()
     propagation_count = serializers.SerializerMethodField()
     progress = serializers.SerializerMethodField()
-    sponsor = serializers.SerializerMethodField()
+    sponsors = serializers.SerializerMethodField()
+    admins = SiteAdminSerializer(source="siteadmin_set", many=True)
+    batches = BatchAnalyticsSerializer(source="batch_set", read_only=True, many=True)
 
     class Meta:
         model = Site
         fields = (
+            "id",
             "name",
+            "coordinate",
             "site_type",
             "plant_count",
             "survived_count",
             "propagation_count",
             "visitor_count",
-            "sponsor",
+            "sponsors",
             "progress",
+            "admins",
+            "batches",
         )
 
     @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
@@ -333,9 +477,10 @@ class SiteSummarySerializer(serializers.ModelSerializer):
     def get_progress(self, obj):
         return self.context.get("progress")
 
-    @extend_schema_field(BatchSerializer(many=True))
-    def get_sponsor(self, obj):
-        return BatchSerializer(obj).data.get("sponsor", None)
+    @extend_schema_field(list[str])  # pyright: ignore[reportArgumentType]
+    def get_sponsors(self, obj):
+        batches = Batch.objects.filter(site=obj)
+        return [batch.sponsor for batch in batches]
 
 
 class CoordinatesMapSerializer(serializers.ModelSerializer):
@@ -358,6 +503,7 @@ class CoordinatesMapSerializer(serializers.ModelSerializer):
 class SiteMapSerializer(serializers.ModelSerializer):
     site_type = SiteTypeSerializer()
     coordinates = serializers.SerializerMethodField()
+    image = AssetSerializer()
 
     class Meta:
         model = Site
@@ -369,33 +515,69 @@ class SiteMapSerializer(serializers.ModelSerializer):
 
 
 class SiteOverviewSerializer(serializers.ModelSerializer):
+    image = AssetSerializer()
+
     class Meta:
         model = Site
-        fields = ("id", "name")
+        fields = ("id", "name", "image")
+
+
+class PostPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ("site", "body")
 
 
 class PostSerializer(serializers.ModelSerializer):
     site = SiteOverviewSerializer()
     comment_count = serializers.SerializerMethodField()
     has_liked = serializers.SerializerMethodField()
+    media = AssetSerializer(many=True)
 
     class Meta:
         model = Post
-        fields = ("id", "site", "created_at", "body", "like_count", "share_count", "comment_count", "has_liked")
+        fields = (
+            "id",
+            "site",
+            "created_at",
+            "body",
+            "like_count",
+            "share_count",
+            "comment_count",
+            "has_liked",
+            "media",
+        )
 
-    @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
+    @extend_schema_field(serializers.IntegerField())
     def get_comment_count(self, obj):
-        return self.context.get("comment_count")
+        return obj.comment_set.count()
 
     @extend_schema_field(bool)  # pyright: ignore[reportArgumentType]
     def get_has_liked(self, obj):
         return self.context.get("has_liked")
 
 
-class CommentSerializer(serializers.ModelSerializer):
+class CreateCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ("id", "body", "auth_user", "created_at")
+        fields = ("body",)
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    author_id = serializers.SerializerMethodField()
+    author_username = serializers.SerializerMethodField()
+    # TODO(NicolasDontigny): Add user avatar image here once implemented
+
+    class Meta:
+        model = Comment
+        fields = ("id", "body", "author_id", "author_username", "created_at")
+
+    @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
+    def get_author_id(self, obj):
+        return obj.user.id
+
+    def get_author_username(self, obj):
+        return obj.user.username
 
 
 class LikeSerializer(serializers.ModelSerializer):

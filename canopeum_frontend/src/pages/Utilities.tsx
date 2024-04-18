@@ -8,15 +8,15 @@ const Utilities = () => (
       <h1>Utilities</h1>
       <div className='bg-white rounded-2 px-3 py-2'>
         <h2>Icons</h2>
-        <span className='material-symbols-outlined fill-icon'>home</span>
-        <span className='material-symbols-outlined'>home</span>
-        <span className='material-symbols-outlined fill-icon'>donut_small</span>
+        <span className='material-symbols-outlined fill-icon icon-2xs'>home</span>
+        <span className='material-symbols-outlined icon-xs'>home</span>
+        <span className='material-symbols-outlined fill-icon icon-sm'>donut_small</span>
         <span className='material-symbols-outlined'>donut_small</span>
-        <span className='material-symbols-outlined fill-icon'>pin_drop</span>
-        <span className='material-symbols-outlined'>pin_drop</span>
-        <span className='material-symbols-outlined fill-icon'>account_circle</span>
-        <span className='material-symbols-outlined'>account_circle</span>
-        <span className='material-symbols-outlined fill-icon'>eco</span>
+        <span className='material-symbols-outlined fill-icon icon-lg'>pin_drop</span>
+        <span className='material-symbols-outlined icon-xl'>pin_drop</span>
+        <span className='material-symbols-outlined fill-icon icon-2xl'>account_circle</span>
+        <span className='material-symbols-outlined icon-3xl'>account_circle</span>
+        <span className='material-symbols-outlined fill-icon icon-4xl'>eco</span>
         <span className='material-symbols-outlined'>eco</span>
         <span className='material-symbols-outlined fill-icon'>sms</span>
         <span className='material-symbols-outlined'>sms</span>

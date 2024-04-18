@@ -86,7 +86,7 @@ For backend
    docker compose up
    cd canopeum_backend
    python -m pip install -r requirements-dev.txt
-   python manage.py migrate
+   python manage.py initialize_database
    python manage.py runserver
    ```
 

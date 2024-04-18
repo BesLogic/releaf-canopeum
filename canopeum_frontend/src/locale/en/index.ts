@@ -1,14 +1,20 @@
 import analyticsJSON from './analytics.json'
 import analyticsSiteJSON from './analyticsSite.json'
+import authJSON from './auth.json'
+import genericJSON from './generic.json'
 import homeJSON from './home.json'
-import mapSiteJSON from './mapSite.json'
+import settingsJSON from './settings.json'
+import socialJSON from './social.json'
 
 const enJSON = {
   translation: {
-    home: { ...homeJSON },
     analytics: { ...analyticsJSON },
     analyticsSite: { ...analyticsSiteJSON },
-    mapSite: { ...mapSiteJSON },
+    auth: { ...authJSON },
+    generic: { ...genericJSON },
+    home: { ...homeJSON },
+    settings: { ...settingsJSON },
+    social: { ...socialJSON },
   },
 }
 
