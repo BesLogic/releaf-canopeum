@@ -198,7 +198,7 @@ class Widget(models.Model):
 
 class Like(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING)
-    post = models.OneToOneField(Post, models.DO_NOTHING)
+    post = models.ForeignKey(Post, models.DO_NOTHING)
 
 
 class Internationalization(models.Model):

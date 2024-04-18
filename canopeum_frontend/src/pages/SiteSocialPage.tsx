@@ -1,7 +1,7 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import SiteSocialHeader from '@components/social/SiteSocialHeader'
 import type { PageViewMode } from '@models/types/PageViewMode'
-import type { Post, SiteSocial } from '@services/api'
+import { type IPost, Post, type SiteSocial } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { ensureError } from '@services/errors'
 import { useContext, useEffect, useState } from 'react'
@@ -57,20 +57,27 @@ const SiteSocialPage = () => {
     }
   }
 
-  const addNewPost = (newPost: Post) => {
-    setPosts([newPost, ...posts || []])
-  }
+  const addNewPost = (newPost: Post) => setPosts(previous => [newPost, ...previous])
 
-  const likePost = async (postId: number) => {
-    const post = posts.find(post => post.id === postId)
-    if (!post) return
-    const newPost = { ...post, hasLiked: !post.hasLiked }
-    newPost.likeCount = post.hasLiked
-      ? post.likeCount - 1
-      : post.likeCount + 1
-    posts.splice(posts.indexOf(post), 1)
-    setPosts([newPost as Post, ...posts || []])
-  }
+  const likePost = (postId: number) =>
+    setPosts(previous => previous.map(post => {
+      const newLikeStatus = !post.hasLiked
+      if (post.id === postId) {
+        const newCount = newLikeStatus
+          ? post.likeCount + 1
+          : post.likeCount - 1
+        const updatedPost: IPost = {
+          ...post,
+          hasLiked: newLikeStatus,
+          likeCount: newCount,
+        }
+
+
+        return new Post(updatedPost)
+      }
+
+      return post
+    }))
 
   useEffect((): void => {
     void fetchSiteData(siteId)
@@ -86,12 +93,12 @@ const SiteSocialPage = () => {
           </div>
         )
         : error
-        ? (
-          <div className='bg-white rounded-2 2 py-2'>
-            <p>{error.message}</p>
-          </div>
-        )
-        : (site && <SiteSocialHeader site={site} viewMode={viewMode} />)}
+          ? (
+            <div className='bg-white rounded-2 2 py-2'>
+              <p>{error.message}</p>
+            </div>
+          )
+          : (site && <SiteSocialHeader site={site} viewMode={viewMode} />)}
       <div className='container px-0'>
         <div className='row'>
           <div className='col-4'>
@@ -104,7 +111,7 @@ const SiteSocialPage = () => {
             <div className='rounded-2 d-flex flex-column gap-4'>
               {site && (
                 <>
-                  {viewMode == 'admin' && <CreatePostWidget addNewPost={addNewPost} />}
+                  {viewMode === 'admin' && <CreatePostWidget addNewPost={addNewPost} />}
                   <div className='d-flex flex-column gap-4'>
                     {isLoadingPosts
                       ? (
@@ -113,15 +120,12 @@ const SiteSocialPage = () => {
                         </div>
                       )
                       : errorPosts
-                      ? (
-                        <div className='bg-white rounded-2 2 py-2'>
-                          <p>{errorPosts.message}</p>
-                        </div>
-                      )
-                      : posts &&
-                        posts.sort((a: Post, b: Post) =>
-                          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-                        ).map((post: Post) => <PostWidget key={post.id} likePostEvent={likePost} post={post} />)}
+                        ? (
+                          <div className='bg-white rounded-2 2 py-2'>
+                            <p>{errorPosts.message}</p>
+                          </div>
+                        )
+                        : posts.map(post => <PostWidget key={post.id} likePostEvent={likePost} post={post} />)}
                   </div>
                 </>
               )}

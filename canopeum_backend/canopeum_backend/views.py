@@ -357,7 +357,8 @@ class PostListAPIView(APIView):
     def get(self, request):
         site_id = request.GET.get("siteId", "")
         posts = Post.objects.filter(site=site_id) if not site_id else Post.objects.all()
-        serializer = PostSerializer(posts, many=True, context={"request": request})
+        sorted_posts = posts.order_by("-created_at")
+        serializer = PostSerializer(sorted_posts, many=True, context={"request": request})
         return Response(serializer.data)
 
     parser_classes = (MultiPartParser, FormParser)
@@ -407,7 +408,7 @@ class NewsListApiView(APIView):
         followed_sites = SiteFollower.objects.filter(user=request.user).values_list("site")
 
         posts = Post.objects.filter(site__in=followed_sites).order_by("-created_at")
-        serializer = PostSerializer(posts, many=True)
+        serializer = PostSerializer(posts, many=True, context={"request": request})
         return Response(serializer.data)
 
 
@@ -524,9 +525,7 @@ class LikeListAPIView(APIView):
             user = User.objects.get(pk=request.user.id)
         except Post.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = LikeSerializer(data=request.data)
-        serializer.initial_data["post"] = post.pk  # type: ignore
-        serializer.initial_data["user"] = user.pk  # type: ignore
+        serializer = LikeSerializer(data={"post": post.pk, "user": user.pk})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -539,7 +538,7 @@ class LikeListAPIView(APIView):
         except Post.DoesNotExist:
             return Response(status="sef")
         try:
-            like = Like.objects.get(post=post)
+            like = Like.objects.get(post=post, user=request.user)
         except Like.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 

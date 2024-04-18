@@ -561,11 +561,9 @@ class PostSerializer(serializers.ModelSerializer):
         return Like.objects.filter(post=obj).count()
 
     @extend_schema_field(bool)  # pyright: ignore[reportArgumentType]
-    def get_has_liked(self, obj):
+    def get_has_liked(self, obj: Post):
         user = self.context["request"].user
         if user.is_anonymous:
-            return False
-        if not hasattr(obj, "like"):
             return False
         return Like.objects.filter(user=user).exists()
 

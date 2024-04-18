@@ -31,7 +31,7 @@ const PostWidget = ({ post, likePostEvent }: Props) => {
   }
 
   const handleCommentCountChange = (action: 'added' | 'deleted') => {
-    /* eslint-disable @typescript-eslint/no-explicit-any -- Temporary workaround.
+    /* eslint-disable @typescript-eslint/no-explicit-any -- (NicolasDontigny) Temporary workaround.
     We want the post commentCount property to be read-only; figure out how to do so with the NSwag models generation */
     if (action === 'added') {
       ; (post.commentCount as any) += 1
@@ -64,18 +64,20 @@ const PostWidget = ({ post, likePostEvent }: Props) => {
         {post.media.length > 0 && <AssetGrid medias={post.media} />}
 
         <div className='d-flex justify-content-end gap-4'>
-          <button className='d-flex gap-2 unstyled-button' type='button'>
-            <span
-              className={`material-symbols-outlined${post.hasLiked
-                  ? ' fill-icon'
+          <div className='d-flex gap-2'>
+            <button className='unstyled-button' onClick={likePost} type='button'>
+              <span
+                className={`material-symbols-outlined text-primary ${post.hasLiked
+                  ? 'fill-icon'
                   : ''
-                }`}
-              onClick={likePost}
-            >
-              eco
-            </span>
+                  }`}
+              >
+                eco
+              </span>
+            </button>
+
             <div>{post.likeCount}</div>
-          </button>
+          </div>
 
           <button
             className='d-flex gap-2 unstyled-button'
