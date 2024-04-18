@@ -235,7 +235,7 @@ class SiteDetailAdminsAPIView(APIView):
 
         for existing_user in existing_admin_users:
             if existing_user not in updated_admin_users_list:
-                existing_site_admins.filter(user__id__exact=existing_user.id).delete()
+                existing_site_admins.filter(user__id__exact=existing_user.pk).delete()  # type: ignore
 
         serializer = SiteAdminSerializer(Siteadmin.objects.filter(site=site), many=True)
         return Response(serializer.data)
@@ -342,19 +342,28 @@ class PostListAPIView(APIView):
         parameters=[OpenApiParameter(name="siteId", type=OpenApiTypes.INT, location=OpenApiParameter.QUERY)],
     )
     def get(self, request):
-        if request.user.is_authenticated:
-            # TODO(NicolasDontigny): Move this logic in the PostSerializer as a SerializerMethodField
-            has_liked = Like.objects.filter(post=request.data.get("id"), user=request.user).exists()
-        else:
-            has_liked = False
         site_id = request.GET.get("siteId", "")
         posts = Post.objects.filter(site=site_id) if not site_id else Post.objects.all()
-        serializer = PostSerializer(posts, many=True, context={"has_liked": has_liked})
+        serializer = PostSerializer(posts, many=True, context={"request": request})
         return Response(serializer.data)
 
     parser_classes = (MultiPartParser, FormParser)
 
-    @extend_schema(request=PostPostSerializer, responses={201: PostSerializer}, operation_id="post_create")
+    @extend_schema(
+        # request={"multipart/form-data": PostPostSerializer}, TODO: Add serializer for multipart/form-data
+        request={
+            "multipart/form-data": {
+                "type": "object",
+                "properties": {
+                    "site": {"type": "number"},
+                    "body": {"type": "string"},
+                    "media": {"type": "array", "items": {"type": "string", "format": "binary"}},
+                },
+            },
+        },
+        responses={201: PostSerializer},
+        operation_id="post_create",
+    )
     def post(self, request):
         assets = request.data.getlist("media")
         saved_assets = []
@@ -371,7 +380,8 @@ class PostListAPIView(APIView):
             post = serializer.save()
             for asset_item in saved_assets:
                 post.media.add(asset_item.instance)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            new_post = PostSerializer(post, context={"request": request})
+            return Response(new_post.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -494,13 +504,34 @@ class WidgetDetailAPIView(APIView):
 
 
 class LikeListAPIView(APIView):
-    @extend_schema(request=LikeSerializer, responses={201: LikeSerializer}, operation_id="like_all")
-    def post(self, request):
+    @extend_schema(request="", responses={201: LikeSerializer}, operation_id="like_likePost")
+    def post(self, request, postId):
+        try:
+            post = Post.objects.get(pk=postId)
+            user = User.objects.get(pk=request.user.id)
+        except Post.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = LikeSerializer(data=request.data)
+        serializer.initial_data["post"] = post.pk  # type: ignore
+        serializer.initial_data["user"] = user.pk  # type: ignore
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @extend_schema(responses={201: LikeSerializer}, operation_id="like_delete")
+    def delete(self, request, postId):
+        try:
+            post = Post.objects.get(pk=postId)
+        except Post.DoesNotExist:
+            return Response(status="sef")
+        try:
+            like = Like.objects.get(post=post)
+        except Like.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        like.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class BatchListAPIView(APIView):
@@ -596,3 +627,24 @@ class UserCurrentUserAPIView(APIView):
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
+
+
+class TokenRefreshAPIView(APIView):
+    @extend_schema(responses=RefreshToken, operation_id="token_refresh")
+    def post(self, request):
+        refresh = RefreshToken(request.data.get("refresh"))
+        user = User.objects.get(pk=refresh["user_id"])
+        refresh["role"] = user.role.name
+        return Response({"refresh": str(refresh), "access": str(refresh.access_token)}, status=status.HTTP_200_OK)
+
+
+class TokenObtainPairAPIView(APIView):
+    @extend_schema(responses=UserSerializer, operation_id="token_obtain_pair")
+    def post(self, request):
+        user = cast(User, authenticate(username=request.data.get("username"), password=request.data.get("password")))
+        if user is not None:
+            refresh = cast(RefreshToken, RefreshToken.for_user(user))
+            if user.role is not None:
+                refresh["role"] = user.role.name
+            return Response({"refresh": str(refresh), "access": str(refresh.access_token)}, status=status.HTTP_200_OK)
+        return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)

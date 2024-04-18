@@ -60,6 +60,8 @@ const Login = () => {
     if (!isFormValid) return
 
     try {
+      console.log(email.trim())
+      console.log(password)
       const response = await getApiClient().authenticationClient.login(
         new LoginUser({
           email: email.trim(),

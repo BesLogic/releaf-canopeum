@@ -1,23 +1,32 @@
 import { LanguageContext } from '@components/context/LanguageContext'
 import PostCommentsDialog from '@components/social/PostCommentsDialog'
 import type { PageViewMode } from '@models/types/PageViewMode'
-import { getApiBaseUrl } from '@services/apiSettings'
 import { useContext, useState } from 'react'
 
-import type { Post } from '../../services/api'
+import { type Post } from '../../services/api'
+import AssetGrid from '@components/AssetGrid'
+import TextExpansion from '@components/inputs/textExpansion'
+import getApiClient from '@services/apiInterface'
 
-type Props = {
-  readonly post: Post,
-  readonly viewMode: PageViewMode,
-}
+const PostWidget = (props: { post: Post, likePostEvent: (postId: number) => void, viewMode: PageViewMode }) => {
+  const { post, likePostEvent, viewMode } = props
 
-const PostWidget = ({ post, viewMode }: Props) => {
   const { formatDate } = useContext(LanguageContext)
   const [commentsModalOpen, setCommentsModalOpen] = useState(false)
 
   const openPostComments = () => setCommentsModalOpen(true)
 
   const handleCommentsModalClose = () => setCommentsModalOpen(false)
+
+  const likePost = async () => {
+    if (post.hasLiked) {
+      await getApiClient().likeClient.delete(post.id!)
+      likePostEvent(post.id!)
+    } else {
+      await getApiClient().likeClient.likePost(post.id!, {})
+      likePostEvent(post.id!)
+    }
+  }
 
   const handleCommentCountChange = (action: 'added' | 'deleted') => {
     /* eslint-disable @typescript-eslint/no-explicit-any -- Temporary workaround.
@@ -37,7 +46,7 @@ const PostWidget = ({ post, viewMode }: Props) => {
           <img
             alt='site'
             className='rounded-circle'
-            src={getApiBaseUrl() + post.site.image.asset}
+            src={post.site.image.asset}
             style={{ height: '48px', width: '48px' }}
           />
           <div className='d-flex flex-column'>
@@ -48,11 +57,18 @@ const PostWidget = ({ post, viewMode }: Props) => {
           </div>
         </div>
 
-        <div>{post.body}</div>
+        <TextExpansion text={post.body} maxLength={700} />
+
+        {post.media.length > 0 && <AssetGrid medias={post.media} />}
 
         <div className='d-flex justify-content-end gap-4'>
           <button className='d-flex gap-2 unstyled-button' type='button'>
-            <span className='material-symbols-outlined text-primary'>eco</span>
+            <span
+              className={'material-symbols-outlined' + (post.hasLiked == true ? ' fill-icon' : '')}
+              onClick={likePost}
+            >
+              eco
+            </span>
             <div>{post.likeCount}</div>
           </button>
 
