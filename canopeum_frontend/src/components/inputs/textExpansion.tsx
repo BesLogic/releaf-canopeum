@@ -7,9 +7,9 @@ type TextExpansionProps = {
 
 const TextExpansion = ({ text, maxLength }: TextExpansionProps) => {
     const [expanded, setExpanded] = useState(false)
-    
+
     const shouldExpand = text.length > maxLength
-    
+
     return (
         <div>
         {shouldExpand ? (
