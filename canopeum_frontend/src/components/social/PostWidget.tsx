@@ -1,6 +1,6 @@
 import AssetGrid from '@components/AssetGrid'
 import { LanguageContext } from '@components/context/LanguageContext'
-import TextExpansion from '@components/inputs/textExpansion'
+import TextExpansion from '@components/inputs/TextExpansion'
 import PostCommentsDialog from '@components/social/PostCommentsDialog'
 import getApiClient from '@services/apiInterface'
 import { useContext, useState } from 'react'
@@ -34,9 +34,9 @@ const PostWidget = ({ post, likePostEvent }: Props) => {
     /* eslint-disable @typescript-eslint/no-explicit-any -- Temporary workaround.
     We want the post commentCount property to be read-only; figure out how to do so with the NSwag models generation */
     if (action === 'added') {
-      ;(post.commentCount as any) += 1
+      ; (post.commentCount as any) += 1
     } else {
-      ;(post.commentCount as any) -= 1
+      ; (post.commentCount as any) -= 1
     }
     /* eslint-enable @typescript-eslint/no-explicit-any */
   }
@@ -66,11 +66,10 @@ const PostWidget = ({ post, likePostEvent }: Props) => {
         <div className='d-flex justify-content-end gap-4'>
           <button className='d-flex gap-2 unstyled-button' type='button'>
             <span
-              className={`material-symbols-outlined${
-                post.hasLiked
+              className={`material-symbols-outlined${post.hasLiked
                   ? ' fill-icon'
                   : ''
-              }`}
+                }`}
               onClick={likePost}
             >
               eco
