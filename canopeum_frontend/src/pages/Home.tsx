@@ -21,6 +21,15 @@ const Home = () => {
 
   useEffect(() => void fetchNewsPosts(), [fetchNewsPosts])
 
+  const likePost = async (postId: number) => {
+    const post = newsPosts?.find(post => post.id === postId)
+    if (!post) return
+    const newPost = { ...post, hasLiked: !post.hasLiked }
+    newPost.likeCount = post.hasLiked ? post.likeCount! - 1 : post.likeCount! + 1
+    newsPosts?.splice(newsPosts.indexOf(post), 1)
+    setNewsPosts([newPost as Post, ...newsPosts || []])
+  }
+
   if (!currentUser) return <div />
 
   const renderPosts = () => {
@@ -34,7 +43,7 @@ const Home = () => {
 
     return (
       <div className='d-flex flex-column gap-3'>
-        {newsPosts.map(post => <PostWidget key={post.id} post={post} viewMode='user' />)}
+        {newsPosts.map(post => <PostWidget key={post.id} post={post} likePostEvent={likePost} viewMode='user' />)}
       </div>
     )
   }

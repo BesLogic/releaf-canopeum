@@ -16,7 +16,7 @@ const tabs: { type: UserManagementTab, translationKey: string, roles?: RoleEnum[
   {
     type: 'manageAdmins',
     translationKey: 'manage-admins',
-    roles: ['MegaAdmin'],
+    roles: ['MegaAdmin' as RoleEnum],
   },
   {
     type: 'termsAndPolicies',

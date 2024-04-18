@@ -17,7 +17,6 @@ const CreatePostWidget = (props: { readonly site: SiteSocial, addNewPost: (newPo
   const { openAlertSnackbar } = useContext(SnackbarContext)
 
   const [isSendingPost, setIsSendingPost] = useState(false)
-  const [errorSendingPost, setErrorSendingPost] = useState<Error | undefined>(undefined)
   const [postBody, setPostBody] = useState<string>('')
   const [postBodyNumberOfWords, setPostBodyNumberOfWords] = useState(0)
   const [postBodyError, setPostBodyError] = useState<InputValidationError | undefined>()
@@ -25,7 +24,7 @@ const CreatePostWidget = (props: { readonly site: SiteSocial, addNewPost: (newPo
 
   const MAXIMUM_WORDS_PER_POST = 3000
 
-  const postSitePost = async (site: SiteSocial, body: string, files: FileParameter[]) => {
+  const postSitePost = async (body: string, files: FileParameter[]) => {
     setIsSendingPost(true)
     try {
       setIsSendingPost(true)
@@ -37,7 +36,6 @@ const CreatePostWidget = (props: { readonly site: SiteSocial, addNewPost: (newPo
       setFiles([])
       addNewPost(newPost)
     } catch (error_: unknown) {
-      setErrorSendingPost(ensureError(error_))
       setIsSendingPost(false)
     } finally {
       setIsSendingPost(false)
@@ -108,7 +106,7 @@ const CreatePostWidget = (props: { readonly site: SiteSocial, addNewPost: (newPo
       <div className='d-flex justify-content-between'>
         <h2>New Post</h2>
 
-        <button className='btn btn-secondary' type='button' onClick={() => postSitePost(site, postBody, files)}>
+        <button className='btn btn-secondary' type='button' onClick={() => postSitePost(postBody, files)}>
           {isSendingPost
             ? <span className='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>
             : 'Publish'}
@@ -152,7 +150,7 @@ const CreatePostWidget = (props: { readonly site: SiteSocial, addNewPost: (newPo
         (
           <AssetGrid
             medias={files.map(
-              file => (new Asset({ asset: URL.createObjectURL(file.data), init: {}, toJSON: () => ({}) }))
+              file => (new Asset({ asset: URL.createObjectURL(file.data), init: {}, toJSON: () => ({}) })),
             )}
             isEditable={{ removeFile }}
           />

@@ -512,8 +512,8 @@ class LikeListAPIView(APIView):
         except Post.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = LikeSerializer(data=request.data)
-        serializer.initial_data["post"] = post.id
-        serializer.initial_data["user"] = user.id
+        serializer.initial_data["post"] = post.pk  # type: ignore
+        serializer.initial_data["user"] = user.pk  # type: ignore
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
