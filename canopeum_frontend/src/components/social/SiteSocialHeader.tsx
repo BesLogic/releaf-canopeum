@@ -43,7 +43,7 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
   }
 
   return (
-    <div className='card'>
+    <div className='card border-0'>
       <div className='row g-0'>
         <div
           className='col-md-3'
@@ -51,6 +51,7 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
             backgroundImage: `url('${getApiBaseUrl() + site.image.asset}')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
+            borderRadius: '0.5rem 0 0 0.5rem',
           }}
         >
           {/* TODO: Fixing type asset */}

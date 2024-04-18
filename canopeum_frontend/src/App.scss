@@ -26,18 +26,6 @@ $headings-font-family: Lato;
   border-radius: 5px;
 }
 
-/* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Firefox */
-input[type=number] {
-  -moz-appearance: textfield;
-}
-
 .page-container {
   padding: 2rem 12rem;
 }
@@ -221,6 +209,21 @@ body {
 // .form-control:focus {
 //   color: $default-text-color;
 // }
+
+.unstyled-button {
+  border: none;
+  padding: inherit;
+  background-color: inherit;
+  background: inherit;
+}
+
+.lightgreen-color {
+  color: #E8F3E9;
+}
+
+.bg-lightgreen {
+  background: #E8F3E9;
+}
 
 .unstyled-button {
   border: none;

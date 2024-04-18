@@ -1,5 +1,3 @@
-import AnnouncementCard from '@components/AnnouncementCard'
-import ContactCard from '@components/ContactCard'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import SiteSocialHeader from '@components/social/SiteSocialHeader'
 import type { PageViewMode } from '@models/types/PageViewMode'
@@ -9,6 +7,8 @@ import { ensureError } from '@services/errors'
 import { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
+import AnnouncementCard from '../components/AnnouncementCard'
+import ContactCard from '../components/ContactCard'
 import CreatePostWidget from '../components/CreatePostWidget'
 import PostWidget from '../components/social/PostWidget'
 
@@ -53,6 +53,21 @@ const SiteSocialPage = () => {
     }
   }
 
+  const addNewPost = (newPost: Post) => {
+    setPosts([newPost, ...posts || []])
+  }
+
+  const likePost = async (postId: number) => {
+    const post = posts.find(post => post.id === postId)
+    if (!post) return
+    const newPost = { ...post, hasLiked: !post.hasLiked }
+    newPost.likeCount = post.hasLiked
+      ? post.likeCount! - 1
+      : post.likeCount! + 1
+    posts.splice(posts.indexOf(post), 1)
+    setPosts([newPost as Post, ...posts || []])
+  }
+
   useEffect((): void => {
     void fetchSiteData(Number(siteId) || 1)
     void fetchPosts(Number(siteId) || 1)
@@ -85,7 +100,7 @@ const SiteSocialPage = () => {
             <div className='rounded-2 d-flex flex-column gap-4'>
               {site && (
                 <>
-                  {viewMode === 'admin' && <CreatePostWidget site={site} />}
+                  {viewMode == 'admin' && <CreatePostWidget addNewPost={addNewPost} />}
                   <div className='d-flex flex-column gap-4'>
                     {isLoadingPosts
                       ? (
@@ -99,7 +114,10 @@ const SiteSocialPage = () => {
                           <p>{errorPosts.message}</p>
                         </div>
                       )
-                      : posts.map((post: Post) => <PostWidget key={post.id} post={post} viewMode={viewMode} />)}
+                      : posts &&
+                        posts.sort((a: Post, b: Post) =>
+                          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                        ).map((post: Post) => <PostWidget likePostEvent={likePost} post={post} viewMode={viewMode} />)}
                   </div>
                 </>
               )}
