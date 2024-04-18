@@ -80,6 +80,7 @@ urlpatterns = [
     path("users/<int:userId>/", views.UserDetailAPIView.as_view(), name="user-detail"),
     path("users/current_user/", views.UserCurrentUserAPIView.as_view(), name="current-user"),
     path("user-invitations/", views.UserInvitationListAPIView.as_view(), name="user-invitation-list"),
+    path("user-invitations/<str:code>", views.UserInvitationDetailAPIView.as_view(), name="user-invitation-list"),
     # Site admins
     path(
         "admin-user-sites/",

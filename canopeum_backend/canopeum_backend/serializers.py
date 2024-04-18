@@ -434,7 +434,7 @@ class CreateUserInvitationSerializer(serializers.Serializer):
 class UserInvitationSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserInvitation
-        fields = ("id", "code")
+        fields = ("id", "code", "email", "expires_at")
 
 
 class SiteFollowerSerializer(serializers.ModelSerializer):

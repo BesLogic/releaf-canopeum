@@ -1,9 +1,9 @@
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import MultipleSelectChip, { type SelectionItem } from '@components/inputs/MultipleSelectChip'
+import { APP_CONFIG } from '@config/config'
 import { Dialog, DialogContent, DialogTitle } from '@mui/material'
 import { CreateUserInvitation } from '@services/api'
 import getApiClient from '@services/apiInterface'
-import { getApiBaseUrl } from '@services/apiSettings'
 import { type InputValidationError, isValidEmail } from '@utils/validators'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -67,7 +67,7 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
       })
       const response = await getApiClient().userInvitationClient.create(createUserInvitation)
 
-      setInvitationLink(`${getApiBaseUrl()}/register?code=${response.code}`)
+      setInvitationLink(`${APP_CONFIG.appBaseUrl}/register?code=${response.code}`)
     } catch {
       setGenerateLinkError(translate('settings.manage-admins.generate-link-error'))
     }

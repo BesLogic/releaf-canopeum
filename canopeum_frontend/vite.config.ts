@@ -10,6 +10,7 @@ export default ({ mode }: { mode: string }) => {
       alias: {
         '@assets': '/src/assets',
         '@components': '/src/components',
+        '@config': '/src/config',
         '@constants': '/src/constants',
         '@models': '/src/models',
         '@services': '/src/services',

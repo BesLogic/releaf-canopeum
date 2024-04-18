@@ -3,13 +3,14 @@ import { AuthenticationContext } from '@components/context/AuthenticationContext
 import { appRoutes } from '@constants/routes.constant'
 import { RegisterUser } from '@services/api'
 import getApiClient from '@services/apiInterface'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 
 import { type InputValidationError, isValidEmail, isValidPassword, mustMatch } from '../utils/validators'
 
 const Register = () => {
+  const [searchParams, _setSearchParams] = useSearchParams()
   const { authenticate, storeToken } = useContext(AuthenticationContext)
   const { t: translate } = useTranslation()
 
@@ -24,6 +25,18 @@ const Register = () => {
   const [passwordConfirmationError, setPasswordConfirmationError] = useState<InputValidationError | undefined>()
 
   const [registrationError, setRegistrationError] = useState<string | undefined>(undefined)
+
+  const fetchUserInvitation = async (code: string) => {
+    const response = await getApiClient().userInvitationClient.detail(code)
+    console.log('USER INVITATION:', response);
+  }
+
+  useEffect(() => {
+    const code = searchParams.get('code')
+    if (!code) return
+
+    void fetchUserInvitation(code)
+  }, [searchParams])
 
   const validateUsername = () => {
     if (!username) {

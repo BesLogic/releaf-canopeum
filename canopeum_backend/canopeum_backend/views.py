@@ -673,6 +673,23 @@ class UserInvitationListAPIView(APIView):
         return Response(serializer.data)
 
 
+class UserInvitationDetailAPIView(APIView):
+    permission_classes = (AllowAny,)
+
+    @extend_schema(
+        responses=UserInvitationSerializer,
+        operation_id="user-invitation_detail",
+    )
+    def get(self, request, code: str):
+        try:
+            user_invitation = UserInvitation.objects.get(code=code)
+        except UserInvitation.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserInvitationSerializer(user_invitation)
+        return Response(serializer.data)
+
+
 class TokenRefreshAPIView(APIView):
     @extend_schema(responses=RefreshToken, operation_id="token_refresh")
     def post(self, request):

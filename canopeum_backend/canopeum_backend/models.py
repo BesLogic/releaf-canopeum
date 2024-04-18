@@ -165,7 +165,7 @@ def one_week_from_today():
 
 
 class UserInvitation(models.Model):
-    code = models.TextField()
+    code = models.CharField(max_length=64, unique=True)
     expires_at = models.DateTimeField(default=one_week_from_today)
     email = models.EmailField()
     assigned_to_sites = models.ManyToManyField(Site)
