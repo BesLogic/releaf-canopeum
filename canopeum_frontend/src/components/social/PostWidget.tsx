@@ -68,8 +68,8 @@ const PostWidget = ({ post, likePostEvent }: Props) => {
             <button className='unstyled-button' onClick={likePost} type='button'>
               <span
                 className={`material-symbols-outlined text-primary ${post.hasLiked
-                  ? 'fill-icon'
-                  : ''
+                    ? 'fill-icon'
+                    : ''
                   }`}
               >
                 eco

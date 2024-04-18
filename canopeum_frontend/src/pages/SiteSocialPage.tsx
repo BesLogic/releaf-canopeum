@@ -60,24 +60,25 @@ const SiteSocialPage = () => {
   const addNewPost = (newPost: Post) => setPosts(previous => [newPost, ...previous])
 
   const likePost = (postId: number) =>
-    setPosts(previous => previous.map(post => {
-      const newLikeStatus = !post.hasLiked
-      if (post.id === postId) {
-        const newCount = newLikeStatus
-          ? post.likeCount + 1
-          : post.likeCount - 1
-        const updatedPost: IPost = {
-          ...post,
-          hasLiked: newLikeStatus,
-          likeCount: newCount,
+    setPosts(previous =>
+      previous.map(post => {
+        const newLikeStatus = !post.hasLiked
+        if (post.id === postId) {
+          const newCount = newLikeStatus
+            ? post.likeCount + 1
+            : post.likeCount - 1
+          const updatedPost: IPost = {
+            ...post,
+            hasLiked: newLikeStatus,
+            likeCount: newCount,
+          }
+
+          return new Post(updatedPost)
         }
 
-
-        return new Post(updatedPost)
-      }
-
-      return post
-    }))
+        return post
+      })
+    )
 
   useEffect((): void => {
     void fetchSiteData(siteId)
@@ -93,12 +94,12 @@ const SiteSocialPage = () => {
           </div>
         )
         : error
-          ? (
-            <div className='bg-white rounded-2 2 py-2'>
-              <p>{error.message}</p>
-            </div>
-          )
-          : (site && <SiteSocialHeader site={site} viewMode={viewMode} />)}
+        ? (
+          <div className='bg-white rounded-2 2 py-2'>
+            <p>{error.message}</p>
+          </div>
+        )
+        : (site && <SiteSocialHeader site={site} viewMode={viewMode} />)}
       <div className='container px-0'>
         <div className='row'>
           <div className='col-4'>
@@ -120,12 +121,12 @@ const SiteSocialPage = () => {
                         </div>
                       )
                       : errorPosts
-                        ? (
-                          <div className='bg-white rounded-2 2 py-2'>
-                            <p>{errorPosts.message}</p>
-                          </div>
-                        )
-                        : posts.map(post => <PostWidget key={post.id} likePostEvent={likePost} post={post} />)}
+                      ? (
+                        <div className='bg-white rounded-2 2 py-2'>
+                          <p>{errorPosts.message}</p>
+                        </div>
+                      )
+                      : posts.map(post => <PostWidget key={post.id} likePostEvent={likePost} post={post} />)}
                   </div>
                 </>
               )}

@@ -22,24 +22,25 @@ const Home = () => {
   useEffect(() => void fetchNewsPosts(), [fetchNewsPosts])
 
   const likePost = (postId: number) =>
-    setNewsPosts(previous => previous.map(post => {
-      const newLikeStatus = !post.hasLiked
-      if (post.id === postId) {
-        const newCount = newLikeStatus
-          ? post.likeCount + 1
-          : post.likeCount - 1
-        const updatedPost: IPost = {
-          ...post,
-          hasLiked: newLikeStatus,
-          likeCount: newCount,
+    setNewsPosts(previous =>
+      previous.map(post => {
+        const newLikeStatus = !post.hasLiked
+        if (post.id === postId) {
+          const newCount = newLikeStatus
+            ? post.likeCount + 1
+            : post.likeCount - 1
+          const updatedPost: IPost = {
+            ...post,
+            hasLiked: newLikeStatus,
+            likeCount: newCount,
+          }
+
+          return new Post(updatedPost)
         }
 
-
-        return new Post(updatedPost)
-      }
-
-      return post
-    }))
+        return post
+      })
+    )
 
   if (!currentUser) return <div />
 

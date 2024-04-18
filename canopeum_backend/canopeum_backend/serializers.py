@@ -185,7 +185,7 @@ class AssetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Asset
-        fields = ("asset",)
+        fields = ("id", "asset")
 
     def to_internal_value(self, data):
         # Map 'image' field to 'asset' field in incoming data

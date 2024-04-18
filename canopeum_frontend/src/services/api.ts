@@ -2096,6 +2096,7 @@ export interface IAnnouncement {
 }
 
 export class Asset implements IAsset {
+  readonly id!: number;
   asset!: string;
 
   [key: string]: any;
@@ -2115,6 +2116,7 @@ export class Asset implements IAsset {
         if (_data.hasOwnProperty(property))
           this[property] = _data[property];
       }
+      (<any>this).id = _data["id"];
       this.asset = _data["asset"];
     }
   }
@@ -2132,12 +2134,14 @@ export class Asset implements IAsset {
       if (this.hasOwnProperty(property))
         data[property] = this[property];
     }
+    data["id"] = this.id;
     data["asset"] = this.asset;
     return data;
   }
 }
 
 export interface IAsset {
+  id: number;
   asset: string;
 
   [key: string]: any;
