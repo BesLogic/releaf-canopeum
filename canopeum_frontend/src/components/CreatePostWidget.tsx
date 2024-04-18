@@ -1,16 +1,16 @@
-import { type ChangeEvent, useContext, useState } from 'react'
-import { Asset, type FileParameter, type Post } from '../services/api'
-import getApiClient from '@services/apiInterface'
-import textAreaAutoGrow from '../utils/textAreaAutoGrow'
-import { useTranslation } from 'react-i18next'
 import { SnackbarContext } from '@components/context/SnackbarContext'
+import getApiClient from '@services/apiInterface'
+import { type ChangeEvent, useContext, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
+import { Asset, type FileParameter, type Post } from '../services/api'
+import { assetFormatter } from '../utils/assetFormatter'
 import { numberOfWordsInText } from '../utils/stringUtils'
+import textAreaAutoGrow from '../utils/textAreaAutoGrow'
 import type { InputValidationError } from '../utils/validators'
 import AssetGrid from './AssetGrid'
-import { assetFormatter } from '../utils/assetFormatter'
 
-const CreatePostWidget = (props: { addNewPost: (newPost: Post) => void }) => {
+const CreatePostWidget = (props: { readonly addNewPost: (newPost: Post) => void }) => {
   const { addNewPost } = props
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
@@ -34,7 +34,7 @@ const CreatePostWidget = (props: { addNewPost: (newPost: Post) => void }) => {
       const newPost = await getApiClient().postClient.create(1, body, files)
       setFiles([])
       addNewPost(newPost)
-    } catch (error_: unknown) {
+    } catch {
       setIsSendingPost(false)
     } finally {
       setIsSendingPost(false)
@@ -46,7 +46,7 @@ const CreatePostWidget = (props: { addNewPost: (newPost: Post) => void }) => {
     Array.prototype.slice.call(e.target.files).forEach(async (file: File) => {
       if (!validateFile(file)) return
       const compressedFile = await assetFormatter(file)
-      setFiles(prevFiles => [...prevFiles, compressedFile])
+      setFiles(previousFiles => [...previousFiles, compressedFile])
     })
   }
 
@@ -54,19 +54,21 @@ const CreatePostWidget = (props: { addNewPost: (newPost: Post) => void }) => {
     console.log(file.size, file.type)
     if (file.size > 1920 * 1920 * 10) {
       openAlertSnackbar('File too large')
-      return false
+      
+return false
     }
 
     if (file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'video/mp4') {
       openAlertSnackbar('File type not supported')
-      return false
+      
+return false
     }
 
     return true
   }
 
   const removeFile = (index: number) => {
-    setFiles(files.filter((_, i) => i !== index))
+    setFiles(files.filter((_, index_) => index_ !== index))
   }
 
   const handleCommentBodyChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
@@ -105,9 +107,9 @@ const CreatePostWidget = (props: { addNewPost: (newPost: Post) => void }) => {
       <div className='d-flex justify-content-between'>
         <h2>New Post</h2>
 
-        <button className='btn btn-secondary' type='button' onClick={() => postSitePost(postBody, files)}>
+        <button className='btn btn-secondary' onClick={() => postSitePost(postBody, files)} type='button'>
           {isSendingPost
-            ? <span className='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>
+            ? <span aria-hidden='true' className='spinner-border spinner-border-sm' role='status' />
             : 'Publish'}
         </button>
       </div>
@@ -116,18 +118,17 @@ const CreatePostWidget = (props: { addNewPost: (newPost: Post) => void }) => {
           <label className='material-symbols-outlined' htmlFor='file-input' style={{ cursor: 'pointer' }}>
             add_a_photo
           </label>
-          <input className='d-none' id='file-input' type='file' onChange={e => handleFileChange(e)} multiple={true} />
+          <input className='d-none' id='file-input' multiple onChange={e => handleFileChange(e)} type='file' />
         </div>
         <textarea
           className='form-control pt-5 overflow-hidden'
-          style={{ resize: 'none' }}
-          placeholder='Post a New Message...'
-          value={postBody}
           onChange={e => {
             handleCommentBodyChange(e)
           }}
-        >
-        </textarea>
+          placeholder='Post a New Message...'
+          style={{ resize: 'none' }}
+          value={postBody}
+         />
         <div className='max-words end-0 text-end' style={{ bottom: '-1.6rem' }}>
           <span>{postBodyNumberOfWords}/{MAXIMUM_WORDS_PER_POST}</span>
           <span className='ms-1'>{translate('social.comments.words', { count: MAXIMUM_WORDS_PER_POST })}</span>
@@ -148,10 +149,10 @@ const CreatePostWidget = (props: { addNewPost: (newPost: Post) => void }) => {
       {files.length > 0 &&
         (
           <AssetGrid
+            isEditable={{ removeFile }}
             medias={files.map(
               file => (new Asset({ asset: URL.createObjectURL(file.data), init: {}, toJSON: () => ({}) })),
             )}
-            isEditable={{ removeFile }}
           />
         )}
     </div>

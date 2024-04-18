@@ -26,8 +26,8 @@ const Home = () => {
     if (!post) return
     const newPost = { ...post, hasLiked: !post.hasLiked }
     newPost.likeCount = post.hasLiked
-      ? post.likeCount! - 1
-      : post.likeCount! + 1
+      ? post.likeCount - 1
+      : post.likeCount + 1
     newsPosts.splice(newsPosts.indexOf(post), 1)
     setNewsPosts([newPost as Post, ...newsPosts || []])
   }

@@ -66,8 +66,8 @@ const SiteSocialPage = () => {
     if (!post) return
     const newPost = { ...post, hasLiked: !post.hasLiked }
     newPost.likeCount = post.hasLiked
-      ? post.likeCount! - 1
-      : post.likeCount! + 1
+      ? post.likeCount - 1
+      : post.likeCount + 1
     posts.splice(posts.indexOf(post), 1)
     setPosts([newPost as Post, ...posts || []])
   }

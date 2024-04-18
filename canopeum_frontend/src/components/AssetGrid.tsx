@@ -2,7 +2,7 @@ import type { Asset } from '@services/api'
 // import { useEffect, useState } from 'react'
 // import { useState } from 'react'
 
-const AssetGrid = (props: { medias: Asset[], isEditable?: { removeFile: (index: number) => void } }) => {
+const AssetGrid = (props: { readonly medias: Asset[], readonly isEditable?: { removeFile: (index: number) => void } }) => {
   // const [selectedAssetIndex, setSelectedAssetIndex] = useState(0)
 
   // const handleAssetClick = (index: number) => {
@@ -18,8 +18,8 @@ const AssetGrid = (props: { medias: Asset[], isEditable?: { removeFile: (index: 
           <div className='position-relative col-md-3 flex-grow-1 p-1' key={index}>
             <div className='w-100' style={{ height: '200px', overflow: 'hidden' }}>
               <img
-                src={media.asset}
                 alt={media.alt}
+                src={media.asset}
                 className='object-fit-cover w-100 h-100'
                 // onClick={() => handleAssetClick(index)}
               />
