@@ -12,7 +12,9 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
   return (
     <Dialog fullWidth maxWidth='sm' onClose={handleClose} open={open}>
       <DialogContent className='pb-5'>
-        <div><span>HELLO</span></div>
+        <div>
+          <span>HELLO</span>
+        </div>
       </DialogContent>
     </Dialog>
   )
