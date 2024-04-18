@@ -79,6 +79,7 @@ urlpatterns = [
     path("users/site-managers", views.SiteManagersListAPIView.as_view(), name="site-managers-list"),
     path("users/<int:userId>/", views.UserDetailAPIView.as_view(), name="user-detail"),
     path("users/current_user/", views.UserCurrentUserAPIView.as_view(), name="current-user"),
+    path("user-invitations/", views.UserInvitationListAPIView.as_view(), name="user-invitation-list"),
     # Site admins
     path(
         "admin-user-sites/",

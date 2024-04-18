@@ -1,3 +1,4 @@
+import secrets
 from typing import cast
 
 from django.contrib.auth import authenticate
@@ -31,6 +32,7 @@ from .models import (
     Siteadmin,
     SiteFollower,
     User,
+    UserInvitation,
     Widget,
 )
 from .serializers import (
@@ -42,6 +44,7 @@ from .serializers import (
     CommentSerializer,
     ContactSerializer,
     CreateCommentSerializer,
+    CreateUserInvitationSerializer,
     LikeSerializer,
     LoginUserSerializer,
     PostPostSerializer,
@@ -55,6 +58,7 @@ from .serializers import (
     SiteSocialSerializer,
     SiteSummarySerializer,
     UpdateUserSerializer,
+    UserInvitationSerializer,
     UserSerializer,
     UserTokenSerializer,
     WidgetSerializer,
@@ -636,8 +640,34 @@ class UserDetailAPIView(APIView):
 
 class UserCurrentUserAPIView(APIView):
     @extend_schema(responses=UserSerializer, operation_id="user_current")
-    def get(self, request):
+    def post(self, request):
         serializer = UserSerializer(request.user)
+        return Response(serializer.data)
+
+
+class UserInvitationListAPIView(APIView):
+    permission_classes = (MegaAdminPermission,)
+
+    @extend_schema(
+        request=CreateUserInvitationSerializer,
+        responses=UserInvitationSerializer,
+        operation_id="user-invitation_all",
+    )
+    def post(self, request):
+        site_ids = request.data.get("site_ids")
+        email = request.data.get("email")
+        if User.objects.get(email=email) is not None:
+            return Response("A user with this email already exists", status=status.HTTP_400_BAD_REQUEST)
+        code = secrets.token_urlsafe(32)
+        user_invitation = UserInvitation.objects.create(
+            code=code,
+            email=email,
+        )
+        sites_to_assign_to = Site.objects.filter(id__in=site_ids)
+        user_invitation.assigned_to_sites.add(*sites_to_assign_to)
+        user_invitation.save()
+        serializer = UserInvitationSerializer(user_invitation)
+
         return Response(serializer.data)
 
 

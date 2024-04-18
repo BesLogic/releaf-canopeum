@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import ClassVar
 
 import pytz
@@ -151,19 +151,30 @@ class PostAsset(models.Model):
 class Comment(models.Model):
     body = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, models.DO_NOTHING)
-    post = models.ForeignKey(Post, models.DO_NOTHING)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
 
 class Siteadmin(models.Model):
-    user = models.ForeignKey(User, models.DO_NOTHING)
-    site = models.ForeignKey(Site, models.DO_NOTHING)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE)
+
+
+def one_week_from_today():
+    return datetime.now(pytz.utc) + timedelta(days=7)
+
+
+class UserInvitation(models.Model):
+    code = models.TextField()
+    expires_at = models.DateTimeField(default=one_week_from_today)
+    email = models.EmailField()
+    assigned_to_sites = models.ManyToManyField(Site)
 
 
 class SiteFollower(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, models.DO_NOTHING)
-    site = models.ForeignKey(Site, models.DO_NOTHING)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE)
 
 
 class Sitetreespecies(models.Model):

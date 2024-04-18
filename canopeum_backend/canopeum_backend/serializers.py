@@ -28,8 +28,13 @@ from .models import (
     Sitetype,
     Treetype,
     User,
+    UserInvitation,
     Widget,
 )
+
+
+class IntegerListFieldSerializer(serializers.ListField):
+    child = serializers.IntegerField()
 
 
 class LoginUserSerializer(serializers.ModelSerializer):
@@ -418,6 +423,20 @@ class SiteAdminSerializer(serializers.ModelSerializer):
         fields = ("user",)
 
 
+class CreateUserInvitationSerializer(serializers.Serializer):
+    site_ids = IntegerListFieldSerializer()
+    email = serializers.EmailField()
+
+    class Meta:
+        fields = ("site_ids", "email")
+
+
+class UserInvitationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserInvitation
+        fields = ("id", "code")
+
+
 class SiteFollowerSerializer(serializers.ModelSerializer):
     user = UserSerializer()
     site = SiteSerializer()
@@ -425,10 +444,6 @@ class SiteFollowerSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteFollower
         fields = ("user", "site")
-
-
-class IntegerListFieldSerializer(serializers.ListField):
-    child = serializers.IntegerField()
 
 
 class SiteAdminUpdateRequestSerializer(serializers.Serializer):
