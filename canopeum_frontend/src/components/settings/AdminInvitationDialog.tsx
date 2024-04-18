@@ -1,10 +1,11 @@
+import { SnackbarContext } from '@components/context/SnackbarContext'
 import MultipleSelectChip, { type SelectionItem } from '@components/inputs/MultipleSelectChip'
 import { Dialog, DialogContent, DialogTitle } from '@mui/material'
 import { CreateUserInvitation } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { getApiBaseUrl } from '@services/apiSettings'
 import { type InputValidationError, isValidEmail } from '@utils/validators'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 type Props = {
@@ -14,6 +15,7 @@ type Props = {
 
 const AdminInvitationDialog = ({ open, handleClose }: Props) => {
   const { t: translate } = useTranslation()
+  const { openAlertSnackbar } = useContext(SnackbarContext)
 
   const [siteOptions, setSiteOptions] = useState<SelectionItem<number>[]>([])
   const [invitationLink, setInvitationLink] = useState<string>()
@@ -72,13 +74,19 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
   }
 
   const handleCopyLinkClick = () => {
-    console.log('COPY');
+    if (!invitationLink) return
+
+    void navigator.clipboard.writeText(invitationLink)
+    openAlertSnackbar(`${translate('generic.copied-clipboard')}!`, { severity: 'info' })
   }
 
-  const handleCancel = () => {
+  const onCloseModal = () => {
+    // Reset all fields before closing the modal
     setInvitationLink(undefined)
     setEmail('')
     setSiteIds([])
+    setEmailError(undefined)
+    setGenerateLinkError(undefined)
 
     handleClose()
   }
@@ -86,8 +94,13 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
   const renderInvitationContent = () => {
     if (invitationLink) {
       return (
-        <div>
-          <span>{invitationLink}</span>
+        <div className='d-flex flex-column gap-4'>
+          <span className='text-primary text-decoration-underline'>{invitationLink}</span>
+
+          <div>
+            <span>{translate('settings.manage-admins.copy-link-message')}</span>
+            <span className='ms-1 fw-bold'>{email}</span>
+          </div>
         </div>
       )
     }
@@ -149,7 +162,7 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
   }
 
   return (
-    <Dialog fullWidth maxWidth='sm' onClose={handleClose} open={open}>
+    <Dialog fullWidth maxWidth='sm' onClose={onCloseModal} open={open}>
       <DialogTitle className='text-center'>{translate('settings.manage-admins.invite-admin')}</DialogTitle>
       <DialogContent>
         <div className='d-flex flex-column justify-content-between m-auto' style={{ width: '80%' }}>
@@ -158,7 +171,7 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
           <div className='mt-5 d-flex justify-content-between align-items-center'>
             <button
               className='btn btn-outline-primary'
-              onClick={handleCancel}
+              onClick={onCloseModal}
               type='button'
             >
               {translate('generic.cancel')}

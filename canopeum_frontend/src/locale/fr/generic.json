@@ -2,5 +2,6 @@
   "cancel": "Annuler",
   "delete": "Supprimer",
   "ok": "Ok",
-  "save": "Sauvegarder"
+  "save": "Sauvegarder",
+  "copied-clipboard": "Copié dans le presse-papier"
 }
