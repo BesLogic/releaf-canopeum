@@ -69,8 +69,12 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         return attrs
 
     def create_user(self):
-        invitation_code = self.validated_data.get("code")
+        if not isinstance(self.validated_data, dict):
+            raise serializers.ValidationError("VALIDATED_DATA_INVALID") from None
+
         user_invitation: UserInvitation | None = None
+        invitation_code = self.validated_data.get("code")
+
         if invitation_code is not None:
             try:
                 user_invitation = UserInvitation.objects.get(code=invitation_code)
