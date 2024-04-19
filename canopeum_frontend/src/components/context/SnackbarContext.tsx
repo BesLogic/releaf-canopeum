@@ -23,7 +23,7 @@ const DEFAULT_SNACKBAR_ALERT_OPTIONS: SnackbarAlertOptions = {
 }
 
 export const SnackbarContext = createContext<ISnackbarContext>({
-  openAlertSnackbar: (_message: string, _options?: SnackbarAlertOptions) => {/* empty */ },
+  openAlertSnackbar: (_message: string, _options?: SnackbarAlertOptions) => {/* empty */},
 })
 
 const SnackbarContextProvider: FunctionComponent<{ readonly children?: ReactNode }> = memo(props => {

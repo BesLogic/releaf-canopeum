@@ -34,9 +34,9 @@ const PostWidget = ({ post, likePostEvent }: Props) => {
     /* eslint-disable @typescript-eslint/no-explicit-any -- (NicolasDontigny) Temporary workaround.
     We want the post commentCount property to be read-only; figure out how to do so with the NSwag models generation */
     if (action === 'added') {
-      ; (post.commentCount as any) += 1
+      ;(post.commentCount as any) += 1
     } else {
-      ; (post.commentCount as any) -= 1
+      ;(post.commentCount as any) -= 1
     }
     /* eslint-enable @typescript-eslint/no-explicit-any */
   }
@@ -67,10 +67,11 @@ const PostWidget = ({ post, likePostEvent }: Props) => {
           <div className='d-flex gap-2'>
             <button className='unstyled-button' onClick={likePost} type='button'>
               <span
-                className={`material-symbols-outlined text-primary ${post.hasLiked
+                className={`material-symbols-outlined text-primary ${
+                  post.hasLiked
                     ? 'fill-icon'
                     : ''
-                  }`}
+                }`}
               >
                 eco
               </span>

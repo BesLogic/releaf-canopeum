@@ -1,7 +1,7 @@
 import AuthPageLayout from '@components/auth/AuthPageLayout'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { appRoutes } from '@constants/routes.constant'
-import type { UserInvitation } from '@services/api';
+import type { UserInvitation } from '@services/api'
 import { RegisterUser } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { useContext, useEffect, useState } from 'react'

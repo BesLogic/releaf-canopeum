@@ -55,7 +55,6 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
     // Do not return directly the method calls; we need each of them to be called before returning the result
     validateEmail()
 
-
   const handleGenerateLinkClick = async () => {
     const isFormValid = validateForm()
     if (!isFormValid) return
@@ -105,40 +104,44 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
       )
     }
 
-    return (<div className='w-100'>
+    return (
       <div className='w-100'>
-        <label htmlFor='email-input'>{translate('auth.email-label')}</label>
-        <input
-          aria-describedby='email'
-          className={`form-control ${emailError && 'is-invalid'} `}
-          id='email-input'
-          onBlur={() => validateEmail()}
-          onChange={event => setEmail(event.target.value)}
-          type='email'
+        <div className='w-100'>
+          <label htmlFor='email-input'>{translate('auth.email-label')}</label>
+          <input
+            aria-describedby='email'
+            className={`form-control ${emailError && 'is-invalid'} `}
+            id='email-input'
+            onBlur={() => validateEmail()}
+            onChange={event => setEmail(event.target.value)}
+            type='email'
+          />
+          {emailError === 'required' && (
+            <span className='help-block text-danger'>
+              {translate('auth.email-error-required')}
+            </span>
+          )}
+          {emailError === 'email' && (
+            <span className='help-block text-danger'>
+              {translate('auth.email-error-format')}
+            </span>
+          )}
+        </div>
+
+        <MultipleSelectChip
+          classes='mt-4'
+          label={`${translate('settings.manage-admins.assign-to-label')}*`}
+          onChange={ids => setSiteIds(ids)}
+          options={siteOptions}
         />
-        {emailError === 'required' && (
-          <span className='help-block text-danger'>
-            {translate('auth.email-error-required')}
-          </span>
-        )}
-        {emailError === 'email' && (
-          <span className='help-block text-danger'>
-            {translate('auth.email-error-format')}
-          </span>
+
+        {generateLinkError && (
+          <div className='mt-3'>
+            <span className='help-block text-danger'>{generateLinkError}</span>
+          </div>
         )}
       </div>
-
-      <MultipleSelectChip
-        classes='mt-4'
-        label={`${translate('settings.manage-admins.assign-to-label')}*`}
-        onChange={ids => setSiteIds(ids)}
-        options={siteOptions}
-      />
-
-      {generateLinkError && <div className='mt-3'>
-        <span className='help-block text-danger'>{generateLinkError}</span>
-      </div>}
-    </div>)
+    )
   }
 
   const renderActionButton = () => {
@@ -147,18 +150,22 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
         <button
           className='btn btn-primary'
           onClick={handleCopyLinkClick}
-          type='button'>
+          type='button'
+        >
           {translate('settings.manage-admins.copy-link')}
         </button>
       )
     }
 
-    return (<button
-      className='btn btn-primary'
-      onClick={handleGenerateLinkClick}
-      type='button'>
-      {translate('settings.manage-admins.generate-link')}
-    </button>)
+    return (
+      <button
+        className='btn btn-primary'
+        onClick={handleGenerateLinkClick}
+        type='button'
+      >
+        {translate('settings.manage-admins.generate-link')}
+      </button>
+    )
   }
 
   return (
