@@ -110,6 +110,7 @@ class RegisterAPIView(APIView):
                 serializer = UserTokenSerializer(data={"token": refresh_serializer.data, "user": user_serializer.data})
                 serializer.is_valid()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
+        print("serializer.errors: ", serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

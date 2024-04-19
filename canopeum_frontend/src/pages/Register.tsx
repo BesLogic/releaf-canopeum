@@ -26,14 +26,31 @@ const Register = () => {
   const [passwordConfirmationError, setPasswordConfirmationError] = useState<InputValidationError | undefined>()
 
   const [registrationError, setRegistrationError] = useState<string | undefined>(undefined)
+  const [codeInvalid, setCodeInvalid] = useState(false)
+  const [codeExpired, setCodeExpired] = useState(false)
 
   const [userInvitation, setUserInvitation] = useState<UserInvitation>()
 
   const fetchUserInvitation = async (code: string) => {
-    const userInvitation = await getApiClient().userInvitationClient.detail(code)
-    // TODO(NicolasDontigny): Validate expiration date
-    setUserInvitation(userInvitation)
-    setEmail(userInvitation.email)
+    try {
+      const userInvitationResponse = await getApiClient().userInvitationClient.detail(code)
+      if (userInvitationResponse.expiresAt <= new Date()) {
+        setCodeExpired(true)
+        setCodeInvalid(false)
+        setUserInvitation(undefined)
+
+        return
+      }
+
+      setCodeExpired(false)
+      setCodeInvalid(false)
+      setUserInvitation(userInvitationResponse)
+      setEmail(userInvitationResponse.email)
+    } catch {
+      setCodeInvalid(true)
+      setCodeExpired(false)
+      setUserInvitation(undefined)
+    }
   }
 
   useEffect(() => {
@@ -133,10 +150,13 @@ const Register = () => {
           username: username.trim(),
           password,
           passwordConfirmation,
+          code: userInvitation?.code,
         }),
       )
 
       authenticate(response.user)
+      // By default, do not "remember" the user outside of the browser's session on Registration
+      // They will get to chose that option the next time they log in
       const rememberMe = false
       storeToken(response.token, rememberMe)
     } catch {
@@ -237,6 +257,8 @@ const Register = () => {
           </div>
 
           {registrationError && <span className='help-block text-danger'>{registrationError}</span>}
+          {codeInvalid && <span className='help-block text-danger'>{translate('auth.code-invalid')}</span>}
+          {codeExpired && <span className='help-block text-danger'>{translate('auth.invitation-expired')}</span>}
 
           <button
             className='btn btn-primary'

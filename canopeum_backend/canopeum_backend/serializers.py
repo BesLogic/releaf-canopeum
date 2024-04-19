@@ -55,11 +55,12 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password_confirmation = serializers.CharField(write_only=True, required=True)
-    role = serializers.CharField(required=False, default="User")
+
+    code = serializers.CharField(required=False)
 
     class Meta:
         model = User
-        fields = ("username", "email", "password", "password_confirmation", "role")
+        fields = ("username", "email", "password", "password_confirmation", "code")
 
     def validate(self, attrs):
         if attrs["password"] != attrs["password_confirmation"]:
@@ -68,12 +69,20 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         return attrs
 
     def create_user(self):
-        if self.validated_data is not dict:
-            raise serializers.ValidationError("RegisterUser validated data is invalid")
-        role_name = self.validated_data.get("role", "User")
-        role = Role.objects.get(name=role_name)
-        if role is None:
+        invitation_code = self.validated_data.get("code")
+        user_invitation: UserInvitation | None = None
+        if invitation_code is not None:
+            try:
+                user_invitation = UserInvitation.objects.get(code=invitation_code)
+                if user_invitation.is_expired():
+                    raise serializers.ValidationError("INVITATION_EXPIRED") from None
+
+                role = Role.objects.get(name="SiteManager")
+            except UserInvitation.DoesNotExist:
+                raise serializers.ValidationError("INVITATION_CODE_INVALID") from None
+        else:
             role = Role.objects.get(name="User")
+
         user = User.objects.create(
             username=self.validated_data["username"],
             email=self.validated_data["email"],
@@ -82,6 +91,12 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
         user.set_password(self.validated_data["password"])
         user.save()
+
+        if user_invitation is not None:
+            assigned_to_sites = user_invitation.assigned_to_sites.all()
+            for site in assigned_to_sites:
+                Siteadmin.objects.create(site=site, user=user)
+            user_invitation.delete()
 
         return user
 
@@ -432,6 +447,8 @@ class CreateUserInvitationSerializer(serializers.Serializer):
 
 
 class UserInvitationSerializer(serializers.ModelSerializer):
+    expires_at = serializers.DateTimeField()
+
     class Meta:
         model = UserInvitation
         fields = ("id", "code", "email", "expires_at")

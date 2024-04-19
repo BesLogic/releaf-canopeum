@@ -3816,7 +3816,7 @@ export class RegisterUser implements IRegisterUser {
   email!: string;
   password!: string;
   passwordConfirmation!: string;
-  role?: string;
+  code?: string;
 
   [key: string]: any;
 
@@ -3826,9 +3826,6 @@ export class RegisterUser implements IRegisterUser {
         if (data.hasOwnProperty(property))
           (<any>this)[property] = (<any>data)[property];
       }
-    }
-    if (!data) {
-      this.role = "User";
     }
   }
 
@@ -3842,7 +3839,7 @@ export class RegisterUser implements IRegisterUser {
       this.email = _data["email"];
       this.password = _data["password"];
       this.passwordConfirmation = _data["passwordConfirmation"];
-      this.role = _data["role"] !== undefined ? _data["role"] : "User";
+      this.code = _data["code"];
     }
   }
 
@@ -3863,7 +3860,7 @@ export class RegisterUser implements IRegisterUser {
     data["email"] = this.email;
     data["password"] = this.password;
     data["passwordConfirmation"] = this.passwordConfirmation;
-    data["role"] = this.role;
+    data["code"] = this.code;
     return data;
   }
 }
@@ -3873,7 +3870,7 @@ export interface IRegisterUser {
   email: string;
   password: string;
   passwordConfirmation: string;
-  role?: string;
+  code?: string;
 
   [key: string]: any;
 }
@@ -4821,7 +4818,7 @@ export class UserInvitation implements IUserInvitation {
   readonly id!: number;
   code!: string;
   email!: string;
-  expiresAt?: Date;
+  expiresAt!: Date;
 
   [key: string]: any;
 
@@ -4872,7 +4869,7 @@ export interface IUserInvitation {
   id: number;
   code: string;
   email: string;
-  expiresAt?: Date;
+  expiresAt: Date;
 
   [key: string]: any;
 }

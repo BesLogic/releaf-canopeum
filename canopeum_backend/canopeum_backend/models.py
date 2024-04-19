@@ -28,7 +28,7 @@ class User(AbstractUser):
     )
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS: ClassVar[list[str]] = []  # type: ignore
-    role = models.ForeignKey(Role, models.DO_NOTHING, null=False, default=1)  # type: ignore
+    role = models.ForeignKey(Role, models.RESTRICT, null=False, default=1)  # type: ignore
 
 
 class Announcement(models.Model):
@@ -166,9 +166,12 @@ def one_week_from_today():
 
 class UserInvitation(models.Model):
     code = models.CharField(max_length=64, unique=True)
-    expires_at = models.DateTimeField(default=one_week_from_today)
+    expires_at = models.DateTimeField(default=one_week_from_today, blank=False, null=False)
     email = models.EmailField()
     assigned_to_sites = models.ManyToManyField(Site)
+
+    def is_expired(self) -> bool:
+        return self.expires_at <= datetime.now(pytz.utc)
 
 
 class SiteFollower(models.Model):
