@@ -35,7 +35,7 @@ const SiteSummaryCard = ({ site, admins, onSiteChange }: Props) => {
             <Link className='nav-link flex-grow-1 me-3' to={appRoutes.site(site.id)}>
               <div className='d-flex gap-1 align-items-center flex-grow-1'>
                 <PrimaryIconBadge type='school' />
-                <h5 className='mb-0 text-ellipsis'>{site.name ?? translate('analytics.site-summary.unnamed-site')}</h5>
+                <h5 className='mb-0 text-ellipsis'>{site.name}</h5>
               </div>
             </Link>
 
