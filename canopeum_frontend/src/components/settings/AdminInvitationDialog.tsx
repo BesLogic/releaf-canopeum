@@ -1,8 +1,9 @@
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import MultipleSelectChip, { type SelectionItem } from '@components/inputs/MultipleSelectChip'
 import { APP_CONFIG } from '@config/config'
+import { ERROR_MESSAGES } from '@constants/errorMessages'
 import { Dialog, DialogContent, DialogTitle } from '@mui/material'
-import { CreateUserInvitation } from '@services/api'
+import { ApiException, CreateUserInvitation } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { type InputValidationError, isValidEmail } from '@utils/validators'
 import { useContext, useEffect, useState } from 'react'
@@ -67,8 +68,15 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
       const response = await getApiClient().userInvitationClient.create(createUserInvitation)
 
       setInvitationLink(`${APP_CONFIG.appBaseUrl}/register?code=${response.code}`)
-    } catch {
-      setGenerateLinkError(translate('settings.manage-admins.generate-link-error'))
+    } catch (error: unknown) {
+      if (
+        error instanceof ApiException &&
+        error.response.replaceAll('"', '') === ERROR_MESSAGES.emailTaken
+      ) {
+        setGenerateLinkError(translate('settings.manage-admins.email-taken'))
+      } else {
+        setGenerateLinkError(translate('settings.manage-admins.generate-link-error'))
+      }
     }
   }
 

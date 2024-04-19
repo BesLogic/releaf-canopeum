@@ -16,6 +16,7 @@
     "copy-link": "Copy Link",
     "assign-to-label": "Assign to",
     "generate-link-error": "There was a problem while trying to generate the link.",
-    "copy-link-message": "Please copy and share this link with the owner of the following email address:"
+    "copy-link-message": "Please copy and share this link with the owner of the following email address:",
+    "email-taken": "There is already a user using this email."
   }
 }
