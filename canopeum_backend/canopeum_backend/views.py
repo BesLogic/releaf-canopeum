@@ -358,9 +358,9 @@ class AnnouncementDetailAPIView(APIView):
 
 class ContactDetailAPIView(APIView):
     @extend_schema(request=ContactSerializer, responses=ContactSerializer, operation_id="contact_update")
-    def patch(self, request, pk):
+    def patch(self, request, contactId, siteId):
         try:
-            contact = Contact.objects.get(pk=pk)
+            contact = Contact.objects.get(pk=contactId)
         except Contact.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
