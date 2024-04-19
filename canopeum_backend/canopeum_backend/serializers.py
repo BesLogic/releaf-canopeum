@@ -69,7 +69,6 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         return attrs
 
     def create_user(self):
-        print("isinstance(self.validated_data, dict):", isinstance(self.validated_data, dict))
         if not isinstance(self.validated_data, dict):
             raise serializers.ValidationError("VALIDATED_DATA_INVALID") from None
 

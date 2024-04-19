@@ -76,7 +76,8 @@ const CreatePostWidget = (props: { readonly addNewPost: (newPost: Post) => void 
     setFiles(previousFiles => [...previousFiles, ...validCompressedFiles])
   }
 
-  const removeFile = (index: number) => setFiles(previous => previous.filter((_, index_) => index_ !== index))
+  const removeFile = (index: number) =>
+    setFiles(previous => previous.filter((_, index_) => index_ !== index))
 
   const handleCommentBodyChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const bodyValue = event.target.value
@@ -126,10 +127,19 @@ const CreatePostWidget = (props: { readonly addNewPost: (newPost: Post) => void 
       </div>
       <div className='position-relative'>
         <div className='position-absolute top-0 left-0 m-3 d-flex gap-3 fs-3'>
-          <label className='material-symbols-outlined' htmlFor='file-input' style={{ cursor: 'pointer' }}>
+          <label
+            className='material-symbols-outlined'
+            htmlFor='file-input'
+            style={{ cursor: 'pointer' }}
+          >
             add_a_photo
           </label>
-          <input className='d-none' id='file-input' multiple onChange={event => handleFileChange(event)} type='file' />
+          <input
+            className='d-none'
+            id='file-input'
+            multiple onChange={event => handleFileChange(event)}
+            type='file'
+          />
         </div>
         <textarea
           className='form-control pt-5 overflow-hidden'
@@ -140,7 +150,9 @@ const CreatePostWidget = (props: { readonly addNewPost: (newPost: Post) => void 
         />
         <div className='max-words end-0 text-end' style={{ bottom: '-1.6rem' }}>
           <span>{postBodyNumberOfWords}/{MAXIMUM_WORDS_PER_POST}</span>
-          <span className='ms-1'>{translate('social.comments.words', { count: MAXIMUM_WORDS_PER_POST })}</span>
+          <span className='ms-1'>
+            {translate('social.comments.words', { count: MAXIMUM_WORDS_PER_POST })}
+          </span>
         </div>
 
         {postBodyError === 'required' && (
