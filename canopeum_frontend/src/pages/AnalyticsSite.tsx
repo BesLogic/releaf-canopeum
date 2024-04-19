@@ -15,8 +15,7 @@ const AnalyticsSite = () => {
   const [siteSummary, setSiteSummary] = useState<SiteSummary | undefined>()
   const [lastModifiedBatchDate, setLastModifiedBatchDate] = useState<Date | undefined>()
 
-  const fetchSite = async (siteId: number) =>
-    setSiteSummary(await getApiClient().siteClient.summary(siteId))
+  const fetchSite = async (siteId: number) => setSiteSummary(await getApiClient().siteClient.summary(siteId))
 
   useEffect(() => {
     if (!siteIdFromParams) return
