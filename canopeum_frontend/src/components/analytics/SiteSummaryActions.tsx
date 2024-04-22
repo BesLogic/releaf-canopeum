@@ -1,5 +1,6 @@
 import Checkbox from '@components/Checkbox'
 import { SnackbarContext } from '@components/context/SnackbarContext'
+import ConfirmationDialog from '@components/dialogs/ConfirmationDialog'
 import SearchBar from '@components/SearchBar'
 import type { SiteSummary, User } from '@services/api'
 import { PatchedSiteAdminUpdateRequest } from '@services/api'
@@ -19,8 +20,10 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange }: Props) => {
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const whisperRef = useRef<OverlayTriggerHandle>(null)
+
   const [filteredAdmins, setFilteredAdmins] = useState(admins)
   const [selectedAdmins, setSelectedAdmins] = useState(siteSummary.admins.map(admin => admin.user))
+  const [confirmCommentDeleteOpen, setConfirmCommentDeleteOpen] = useState(false)
 
   useEffect(() => {
     setFilteredAdmins(admins)
@@ -75,7 +78,9 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange }: Props) => {
     whisperRef.current?.close()
   }
 
-  const onDeleteSite = async () => {
+  const onDeleteSiteClick = () => setConfirmCommentDeleteOpen(true)
+
+  const deleteSite = async () => {
     whisperRef.current?.close()
     try {
       await getApiClient().siteClient.delete(siteSummary.id)
@@ -87,6 +92,16 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange }: Props) => {
         { severity: 'error' },
       )
     }
+  }
+
+  const onDeleteSiteConfirmation = (proceedWithDelete: boolean) => {
+    if (!proceedWithDelete) {
+      setConfirmCommentDeleteOpen(false)
+
+      return
+    }
+
+    void deleteSite()
   }
 
   const administratorsSelection = (
@@ -140,30 +155,41 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange }: Props) => {
           {administratorsSelection}
         </Dropdown.Menu>
         <Dropdown.Item>Edit Site Information</Dropdown.Item>
-        <Dropdown.Item onClick={onDeleteSite}>Delete</Dropdown.Item>
+        <Dropdown.Item onClick={onDeleteSiteClick}>Delete</Dropdown.Item>
       </Dropdown.Menu>
     </Popover>
   )
 
   return (
-    <Whisper
-      placement='auto'
-      ref={whisperRef}
-      speaker={actionsPopover}
-      trigger='click'
-    >
-      <button
-        className='bg-lightgreen text-center rounded-circle unstyled-button'
-        type='button'
+    <>
+      <Whisper
+        placement='auto'
+        ref={whisperRef}
+        speaker={actionsPopover}
+        trigger='click'
       >
-        <span
-          className='material-symbols-outlined text-primary align-middle'
-          style={{ fontSize: 24 }}
+        <button
+          className='bg-lightgreen text-center rounded-circle unstyled-button'
+          type='button'
         >
-          more_horiz
-        </span>
-      </button>
-    </Whisper>
+          <span
+            className='material-symbols-outlined text-primary align-middle'
+            style={{ fontSize: 24 }}
+          >
+            more_horiz
+          </span>
+        </button>
+      </Whisper>
+
+      <ConfirmationDialog
+        actions={['cancel', 'delete']}
+        onClose={(proceed: boolean) => onDeleteSiteConfirmation(proceed)}
+        open={!!confirmCommentDeleteOpen}
+        title={translate('analytics.site-summary.delete-site-confirmation-title')}
+      >
+        {translate('analytics.site-summary.delete-site-confirmation-message', { siteName: siteSummary.name })}
+      </ConfirmationDialog>
+    </>
   )
 }
 
