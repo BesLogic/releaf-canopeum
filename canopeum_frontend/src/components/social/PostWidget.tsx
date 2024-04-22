@@ -1,30 +1,38 @@
+import AssetGrid from '@components/AssetGrid'
 import { LanguageContext } from '@components/context/LanguageContext'
+import TextExpansion from '@components/inputs/textExpansion'
 import PostCommentsDialog from '@components/social/PostCommentsDialog'
+import SharePostDialog from '@components/social/SharePostDialog'
 import type { PageViewMode } from '@models/types/PageViewMode'
+import getApiClient from '@services/apiInterface'
 import { useContext, useState } from 'react'
 
-import { type Post } from '../../services/api'
-import AssetGrid from '@components/AssetGrid'
-import TextExpansion from '@components/inputs/textExpansion'
-import getApiClient from '@services/apiInterface'
+import type { Post } from '../../services/api'
 
-const PostWidget = (props: { post: Post, likePostEvent: (postId: number) => void, viewMode: PageViewMode }) => {
+const PostWidget = (
+  props: { readonly post: Post, readonly likePostEvent: (postId: number) => void, readonly viewMode: PageViewMode },
+) => {
   const { post, likePostEvent, viewMode } = props
 
   const { formatDate } = useContext(LanguageContext)
   const [commentsModalOpen, setCommentsModalOpen] = useState(false)
+  const [shareModalOpen, setShareModalOpen] = useState(false)
 
   const openPostComments = () => setCommentsModalOpen(true)
 
   const handleCommentsModalClose = () => setCommentsModalOpen(false)
 
+  const openPostShareModal = () => setShareModalOpen(true)
+
+  const handleShareModalClose = () => setShareModalOpen(false)
+
   const likePost = async () => {
     if (post.hasLiked) {
-      await getApiClient().likeClient.delete(post.id!)
-      likePostEvent(post.id!)
+      await getApiClient().likeClient.delete(post.id)
+      likePostEvent(post.id)
     } else {
-      await getApiClient().likeClient.likePost(post.id!, {})
-      likePostEvent(post.id!)
+      await getApiClient().likeClient.likePost(post.id, {})
+      likePostEvent(post.id)
     }
   }
 
@@ -57,14 +65,18 @@ const PostWidget = (props: { post: Post, likePostEvent: (postId: number) => void
           </div>
         </div>
 
-        <TextExpansion text={post.body} maxLength={700} />
+        <TextExpansion maxLength={700} text={post.body} />
 
         {post.media.length > 0 && <AssetGrid medias={post.media} />}
 
         <div className='d-flex justify-content-end gap-4'>
           <button className='d-flex gap-2 unstyled-button' type='button'>
             <span
-              className={'material-symbols-outlined' + (post.hasLiked == true ? ' fill-icon' : '')}
+              className={`material-symbols-outlined${
+                post.hasLiked
+                  ? ' fill-icon'
+                  : ''
+              }`}
               onClick={likePost}
             >
               eco
@@ -81,7 +93,11 @@ const PostWidget = (props: { post: Post, likePostEvent: (postId: number) => void
             <div>{post.commentCount}</div>
           </button>
 
-          <button className='d-flex gap-2 unstyled-button' type='button'>
+          <button
+            className='d-flex gap-2 unstyled-button'
+            onClick={openPostShareModal}
+            type='button'
+          >
             <span className='material-symbols-outlined text-primary'>share</span>
             <div>{post.shareCount}</div>
           </button>
@@ -94,6 +110,12 @@ const PostWidget = (props: { post: Post, likePostEvent: (postId: number) => void
         open={commentsModalOpen}
         postId={post.id}
         viewMode={viewMode}
+      />
+
+      <SharePostDialog
+        onClose={handleShareModalClose}
+        open={shareModalOpen}
+        post={post}
       />
     </>
   )

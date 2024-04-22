@@ -22,6 +22,7 @@ const PostDetailsPage = () => {
       const postResponse = await getApiClient().postClient.detail(detailPostId)
       setPost(postResponse)
       setIsLoading(false)
+      setPostError(false)
     } catch {
       setIsLoading(false)
       setPostError(true)
@@ -61,14 +62,15 @@ const PostDetailsPage = () => {
 
   if (!post || postError) {
     return (
-      <div>
-        <span>ERROR loading post</span>
+      <div className='container py-5'>
+        <div className='bg-white rounded-2 px-5 py-4'>
+          <span>{translate('posts.error-loading-post')}</span>
+        </div>
       </div>
     )
   }
 
   return (
-    // TODO: Remove viewMode
     <div className='container py-5'>
       <Link className='mb-3 d-flex align-items-center' to={appRoutes.siteSocial(post.site.id)}>
         <span className='material-symbols-outlined text-light'>arrow_back</span>
