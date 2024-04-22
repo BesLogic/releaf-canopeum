@@ -9,9 +9,9 @@
 // ReSharper disable InconsistentNaming
 
 export class AdminUserSitesClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
   constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
     this.http = http ? http : window as any;
@@ -61,9 +61,9 @@ export class AdminUserSitesClient {
 }
 
 export class BatchClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
   constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
     this.http = http ? http : window as any;
@@ -228,9 +228,9 @@ export class BatchClient {
 }
 
 export class SiteClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
   constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
     this.http = http ? http : window as any;
@@ -754,9 +754,9 @@ export class SiteClient {
 }
 
 export class SummaryClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
   constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
     this.http = http ? http : window as any;
@@ -806,9 +806,9 @@ export class SummaryClient {
 }
 
 export class SchemaClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
   constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
     this.http = http ? http : window as any;
@@ -868,9 +868,9 @@ export class SchemaClient {
 }
 
 export class AuthenticationClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
   constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
     this.http = http ? http : window as any;
@@ -998,9 +998,9 @@ export class AuthenticationClient {
 }
 
 export class TokenClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
   constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
     this.http = http ? http : window as any;
@@ -1047,9 +1047,9 @@ export class TokenClient {
 }
 
 export class RefreshClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
   constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
     this.http = http ? http : window as any;
@@ -1096,9 +1096,9 @@ export class RefreshClient {
 }
 
 export class NewsClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
   constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
     this.http = http ? http : window as any;
@@ -1148,9 +1148,9 @@ export class NewsClient {
 }
 
 export class PostClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
   constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
     this.http = http ? http : window as any;
@@ -1253,9 +1253,9 @@ export class PostClient {
 }
 
 export class CommentClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
   constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
     this.http = http ? http : window as any;
@@ -1388,9 +1388,9 @@ export class CommentClient {
 }
 
 export class LikeClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
   constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
     this.http = http ? http : window as any;
@@ -1477,9 +1477,9 @@ export class LikeClient {
 }
 
 export class SocialClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
   constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
     this.http = http ? http : window as any;
@@ -1522,9 +1522,9 @@ export class SocialClient {
 }
 
 export class AnnouncementClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
   constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
     this.http = http ? http : window as any;
@@ -1574,9 +1574,9 @@ export class AnnouncementClient {
 }
 
 export class ContactClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
   constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
     this.http = http ? http : window as any;
@@ -1629,9 +1629,9 @@ export class ContactClient {
 }
 
 export class WidgetClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
   constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
     this.http = http ? http : window as any;
@@ -1850,9 +1850,9 @@ export class UserInvitationClient {
 }
 
 export class UserClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
   constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
     this.http = http ? http : window as any;
@@ -2055,13 +2055,13 @@ export class UserClient {
 }
 
 export class AdminUserSites implements IAdminUserSites {
-  readonly id!: number;
-  /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
-  username!: string;
-  email!: string;
-  readonly sites!: SiteName[];
+    readonly id!: number;
+    /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
+    username!: string;
+    email!: string;
+    readonly sites!: SiteName[];
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: IAdminUserSites) {
     if (data) {
@@ -2118,21 +2118,21 @@ export class AdminUserSites implements IAdminUserSites {
 }
 
 export interface IAdminUserSites {
-  id: number;
-  /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
-  username: string;
-  email: string;
-  sites: SiteName[];
+    id: number;
+    /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
+    username: string;
+    email: string;
+    sites: SiteName[];
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class Announcement implements IAnnouncement {
-  readonly id!: number;
-  body?: string | undefined;
-  link?: string | undefined;
+    readonly id!: number;
+    body?: string | undefined;
+    link?: string | undefined;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: IAnnouncement) {
     if (data) {
@@ -2176,18 +2176,18 @@ export class Announcement implements IAnnouncement {
 }
 
 export interface IAnnouncement {
-  id: number;
-  body?: string | undefined;
-  link?: string | undefined;
+    id: number;
+    body?: string | undefined;
+    link?: string | undefined;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class Asset implements IAsset {
   readonly id!: number;
   asset!: string;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: IAsset) {
     if (data) {
@@ -2232,22 +2232,22 @@ export interface IAsset {
   id: number;
   asset: string;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class Batch implements IBatch {
-  readonly id!: number;
-  createdAt?: Date | undefined;
-  updatedAt?: Date | undefined;
-  name?: string | undefined;
-  sponsor?: string | undefined;
-  size?: string | undefined;
-  soilCondition?: string | undefined;
-  totalNumberSeed?: number | undefined;
-  totalPropagation?: number | undefined;
-  site?: number | undefined;
+    readonly id!: number;
+    createdAt?: Date | undefined;
+    updatedAt?: Date | undefined;
+    name?: string | undefined;
+    sponsor?: string | undefined;
+    size?: string | undefined;
+    soilCondition?: string | undefined;
+    totalNumberSeed?: number | undefined;
+    totalPropagation?: number | undefined;
+    site?: number | undefined;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: IBatch) {
     if (data) {
@@ -2305,38 +2305,38 @@ export class Batch implements IBatch {
 }
 
 export interface IBatch {
-  id: number;
-  createdAt?: Date | undefined;
-  updatedAt?: Date | undefined;
-  name?: string | undefined;
-  sponsor?: string | undefined;
-  size?: string | undefined;
-  soilCondition?: string | undefined;
-  totalNumberSeed?: number | undefined;
-  totalPropagation?: number | undefined;
-  site?: number | undefined;
+    id: number;
+    createdAt?: Date | undefined;
+    updatedAt?: Date | undefined;
+    name?: string | undefined;
+    sponsor?: string | undefined;
+    size?: string | undefined;
+    soilCondition?: string | undefined;
+    totalNumberSeed?: number | undefined;
+    totalPropagation?: number | undefined;
+    site?: number | undefined;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class BatchAnalytics implements IBatchAnalytics {
-  readonly id!: number;
-  name?: string | undefined;
-  size?: string | undefined;
-  soilCondition?: string | undefined;
-  sponsor?: string | undefined;
-  readonly fertilizers!: Batchfertilizer[];
-  readonly mulchLayers!: BatchMulchLayer[];
-  readonly supportedSpecies!: BatchSupportedSpecies[];
-  readonly plantCount!: number;
-  readonly survivedCount!: number;
-  readonly replaceCount!: number;
-  readonly seedCollectedCount!: number;
-  readonly seeds!: BatchSeed[];
-  readonly species!: BatchSpecies[];
-  updatedAt!: Date;
+    readonly id!: number;
+    name?: string | undefined;
+    size?: string | undefined;
+    soilCondition?: string | undefined;
+    sponsor?: string | undefined;
+    readonly fertilizers!: Batchfertilizer[];
+    readonly mulchLayers!: BatchMulchLayer[];
+    readonly supportedSpecies!: BatchSupportedSpecies[];
+    readonly plantCount!: number;
+    readonly survivedCount!: number;
+    readonly replaceCount!: number;
+    readonly seedCollectedCount!: number;
+    readonly seeds!: BatchSeed[];
+    readonly species!: BatchSpecies[];
+    updatedAt!: Date;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: IBatchAnalytics) {
     if (data) {
@@ -2451,31 +2451,31 @@ export class BatchAnalytics implements IBatchAnalytics {
 }
 
 export interface IBatchAnalytics {
-  id: number;
-  name?: string | undefined;
-  size?: string | undefined;
-  soilCondition?: string | undefined;
-  sponsor?: string | undefined;
-  fertilizers: Batchfertilizer[];
-  mulchLayers: BatchMulchLayer[];
-  supportedSpecies: BatchSupportedSpecies[];
-  plantCount: number;
-  survivedCount: number;
-  replaceCount: number;
-  seedCollectedCount: number;
-  seeds: BatchSeed[];
-  species: BatchSpecies[];
-  updatedAt: Date;
+    id: number;
+    name?: string | undefined;
+    size?: string | undefined;
+    soilCondition?: string | undefined;
+    sponsor?: string | undefined;
+    fertilizers: Batchfertilizer[];
+    mulchLayers: BatchMulchLayer[];
+    supportedSpecies: BatchSupportedSpecies[];
+    plantCount: number;
+    survivedCount: number;
+    replaceCount: number;
+    seedCollectedCount: number;
+    seeds: BatchSeed[];
+    species: BatchSpecies[];
+    updatedAt: Date;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class BatchMulchLayer implements IBatchMulchLayer {
-  readonly id!: number;
-  readonly en!: string;
-  readonly fr!: string;
+    readonly id!: number;
+    readonly en!: string;
+    readonly fr!: string;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: IBatchMulchLayer) {
     if (data) {
@@ -2519,19 +2519,19 @@ export class BatchMulchLayer implements IBatchMulchLayer {
 }
 
 export interface IBatchMulchLayer {
-  id: number;
-  en: string;
-  fr: string;
+    id: number;
+    en: string;
+    fr: string;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class BatchSeed implements IBatchSeed {
-  quantity?: number | undefined;
-  readonly en!: string;
-  readonly fr!: string;
+    quantity?: number | undefined;
+    readonly en!: string;
+    readonly fr!: string;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: IBatchSeed) {
     if (data) {
@@ -2575,19 +2575,19 @@ export class BatchSeed implements IBatchSeed {
 }
 
 export interface IBatchSeed {
-  quantity?: number | undefined;
-  en: string;
-  fr: string;
+    quantity?: number | undefined;
+    en: string;
+    fr: string;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class BatchSpecies implements IBatchSpecies {
-  quantity?: number | undefined;
-  readonly en!: string;
-  readonly fr!: string;
+    quantity?: number | undefined;
+    readonly en!: string;
+    readonly fr!: string;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: IBatchSpecies) {
     if (data) {
@@ -2631,18 +2631,18 @@ export class BatchSpecies implements IBatchSpecies {
 }
 
 export interface IBatchSpecies {
-  quantity?: number | undefined;
-  en: string;
-  fr: string;
+    quantity?: number | undefined;
+    en: string;
+    fr: string;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class BatchSupportedSpecies implements IBatchSupportedSpecies {
-  readonly en!: string;
-  readonly fr!: string;
+    readonly en!: string;
+    readonly fr!: string;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: IBatchSupportedSpecies) {
     if (data) {
@@ -2684,18 +2684,18 @@ export class BatchSupportedSpecies implements IBatchSupportedSpecies {
 }
 
 export interface IBatchSupportedSpecies {
-  en: string;
-  fr: string;
+    en: string;
+    fr: string;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class Batchfertilizer implements IBatchfertilizer {
-  readonly id!: number;
-  readonly en!: string;
-  readonly fr!: string;
+    readonly id!: number;
+    readonly en!: string;
+    readonly fr!: string;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: IBatchfertilizer) {
     if (data) {
@@ -2739,21 +2739,21 @@ export class Batchfertilizer implements IBatchfertilizer {
 }
 
 export interface IBatchfertilizer {
-  id: number;
-  en: string;
-  fr: string;
+    id: number;
+    en: string;
+    fr: string;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class Comment implements IComment {
-  readonly id!: number;
-  body!: string;
-  readonly authorId!: number;
-  readonly authorUsername!: string;
-  readonly createdAt!: Date;
+    readonly id!: number;
+    body!: string;
+    readonly authorId!: number;
+    readonly authorUsername!: string;
+    readonly createdAt!: Date;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: IComment) {
     if (data) {
@@ -2801,26 +2801,26 @@ export class Comment implements IComment {
 }
 
 export interface IComment {
-  id: number;
-  body: string;
-  authorId: number;
-  authorUsername: string;
-  createdAt: Date;
+    id: number;
+    body: string;
+    authorId: number;
+    authorUsername: string;
+    createdAt: Date;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class Contact implements IContact {
-  readonly id!: number;
-  address?: string | undefined;
-  email?: string | undefined;
-  phone?: string | undefined;
-  facebookLink?: string | undefined;
-  xLink?: string | undefined;
-  instagramLink?: string | undefined;
-  linkedinLink?: string | undefined;
+    readonly id!: number;
+    address?: string | undefined;
+    email?: string | undefined;
+    phone?: string | undefined;
+    facebookLink?: string | undefined;
+    xLink?: string | undefined;
+    instagramLink?: string | undefined;
+    linkedinLink?: string | undefined;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: IContact) {
     if (data) {
@@ -2874,27 +2874,27 @@ export class Contact implements IContact {
 }
 
 export interface IContact {
-  id: number;
-  address?: string | undefined;
-  email?: string | undefined;
-  phone?: string | undefined;
-  facebookLink?: string | undefined;
-  xLink?: string | undefined;
-  instagramLink?: string | undefined;
-  linkedinLink?: string | undefined;
+    id: number;
+    address?: string | undefined;
+    email?: string | undefined;
+    phone?: string | undefined;
+    facebookLink?: string | undefined;
+    xLink?: string | undefined;
+    instagramLink?: string | undefined;
+    linkedinLink?: string | undefined;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class Coordinates implements ICoordinates {
-  readonly id!: number;
-  dmsLatitude?: string | undefined;
-  dmsLongitude?: string | undefined;
-  ddLatitude?: string | undefined;
-  ddLongitude?: string | undefined;
-  address?: string | undefined;
+    readonly id!: number;
+    dmsLatitude?: string | undefined;
+    dmsLongitude?: string | undefined;
+    ddLatitude?: string | undefined;
+    ddLongitude?: string | undefined;
+    address?: string | undefined;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: ICoordinates) {
     if (data) {
@@ -2944,22 +2944,22 @@ export class Coordinates implements ICoordinates {
 }
 
 export interface ICoordinates {
-  id: number;
-  dmsLatitude?: string | undefined;
-  dmsLongitude?: string | undefined;
-  ddLatitude?: string | undefined;
-  ddLongitude?: string | undefined;
-  address?: string | undefined;
+    id: number;
+    dmsLatitude?: string | undefined;
+    dmsLongitude?: string | undefined;
+    ddLatitude?: string | undefined;
+    ddLongitude?: string | undefined;
+    address?: string | undefined;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class CoordinatesMap implements ICoordinatesMap {
-  readonly latitude!: string;
-  readonly longitude!: string;
-  address?: string | undefined;
+    readonly latitude!: string;
+    readonly longitude!: string;
+    address?: string | undefined;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: ICoordinatesMap) {
     if (data) {
@@ -3003,17 +3003,17 @@ export class CoordinatesMap implements ICoordinatesMap {
 }
 
 export interface ICoordinatesMap {
-  latitude: string;
-  longitude: string;
-  address?: string | undefined;
+    latitude: string;
+    longitude: string;
+    address?: string | undefined;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class CreateComment implements ICreateComment {
-  body!: string;
+    body!: string;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: ICreateComment) {
     if (data) {
@@ -3053,9 +3053,9 @@ export class CreateComment implements ICreateComment {
 }
 
 export interface ICreateComment {
-  body: string;
+    body: string;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class CreateUserInvitation implements ICreateUserInvitation {
@@ -3122,11 +3122,11 @@ export interface ICreateUserInvitation {
 }
 
 export class Like implements ILike {
-  readonly id!: number;
-  user!: number;
-  post!: number;
+    readonly id!: number;
+    user!: number;
+    post!: number;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: ILike) {
     if (data) {
@@ -3170,18 +3170,18 @@ export class Like implements ILike {
 }
 
 export interface ILike {
-  id: number;
-  user: number;
-  post: number;
+    id: number;
+    user: number;
+    post: number;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class LoginUser implements ILoginUser {
-  email!: string;
-  password!: string;
+    email!: string;
+    password!: string;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: ILoginUser) {
     if (data) {
@@ -3223,18 +3223,18 @@ export class LoginUser implements ILoginUser {
 }
 
 export interface ILoginUser {
-  email: string;
-  password: string;
+    email: string;
+    password: string;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class PatchedAnnouncement implements IPatchedAnnouncement {
-  readonly id?: number;
-  body?: string | undefined;
-  link?: string | undefined;
+    readonly id?: number;
+    body?: string | undefined;
+    link?: string | undefined;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: IPatchedAnnouncement) {
     if (data) {
@@ -3278,26 +3278,26 @@ export class PatchedAnnouncement implements IPatchedAnnouncement {
 }
 
 export interface IPatchedAnnouncement {
-  id?: number;
-  body?: string | undefined;
-  link?: string | undefined;
+    id?: number;
+    body?: string | undefined;
+    link?: string | undefined;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class PatchedBatch implements IPatchedBatch {
-  readonly id?: number;
-  createdAt?: Date | undefined;
-  updatedAt?: Date | undefined;
-  name?: string | undefined;
-  sponsor?: string | undefined;
-  size?: string | undefined;
-  soilCondition?: string | undefined;
-  totalNumberSeed?: number | undefined;
-  totalPropagation?: number | undefined;
-  site?: number | undefined;
+    readonly id?: number;
+    createdAt?: Date | undefined;
+    updatedAt?: Date | undefined;
+    name?: string | undefined;
+    sponsor?: string | undefined;
+    size?: string | undefined;
+    soilCondition?: string | undefined;
+    totalNumberSeed?: number | undefined;
+    totalPropagation?: number | undefined;
+    site?: number | undefined;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: IPatchedBatch) {
     if (data) {
@@ -3355,31 +3355,31 @@ export class PatchedBatch implements IPatchedBatch {
 }
 
 export interface IPatchedBatch {
-  id?: number;
-  createdAt?: Date | undefined;
-  updatedAt?: Date | undefined;
-  name?: string | undefined;
-  sponsor?: string | undefined;
-  size?: string | undefined;
-  soilCondition?: string | undefined;
-  totalNumberSeed?: number | undefined;
-  totalPropagation?: number | undefined;
-  site?: number | undefined;
+    id?: number;
+    createdAt?: Date | undefined;
+    updatedAt?: Date | undefined;
+    name?: string | undefined;
+    sponsor?: string | undefined;
+    size?: string | undefined;
+    soilCondition?: string | undefined;
+    totalNumberSeed?: number | undefined;
+    totalPropagation?: number | undefined;
+    site?: number | undefined;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class PatchedContact implements IPatchedContact {
-  readonly id?: number;
-  address?: string | undefined;
-  email?: string | undefined;
-  phone?: string | undefined;
-  facebookLink?: string | undefined;
-  xLink?: string | undefined;
-  instagramLink?: string | undefined;
-  linkedinLink?: string | undefined;
+    readonly id?: number;
+    address?: string | undefined;
+    email?: string | undefined;
+    phone?: string | undefined;
+    facebookLink?: string | undefined;
+    xLink?: string | undefined;
+    instagramLink?: string | undefined;
+    linkedinLink?: string | undefined;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: IPatchedContact) {
     if (data) {
@@ -3433,16 +3433,16 @@ export class PatchedContact implements IPatchedContact {
 }
 
 export interface IPatchedContact {
-  id?: number;
-  address?: string | undefined;
-  email?: string | undefined;
-  phone?: string | undefined;
-  facebookLink?: string | undefined;
-  xLink?: string | undefined;
-  instagramLink?: string | undefined;
-  linkedinLink?: string | undefined;
+    id?: number;
+    address?: string | undefined;
+    email?: string | undefined;
+    phone?: string | undefined;
+    facebookLink?: string | undefined;
+    xLink?: string | undefined;
+    instagramLink?: string | undefined;
+    linkedinLink?: string | undefined;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class PatchedSite implements IPatchedSite {
@@ -3460,7 +3460,7 @@ export class PatchedSite implements IPatchedSite {
   visibleMap?: boolean | undefined;
   visitorCount?: number | undefined;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: IPatchedSite) {
     if (data) {
@@ -3546,13 +3546,13 @@ export interface IPatchedSite {
   visibleMap?: boolean | undefined;
   visitorCount?: number | undefined;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class PatchedSiteAdminUpdateRequest implements IPatchedSiteAdminUpdateRequest {
-  ids?: number[];
+    ids?: number[];
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: IPatchedSiteAdminUpdateRequest) {
     if (data) {
@@ -3600,17 +3600,17 @@ export class PatchedSiteAdminUpdateRequest implements IPatchedSiteAdminUpdateReq
 }
 
 export interface IPatchedSiteAdminUpdateRequest {
-  ids?: number[];
+    ids?: number[];
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class PatchedUpdateUser implements IPatchedUpdateUser {
-  /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
-  username?: string;
-  email?: string;
+    /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
+    username?: string;
+    email?: string;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: IPatchedUpdateUser) {
     if (data) {
@@ -3652,20 +3652,20 @@ export class PatchedUpdateUser implements IPatchedUpdateUser {
 }
 
 export interface IPatchedUpdateUser {
-  /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
-  username?: string;
-  email?: string;
+    /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
+    username?: string;
+    email?: string;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class PatchedWidget implements IPatchedWidget {
-  readonly id?: number;
-  title?: string | undefined;
-  body?: string | undefined;
-  site?: number | undefined;
+    readonly id?: number;
+    title?: string | undefined;
+    body?: string | undefined;
+    site?: number | undefined;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: IPatchedWidget) {
     if (data) {
@@ -3711,12 +3711,12 @@ export class PatchedWidget implements IPatchedWidget {
 }
 
 export interface IPatchedWidget {
-  id?: number;
-  title?: string | undefined;
-  body?: string | undefined;
-  site?: number | undefined;
+    id?: number;
+    title?: string | undefined;
+    body?: string | undefined;
+    site?: number | undefined;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class Post implements IPost {
@@ -3730,7 +3730,7 @@ export class Post implements IPost {
   readonly hasLiked!: boolean;
   media!: Asset[];
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: IPost) {
     if (data) {
@@ -3808,7 +3808,7 @@ export interface IPost {
   hasLiked: boolean;
   media: Asset[];
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class RegisterUser implements IRegisterUser {
@@ -3818,7 +3818,7 @@ export class RegisterUser implements IRegisterUser {
   passwordConfirmation!: string;
   code?: string;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: IRegisterUser) {
     if (data) {
@@ -3872,7 +3872,7 @@ export interface IRegisterUser {
   passwordConfirmation: string;
   code?: string;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export type RoleEnum = "User" | "SiteManager" | "MegaAdmin";
@@ -3892,7 +3892,7 @@ export class Site implements ISite {
   visibleMap?: boolean | undefined;
   visitorCount?: number | undefined;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: ISite) {
     if (data) {
@@ -3986,13 +3986,13 @@ export interface ISite {
   visibleMap?: boolean | undefined;
   visitorCount?: number | undefined;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class SiteAdmin implements ISiteAdmin {
-  user!: User;
+    user!: User;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: ISiteAdmin) {
     if (data) {
@@ -4035,9 +4035,9 @@ export class SiteAdmin implements ISiteAdmin {
 }
 
 export interface ISiteAdmin {
-  user: User;
+    user: User;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class SiteMap implements ISiteMap {
@@ -4047,7 +4047,7 @@ export class SiteMap implements ISiteMap {
   readonly coordinates!: CoordinatesMap;
   image!: Asset;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: ISiteMap) {
     if (data) {
@@ -4106,14 +4106,14 @@ export interface ISiteMap {
   coordinates: CoordinatesMap;
   image: Asset;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class SiteName implements ISiteName {
   readonly id!: number;
   name!: string;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: ISiteName) {
     if (data) {
@@ -4158,7 +4158,7 @@ export interface ISiteName {
   id: number;
   name: string;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class SiteOverview implements ISiteOverview {
@@ -4166,7 +4166,7 @@ export class SiteOverview implements ISiteOverview {
   name!: string;
   image!: Asset;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: ISiteOverview) {
     if (data) {
@@ -4217,7 +4217,7 @@ export interface ISiteOverview {
   name: string;
   image: Asset;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class SiteSocial implements ISiteSocial {
@@ -4231,7 +4231,7 @@ export class SiteSocial implements ISiteSocial {
   readonly sponsors!: string[];
   readonly widget!: Widget[];
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: ISiteSocial) {
     if (data) {
@@ -4321,7 +4321,7 @@ export interface ISiteSocial {
   sponsors: string[];
   widget: Widget[];
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class SiteSummary implements ISiteSummary {
@@ -4338,7 +4338,7 @@ export class SiteSummary implements ISiteSummary {
   admins!: SiteAdmin[];
   readonly batches!: BatchAnalytics[];
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: ISiteSummary) {
     if (data) {
@@ -4444,15 +4444,15 @@ export interface ISiteSummary {
   admins: SiteAdmin[];
   batches: BatchAnalytics[];
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class SiteType implements ISiteType {
-  readonly id!: number;
-  readonly en!: string;
-  readonly fr!: string;
+    readonly id!: number;
+    readonly en!: string;
+    readonly fr!: string;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: ISiteType) {
     if (data) {
@@ -4496,20 +4496,20 @@ export class SiteType implements ISiteType {
 }
 
 export interface ISiteType {
-  id: number;
-  en: string;
-  fr: string;
+    id: number;
+    en: string;
+    fr: string;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class Sitetreespecies implements ISitetreespecies {
-  readonly id!: number;
-  quantity?: number | undefined;
-  readonly en!: string;
-  readonly fr!: string;
+    readonly id!: number;
+    quantity?: number | undefined;
+    readonly en!: string;
+    readonly fr!: string;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: ISitetreespecies) {
     if (data) {
@@ -4555,21 +4555,21 @@ export class Sitetreespecies implements ISitetreespecies {
 }
 
 export interface ISitetreespecies {
-  id: number;
-  quantity?: number | undefined;
-  en: string;
-  fr: string;
+    id: number;
+    quantity?: number | undefined;
+    en: string;
+    fr: string;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class TokenObtainPair implements ITokenObtainPair {
-  email!: string;
-  password!: string;
-  readonly access!: string;
-  readonly refresh!: string;
+    email!: string;
+    password!: string;
+    readonly access!: string;
+    readonly refresh!: string;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: ITokenObtainPair) {
     if (data) {
@@ -4615,19 +4615,19 @@ export class TokenObtainPair implements ITokenObtainPair {
 }
 
 export interface ITokenObtainPair {
-  email: string;
-  password: string;
-  access: string;
-  refresh: string;
+    email: string;
+    password: string;
+    access: string;
+    refresh: string;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class TokenRefresh implements ITokenRefresh {
-  readonly access!: string;
-  refresh!: string;
+    readonly access!: string;
+    refresh!: string;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: ITokenRefresh) {
     if (data) {
@@ -4669,10 +4669,10 @@ export class TokenRefresh implements ITokenRefresh {
 }
 
 export interface ITokenRefresh {
-  access: string;
-  refresh: string;
+    access: string;
+    refresh: string;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class User implements IUser {
@@ -4697,7 +4697,7 @@ export class User implements IUser {
   /** Specific permissions for this user. */
   userPermissions?: number[];
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: IUser) {
     if (data) {
@@ -4811,7 +4811,7 @@ export interface IUser {
   /** Specific permissions for this user. */
   userPermissions?: number[];
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class UserInvitation implements IUserInvitation {
@@ -4875,10 +4875,10 @@ export interface IUserInvitation {
 }
 
 export class UserToken implements IUserToken {
-  token!: TokenRefresh;
-  user!: User;
+    token!: TokenRefresh;
+    user!: User;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: IUserToken) {
     if (data) {
@@ -4924,19 +4924,19 @@ export class UserToken implements IUserToken {
 }
 
 export interface IUserToken {
-  token: TokenRefresh;
-  user: User;
+    token: TokenRefresh;
+    user: User;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export class Widget implements IWidget {
-  readonly id!: number;
-  title?: string | undefined;
-  body?: string | undefined;
-  site?: number | undefined;
+    readonly id!: number;
+    title?: string | undefined;
+    body?: string | undefined;
+    site?: number | undefined;
 
-  [key: string]: any;
+    [key: string]: any;
 
   constructor(data?: IWidget) {
     if (data) {
@@ -4982,12 +4982,12 @@ export class Widget implements IWidget {
 }
 
 export interface IWidget {
-  id: number;
-  title?: string | undefined;
-  body?: string | undefined;
-  site?: number | undefined;
+    id: number;
+    title?: string | undefined;
+    body?: string | undefined;
+    site?: number | undefined;
 
-  [key: string]: any;
+    [key: string]: any;
 }
 
 export type Format = "json" | "yaml";
@@ -4995,16 +4995,16 @@ export type Format = "json" | "yaml";
 export type Lang = "af" | "ar" | "ar-dz" | "ast" | "az" | "be" | "bg" | "bn" | "br" | "bs" | "ca" | "ckb" | "cs" | "cy" | "da" | "de" | "dsb" | "el" | "en" | "en-au" | "en-gb" | "eo" | "es" | "es-ar" | "es-co" | "es-mx" | "es-ni" | "es-ve" | "et" | "eu" | "fa" | "fi" | "fr" | "fy" | "ga" | "gd" | "gl" | "he" | "hi" | "hr" | "hsb" | "hu" | "hy" | "ia" | "id" | "ig" | "io" | "is" | "it" | "ja" | "ka" | "kab" | "kk" | "km" | "kn" | "ko" | "ky" | "lb" | "lt" | "lv" | "mk" | "ml" | "mn" | "mr" | "ms" | "my" | "nb" | "ne" | "nl" | "nn" | "os" | "pa" | "pl" | "pt" | "pt-br" | "ro" | "ru" | "sk" | "sl" | "sq" | "sr" | "sr-latn" | "sv" | "sw" | "ta" | "te" | "tg" | "th" | "tk" | "tr" | "tt" | "udm" | "ug" | "uk" | "ur" | "uz" | "vi" | "zh-hans" | "zh-hant";
 
 export interface FileParameter {
-  data: any;
-  fileName: string;
+    data: any;
+    fileName: string;
 }
 
 export class ApiException extends Error {
-  message: string;
-  status: number;
-  response: string;
-  headers: { [key: string]: any; };
-  result: any;
+    message: string;
+    status: number;
+    response: string;
+    headers: { [key: string]: any; };
+    result: any;
 
   constructor(message: string, status: number, response: string, headers: { [key: string]: any; }, result: any) {
     super();
@@ -5016,7 +5016,7 @@ export class ApiException extends Error {
     this.result = result;
   }
 
-  protected isApiException = true;
+    protected isApiException = true;
 
   static isApiException(obj: any): obj is ApiException {
     return obj.isApiException === true;

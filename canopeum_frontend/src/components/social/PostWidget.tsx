@@ -2,6 +2,7 @@ import AssetGrid from '@components/AssetGrid'
 import { LanguageContext } from '@components/context/LanguageContext'
 import TextExpansion from '@components/inputs/TextExpansion'
 import PostCommentsDialog from '@components/social/PostCommentsDialog'
+import SharePostDialog from '@components/social/SharePostDialog'
 import getApiClient from '@services/apiInterface'
 import { useContext, useState } from 'react'
 
@@ -15,10 +16,15 @@ type Props = {
 const PostWidget = ({ post, likePostEvent }: Props) => {
   const { formatDate } = useContext(LanguageContext)
   const [commentsModalOpen, setCommentsModalOpen] = useState(false)
+  const [shareModalOpen, setShareModalOpen] = useState(false)
 
   const openPostComments = () => setCommentsModalOpen(true)
 
   const handleCommentsModalClose = () => setCommentsModalOpen(false)
+
+  const openPostShareModal = () => setShareModalOpen(true)
+
+  const handleShareModalClose = () => setShareModalOpen(false)
 
   const likePost = async () => {
     if (post.hasLiked) {
@@ -89,7 +95,11 @@ const PostWidget = ({ post, likePostEvent }: Props) => {
             <div>{post.commentCount}</div>
           </button>
 
-          <button className='d-flex gap-2 unstyled-button' type='button'>
+          <button
+            className='d-flex gap-2 unstyled-button'
+            onClick={openPostShareModal}
+            type='button'
+          >
             <span className='material-symbols-outlined text-primary'>share</span>
             <div>{post.shareCount}</div>
           </button>
@@ -101,6 +111,12 @@ const PostWidget = ({ post, likePostEvent }: Props) => {
         onCommentAction={handleCommentCountChange}
         open={commentsModalOpen}
         postId={post.id}
+      />
+
+      <SharePostDialog
+        onClose={handleShareModalClose}
+        open={shareModalOpen}
+        post={post}
       />
     </>
   )

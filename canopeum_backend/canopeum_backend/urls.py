@@ -18,6 +18,7 @@ urlpatterns = [
     # Social
     # Post
     path("social/posts/", views.PostListAPIView.as_view(), name="post-list"),
+    path("social/posts/<int:postId>/", views.PostDetailAPIView.as_view(), name="post-detail"),
     # Comment
     path("social/posts/<int:postId>/comments/", views.CommentListAPIView.as_view(), name="comment-list"),
     path(

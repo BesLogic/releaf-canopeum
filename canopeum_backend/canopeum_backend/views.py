@@ -403,6 +403,20 @@ class PostListAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class PostDetailAPIView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    @extend_schema(responses=PostSerializer, operation_id="post_detail")
+    def get(self, request, postId):
+        try:
+            post = Post.objects.get(pk=postId)
+        except Post.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = PostSerializer(post, context={"request": request})
+        return Response(serializer.data)
+
+
 class NewsListApiView(APIView):
     @extend_schema(
         responses=PostSerializer(many=True),

@@ -14,6 +14,7 @@ import UserManagement from '../pages/UserManagement'
 import Utilities from '../pages/Utilities'
 import { AuthenticationContext } from './context/AuthenticationContext'
 import Navbar from './Navbar'
+import PostDetailsPage from '../pages/PostDetailsPage'
 
 const NavbarLayout = () => (
   <div>
@@ -71,6 +72,7 @@ const MainLayout = () => {
 
         {/* The following routes are accessible to Visitors without any authentication */}
         <Route element={<SiteSocialPage />} path='/sites/:siteId/social' />
+        <Route element={<PostDetailsPage />} path='/posts/:postId' />
         <Route element={<Map />} path='/map' />
       </Route>
     </Routes>
