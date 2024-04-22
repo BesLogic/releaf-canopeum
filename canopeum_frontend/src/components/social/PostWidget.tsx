@@ -111,6 +111,7 @@ const PostWidget = ({ post, likePostEvent }: Props) => {
         onCommentAction={handleCommentCountChange}
         open={commentsModalOpen}
         postId={post.id}
+        siteId={post.site.id}
       />
 
       <SharePostDialog

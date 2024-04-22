@@ -14,6 +14,7 @@ import type { InputValidationError } from '../../utils/validators'
 
 type Props = {
   readonly postId: number,
+  readonly siteId: number,
   readonly open: boolean,
   readonly handleClose: () => void,
   readonly onCommentAction: (action: 'added' | 'deleted') => void,
@@ -21,7 +22,7 @@ type Props = {
 
 const MAXIMUM_WORDS_PER_COMMENT = 100
 
-const PostCommentsDialog = ({ open, postId, handleClose, onCommentAction }: Props) => {
+const PostCommentsDialog = ({ open, postId, siteId, handleClose, onCommentAction }: Props) => {
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const { currentUser } = useContext(AuthenticationContext)
@@ -187,6 +188,7 @@ const PostCommentsDialog = ({ open, postId, handleClose, onCommentAction }: Prop
                 <PostComment
                   comment={comment}
                   onDelete={handleDeleteCommentClick}
+                  siteId={siteId}
                 />
               </CSSTransition>
             ))}

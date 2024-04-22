@@ -6,16 +6,17 @@ import { createRef, useContext } from 'react'
 type Props = {
   readonly comment: Comment,
   readonly onDelete: (comment: Comment) => void,
+  readonly siteId: number,
 }
 
-const PostComment = ({ comment, onDelete }: Props) => {
+const PostComment = ({ comment, onDelete, siteId }: Props) => {
   const { formatDate } = useContext(LanguageContext)
   const { currentUser } = useContext(AuthenticationContext)
   const ref = createRef<HTMLDivElement>()
 
-  // TODO(Add admin site here)
   const canDeleteComment = currentUser && (
-    ['Admin', 'MegaAdmin'].includes(currentUser.role) ||
+    currentUser.role === 'MegaAdmin' ||
+    (currentUser.role === 'SiteManager' && currentUser.adminSiteIds.includes(siteId)) ||
     comment.authorId === currentUser.id
   )
 

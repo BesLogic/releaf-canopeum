@@ -8,13 +8,13 @@ import Home from '../pages/Home'
 import LoadingPage from '../pages/LoadingPage'
 import Login from '../pages/Login'
 import Map from '../pages/Map'
+import PostDetailsPage from '../pages/PostDetailsPage'
 import Register from '../pages/Register'
 import SiteSocialPage from '../pages/SiteSocialPage'
 import UserManagement from '../pages/UserManagement'
 import Utilities from '../pages/Utilities'
 import { AuthenticationContext } from './context/AuthenticationContext'
 import Navbar from './Navbar'
-import PostDetailsPage from '../pages/PostDetailsPage'
 
 const NavbarLayout = () => (
   <div>
