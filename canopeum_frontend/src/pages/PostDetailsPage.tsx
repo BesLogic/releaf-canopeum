@@ -77,7 +77,7 @@ const PostDetailsPage = () => {
         <span className=' ms-1 text-light'>{translate('posts.back-to-social')}</span>
       </Link>
 
-      <PostWidget likePostEvent={handlePostLike} post={post} viewMode='visitor' />
+      <PostWidget likePostEvent={handlePostLike} post={post} />
     </div>
   )
 }
