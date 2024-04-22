@@ -1,4 +1,5 @@
 import { SnackbarContext } from '@components/context/SnackbarContext'
+import { APP_CONFIG } from '@config/config'
 import { appRoutes } from '@constants/routes.constant'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import type { Post } from '@services/api'
@@ -18,8 +19,7 @@ const SharePostDialog = ({ onClose, open, post }: Props) => {
   const [shareUrl, setShareUrl] = useState('')
 
   useEffect(
-    // TODO(NicolasDontigny): use config url
-    () => setShareUrl(`http://localhost:5173${appRoutes.postDetail(post.id)}`),
+    () => setShareUrl(`${APP_CONFIG.appBaseUrl}${appRoutes.postDetail(post.id)}`),
     [post],
   )
 
@@ -31,7 +31,7 @@ const SharePostDialog = ({ onClose, open, post }: Props) => {
   }
 
   return (
-    <Dialog fullWidth maxWidth='xs' onClose={onClose} open={open}>
+    <Dialog fullWidth maxWidth='sm' onClose={onClose} open={open}>
       <DialogTitle>{translate('social.share-dialog.title')}</DialogTitle>
       <DialogContent className='pb-5'>
         <div>
