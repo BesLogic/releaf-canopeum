@@ -74,6 +74,13 @@ ignore = [
   "N803", # Different naming convention between js/json and python. A better/configured middleware could take care of that
 ]
 
+[tool.ruff.lint.extend-per-file-ignores]
+"scripts/**" = [
+  # Too many false positives
+  "S603", # subprocess-without-shell-equals-true
+  # Using print instead of logging in scripts files
+  "T201", # print-found
+]
 # https://docs.astral.sh/ruff/settings/#flake8-implicit-str-concat
 [tool.ruff.lint.flake8-implicit-str-concat]
 allow-multiline = false
