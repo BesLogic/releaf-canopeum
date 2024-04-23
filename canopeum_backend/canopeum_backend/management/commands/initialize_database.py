@@ -1,3 +1,5 @@
+import random
+from datetime import timedelta
 from pathlib import Path
 
 from django.core.files import File
@@ -11,6 +13,7 @@ from canopeum_backend.models import (
     Announcement,
     Asset,
     Batch,
+    Batchfertilizer,
     Comment,
     Contact,
     Coordinate,
@@ -28,6 +31,29 @@ from canopeum_backend.models import (
     Treetype,
     User,
 )
+
+
+def create_posts_for_site(site):
+    num_posts = random.randint(4, 8)  # noqa: S311
+    for _ in range(num_posts):
+        # Generate a random share_count between 0 and 10
+        share_count = random.randint(0, 10)  # noqa: S311
+
+        # Create a post for the site
+        post = Post.objects.create(
+            site=site,
+            body=f"""{site.name} has planted {random.randint(100, 1000)} new trees today.
+                Let's continue to grow our forest!""",  # noqa: S311
+            share_count=share_count,
+        )
+        # Change created_at date since it is auto-generated on create
+        # Generate a random created_at time within the last 2 months
+        post.created_at = timezone.now() - timedelta(
+            days=random.randint(0, 60),  # noqa: S311
+            hours=random.randint(0, 12),  # noqa: S311
+            minutes=random.randint(0, 55),  # noqa: S311
+        )
+        post.save()
 
 
 class Command(BaseCommand):
@@ -72,6 +98,7 @@ class Command(BaseCommand):
         self.create_users()
 
         self.create_canopeum_site()
+        self.create_other_sites()
 
         self.create_siteadmins()
         self.stdout.write(self.style.SUCCESS("Data Generated"))
@@ -306,6 +333,7 @@ class Command(BaseCommand):
             created_at=timezone.now(),
         )
         post.media.add(*Asset.objects.filter(asset__contains="canopeum_post_img"))
+        create_posts_for_site(site)
         Comment.objects.create(
             body="Wow, I didn't know the fires had reached the location of this site!",
             user=User.objects.get(email="tyrion@lannister.com"),
@@ -316,7 +344,7 @@ class Command(BaseCommand):
             user=User.objects.get(email="normal@user.com"),
             post=post,
         )
-        Batch.objects.create(
+        batch = Batch.objects.create(
             name="First Batch",
             site=site,
             created_at=timezone.now(),
@@ -327,6 +355,106 @@ class Command(BaseCommand):
             total_propagation=100,
             updated_at=timezone.now(),
         )
+        Batchfertilizer.objects.create(
+            batch=batch,
+            fertilizer_type=Fertilizertype.objects.first(),
+        )
+
+    def create_other_sites(self):
+        site_2 = Site.objects.create(
+            name="Maple Grove Retreat",
+            site_type=Sitetype.objects.get(name=SitetypeInternationalization.objects.get(en="Parks")),
+            coordinate=Coordinate.objects.create(
+                dms_latitude="46°48'33.6\"N",
+                dms_longitude="71°18'40.0\"W",
+                dd_latitude=46.8093,
+                dd_longitude=-71.3111,
+                address="123 Forest Trail, Quebec City, QC G1P 3X4",
+            ),
+            description="""Maple Grove Retreat is a serene escape nestled in the outskirts of Quebec City,
+                offering a lush forested area with scenic maple groves.""",
+            size="1500",
+            research_partnership=True,
+            visible_map=True,
+            visitor_count=300,
+            contact=Contact.objects.create(
+                email="contact@maplegroveretreat.com",
+                phone="+1 (418) 555-1234",
+                address="123 Forest Trail, Quebec City, QC G1P 3X4",
+            ),
+            image=Asset.objects.get(asset__contains="site_img2"),
+            announcement=Announcement.objects.create(
+                body="""
+                    Maple Grove Retreat is excited to announce our upcoming Maple Syrup Festival!
+                    Join us on March 15th for a day of maple syrup tastings, nature hikes,
+                    and family fun. Learn more on our website.
+                """,
+                link="https://www.maplegroveretreat.com/events/maple-syrup-festival",
+            ),
+        )
+        create_posts_for_site(site_2)
+
+        site_3 = Site.objects.create(
+            name="Lakeside Oasis",
+            site_type=Sitetype.objects.get(name=SitetypeInternationalization.objects.get(en="Parks")),
+            coordinate=Coordinate.objects.create(
+                dms_latitude="48°36'05.0\"N",
+                dms_longitude="71°18'27.0\"W",
+                dd_latitude=48.6014,
+                dd_longitude=-71.3075,
+                address="456 Lakeview Road, Lac-Saint-Jean, QC G8M 1R9",
+            ),
+            description="""Lakeside Oasis offers a tranquil retreat by the shores of Lac-Saint-Jean,
+                with pristine waters and breathtaking sunsets.""",
+            size="800",
+            research_partnership=False,
+            visible_map=True,
+            visitor_count=150,
+            contact=Contact.objects.create(
+                email="info@lakesideoasis.com",
+                phone="+1 (418) 555-5678",
+                address="456 Lakeview Road, Lac-Saint-Jean, QC G8M 1R9",
+            ),
+            image=Asset.objects.get(asset__contains="site_img3"),
+            announcement=Announcement.objects.create(
+                body="""Escape to Lakeside Oasis! Our cozy cabins are now open for winter bookings. Enjoy ice fishing,
+                    snowshoeing, and warm campfires by the lake. Book your stay today!""",
+                link="https://www.lakesideoasis.com/winter-getaway",
+            ),
+        )
+        create_posts_for_site(site_3)
+
+        site_4 = Site.objects.create(
+            name="Evergreen Trail",
+            site_type=Sitetype.objects.get(name=SitetypeInternationalization.objects.get(en="Parks")),
+            coordinate=Coordinate.objects.create(
+                dms_latitude="46°12'30.0\"N",
+                dms_longitude="74°35'30.0\"W",
+                dd_latitude=46.2083,
+                dd_longitude=-74.5917,
+                address="789 Trailhead Way, Mont-Tremblant, QC J8E 1T7",
+            ),
+            description="""Evergreen Trail invites you to explore the rugged beauty of Mont-Tremblant's wilderness,
+                with winding trails and majestic evergreen forests.""",
+            size="1200",
+            research_partnership=True,
+            visible_map=True,
+            visitor_count=200,
+            contact=Contact.objects.create(
+                email="explore@evergreentrail.com",
+                phone="+1 (819) 555-9876",
+                address="789 Trailhead Way, Mont-Tremblant, QC J8E 1T7",
+            ),
+            image=Asset.objects.get(asset__contains="site_img4"),
+            announcement=Announcement.objects.create(
+                body="""Discover the wonders of Evergreen Trail!
+                    Our guided nature walks are now available every weekend.
+                    Immerse yourself in nature and learn about the diverse
+                    flora and fauna of Mont-Tremblant.""",
+                link="https://www.evergreentrail.com/guided-walks",
+            ),
+        )
+        create_posts_for_site(site_4)
 
     def create_siteadmins(self):
         Siteadmin.objects.create(
