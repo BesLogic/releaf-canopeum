@@ -35,7 +35,9 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
           </div>
 
           <Link className='nav-link' to={appRoutes.siteSocial(siteSummary.id)}>
-            <button className='btn btn-primary' type='button'>{translate('analyticsSite.social-page')}</button>
+            <button className='btn btn-primary' type='button'>
+              {translate('analyticsSite.social-page')}
+            </button>
           </Link>
         </div>
 
@@ -85,7 +87,9 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
           <div className='d-flex align-items-flex-end fw-bold'>
             <span className='material-symbols-outlined'>group</span>
             <span className='ms-1 me-2'>{translate('analyticsSite.sponsors')}:</span>
-            {siteSummary.sponsors.map(sponsor => <span className='me-4' key={sponsor}>{sponsor}</span>)}
+            {siteSummary.sponsors.map(sponsor => (
+              <span className='me-4' key={sponsor}>{sponsor}</span>
+            ))}
           </div>
         </div>
 

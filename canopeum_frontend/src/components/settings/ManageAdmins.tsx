@@ -10,7 +10,8 @@ const ManageAdmins = () => {
   const [siteAdminList, setSiteAdminList] = useState<AdminUserSites[]>([])
   const [showAdminInviteDialog, setShowAdminInviteDialog] = useState(false)
 
-  const fetchSiteAdmins = async () => setSiteAdminList(await getApiClient().adminUserSitesClient.all())
+  const fetchSiteAdmins = async () =>
+    setSiteAdminList(await getApiClient().adminUserSitesClient.all())
 
   useEffect((): void => {
     void fetchSiteAdmins()
@@ -39,7 +40,10 @@ const ManageAdmins = () => {
           ))}
         </div>
       </div>
-      <AdminInvitationDialog handleClose={() => setShowAdminInviteDialog(false)} open={showAdminInviteDialog} />
+      <AdminInvitationDialog
+        handleClose={() => setShowAdminInviteDialog(false)}
+        open={showAdminInviteDialog}
+      />
     </>
   )
 }

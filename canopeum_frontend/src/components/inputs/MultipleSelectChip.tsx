@@ -66,7 +66,9 @@ const MultipleSelectChip = <TValue extends SelectionValueType>(
               {/* TODO(NicolasDontigny): Find a more efficient way to map values to their display text here */}
               {selected
                 .map(value => options.find(option => option.value === value))
-                .filter(notEmpty).map(option => <Chip key={option.value} label={option.displayText} />)}
+                .filter(notEmpty).map(option => (
+                  <Chip key={option.value} label={option.displayText} />
+                ))}
             </Box>
           )}
           value={selectedValues}

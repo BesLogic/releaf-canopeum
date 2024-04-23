@@ -99,7 +99,9 @@ const EditProfile = () => {
         <div className='h-100 d-flex flex-column justify-content-between w-50 py-3'>
           <form className='form'>
             <div className='mb-4'>
-              <label className='form-label' htmlFor='username'>{translate('auth.username-label')}</label>
+              <label className='form-label' htmlFor='username'>
+                {translate('auth.username-label')}
+              </label>
               <input
                 className='form-control'
                 id='username'

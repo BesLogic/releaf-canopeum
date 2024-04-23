@@ -76,7 +76,8 @@ const CreatePostWidget = (props: { readonly addNewPost: (newPost: Post) => void 
     setFiles(previousFiles => [...previousFiles, ...validCompressedFiles])
   }
 
-  const removeFile = (index: number) => setFiles(previous => previous.filter((_, index_) => index_ !== index))
+  const removeFile = (index: number) =>
+    setFiles(previous => previous.filter((_, index_) => index_ !== index))
 
   const handleCommentBodyChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const bodyValue = event.target.value

@@ -4,7 +4,12 @@ import { useTranslation } from 'react-i18next'
 
 import type { SiteSummary } from '../../services/api'
 
-type SiteSummaryChartOptions = { groups: string[], series: BarChartProps['series'], colors: string[], average: number }
+type SiteSummaryChartOptions = {
+  groups: string[],
+  series: BarChartProps['series'],
+  colors: string[],
+  average: number,
+}
 
 const buildChartOptions = (siteSummaries: SiteSummary[]) => {
   // eslint-disable-next-line total-functions/no-partial-division -- length checked above
@@ -72,7 +77,9 @@ const SiteSuccessRatesChart = ({ siteSummaries }: Props) => {
 
     return (
       <div>
-        <h6 className='text-capitalize'>{translate('analytics.average')} : {options.average.toFixed(1)} %</h6>
+        <h6 className='text-capitalize'>
+          {translate('analytics.average')} : {options.average.toFixed(1)} %
+        </h6>
         <BarChart
           colors={options.colors}
           grid={{ horizontal: true, vertical: true }}

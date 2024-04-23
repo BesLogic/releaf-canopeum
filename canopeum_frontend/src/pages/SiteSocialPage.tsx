@@ -104,7 +104,9 @@ const SiteSocialPage = () => {
         <div className='row'>
           <div className='col-4'>
             <div className='d-flex flex-column gap-4'>
-              {site?.announcement && <AnnouncementCard announcement={site.announcement} viewMode={viewMode} />}
+              {site?.announcement && (
+                <AnnouncementCard announcement={site.announcement} viewMode={viewMode} />
+              )}
               {site?.contact && <ContactCard contact={site.contact} viewMode={viewMode} />}
             </div>
           </div>
@@ -126,7 +128,9 @@ const SiteSocialPage = () => {
                           <p>{errorPosts.message}</p>
                         </div>
                       )
-                      : posts.map(post => <PostWidget key={post.id} likePostEvent={likePost} post={post} />)}
+                      : posts.map(post => (
+                        <PostWidget key={post.id} likePostEvent={likePost} post={post} />
+                      ))}
                   </div>
                 </>
               )}

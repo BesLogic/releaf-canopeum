@@ -28,12 +28,18 @@ const PostComment = ({ comment, onDelete, siteId }: Props) => {
 
           <div className='d-flex flex-column'>
             <span className='fw-bold'>{comment.authorUsername}</span>
-            <span className='text-muted text-small'>{formatDate(comment.createdAt, { dateStyle: 'short' })}</span>
+            <span className='text-muted text-small'>
+              {formatDate(comment.createdAt, { dateStyle: 'short' })}
+            </span>
           </div>
         </div>
 
         {canDeleteComment && (
-          <button className='unstyled-button' onClick={() => onDelete(comment)} type='button'>
+          <button
+            className='unstyled-button'
+            onClick={() => onDelete(comment)}
+            type='button'
+          >
             <span className='material-symbols-outlined text-primary'>cancel</span>
           </button>
         )}

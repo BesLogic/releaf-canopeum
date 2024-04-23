@@ -1,3 +1,6 @@
+/* eslint-disable max-lines -- We don't want to split this file as it is a dev page */
+// Listing all available components for the application
+
 import facebookLogo from '@assets/icons/facebook-regular.svg'
 import canopeumLogo from '@assets/images/Canopeum_Logo.jpg'
 import PrimaryIconBadge from '@components/PrimaryIconBadge'
@@ -107,7 +110,8 @@ const Utilities = () => (
               <div className='card-body d-flex flex-column h-100'>
                 <h5 className='card-title'>Card title</h5>
                 <p className='card-text'>
-                  Some quick example text to build on the card title and make up the bulk of the card&apos;s content.
+                  Some quick example text to build on the card title and make up the bulk of the
+                  card&apos;s content.
                 </p>
                 <button className='btn btn-link mt-auto' type='button'>Go somewhere</button>
               </div>
@@ -120,7 +124,12 @@ const Utilities = () => (
         <form>
           <div className='form-group'>
             <label htmlFor='exampleInputEmail1'>Email address</label>
-            <input aria-describedby='emailHelp' className='form-control' id='exampleInputEmail1' type='email' />
+            <input
+              aria-describedby='emailHelp'
+              className='form-control'
+              id='exampleInputEmail1'
+              type='email'
+            />
             <small className='form-text text-muted' id='emailHelp'>
               We&apos;ll never share your email with anyone else.
             </small>
@@ -171,7 +180,12 @@ const Utilities = () => (
       </div>
       <div className='bg-white rounded px-3 py-2'>
         <h2>Modals</h2>
-        <button className='btn btn-primary' data-bs-target='#exampleModal' data-bs-toggle='modal' type='button'>
+        <button
+          className='btn btn-primary'
+          data-bs-target='#exampleModal'
+          data-bs-toggle='modal'
+          type='button'
+        >
           Launch demo modal
         </button>
 
@@ -186,13 +200,20 @@ const Utilities = () => (
             <div className='modal-content'>
               <div className='modal-header'>
                 <h1 className='modal-title fs-5' id='exampleModalLabel'>Modal title</h1>
-                <button aria-label='Close' className='btn-close' data-bs-dismiss='modal' type='button' />
+                <button
+                  aria-label='Close'
+                  className='btn-close'
+                  data-bs-dismiss='modal'
+                  type='button'
+                />
               </div>
               <div className='modal-body'>
                 ...
               </div>
               <div className='modal-footer'>
-                <button className='btn btn-outline-primary' data-bs-dismiss='modal' type='button'>Close</button>
+                <button className='btn btn-outline-primary' data-bs-dismiss='modal' type='button'>
+                  Close
+                </button>
                 <button className='btn btn-primary' type='button'>Save changes</button>
               </div>
             </div>
@@ -221,10 +242,11 @@ const Utilities = () => (
             >
               <div className='accordion-body'>
                 <strong>This is the first item&apos;s accordion body.</strong>{' '}
-                It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each
-                element. These classes control the overall appearance, as well as the showing and hiding via CSS
-                transitions. You can modify any of this with custom CSS or overriding our default variables. It&apos;s
-                also worth noting that just about any HTML can go within the{' '}
+                It is shown by default, until the collapse plugin adds the appropriate classes that
+                we use to style each element. These classes control the overall appearance, as well
+                as the showing and hiding via CSS transitions. You can modify any of this with
+                custom CSS or overriding our default variables. It&apos;s also worth noting that
+                just about any HTML can go within the{' '}
                 <code>.accordion-body</code>, though the transition does limit overflow.
               </div>
             </div>
@@ -249,10 +271,11 @@ const Utilities = () => (
             >
               <div className='accordion-body'>
                 <strong>This is the second item&apos;s accordion body.</strong>{' '}
-                It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style
-                each element. These classes control the overall appearance, as well as the showing and hiding via CSS
-                transitions. You can modify any of this with custom CSS or overriding our default variables. It&apos;s
-                also worth noting that just about any HTML can go within the{' '}
+                It is hidden by default, until the collapse plugin adds the appropriate classes that
+                we use to style each element. These classes control the overall appearance, as well
+                as the showing and hiding via CSS transitions. You can modify any of this with
+                custom CSS or overriding our default variables. It&apos;s also worth noting that
+                just about any HTML can go within the{' '}
                 <code>.accordion-body</code>, though the transition does limit overflow.
               </div>
             </div>
@@ -277,10 +300,11 @@ const Utilities = () => (
             >
               <div className='accordion-body'>
                 <strong>This is the third item&apos;s accordion body.</strong>{' '}
-                It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style
-                each element. These classes control the overall appearance, as well as the showing and hiding via CSS
-                transitions. You can modify any of this with custom CSS or overriding our default variables. It&apos;s
-                also worth noting that just about any HTML can go within the{' '}
+                It is hidden by default, until the collapse plugin adds the appropriate classes that
+                we use to style each element. These classes control the overall appearance, as well
+                as the showing and hiding via CSS transitions. You can modify any of this with
+                custom CSS or overriding our default variables. It&apos;s also worth noting that
+                just about any HTML can go within the{' '}
                 <code>.accordion-body</code>, though the transition does limit overflow.
               </div>
             </div>

@@ -82,7 +82,9 @@ const Map = () => {
             {sites.map(site => (
               <Link id={`${site.id}`} key={site.id} to={appRoutes.siteSocial(site.id)}>
                 <div
-                  className={`card ${selectedSiteId === site.id && 'border border-secondary border-5'}`}
+                  className={`card ${
+                    selectedSiteId === site.id && 'border border-secondary border-5'
+                  }`}
                 >
                   <div className='row g-0'>
                     <div className='col-md-4'>

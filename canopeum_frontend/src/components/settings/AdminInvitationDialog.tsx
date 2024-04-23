@@ -178,7 +178,9 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
 
   return (
     <Dialog fullWidth maxWidth='sm' onClose={onCloseModal} open={open}>
-      <DialogTitle className='text-center'>{translate('settings.manage-admins.invite-admin')}</DialogTitle>
+      <DialogTitle className='text-center'>
+        {translate('settings.manage-admins.invite-admin')}
+      </DialogTitle>
       <DialogContent>
         <div className='d-flex flex-column justify-content-between m-auto' style={{ width: '80%' }}>
           {renderInvitationContent()}

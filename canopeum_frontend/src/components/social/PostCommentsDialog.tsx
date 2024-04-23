@@ -113,7 +113,8 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose, onCommentAction
     }
   }
 
-  const handleDeleteCommentClick = (commentToDelete: Comment) => setConfirmCommentDeleteOpen(commentToDelete)
+  const handleDeleteCommentClick = (commentToDelete: Comment) =>
+    setConfirmCommentDeleteOpen(commentToDelete)
 
   const handleConfirmDeleteAction = (proceedWithDelete: boolean) => {
     const commentToDelete = confirmCommentDeleteOpen
@@ -150,7 +151,10 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose, onCommentAction
                     rows={5}
                     value={commentBody}
                   />
-                  <div className='max-words position-absolute end-0 pe-2' style={{ bottom: '-1.6rem' }}>
+                  <div
+                    className='max-words position-absolute end-0 pe-2'
+                    style={{ bottom: '-1.6rem' }}
+                  >
                     <span>{commentBodyNumberOfWords}/{MAXIMUM_WORDS_PER_COMMENT}</span>
                     <span className='ms-1'>
                       {translate('social.comments.words', { count: MAXIMUM_WORDS_PER_COMMENT })}
@@ -166,7 +170,9 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose, onCommentAction
 
                 {commentBodyError === 'maximumChars' && (
                   <span className='help-block text-danger'>
-                    {translate('social.comments.comment-body-max-chars', { count: MAXIMUM_WORDS_PER_COMMENT })}
+                    {translate('social.comments.comment-body-max-chars', {
+                      count: MAXIMUM_WORDS_PER_COMMENT,
+                    })}
                   </span>
                 )}
               </div>

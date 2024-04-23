@@ -23,7 +23,9 @@ const Register = () => {
   const [usernameError, setUsernameError] = useState<InputValidationError | undefined>()
   const [emailError, setEmailError] = useState<InputValidationError | undefined>()
   const [passwordError, setPasswordError] = useState<InputValidationError | undefined>()
-  const [passwordConfirmationError, setPasswordConfirmationError] = useState<InputValidationError | undefined>()
+  const [passwordConfirmationError, setPasswordConfirmationError] = useState<
+    InputValidationError | undefined
+  >()
 
   const [registrationError, setRegistrationError] = useState<string | undefined>(undefined)
   const [codeInvalid, setCodeInvalid] = useState(false)
@@ -236,7 +238,9 @@ const Register = () => {
           </div>
 
           <div className='w-100'>
-            <label htmlFor='confirmation-password-input'>{translate('auth.password-confirmation-label')}</label>
+            <label htmlFor='confirmation-password-input'>
+              {translate('auth.password-confirmation-label')}
+            </label>
             <input
               className={`form-control ${passwordConfirmationError && 'is-invalid'}`}
               id='confirmation-password-input'
@@ -257,8 +261,12 @@ const Register = () => {
           </div>
 
           {registrationError && <span className='help-block text-danger'>{registrationError}</span>}
-          {codeInvalid && <span className='help-block text-danger'>{translate('auth.code-invalid')}</span>}
-          {codeExpired && <span className='help-block text-danger'>{translate('auth.invitation-expired')}</span>}
+          {codeInvalid && (
+            <span className='help-block text-danger'>{translate('auth.code-invalid')}</span>
+          )}
+          {codeExpired && (
+            <span className='help-block text-danger'>{translate('auth.invitation-expired')}</span>
+          )}
 
           <button
             className='btn btn-primary'
@@ -272,7 +280,9 @@ const Register = () => {
           <div className='mt-4 text-center'>
             <span>{translate('auth.already-have-an-account')}</span>
             <Link className='ms-2' to={appRoutes.login}>
-              <span className='text-primary text-decoration-underline'>{translate('auth.log-in')}</span>
+              <span className='text-primary text-decoration-underline'>
+                {translate('auth.log-in')}
+              </span>
             </Link>
           </div>
         </div>

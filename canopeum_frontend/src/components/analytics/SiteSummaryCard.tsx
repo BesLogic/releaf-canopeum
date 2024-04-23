@@ -45,7 +45,9 @@ const SiteSummaryCard = ({ site, admins, onSiteChange }: Props) => {
 
           <div className='card-subtitle my-1'>
             <div className='d-flex align-items-center text-muted'>
-              <span className='material-symbols-outlined fill-icon text-muted me-1'>location_on</span>
+              <span className='material-symbols-outlined fill-icon text-muted me-1'>
+                location_on
+              </span>
               <span className='text-ellipsis'>
                 {site.coordinate.address ?? translate('analytics.site-summary.unknown')}
               </span>
@@ -79,7 +81,9 @@ const SiteSummaryCard = ({ site, admins, onSiteChange }: Props) => {
                   <CustomIcon icon='sitePropagationIcon' size='xl' />
                 </div>
                 <span className='text-primary fs-4 fw-bold'>{site.propagationCount}</span>
-                <span className='text-muted'>{translate('analytics.site-summary.propagation')}</span>
+                <span className='text-muted'>
+                  {translate('analytics.site-summary.propagation')}
+                </span>
               </div>
             </div>
 

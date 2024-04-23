@@ -66,7 +66,9 @@ const Home = () => {
     <div>
       <div className='page-container'>
         <div className='mb-4'>
-          <h1 className='text-light'>{translate('home.title', { username: currentUser.username })}</h1>
+          <h1 className='text-light'>
+            {translate('home.title', { username: currentUser.username })}
+          </h1>
 
           <h6 className='text-light'>{translate('home.subtitle')}</h6>
         </div>
