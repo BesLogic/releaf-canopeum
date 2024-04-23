@@ -115,9 +115,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_role(self, obj: User) -> RoleName:
         role_name = obj.role.name
-        if role_name is not RoleName:
-            return RoleName.USER
-        return role_name
+        return RoleName.from_string(RoleName.USER, role_name)
 
     @extend_schema_field(list[int])  # pyright: ignore[reportArgumentType]
     def get_admin_site_ids(self, obj: User):

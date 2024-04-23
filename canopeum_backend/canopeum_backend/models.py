@@ -11,6 +11,13 @@ class RoleName(models.TextChoices):
     SITEMANAGER = "SiteManager"
     MEGAADMIN = "MegaAdmin"
 
+    def from_string(self, value):
+        if value == self.MEGAADMIN:
+            return self.MEGAADMIN
+        if value == self.SITEMANAGER:
+            return self.SITEMANAGER
+        return self.USER
+
 
 class Role(models.Model):
     name = models.CharField(
