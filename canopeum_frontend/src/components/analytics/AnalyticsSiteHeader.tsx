@@ -10,6 +10,9 @@ import { Link } from 'react-router-dom'
 import CustomIcon from '../../components/icons/CustomIcon'
 import classes from './AnalyticsSite.module.scss'
 
+const CUSTOM_ICON_BADGE_CLASS =
+  'bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'
+
 type Props = {
   readonly siteSummary: SiteSummary,
 }
@@ -43,7 +46,7 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
 
         <div className={`d-flex justify-content-between mt-4 ${classes.analyticsCountsContainer}`}>
           <div className='d-flex align-items-center gap-2 me-5'>
-            <div className='bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'>
+            <div className={CUSTOM_ICON_BADGE_CLASS}>
               <CustomIcon icon='sitePlantedIcon' size='5xl' />
             </div>
             <div className='d-flex flex-column'>
@@ -53,7 +56,7 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
           </div>
 
           <div className='d-flex align-items-center gap-2 me-5'>
-            <div className='bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'>
+            <div className={CUSTOM_ICON_BADGE_CLASS}>
               <CustomIcon icon='siteSurvivedIcon' size='5xl' />
             </div>
             <div className='d-flex flex-column'>
@@ -63,7 +66,7 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
           </div>
 
           <div className='d-flex align-items-center gap-2 me-5'>
-            <div className='bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'>
+            <div className={CUSTOM_ICON_BADGE_CLASS}>
               <CustomIcon icon='sitePropagationIcon' size='5xl' />
             </div>
             <div className='d-flex flex-column'>
@@ -73,7 +76,7 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
           </div>
 
           <div className='d-flex align-items-center gap-2 me-5'>
-            <div className='bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'>
+            <div className={CUSTOM_ICON_BADGE_CLASS}>
               <CustomIcon icon='siteVisitorsIcon' size='5xl' />
             </div>
             <div className='d-flex flex-column'>

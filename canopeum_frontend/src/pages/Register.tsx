@@ -129,7 +129,8 @@ const Register = () => {
   }
 
   const validateForm = () => {
-    // Do not return directly the method calls; we need each of them to be called before returning the result
+    // Do not return directly the method calls;
+    // we need each of them to be called before returning the result
     const usernameValid = validateUsername()
     const emailValid = validateEmail()
     const passwordValid = validatePassword()
@@ -178,7 +179,7 @@ const Register = () => {
             <label htmlFor='username-input'>{translate('auth.username-label')}</label>
             <input
               aria-describedby='emailHelp'
-              // eslint-disable-next-line sonarjs/no-duplicate-string -- Fix this by creating an Input Component?
+              // eslint-disable-next-line sonarjs/no-duplicate-string -- Create an Input Component?
               className={`form-control ${usernameError && 'is-invalid'} `}
               id='username-input'
               onBlur={() => validateUsername()}

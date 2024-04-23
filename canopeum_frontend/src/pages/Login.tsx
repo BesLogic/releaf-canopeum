@@ -47,7 +47,8 @@ const Login = () => {
   }
 
   const validateForm = () => {
-    // Do not return directly the method calls; we need each of them to be called before returning the result
+    // Do not return directly the method calls;
+    // we need each of them to be called before returning the result
     const emailValid = validateEmail()
     const passwordValid = validatePassword()
 

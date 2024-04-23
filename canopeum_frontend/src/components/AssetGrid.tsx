@@ -25,7 +25,14 @@ const AssetGrid = ({ medias, isEditable }: Props) => (
                 type='button'
               >
                 <span
-                  className='material-symbols-outlined fill-icon position-absolute top-0 end-0 cursor-pointer'
+                  className='
+                    material-symbols-outlined
+                    fill-icon
+                    position-absolute
+                    top-0
+                    end-0
+                    cursor-pointer
+                  '
                   style={{ cursor: 'pointer' }}
                 >
                   cancel

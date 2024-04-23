@@ -61,7 +61,14 @@ const SiteSummaryCard = ({ site, admins, onSiteChange }: Props) => {
           <div className='card-text mt-2'>
             <div className='row my-2'>
               <div className='col-4 d-flex flex-column align-items-center'>
-                <div className='bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'>
+                <div className='
+                  bg-lightgreen
+                  rounded-circle
+                  d-flex
+                  justify-content-center
+                  align-items-center
+                  p-2
+                '>
                   <CustomIcon icon='sitePlantedIcon' size='xl' />
                 </div>
                 <span className='text-primary fs-4 fw-bold'>{site.plantCount}</span>
@@ -69,7 +76,13 @@ const SiteSummaryCard = ({ site, admins, onSiteChange }: Props) => {
               </div>
 
               <div className='col-4 d-flex flex-column align-items-center'>
-                <div className='bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'>
+                <div className='
+                  bg-lightgreen
+                  rounded-circle
+                  d-flex
+                  justify-content-center
+                  align-items-center
+                  p-2'>
                   <CustomIcon icon='siteSurvivedIcon' size='xl' />
                 </div>
                 <span className='text-primary fs-4 fw-bold'>{site.survivedCount}</span>
@@ -77,7 +90,13 @@ const SiteSummaryCard = ({ site, admins, onSiteChange }: Props) => {
               </div>
 
               <div className='col-4 d-flex flex-column align-items-center'>
-                <div className='bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'>
+                <div className='
+                  bg-lightgreen
+                  rounded-circle
+                  d-flex
+                  justify-content-center
+                  align-items-center
+                  p-2'>
                   <CustomIcon icon='sitePropagationIcon' size='xl' />
                 </div>
                 <span className='text-primary fs-4 fw-bold'>{site.propagationCount}</span>

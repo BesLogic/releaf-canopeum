@@ -53,7 +53,8 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
   }
 
   const validateForm = () =>
-    // Do not return directly the method calls; we need each of them to be called before returning the result
+    // Do not return directly the method calls;
+    // we need each of them to be called before returning the result
     validateEmail()
 
   const handleGenerateLinkClick = async () => {
