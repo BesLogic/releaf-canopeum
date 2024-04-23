@@ -11,6 +11,7 @@ from canopeum_backend.models import (
     Announcement,
     Asset,
     Batch,
+    Comment,
     Contact,
     Coordinate,
     Fertilizertype,
@@ -66,11 +67,12 @@ class Command(BaseCommand):
         self.create_tree_types()
         self.create_site_types()
         self.create_assets()
-        self.create_canopeum_site()
-        self.create_post_conopeum_site()
-        self.create_batch()
+
         self.create_roles()
         self.create_users()
+
+        self.create_canopeum_site()
+
         self.create_siteadmins()
         self.stdout.write(self.style.SUCCESS("Data Generated"))
 
@@ -208,64 +210,21 @@ class Command(BaseCommand):
             Sitetype.objects.create(name=SitetypeInternationalization.objects.create(en=_[0], fr=_[1]))
 
     def create_assets(self):
-        asset_path = Path(settings.BASE_DIR) / "canopeum_backend" / "media" / "site_img.png"
-        for _ in range(2):  # Saving 2 example images
-            with Path.open(asset_path, "rb") as img_file:
+        seeding_images_path = Path(settings.BASE_DIR) / "canopeum_backend" / "seeding" / "images"
+        image_file_names = (
+            "site_img1.png",
+            "site_img2.jpg",
+            "site_img3.jpg",
+            "site_img4.jpg",
+            "canopeum_post_img1.jpeg",
+            "canopeum_post_img2.jpeg",
+        )
+        for file_name in image_file_names:
+            with Path.open(seeding_images_path / file_name, "rb") as img_file:
                 django_file = File(img_file)
 
                 asset = Asset()
-                asset.asset.save(asset_path.name, django_file, save=True)
-
-    def create_canopeum_site(self):
-        Site.objects.create(
-            name="Canopeum",
-            site_type=Sitetype.objects.get(name=SitetypeInternationalization.objects.get(en="Parks")),
-            coordinate=Coordinate.objects.create(
-                dms_latitude="45°30'06.1\"N",
-                dms_longitude="73°34'02.3\"W",
-                dd_latitude=45.5017,
-                dd_longitude=-73.5673,
-                address="721 Walker avenue, Office 200 Montréal, QC H4C 2H5",
-            ),
-            description="Canopeum is a park in Montreal",
-            size="1000",
-            research_partnership=True,
-            visible_map=True,
-            visitor_count=100,
-            contact=Contact.objects.create(
-                email="info@canopeum.com",
-                phone="+1 (514) 741-5008",
-                address="721 Walker avenue, Office 200 Montréal, QC H4C 2H5",
-            ),
-            image=Asset.objects.first(),
-            announcement=Announcement.objects.create(
-                body="We currently have 20000 healthy seedlings of different species, ready to be planted at any time!"
-                + "Please click the link below to book your favorite seedlings on our website",
-                link="https://www.canopeum-pos.com",
-            ),
-        )
-
-    def create_post_conopeum_site(self):
-        post = Post.objects.create(
-            site=Site.objects.get(name="Canopeum"),
-            body="Canopeum is a park in Montreal",
-            share_count=5,
-            created_at=timezone.now(),
-        )
-        post.media.set(Asset.objects.all())
-
-    def create_batch(self):
-        Batch.objects.create(
-            name="First Batch",
-            site=Site.objects.get(name="Canopeum"),
-            created_at=timezone.now(),
-            size=100,
-            sponsor="Beslogic Inc.",
-            soil_condition="Good",
-            total_number_seed=100,
-            total_propagation=100,
-            updated_at=timezone.now(),
-        )
+                asset.asset.save(file_name, django_file, save=True)
 
     def create_roles(self):
         Role.objects.create(name="User")
@@ -303,13 +262,70 @@ class Command(BaseCommand):
             username="OberynMartell",
             email="oberyn@martell.com",
             password="oberyn123",  # noqa: S106 MOCK_PASSWORD
-            role=Role.objects.get(name="User"),
+            role=Role.objects.get(name="SiteManager"),
         )
         User.objects.create_user(
             username="NormalUser",
             email="normal@user.com",
             password="normal123",  # noqa: S106 MOCK_PASSWORD
             role=Role.objects.get(name="User"),
+        )
+
+    def create_canopeum_site(self):
+        site = Site.objects.create(
+            name="Canopeum",
+            site_type=Sitetype.objects.get(name=SitetypeInternationalization.objects.get(en="Parks")),
+            coordinate=Coordinate.objects.create(
+                dms_latitude="45°30'06.1\"N",
+                dms_longitude="73°34'02.3\"W",
+                dd_latitude=45.5017,
+                dd_longitude=-73.5673,
+                address="721 Walker avenue, Office 200 Montréal, QC H4C 2H5",
+            ),
+            description="Canopeum is a park in Montreal",
+            size="1000",
+            research_partnership=True,
+            visible_map=True,
+            visitor_count=100,
+            contact=Contact.objects.create(
+                email="info@canopeum.com",
+                phone="+1 (514) 741-5008",
+                address="721 Walker avenue, Office 200 Montréal, QC H4C 2H5",
+            ),
+            image=Asset.objects.first(),
+            announcement=Announcement.objects.create(
+                body="We currently have 20000 healthy seedlings of different species, ready to be planted at any time!"
+                + "Please click the link below to book your favorite seedlings on our website",
+                link="https://www.canopeum-pos.com",
+            ),
+        )
+        post = Post.objects.create(
+            site=site,
+            body="Canopeum was just hit with important forest fires today.",
+            share_count=5,
+            created_at=timezone.now(),
+        )
+        post.media.add(*Asset.objects.filter(asset__contains="canopeum_post_img"))
+        Comment.objects.create(
+            body="Wow, I didn't know the fires had reached the location of this site!",
+            user=User.objects.get(email="tyrion@lannister.com"),
+            post=post,
+        )
+        Comment.objects.create(
+            body="Did the fires burn the whole area of this site, or only part of it?",
+            user=User.objects.get(email="normal@user.com"),
+            post=post,
+        )
+        Batch.objects.create(
+            name="First Batch",
+            site=site,
+            created_at=timezone.now(),
+            size=100,
+            sponsor="Beslogic Inc.",
+            soil_condition="Good",
+            total_number_seed=100,
+            total_propagation=100,
+            updated_at=timezone.now(),
         )
 
     def create_siteadmins(self):

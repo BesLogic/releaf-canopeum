@@ -114,7 +114,10 @@ class UserSerializer(serializers.ModelSerializer):
         exclude = ("password",)
 
     def get_role(self, obj: User) -> RoleName:
-        return obj.role.name
+        role_name = obj.role.name
+        if role_name is not RoleName:
+            return RoleName.USER
+        return role_name
 
     @extend_schema_field(list[int])  # pyright: ignore[reportArgumentType]
     def get_admin_site_ids(self, obj: User):
