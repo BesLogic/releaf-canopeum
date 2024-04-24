@@ -28,7 +28,21 @@
     text-decoration: none;
   }
 
-  .navbar-collapse.collapse.show {
+  .nav-item {
+    padding-left: 0.75rem;
+
+    button {
+      padding: 0;
+      min-width: unset;
+    }
+  }
+
+  #change-language-button {
+    min-width: 44px;
+  }
+
+  .navbar-collapse.collapse.show,
+  .navbar-collapse.collapsing {
     display: flex;
     flex-direction: column;
     align-items: start;
@@ -36,9 +50,9 @@
     .nav-item {
       padding-left: 0.75rem;
 
-      button {
+      #change-language-button {
         padding: 0;
-        min-width: none;
+        min-width: 0;
       }
     }
   }

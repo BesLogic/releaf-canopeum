@@ -16,7 +16,7 @@ const Home = () => {
   const fetchNewsPosts = useCallback(async () => {
     const response = await getApiClient().newsClient.all()
     setNewsPosts(response)
-    // setIsLoading(false)
+    setIsLoading(false)
   }, [setNewsPosts, setIsLoading])
 
   useEffect(() => void fetchNewsPosts(), [fetchNewsPosts])

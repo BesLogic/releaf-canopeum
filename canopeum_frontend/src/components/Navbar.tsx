@@ -83,7 +83,7 @@ const Navbar = () => {
           className='collapse navbar-collapse justify-content-between w-100 gap-3'
           id='main-navbar'
         >
-          <ul className='navbar-nav gap-3'>
+          <ul className='navbar-nav gap-3 align-items-center'>
             {isAuthenticated && (NAVBAR_ITEMS.map(item => (
               <li
                 className={`nav-item ${
@@ -100,7 +100,7 @@ const Navbar = () => {
             )))}
           </ul>
 
-          <ul className='navbar-nav gap-3'>
+          <ul className='navbar-nav gap-3 align-items-center'>
             {isAuthenticated && (
               <li
                 className={`nav-item ${
@@ -133,8 +133,8 @@ const Navbar = () => {
             <li className='nav-item'>
               <button
                 className='btn btn-primary'
+                id='change-language-button'
                 onClick={handleChangeLanguage}
-                style={{ minWidth: '44px' }}
                 type='button'
               >
                 {language}
