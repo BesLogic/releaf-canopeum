@@ -7,6 +7,8 @@ import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 
+import LoadingPage from './LoadingPage'
+
 const AnalyticsSite = () => {
   const { t: translate } = useTranslation<'analytics'>()
   const { siteId: siteIdFromParams } = useParams()
@@ -48,11 +50,11 @@ const AnalyticsSite = () => {
   }, [siteSummary])
 
   if (!siteSummary) {
-    return <div>Loading...</div>
+    return <LoadingPage />
   }
 
   return (
-    <div className='container py-3 d-flex flex-column gap-4'>
+    <div className='page-container d-flex flex-column gap-4'>
       <AnalyticsSiteHeader siteSummary={siteSummary} />
 
       <div className='bg-white rounded py-4 px-5'>

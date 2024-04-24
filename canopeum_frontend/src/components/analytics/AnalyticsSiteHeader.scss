@@ -1,0 +1,28 @@
+@import '../../assets/styles/theme-variables.module.scss';
+
+.header-card {
+  display: flex;
+  flex-direction: column;
+
+  .weather-container {
+    border-radius: $border-radius $border-radius 0 0;
+    width: 100%;
+    height: 300px;
+    background-position: top;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+}
+
+@media screen and (min-width: $large-width) {
+  .header-card {
+    flex-direction: row;
+
+    .weather-container {
+      border-radius: $border-radius 0 0 $border-radius;
+      min-width: 256px;
+      flex-basis: 25%;
+      height: unset;
+    }
+  }
+}

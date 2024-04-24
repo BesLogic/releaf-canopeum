@@ -1,3 +1,6 @@
+import './AnalyticsSiteHeader.scss'
+
+import SiteCountBadge from '@components/analytics/SiteCountBadge'
 import SiteSponsorProgress from '@components/analytics/SiteSponsorProgress'
 import { LanguageContext } from '@components/context/LanguageContext'
 import CustomIconBadge from '@components/CustomIconBadge'
@@ -7,23 +10,46 @@ import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
-import CustomIcon from '../../components/icons/CustomIcon'
-
-const CUSTOM_ICON_BADGE_CLASS =
-  'bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'
-
 type Props = {
   readonly siteSummary: SiteSummary,
 }
+
+const DUMMY_WEATHER_IMAGE_URL =
+  'https://s3-alpha-sig.figma.com/img/3323/1a79/39fa0b7c7c6287bee10bf03f964802b4?Expires=1714953600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=prNydsvieeG2h4vbOPKOFCA44pA3jp2CCg3NYadugITUgTv0xUoS9M58d4gnX9aUN73bP2cJqAWzeAOYhrMieCcEgx93tmgyHBi3uyTStGR0R~oIz34-KouN7RkchWMpwy6lIMPbaInHSwtwbrnqkkjCl6O0bvQLPZQeOE~E-nqk59fe7eiH47rZHpmOGNZqz8C9x14-4vx8tH5GVWokIqHz1MxOhLoR-o-fGuUDfLR0ZTSJD0uYVtnQoctCboejXlCSVDcEd959ZfwuAIRvyO8xs1RJugq45Su3GtfC7FKHY0pNMzCN~wRoHj1q9Ac~QNe8OSL-HEglV3f2ac-Bcg__'
 
 const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
   const { t: translate } = useTranslation<'analytics'>()
   const { translateValue } = useContext(LanguageContext)
 
   return (
-    <div className='bg-white rounded d-flex'>
-      <div className='p-5'>
-        <span>{translate('analyticsSite.location')}</span>
+    <div className='bg-white rounded d-flex m-0 header-card'>
+      <div
+        className='
+          weather-container
+          d-flex
+          flex-column
+          justify-content-center
+          align-items-center
+          gap-3
+          text-light
+        '
+        style={{
+          backgroundImage: `
+            linear-gradient(
+              rgba(0, 0, 0, 0.6),
+              rgba(0, 0, 0, 0.6)
+            ), url(${DUMMY_WEATHER_IMAGE_URL})
+          `,
+        }}
+      >
+        <h2 className='text-light'>{translate('analyticsSite.location')}</h2>
+
+        <span style={{ fontSize: '300%' }}>33°C</span>
+
+        <div className='d-flex flex-column text-center'>
+          <span>Light Rain</span>
+          <span>Humidity 87%</span>
+        </div>
       </div>
 
       <div className='site-info-container pb-4 pt-5 px-5 flex-grow-1'>
@@ -44,48 +70,29 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
         </div>
 
         <div
-          className='d-flex justify-content-between mt-4'
+          className='row justify-content-between mt-4 row-gap-3'
           style={{ maxWidth: '880px' }}
         >
-          <div className='d-flex align-items-center gap-2 me-5'>
-            <div className={CUSTOM_ICON_BADGE_CLASS}>
-              <CustomIcon icon='sitePlantedIcon' size='5xl' />
-            </div>
-            <div className='d-flex flex-column'>
-              <span className='text-primary fs-4 fw-bold'>{siteSummary.plantCount}</span>
-              <span className='text-muted'>{translate('analytics.site-summary.planted')}</span>
-            </div>
-          </div>
-
-          <div className='d-flex align-items-center gap-2 me-5'>
-            <div className={CUSTOM_ICON_BADGE_CLASS}>
-              <CustomIcon icon='siteSurvivedIcon' size='5xl' />
-            </div>
-            <div className='d-flex flex-column'>
-              <span className='text-primary fs-4 fw-bold'>{siteSummary.survivedCount}</span>
-              <span className='text-muted'>{translate('analytics.site-summary.survived')}</span>
-            </div>
-          </div>
-
-          <div className='d-flex align-items-center gap-2 me-5'>
-            <div className={CUSTOM_ICON_BADGE_CLASS}>
-              <CustomIcon icon='sitePropagationIcon' size='5xl' />
-            </div>
-            <div className='d-flex flex-column'>
-              <span className='text-primary fs-4 fw-bold'>{siteSummary.propagationCount}</span>
-              <span className='text-muted'>{translate('analytics.site-summary.propagation')}</span>
-            </div>
-          </div>
-
-          <div className='d-flex align-items-center gap-2 me-5'>
-            <div className={CUSTOM_ICON_BADGE_CLASS}>
-              <CustomIcon icon='siteVisitorsIcon' size='5xl' />
-            </div>
-            <div className='d-flex flex-column'>
-              <span className='text-primary fs-4 fw-bold'>{siteSummary.visitorCount}</span>
-              <span className='text-muted'>{translate('analytics.site-summary.visitors')}</span>
-            </div>
-          </div>
+          <SiteCountBadge
+            count={siteSummary.plantCount}
+            icon='sitePlantedIcon'
+            label={translate('analytics.site-summary.planted')}
+          />
+          <SiteCountBadge
+            count={siteSummary.survivedCount}
+            icon='siteSurvivedIcon'
+            label={translate('analytics.site-summary.survived')}
+          />
+          <SiteCountBadge
+            count={siteSummary.propagationCount}
+            icon='sitePropagationIcon'
+            label={translate('analytics.site-summary.propagation')}
+          />
+          <SiteCountBadge
+            count={siteSummary.visitorCount ?? 0}
+            icon='siteVisitorsIcon'
+            label={translate('analytics.site-summary.visitors')}
+          />
         </div>
 
         <div className='mt-4'>
