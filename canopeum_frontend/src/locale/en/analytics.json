@@ -28,6 +28,8 @@
     "unknown": "Unknown",
     "admins-saved": "Admins saved successfully for {{siteName}}!",
     "site-deleted": "Site {{siteName}} was successfully deleted.",
-    "site-deleted-error": "There was a problem while trying to delete the site {{siteName}}..."
+    "site-deleted-error": "There was a problem while trying to delete the site {{siteName}}...",
+    "delete-site-confirmation-title": "Delete Site",
+    "delete-site-confirmation-message": "Are you sure you want to delete {{siteName}}? Doing so will permanently delete this site; this action is irreversible."
   }
 }
