@@ -34,7 +34,6 @@ const Home = () => {
             hasLiked: newLikeStatus,
             likeCount: newCount,
           }
-
           return new Post(updatedPost)
         }
 

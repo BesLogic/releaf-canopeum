@@ -454,6 +454,145 @@ class Command(BaseCommand):
                 link="https://www.evergreentrail.com/guided-walks",
             ),
         )
+
+    def create_other_sites(self):
+        site_2 = Site.objects.create(
+            name="Maple Grove Retreat",
+            site_type=Sitetype.objects.get(name=SitetypeInternationalization.objects.get(en="Parks")),
+            coordinate=Coordinate.objects.create(
+                dms_latitude="46°48'33.6\"N",
+                dms_longitude="71°18'40.0\"W",
+                dd_latitude=46.8093,
+                dd_longitude=-71.3111,
+                address="123 Forest Trail, Quebec City, QC G1P 3X4",
+            ),
+            description="""Maple Grove Retreat is a serene escape nestled in the outskirts of Quebec City,
+                offering a lush forested area with scenic maple groves.""",
+            size="1500",
+            research_partnership=True,
+            visible_map=True,
+            visitor_count=300,
+            contact=Contact.objects.create(
+                email="contact@maplegroveretreat.com",
+                phone="+1 (418) 555-1234",
+                address="123 Forest Trail, Quebec City, QC G1P 3X4",
+            ),
+            image=Asset.objects.get(asset__contains="site_img2"),
+            announcement=Announcement.objects.create(
+                body="""
+                    Maple Grove Retreat is excited to announce our upcoming Maple Syrup Festival!
+                    Join us on March 15th for a day of maple syrup tastings, nature hikes,
+                    and family fun. Learn more on our website.
+                """,
+                link="https://www.maplegroveretreat.com/events/maple-syrup-festival",
+            ),
+        )
+        create_posts_for_site(site_2)
+
+        site_3 = Site.objects.create(
+            name="Lakeside Oasis",
+            site_type=Sitetype.objects.get(name=SitetypeInternationalization.objects.get(en="Parks")),
+            coordinate=Coordinate.objects.create(
+                dms_latitude="48°36'05.0\"N",
+                dms_longitude="71°18'27.0\"W",
+                dd_latitude=48.6014,
+                dd_longitude=-71.3075,
+                address="456 Lakeview Road, Lac-Saint-Jean, QC G8M 1R9",
+            ),
+            description="""Lakeside Oasis offers a tranquil retreat by the shores of Lac-Saint-Jean,
+                with pristine waters and breathtaking sunsets.""",
+            size="800",
+            research_partnership=False,
+            visible_map=True,
+            visitor_count=150,
+            contact=Contact.objects.create(
+                email="info@lakesideoasis.com",
+                phone="+1 (418) 555-5678",
+                address="456 Lakeview Road, Lac-Saint-Jean, QC G8M 1R9",
+            ),
+            image=Asset.objects.get(asset__contains="site_img3"),
+            announcement=Announcement.objects.create(
+                body="""Escape to Lakeside Oasis! Our cozy cabins are now open for winter bookings. Enjoy ice fishing,
+                    snowshoeing, and warm campfires by the lake. Book your stay today!""",
+                link="https://www.lakesideoasis.com/winter-getaway",
+            ),
+        )
+        create_posts_for_site(site_3)
+
+        site_4 = Site.objects.create(
+            name="Evergreen Trail",
+            site_type=Sitetype.objects.get(name=SitetypeInternationalization.objects.get(en="Parks")),
+            coordinate=Coordinate.objects.create(
+                dms_latitude="46°12'30.0\"N",
+                dms_longitude="74°35'30.0\"W",
+                dd_latitude=46.2083,
+                dd_longitude=-74.5917,
+                address="789 Trailhead Way, Mont-Tremblant, QC J8E 1T7",
+            ),
+            description="""Evergreen Trail invites you to explore the rugged beauty of Mont-Tremblant's wilderness,
+                with winding trails and majestic evergreen forests.""",
+            size="1200",
+            research_partnership=True,
+            visible_map=True,
+            visitor_count=200,
+            contact=Contact.objects.create(
+                email="explore@evergreentrail.com",
+                phone="+1 (819) 555-9876",
+                address="789 Trailhead Way, Mont-Tremblant, QC J8E 1T7",
+            ),
+            image=Asset.objects.get(asset__contains="site_img4"),
+            announcement=Announcement.objects.create(
+                body="""Discover the wonders of Evergreen Trail!
+                    Our guided nature walks are now available every weekend.
+                    Immerse yourself in nature and learn about the diverse
+                    flora and fauna of Mont-Tremblant.""",
+                link="https://www.evergreentrail.com/guided-walks",
+            ),
+
+    def create_roles(self):
+        Role.objects.create(name="User")
+        Role.objects.create(name="SiteManager")
+        Role.objects.create(name="MegaAdmin")
+
+    def create_users(self):
+        User.objects.create_user(
+            username="admin",
+            email="admin@beslogic.com",
+            password="Adminbeslogic!",  # noqa: S106 MOCK_PASSWORD
+            is_staff=True,
+            is_superuser=True,
+            role=Role.objects.get(name="MegaAdmin"),
+        )
+        User.objects.create_user(
+            username="TyrionLannister",
+            email="tyrion@lannister.com",
+            password="tyrion123",  # noqa: S106 MOCK_PASSWORD
+            role=Role.objects.get(name="SiteManager"),
+        )
+        User.objects.create_user(
+            username="DaenerysTargaryen",
+            email="daenerys@targaryen.com",
+            password="daenerys123",  # noqa: S106 MOCK_PASSWORD
+            role=Role.objects.get(name="SiteManager"),
+        )
+        User.objects.create_user(
+            username="JonSnow",
+            email="jon@snow.com",
+            password="jon123",  # noqa: S106 MOCK_PASSWORD
+            role=Role.objects.get(name="SiteManager"),
+        )
+        User.objects.create_user(
+            username="OberynMartell",
+            email="oberyn@martell.com",
+            password="oberyn123",  # noqa: S106 MOCK_PASSWORD
+            role=Role.objects.get(name="User"),
+        )
+        User.objects.create_user(
+            username="NormalUser",
+            email="normal@user.com",
+            password="normal123",  # noqa: S106 MOCK_PASSWORD
+            role=Role.objects.get(name="User"),
+        )
         create_posts_for_site(site_4)
 
     def create_siteadmins(self):
