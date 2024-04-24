@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import CustomIcon from '../../components/icons/CustomIcon'
-import classes from './AnalyticsSite.module.scss'
 
 const CUSTOM_ICON_BADGE_CLASS =
   'bg-lightgreen rounded-circle d-flex justify-content-center align-items-center p-2'
@@ -44,7 +43,10 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
           </Link>
         </div>
 
-        <div className={`d-flex justify-content-between mt-4 ${classes.analyticsCountsContainer}`}>
+        <div
+          className='d-flex justify-content-between mt-4'
+          style={{ maxWidth: '880px' }}
+        >
           <div className='d-flex align-items-center gap-2 me-5'>
             <div className={CUSTOM_ICON_BADGE_CLASS}>
               <CustomIcon icon='sitePlantedIcon' size='5xl' />

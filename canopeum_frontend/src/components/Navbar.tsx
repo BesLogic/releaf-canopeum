@@ -1,11 +1,34 @@
 import { appRoutes } from '@constants/routes.constant'
+import type { MaterialIcon } from 'material-icons'
 import { useCallback, useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import { AuthenticationContext } from './context/AuthenticationContext'
 
-export const NAVBAR_HEIGHT = 55
+type NavbarItem = {
+  icon: MaterialIcon,
+  linkTo: string,
+}
+
+const NAVBAR_ITEMS: NavbarItem[] = [
+  {
+    icon: 'home',
+    linkTo: appRoutes.home,
+  },
+  {
+    icon: 'donut_small',
+    linkTo: appRoutes.sites,
+  },
+  {
+    icon: 'pin_drop',
+    linkTo: appRoutes.map,
+  },
+  {
+    icon: 'style',
+    linkTo: appRoutes.utilities,
+  },
+]
 
 const Navbar = () => {
   const { i18n: { changeLanguage, language } } = useTranslation()
@@ -33,9 +56,9 @@ const Navbar = () => {
   }, [isAuthenticated, navigate, logout])
 
   return (
-    <nav className='navbar navbar-expand-lg bg-primary' style={{ height: `${NAVBAR_HEIGHT}px` }}>
-      <div className='container'>
-        <Link to={appRoutes.home}>
+    <nav className='navbar sticky-top navbar-expand-lg navbar-dark bg-primary'>
+      <div className='container-fluid'>
+        <Link className='navbar-brand' to={appRoutes.home}>
           <img
             alt='Logo'
             className='navbar-logo'
@@ -43,69 +66,41 @@ const Navbar = () => {
             style={{ transition: 'all .5s' }}
           />
         </Link>
+
         <button
-          aria-controls='navbarNav'
+          aria-controls='main-navbar'
           aria-expanded='false'
           aria-label='Toggle navigation'
           className='navbar-toggler'
-          data-target='#navbarNav'
-          data-toggle='collapse'
+          data-bs-target='#main-navbar'
+          data-bs-toggle='collapse'
           type='button'
         >
           <span className='navbar-toggler-icon' />
         </button>
-        <div className='collapse navbar-collapse' id='navbarNav'>
-          <ul className='navbar-nav d-flex w-100 ms-3 gap-3 fs-4'>
-            {isAuthenticated && (
-              <>
-                <li
-                  className={`nav-item ${
-                    location.pathname === appRoutes.home
-                      ? 'active'
-                      : ''
-                  }`}
-                >
-                  <Link className='nav-link' to={appRoutes.home}>
-                    <span className='material-symbols-outlined text-light'>home</span>
-                  </Link>
-                </li>
-                <li
-                  className={`nav-item ${
-                    location.pathname === appRoutes.sites
-                      ? 'active'
-                      : ''
-                  }`}
-                >
-                  <Link className='nav-link' to={appRoutes.sites}>
-                    <span className='material-symbols-outlined text-light'>donut_small</span>
-                  </Link>
-                </li>
-                <li
-                  className={`nav-item ${
-                    location.pathname === appRoutes.map
-                      ? 'active'
-                      : ''
-                  }`}
-                >
-                  <Link className='nav-link' to={appRoutes.map}>
-                    <span className='material-symbols-outlined text-light'>pin_drop</span>
-                  </Link>
-                </li>
-                <li
-                  className={`nav-item ${
-                    location.pathname === appRoutes.utilities
-                      ? 'active'
-                      : ''
-                  }`}
-                >
-                  <Link className='nav-link' to={appRoutes.utilities}>
-                    <span className='material-symbols-outlined text-light'>style</span>
-                  </Link>
-                </li>
-              </>
-            )}
+
+        <div
+          className='collapse navbar-collapse justify-content-between w-100 gap-3'
+          id='main-navbar'
+        >
+          <ul className='navbar-nav gap-3'>
+            {isAuthenticated && (NAVBAR_ITEMS.map(item => (
+              <li
+                className={`nav-item ${
+                  location.pathname === item.linkTo
+                    ? 'active'
+                    : ''
+                }`}
+                key={item.icon}
+              >
+                <Link className='nav-link' to={item.linkTo}>
+                  <span className='material-symbols-outlined text-light'>{item.icon}</span>
+                </Link>
+              </li>
+            )))}
           </ul>
-          <ul className='navbar-nav ms-3 gap-3'>
+
+          <ul className='navbar-nav gap-3'>
             {isAuthenticated && (
               <li
                 className={`nav-item ${
@@ -121,7 +116,7 @@ const Navbar = () => {
             )}
 
             {!isAuthenticated && (
-              <li>
+              <li className='nav-item'>
                 <Link to={appRoutes.login}>
                   <button
                     className='btn btn-primary'
@@ -135,7 +130,7 @@ const Navbar = () => {
               </li>
             )}
 
-            <li>
+            <li className='nav-item'>
               <button
                 className='btn btn-primary'
                 onClick={handleChangeLanguage}

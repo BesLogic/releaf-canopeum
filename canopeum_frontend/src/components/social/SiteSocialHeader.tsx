@@ -1,7 +1,7 @@
 import { LanguageContext } from '@components/context/LanguageContext'
 import ToggleSwitch from '@components/inputs/ToggleSwitch'
 import PrimaryIconBadge from '@components/PrimaryIconBadge'
-import type { PageViewMode } from '@models/types/PageViewMode'
+import type { PageViewMode } from '@models/types/PageViewMode.Type'
 import type { SiteSocial } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { getApiBaseUrl } from '@services/apiSettings'

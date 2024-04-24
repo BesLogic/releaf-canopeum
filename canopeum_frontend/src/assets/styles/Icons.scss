@@ -1,0 +1,104 @@
+.material-symbols-outlined,
+.custom-icon {
+  color: inherit;
+  font-size: 24px;
+
+  &.custom-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  &.icon-2xs {
+    font-size: 12px;
+
+    &.custom-icon {
+      width: 12px;
+      height: 12px;
+    }
+  }
+
+  &.icon-xs {
+    font-size: 16px;
+
+    &.custom-icon {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  &.icon-sm {
+    font-size: 20px;
+
+    &.custom-icon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &.icon-lg {
+    font-size: 28px;
+
+    &.custom-icon {
+      width: 28px;
+      height: 28px;
+    }
+  }
+
+  &.icon-xl {
+    font-size: 32px;
+
+    &.custom-icon {
+      width: 32px;
+      height: 32px;
+    }
+  }
+
+  &.icon-2xl {
+    font-size: 36px;
+
+    &.custom-icon {
+      width: 36px;
+      height: 36px;
+    }
+  }
+
+  &.icon-3xl {
+    font-size: 40px;
+
+    &.custom-icon {
+      width: 40px;
+      height: 40px;
+    }
+  }
+
+  &.icon-4xl {
+    font-size: 44px;
+
+    &.custom-icon {
+      width: 44px;
+      height: 44px;
+    }
+  }
+
+  &.icon-5xl {
+    font-size: 48px;
+
+    &.custom-icon {
+      width: 48px;
+      height: 48px;
+    }
+  }
+
+  &.icon-6xl {
+    font-size: 52px;
+
+    &.custom-icon {
+      width: 52px;
+      height: 52px;
+    }
+  }
+
+  &.fill-icon {
+    font-variation-settings: 'FILL' 1, 'wght' 700, 'GRAD' 0, 'opsz' 48;
+  }
+}

@@ -17,7 +17,7 @@ import { AuthenticationContext } from './context/AuthenticationContext'
 import Navbar from './Navbar'
 
 const NavbarLayout = () => (
-  <div>
+  <div className='d-flex flex-column min-vh-100'>
     <Navbar />
     <Outlet />
   </div>

@@ -1,0 +1,53 @@
+// Import here all global style modules from this same folder
+
+@import "./Buttons.scss";
+@import "./Forms.scss";
+@import "./Icons.scss";
+@import "./Navbar.scss";
+@import "./Transitions.scss";
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #b8bcc0;
+  border-radius: 5px;
+}
+
+.page-container {
+  padding: 2rem 12rem;
+}
+
+body {
+  background-image: url('@assets/images/TreeBackground.png');
+}
+
+.login-background {
+  background-image: url('@assets/images/LoginBackground.png');
+  background-position: top;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.text-small {
+  font-size: 90%;
+}
+
+.text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lightgreen-color {
+  color: #E8F3E9;
+}
+
+.bg-lightgreen {
+  background: #E8F3E9;
+}

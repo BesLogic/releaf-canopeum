@@ -1,4 +1,4 @@
-import type { PageViewMode } from '@models/types/PageViewMode'
+import type { PageViewMode } from '@models/types/PageViewMode.Type'
 import { Link } from 'react-router-dom'
 
 import type { Announcement } from '../services/api'

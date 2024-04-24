@@ -1,6 +1,6 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import SiteSocialHeader from '@components/social/SiteSocialHeader'
-import type { PageViewMode } from '@models/types/PageViewMode'
+import type { PageViewMode } from '@models/types/PageViewMode.Type'
 import { type IPost, Post, type SiteSocial } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { ensureError } from '@services/errors'

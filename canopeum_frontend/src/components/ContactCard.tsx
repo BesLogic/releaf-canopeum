@@ -2,7 +2,7 @@ import facebookLogo from '@assets/icons/facebook-contact-logo.svg'
 import instagramLogo from '@assets/icons/instagram-contact-logo.svg'
 import linkedinLogo from '@assets/icons/linkedin-contact-logo.svg'
 import xLogo from '@assets/icons/x-contact-logo.svg'
-import type { PageViewMode } from '@models/types/PageViewMode'
+import type { PageViewMode } from '@models/types/PageViewMode.Type'
 import type { Contact } from '@services/api'
 import { Link } from 'react-router-dom'
 
