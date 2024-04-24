@@ -6,7 +6,7 @@ type Props = {
 }
 
 const ToggleSwitch = ({ text, checked, onChange, additionalClassNames }: Props) => (
-  <div className={`form-check form-switch ${additionalClassNames ?? ''}`}>
+  <div className={`form-check mb-0 form-switch ${additionalClassNames ?? ''}`}>
     <input
       checked={checked}
       className={`form-check-input ${
