@@ -63,7 +63,8 @@ const EditProfile = () => {
   }
 
   const validateForm = () => {
-    // Do not return directly the method calls; we need each of them to be called before returning the result
+    // Do not return directly the method calls;
+    // we need each of them to be called before returning the result
     const usernameValid = validateUsername()
     const emailValid = validateEmail()
 
@@ -99,7 +100,9 @@ const EditProfile = () => {
         <div className='h-100 d-flex flex-column justify-content-between w-50 py-3'>
           <form className='form'>
             <div className='mb-4'>
-              <label className='form-label' htmlFor='username'>{translate('auth.username-label')}</label>
+              <label className='form-label' htmlFor='username'>
+                {translate('auth.username-label')}
+              </label>
               <input
                 className='form-control'
                 id='username'

@@ -8,6 +8,7 @@ import Home from '../pages/Home'
 import LoadingPage from '../pages/LoadingPage'
 import Login from '../pages/Login'
 import Map from '../pages/Map'
+import PostDetailsPage from '../pages/PostDetailsPage'
 import Register from '../pages/Register'
 import SiteSocialPage from '../pages/SiteSocialPage'
 import UserManagement from '../pages/UserManagement'
@@ -71,6 +72,7 @@ const MainLayout = () => {
 
         {/* The following routes are accessible to Visitors without any authentication */}
         <Route element={<SiteSocialPage />} path='/sites/:siteId/social' />
+        <Route element={<PostDetailsPage />} path='/posts/:postId' />
         <Route element={<Map />} path='/map' />
       </Route>
     </Routes>

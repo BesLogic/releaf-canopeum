@@ -47,7 +47,8 @@ const Login = () => {
   }
 
   const validateForm = () => {
-    // Do not return directly the method calls; we need each of them to be called before returning the result
+    // Do not return directly the method calls;
+    // we need each of them to be called before returning the result
     const emailValid = validateEmail()
     const passwordValid = validatePassword()
 
@@ -60,8 +61,6 @@ const Login = () => {
     if (!isFormValid) return
 
     try {
-      console.log(email.trim())
-      console.log(password)
       const response = await getApiClient().authenticationClient.login(
         new LoginUser({
           email: email.trim(),

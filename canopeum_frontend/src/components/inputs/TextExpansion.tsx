@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
 type TextExpansionProps = {
-  text: string,
-  maxLength: number, // Maximum number of characters to display
+  readonly text: string,
+  readonly maxLength: number, // Maximum number of characters to display
 }
 
 const TextExpansion = ({ text, maxLength }: TextExpansionProps) => {
@@ -15,13 +15,17 @@ const TextExpansion = ({ text, maxLength }: TextExpansionProps) => {
       {shouldExpand
         ? (
           <>
-            {expanded ? text : text.slice(0, maxLength)}
+            {expanded
+              ? text
+              : text.slice(0, maxLength)}
             <button
               className='btn btn-link py-0'
               onClick={() => setExpanded(!expanded)}
               type='button'
             >
-              {expanded ? 'Show less' : 'Show more'}
+              {expanded
+                ? 'Show less'
+                : 'Show more'}
             </button>
           </>
         )

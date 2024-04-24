@@ -106,6 +106,21 @@ For backend
    npm run mockoon
    ```
 
+7. Linting/Formatting:
+   For Frontend: (Dprint & Eslint)
+
+   ```shell
+   cd canopeum_frontend
+   npm run lint:fix
+   ```
+
+   For Backend: (Ruff, mypy, pyright)
+
+   ```shell
+   cd canopeum_backend
+   python ./scripts/checkers.py
+   ```
+
 ### Folder Architecture
 
 ```ini

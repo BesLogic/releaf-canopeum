@@ -4,7 +4,12 @@ import { useTranslation } from 'react-i18next'
 
 import type { SiteSummary } from '../../services/api'
 
-type SiteSummaryChartOptions = { groups: string[], series: BarChartProps['series'], colors: string[], average: number }
+type SiteSummaryChartOptions = {
+  groups: string[],
+  series: BarChartProps['series'],
+  colors: string[],
+  average: number,
+}
 
 const buildChartOptions = (siteSummaries: SiteSummary[]) => {
   // eslint-disable-next-line total-functions/no-partial-division -- length checked above
@@ -52,7 +57,8 @@ const SiteSuccessRatesChart = ({ siteSummaries }: Props) => {
 
   const renderChartTooltip = (props: ChartsAxisContentProps) => {
     const selectedSerie = props.series.find(serie => serie.id === props.axisValue)
-    // eslint-disable-next-line total-functions/no-unsafe-type-assertion -- value type is known from the context
+    // value type is known from the context
+    // eslint-disable-next-line total-functions/no-unsafe-type-assertion -- See above
     const data = selectedSerie?.data.find(value => !!value) as number | undefined
 
     return (
@@ -72,7 +78,9 @@ const SiteSuccessRatesChart = ({ siteSummaries }: Props) => {
 
     return (
       <div>
-        <h6 className='text-capitalize'>{translate('analytics.average')} : {options.average.toFixed(1)} %</h6>
+        <h6 className='text-capitalize'>
+          {translate('analytics.average')} : {options.average.toFixed(1)} %
+        </h6>
         <BarChart
           colors={options.colors}
           grid={{ horizontal: true, vertical: true }}

@@ -44,7 +44,12 @@ const ConfirmationDialog = ({ actions, children, onClose, open, title }: Props) 
     }
 
     return (
-      <button className={buttonClasses} onClick={() => onClose(proceed)} type='button'>
+      <button
+        className={buttonClasses}
+        key={action}
+        onClick={() => onClose(proceed)}
+        type='button'
+      >
         {buttonText}
       </button>
     )

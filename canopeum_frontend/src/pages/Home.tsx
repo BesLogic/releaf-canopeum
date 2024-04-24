@@ -3,7 +3,7 @@ import PostWidget from '@components/social/PostWidget.tsx'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import type { Post } from '../services/api.ts'
+import { type IPost, Post } from '../services/api.ts'
 import getApiClient from '../services/apiInterface.ts'
 import LoadingPage from './LoadingPage.tsx'
 
@@ -21,14 +21,26 @@ const Home = () => {
 
   useEffect(() => void fetchNewsPosts(), [fetchNewsPosts])
 
-  const likePost = async (postId: number) => {
-    const post = newsPosts?.find(post => post.id === postId)
-    if (!post) return
-    const newPost = { ...post, hasLiked: !post.hasLiked }
-    newPost.likeCount = post.hasLiked ? post.likeCount! - 1 : post.likeCount! + 1
-    newsPosts?.splice(newsPosts.indexOf(post), 1)
-    setNewsPosts([newPost as Post, ...newsPosts || []])
-  }
+  const likePost = (postId: number) =>
+    setNewsPosts(previous =>
+      previous.map(post => {
+        const newLikeStatus = !post.hasLiked
+        if (post.id === postId) {
+          const newCount = newLikeStatus
+            ? post.likeCount + 1
+            : post.likeCount - 1
+          const updatedPost: IPost = {
+            ...post,
+            hasLiked: newLikeStatus,
+            likeCount: newCount,
+          }
+
+          return new Post(updatedPost)
+        }
+
+        return post
+      })
+    )
 
   if (!currentUser) return <div />
 
@@ -43,7 +55,7 @@ const Home = () => {
 
     return (
       <div className='d-flex flex-column gap-3'>
-        {newsPosts.map(post => <PostWidget key={post.id} post={post} likePostEvent={likePost} viewMode='user' />)}
+        {newsPosts.map(post => <PostWidget key={post.id} likePostEvent={likePost} post={post} />)}
       </div>
     )
   }
@@ -54,7 +66,9 @@ const Home = () => {
     <div>
       <div className='page-container'>
         <div className='mb-4'>
-          <h1 className='text-light'>{translate('home.title', { username: currentUser.username })}</h1>
+          <h1 className='text-light'>
+            {translate('home.title', { username: currentUser.username })}
+          </h1>
 
           <h6 className='text-light'>{translate('home.subtitle')}</h6>
         </div>

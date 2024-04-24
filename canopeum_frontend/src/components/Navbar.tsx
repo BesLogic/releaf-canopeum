@@ -36,7 +36,12 @@ const Navbar = () => {
     <nav className='navbar navbar-expand-lg bg-primary' style={{ height: `${NAVBAR_HEIGHT}px` }}>
       <div className='container'>
         <Link to={appRoutes.home}>
-          <img alt='Logo' className='navbar-logo' src='/Releaf_Logo.svg' style={{ transition: 'all .5s' }} />
+          <img
+            alt='Logo'
+            className='navbar-logo'
+            src='/Releaf_Logo.svg'
+            style={{ transition: 'all .5s' }}
+          />
         </Link>
         <button
           aria-controls='navbarNav'

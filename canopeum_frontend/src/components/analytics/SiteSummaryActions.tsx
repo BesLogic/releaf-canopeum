@@ -27,13 +27,16 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange }: Props) => {
     setSelectedAdmins(siteSummary.admins.map(admin => admin.user))
   }, [siteSummary.admins, admins])
 
-  const onSearchAdmins = useCallback((query: string) =>
-    setFilteredAdmins(admins.filter(admin =>
-      admin
-        .username
-        .toLocaleLowerCase()
-        .includes(query.toLocaleLowerCase())
-    )), [admins])
+  const onSearchAdmins = useCallback(
+    (query: string) =>
+      setFilteredAdmins(admins.filter(admin =>
+        admin
+          .username
+          .toLocaleLowerCase()
+          .includes(query.toLocaleLowerCase())
+      )),
+    [admins],
+  )
 
   const onAdminSelectionChange = (adminId: number, isSelected: boolean) => {
     if (isSelected) {
@@ -66,7 +69,9 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange }: Props) => {
       })
     )
     whisperRef.current?.close()
-    openAlertSnackbar(translate('analytics.site-summary.admins-saved', { siteName: siteSummary.name }))
+    openAlertSnackbar(
+      translate('analytics.site-summary.admins-saved', { siteName: siteSummary.name }),
+    )
   }
 
   const onSelectAdminsCancel = () => {
@@ -79,7 +84,9 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange }: Props) => {
     whisperRef.current?.close()
     try {
       await getApiClient().siteClient.delete(siteSummary.id)
-      openAlertSnackbar(translate('analytics.site-summary.site-deleted', { siteName: siteSummary.name }))
+      openAlertSnackbar(
+        translate('analytics.site-summary.site-deleted', { siteName: siteSummary.name }),
+      )
       onSiteChange(previous => previous.filter(site => site.id !== siteSummary.id))
     } catch {
       openAlertSnackbar(

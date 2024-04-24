@@ -1,16 +1,23 @@
-import { type ChangeEvent, useContext, useState } from 'react'
-import { Asset, type FileParameter, type Post } from '../services/api'
-import getApiClient from '@services/apiInterface'
-import textAreaAutoGrow from '../utils/textAreaAutoGrow'
-import { useTranslation } from 'react-i18next'
 import { SnackbarContext } from '@components/context/SnackbarContext'
+import { CircularProgress } from '@mui/material'
+import getApiClient from '@services/apiInterface'
+import { type ChangeEvent, useContext, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
+import { Asset, type FileParameter, type Post } from '../services/api'
+import { assetFormatter } from '../utils/assetFormatter'
 import { numberOfWordsInText } from '../utils/stringUtils'
+import textAreaAutoGrow from '../utils/textAreaAutoGrow'
 import type { InputValidationError } from '../utils/validators'
 import AssetGrid from './AssetGrid'
-import { assetFormatter } from '../utils/assetFormatter'
 
-const CreatePostWidget = (props: { addNewPost: (newPost: Post) => void }) => {
+const MAX_FILE_WIDTH = 1920
+const MAX_FILE_HEIGHT = 1920
+const MAX_FILE_DEPTH = 1920
+const MAX_FILE_SIZE = MAX_FILE_WIDTH * MAX_FILE_HEIGHT * MAX_FILE_DEPTH
+const MAXIMUM_WORDS_PER_POST = 3000
+
+const CreatePostWidget = (props: { readonly addNewPost: (newPost: Post) => void }) => {
   const { addNewPost } = props
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
@@ -21,9 +28,7 @@ const CreatePostWidget = (props: { addNewPost: (newPost: Post) => void }) => {
   const [postBodyError, setPostBodyError] = useState<InputValidationError | undefined>()
   const [files, setFiles] = useState<FileParameter[]>([])
 
-  const MAXIMUM_WORDS_PER_POST = 3000
-
-  const postSitePost = async (body: string, files: FileParameter[]) => {
+  const postSitePost = async (body: string) => {
     setIsSendingPost(true)
     try {
       setIsSendingPost(true)
@@ -34,7 +39,7 @@ const CreatePostWidget = (props: { addNewPost: (newPost: Post) => void }) => {
       const newPost = await getApiClient().postClient.create(1, body, files)
       setFiles([])
       addNewPost(newPost)
-    } catch (error_: unknown) {
+    } catch {
       setIsSendingPost(false)
     } finally {
       setIsSendingPost(false)
@@ -42,32 +47,37 @@ const CreatePostWidget = (props: { addNewPost: (newPost: Post) => void }) => {
     }
   }
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    Array.prototype.slice.call(e.target.files).forEach(async (file: File) => {
-      if (!validateFile(file)) return
-      const compressedFile = await assetFormatter(file)
-      setFiles(prevFiles => [...prevFiles, compressedFile])
-    })
-  }
-
   const validateFile = (file: File) => {
-    console.log(file.size, file.type)
-    if (file.size > 1920 * 1920 * 10) {
+    if (file.size > MAX_FILE_SIZE) {
       openAlertSnackbar('File too large')
+
       return false
     }
 
     if (file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'video/mp4') {
       openAlertSnackbar('File type not supported')
+
       return false
     }
 
     return true
   }
 
-  const removeFile = (index: number) => {
-    setFiles(files.filter((_, i) => i !== index))
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const fileList = event.target.files
+    if (!fileList) return
+
+    const validCompressedFiles = await Promise.all(
+      [...fileList]
+        .filter(file => validateFile(file))
+        .map(file => assetFormatter(file)),
+    )
+
+    setFiles(previousFiles => [...previousFiles, ...validCompressedFiles])
   }
+
+  const removeFile = (index: number) =>
+    setFiles(previous => previous.filter((_, index_) => index_ !== index))
 
   const handleCommentBodyChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const bodyValue = event.target.value
@@ -105,32 +115,45 @@ const CreatePostWidget = (props: { addNewPost: (newPost: Post) => void }) => {
       <div className='d-flex justify-content-between'>
         <h2>New Post</h2>
 
-        <button className='btn btn-secondary' type='button' onClick={() => postSitePost(postBody, files)}>
+        <button
+          className='btn btn-secondary d-flex align-items-center justify-content-center'
+          onClick={() => postSitePost(postBody)}
+          type='button'
+        >
           {isSendingPost
-            ? <span className='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>
+            ? <CircularProgress color='inherit' size={20} />
             : 'Publish'}
         </button>
       </div>
       <div className='position-relative'>
         <div className='position-absolute top-0 left-0 m-3 d-flex gap-3 fs-3'>
-          <label className='material-symbols-outlined' htmlFor='file-input' style={{ cursor: 'pointer' }}>
+          <label
+            className='material-symbols-outlined'
+            htmlFor='file-input'
+            style={{ cursor: 'pointer' }}
+          >
             add_a_photo
           </label>
-          <input className='d-none' id='file-input' type='file' onChange={e => handleFileChange(e)} multiple={true} />
+          <input
+            className='d-none'
+            id='file-input'
+            multiple
+            onChange={event => handleFileChange(event)}
+            type='file'
+          />
         </div>
         <textarea
           className='form-control pt-5 overflow-hidden'
-          style={{ resize: 'none' }}
+          onChange={event => handleCommentBodyChange(event)}
           placeholder='Post a New Message...'
+          style={{ resize: 'none' }}
           value={postBody}
-          onChange={e => {
-            handleCommentBodyChange(e)
-          }}
-        >
-        </textarea>
+        />
         <div className='max-words end-0 text-end' style={{ bottom: '-1.6rem' }}>
           <span>{postBodyNumberOfWords}/{MAXIMUM_WORDS_PER_POST}</span>
-          <span className='ms-1'>{translate('social.comments.words', { count: MAXIMUM_WORDS_PER_POST })}</span>
+          <span className='ms-1'>
+            {translate('social.comments.words', { count: MAXIMUM_WORDS_PER_POST })}
+          </span>
         </div>
 
         {postBodyError === 'required' && (
@@ -148,10 +171,12 @@ const CreatePostWidget = (props: { addNewPost: (newPost: Post) => void }) => {
       {files.length > 0 &&
         (
           <AssetGrid
-            medias={files.map(
-              file => (new Asset({ asset: URL.createObjectURL(file.data), init: {}, toJSON: () => ({}) })),
-            )}
             isEditable={{ removeFile }}
+            medias={files.map(
+              // Find the best way to type file data
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- See above
+              file => (new Asset({ id: 0, asset: URL.createObjectURL(file.data) })),
+            )}
           />
         )}
     </div>

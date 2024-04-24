@@ -1,7 +1,7 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import SiteSocialHeader from '@components/social/SiteSocialHeader'
 import type { PageViewMode } from '@models/types/PageViewMode'
-import type { Post, SiteSocial } from '@services/api'
+import { type IPost, Post, type SiteSocial } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { ensureError } from '@services/errors'
 import { useContext, useEffect, useState } from 'react'
@@ -13,7 +13,7 @@ import CreatePostWidget from '../components/CreatePostWidget'
 import PostWidget from '../components/social/PostWidget'
 
 const SiteSocialPage = () => {
-  const { siteId } = useParams()
+  const { siteId: siteIdParam } = useParams()
   const { currentUser } = useContext(AuthenticationContext)
   const [isLoadingSite, setIsLoadingSite] = useState(true)
   const [error, setError] = useState<Error | undefined>(undefined)
@@ -23,10 +23,14 @@ const SiteSocialPage = () => {
   const [errorPosts, setErrorPosts] = useState<Error | undefined>(undefined)
   const [posts, setPosts] = useState<Post[]>([])
 
+  const siteId = siteIdParam
+    ? Number.parseInt(siteIdParam, 10) || 0
+    : 0
+
   const viewMode: PageViewMode = currentUser
-    ? currentUser.role === 'User'
-      ? 'user'
-      : 'admin'
+    ? (currentUser.role === 'MegaAdmin' || currentUser.adminSiteIds.includes(siteId))
+      ? 'admin'
+      : 'user'
     : 'visitor'
 
   const fetchSiteData = async (parsedSiteId: number) => {
@@ -53,22 +57,32 @@ const SiteSocialPage = () => {
     }
   }
 
-  const addNewPost = (newPost: Post) => {
-    setPosts([newPost, ...posts || []])
-  }
+  const addNewPost = (newPost: Post) => setPosts(previous => [newPost, ...previous])
 
-  const likePost = async (postId: number) => {
-    const post = posts?.find(post => post.id === postId)
-    if (!post) return
-    const newPost = { ...post, hasLiked: !post.hasLiked }
-    newPost.likeCount = post.hasLiked ? post.likeCount! - 1 : post.likeCount! + 1
-    posts?.splice(posts.indexOf(post), 1)
-    setPosts([newPost as Post, ...posts || []])
-  }
+  const likePost = (postId: number) =>
+    setPosts(previous =>
+      previous.map(post => {
+        const newLikeStatus = !post.hasLiked
+        if (post.id === postId) {
+          const newCount = newLikeStatus
+            ? post.likeCount + 1
+            : post.likeCount - 1
+          const updatedPost: IPost = {
+            ...post,
+            hasLiked: newLikeStatus,
+            likeCount: newCount,
+          }
+
+          return new Post(updatedPost)
+        }
+
+        return post
+      })
+    )
 
   useEffect((): void => {
-    void fetchSiteData(Number(siteId) || 1)
-    void fetchPosts(Number(siteId) || 1)
+    void fetchSiteData(siteId)
+    void fetchPosts(siteId)
   }, [siteId])
 
   return (
@@ -90,7 +104,9 @@ const SiteSocialPage = () => {
         <div className='row'>
           <div className='col-4'>
             <div className='d-flex flex-column gap-4'>
-              {site?.announcement && <AnnouncementCard announcement={site.announcement} viewMode={viewMode} />}
+              {site?.announcement && (
+                <AnnouncementCard announcement={site.announcement} viewMode={viewMode} />
+              )}
               {site?.contact && <ContactCard contact={site.contact} viewMode={viewMode} />}
             </div>
           </div>
@@ -98,7 +114,7 @@ const SiteSocialPage = () => {
             <div className='rounded-2 d-flex flex-column gap-4'>
               {site && (
                 <>
-                  {viewMode == 'admin' && <CreatePostWidget addNewPost={addNewPost} />}
+                  {viewMode === 'admin' && <CreatePostWidget addNewPost={addNewPost} />}
                   <div className='d-flex flex-column gap-4'>
                     {isLoadingPosts
                       ? (
@@ -112,10 +128,9 @@ const SiteSocialPage = () => {
                           <p>{errorPosts.message}</p>
                         </div>
                       )
-                      : posts &&
-                        posts?.sort((a: Post, b: Post) =>
-                          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-                        ).map((post: Post) => <PostWidget post={post} likePostEvent={likePost} viewMode={viewMode} />)}
+                      : posts.map(post => (
+                        <PostWidget key={post.id} likePostEvent={likePost} post={post} />
+                      ))}
                   </div>
                 </>
               )}

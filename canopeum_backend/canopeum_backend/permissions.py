@@ -1,12 +1,15 @@
 from rest_framework import permissions
 
+from .models import Comment
+
 
 class DeleteCommentPermission(permissions.BasePermission):
     """Deleting a comment is only allowed for admins or the comment's author."""
 
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request, view, obj: Comment):
         current_user_role = request.user.role.name
-        return current_user_role in {"MegaAdmin", "Admin"} or obj.user == request.user
+        is_admin_for_this_post = obj.post.site.siteadmin_set.filter(user__id__exact=request.user.id).exists()
+        return current_user_role == "MegaAdmin" or is_admin_for_this_post or obj.user == request.user
 
 
 class MegaAdminPermission(permissions.BasePermission):

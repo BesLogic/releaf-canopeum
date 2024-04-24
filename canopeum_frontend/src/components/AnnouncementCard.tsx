@@ -14,13 +14,17 @@ const AnnouncementCard = ({ announcement, viewMode }: Props) => (
       <div className='d-flex justify-content-between align-items-center pb-3'>
         <h2 className='card-title'>Announcement</h2>
         <div>
-          {viewMode === 'admin' && <span className='material-symbols-outlined text-primary fs-2'>edit_square</span>}
+          {viewMode === 'admin' && (
+            <span className='material-symbols-outlined text-primary fs-2'>edit_square</span>
+          )}
         </div>
       </div>
       <p className='card-text text-justify'>
         {announcement.body}
       </p>
-      {announcement.link && <Link className='card-text' to={announcement.link}>{announcement.link}</Link>}
+      {announcement.link && (
+        <Link className='card-text' to={announcement.link}>{announcement.link}</Link>
+      )}
     </div>
   </div>
 )

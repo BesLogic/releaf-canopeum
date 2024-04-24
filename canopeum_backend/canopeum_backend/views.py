@@ -1,3 +1,4 @@
+import secrets
 from typing import cast
 
 from django.contrib.auth import authenticate
@@ -19,7 +20,21 @@ from canopeum_backend.permissions import (
     MegaAdminPermissionReadOnly,
 )
 
-from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, Siteadmin, SiteFollower, User, Widget
+from .models import (
+    Announcement,
+    Batch,
+    Comment,
+    Contact,
+    Like,
+    Post,
+    RoleName,
+    Site,
+    Siteadmin,
+    SiteFollower,
+    User,
+    UserInvitation,
+    Widget,
+)
 from .serializers import (
     AdminUserSitesSerializer,
     AnnouncementSerializer,
@@ -29,6 +44,7 @@ from .serializers import (
     CommentSerializer,
     ContactSerializer,
     CreateCommentSerializer,
+    CreateUserInvitationSerializer,
     LikeSerializer,
     LoginUserSerializer,
     PostPostSerializer,
@@ -42,6 +58,7 @@ from .serializers import (
     SiteSocialSerializer,
     SiteSummarySerializer,
     UpdateUserSerializer,
+    UserInvitationSerializer,
     UserSerializer,
     UserTokenSerializer,
     WidgetSerializer,
@@ -227,7 +244,7 @@ class SiteDetailAdminsAPIView(APIView):
         updated_admin_users_list = User.objects.filter(id__in=admin_ids)
 
         for user in updated_admin_users_list:
-            if user not in existing_admin_users:
+            if user not in existing_admin_users and user.role.name == RoleName.SITEMANAGER:
                 Siteadmin.objects.create(
                     user=user,
                     site=site,
@@ -289,8 +306,8 @@ class AdminUserSitesAPIView(APIView):
         operation_id="admin-user-sites_all",
     )
     def get(self, request):
-        adminusers = User.objects.filter(role__name__exact="Admin")
-        serializer = AdminUserSitesSerializer(adminusers, many=True)
+        site_manager_users = User.objects.filter(role__name__iexact=RoleName.SITEMANAGER).order_by("username")
+        serializer = AdminUserSitesSerializer(site_manager_users, many=True)
         return Response(serializer.data)
 
 
@@ -344,7 +361,8 @@ class PostListAPIView(APIView):
     def get(self, request):
         site_id = request.GET.get("siteId", "")
         posts = Post.objects.filter(site=site_id) if not site_id else Post.objects.all()
-        serializer = PostSerializer(posts, many=True, context={"request": request})
+        sorted_posts = posts.order_by("-created_at")
+        serializer = PostSerializer(sorted_posts, many=True, context={"request": request})
         return Response(serializer.data)
 
     parser_classes = (MultiPartParser, FormParser)
@@ -385,6 +403,20 @@ class PostListAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class PostDetailAPIView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    @extend_schema(responses=PostSerializer, operation_id="post_detail")
+    def get(self, request, postId):
+        try:
+            post = Post.objects.get(pk=postId)
+        except Post.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = PostSerializer(post, context={"request": request})
+        return Response(serializer.data)
+
+
 class NewsListApiView(APIView):
     @extend_schema(
         responses=PostSerializer(many=True),
@@ -394,7 +426,7 @@ class NewsListApiView(APIView):
         followed_sites = SiteFollower.objects.filter(user=request.user).values_list("site")
 
         posts = Post.objects.filter(site__in=followed_sites).order_by("-created_at")
-        serializer = PostSerializer(posts, many=True)
+        serializer = PostSerializer(posts, many=True, context={"request": request})
         return Response(serializer.data)
 
 
@@ -511,9 +543,7 @@ class LikeListAPIView(APIView):
             user = User.objects.get(pk=request.user.id)
         except Post.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = LikeSerializer(data=request.data)
-        serializer.initial_data["post"] = post.pk  # type: ignore
-        serializer.initial_data["user"] = user.pk  # type: ignore
+        serializer = LikeSerializer(data={"post": post.pk, "user": user.pk})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -526,7 +556,7 @@ class LikeListAPIView(APIView):
         except Post.DoesNotExist:
             return Response(status="sef")
         try:
-            like = Like.objects.get(post=post)
+            like = Like.objects.get(post=post, user=request.user)
         except Like.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -578,17 +608,17 @@ class BatchDetailAPIView(APIView):
 class UserListAPIView(APIView):
     @extend_schema(responses=UserSerializer(many=True), operation_id="user_all")
     def get(self, request):
-        users = User.objects.all()
+        users = User.objects.all().order_by("username")
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
 
 
-class AdminUsersListAPIView(APIView):
+class SiteManagersListAPIView(APIView):
     permission_classes = (MegaAdminPermission,)
 
-    @extend_schema(responses=UserSerializer(many=True), operation_id="user_allAdmins")
+    @extend_schema(responses=UserSerializer(many=True), operation_id="user_allSiteManagers")
     def get(self, request):
-        users = User.objects.filter(role__name__iexact="admin")
+        users = User.objects.filter(role__name__iexact=RoleName.SITEMANAGER).order_by("username")
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
 
@@ -624,8 +654,53 @@ class UserDetailAPIView(APIView):
 
 class UserCurrentUserAPIView(APIView):
     @extend_schema(responses=UserSerializer, operation_id="user_current")
-    def get(self, request):
+    def post(self, request):
         serializer = UserSerializer(request.user)
+        return Response(serializer.data)
+
+
+class UserInvitationListAPIView(APIView):
+    permission_classes = (MegaAdminPermission,)
+
+    @extend_schema(
+        request=CreateUserInvitationSerializer,
+        responses=UserInvitationSerializer,
+        operation_id="user-invitation_create",
+    )
+    def post(self, request):
+        site_ids = request.data.get("siteIds")
+        if site_ids is None:
+            return Response("SITE_IDS_INVALID", status=status.HTTP_400_BAD_REQUEST)
+        email = request.data.get("email")
+        if User.objects.filter(email=email).exists():
+            return Response("EMAIL_TAKEN", status=status.HTTP_400_BAD_REQUEST)
+        code = secrets.token_urlsafe(32)
+        user_invitation = UserInvitation.objects.create(
+            code=code,
+            email=email,
+        )
+        sites_to_assign_to = Site.objects.filter(id__in=site_ids)
+        user_invitation.assigned_to_sites.add(*sites_to_assign_to)
+        user_invitation.save()
+        serializer = UserInvitationSerializer(user_invitation)
+
+        return Response(serializer.data)
+
+
+class UserInvitationDetailAPIView(APIView):
+    permission_classes = (AllowAny,)
+
+    @extend_schema(
+        responses=UserInvitationSerializer,
+        operation_id="user-invitation_detail",
+    )
+    def get(self, request, code: str):
+        try:
+            user_invitation = UserInvitation.objects.get(code=code)
+        except UserInvitation.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserInvitationSerializer(user_invitation)
         return Response(serializer.data)
 
 

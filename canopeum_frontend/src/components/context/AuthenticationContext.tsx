@@ -40,67 +40,69 @@ const storeToken = (token: TokenRefresh, remember = false) => {
   }
 }
 
-const AuthenticationContextProvider: FunctionComponent<{ readonly children?: ReactNode }> = memo(props => {
-  const [user, setUser] = useState<User>()
-  const [isSessionLoaded, setIsSessionLoaded] = useState(false)
+const AuthenticationContextProvider: FunctionComponent<{ readonly children?: ReactNode }> = memo(
+  props => {
+    const [user, setUser] = useState<User>()
+    const [isSessionLoaded, setIsSessionLoaded] = useState(false)
 
-  const loadSession = useCallback(() => setIsSessionLoaded(true), [setIsSessionLoaded])
+    const loadSession = useCallback(() => setIsSessionLoaded(true), [setIsSessionLoaded])
 
-  const authenticate = useCallback((newUser: User) => {
-    setUser(newUser)
-    loadSession()
-  }, [setUser, loadSession])
-
-  const updateUser = useCallback((updatedUser: User) => setUser(updatedUser), [setUser])
-
-  const initAuth = useCallback(async () => {
-    const accessToken = sessionStorage.getItem(STORAGE_ACCESS_TOKEN_KEY) ??
-      localStorage.getItem(STORAGE_ACCESS_TOKEN_KEY)
-    if (!accessToken) {
+    const authenticate = useCallback((newUser: User) => {
+      setUser(newUser)
       loadSession()
+    }, [setUser, loadSession])
 
-      return
-    }
+    const updateUser = useCallback((updatedUser: User) => setUser(updatedUser), [setUser])
 
-    try {
-      const currentUser = await getApiClient().userClient.current()
-      authenticate(currentUser)
-    } catch { /* empty */ }
+    const initAuth = useCallback(async () => {
+      const accessToken = sessionStorage.getItem(STORAGE_ACCESS_TOKEN_KEY) ??
+        localStorage.getItem(STORAGE_ACCESS_TOKEN_KEY)
+      if (!accessToken) {
+        loadSession()
 
-    loadSession()
-  }, [authenticate, loadSession])
+        return
+      }
 
-  const logout = useCallback(() => {
-    sessionStorage.removeItem(STORAGE_ACCESS_TOKEN_KEY)
-    sessionStorage.removeItem(STORAGE_REFRESH_TOKEN_KEY)
-    localStorage.removeItem(STORAGE_ACCESS_TOKEN_KEY)
-    localStorage.removeItem(STORAGE_REFRESH_TOKEN_KEY)
+      try {
+        const currentUser = await getApiClient().userClient.current()
+        authenticate(currentUser)
+      } catch { /* empty */ }
 
-    setUser(undefined)
-  }, [setUser])
+      loadSession()
+    }, [authenticate, loadSession])
 
-  const context = useMemo<IAuthenticationContext>(() => (
-    {
-      currentUser: user,
-      isAuthenticated: user !== undefined,
-      isSessionLoaded,
-      initAuth,
-      authenticate,
-      updateUser,
-      storeToken,
-      loadSession,
-      logout,
-    }
-  ), [initAuth, authenticate, updateUser, loadSession, user, logout, isSessionLoaded])
+    const logout = useCallback(() => {
+      sessionStorage.removeItem(STORAGE_ACCESS_TOKEN_KEY)
+      sessionStorage.removeItem(STORAGE_REFRESH_TOKEN_KEY)
+      localStorage.removeItem(STORAGE_ACCESS_TOKEN_KEY)
+      localStorage.removeItem(STORAGE_REFRESH_TOKEN_KEY)
 
-  return (
-    <AuthenticationContext.Provider
-      value={context}
-    >
-      {props.children}
-    </AuthenticationContext.Provider>
-  )
-})
+      setUser(undefined)
+    }, [setUser])
+
+    const context = useMemo<IAuthenticationContext>(() => (
+      {
+        currentUser: user,
+        isAuthenticated: user !== undefined,
+        isSessionLoaded,
+        initAuth,
+        authenticate,
+        updateUser,
+        storeToken,
+        loadSession,
+        logout,
+      }
+    ), [initAuth, authenticate, updateUser, loadSession, user, logout, isSessionLoaded])
+
+    return (
+      <AuthenticationContext.Provider
+        value={context}
+      >
+        {props.children}
+      </AuthenticationContext.Provider>
+    )
+  },
+)
 
 AuthenticationContextProvider.displayName = 'AuthenticationContextProvider'
 export default AuthenticationContextProvider

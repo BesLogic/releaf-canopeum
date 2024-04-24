@@ -3,6 +3,9 @@ import type { BatchAnalytics } from '@services/api'
 import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 
+const BATCH_HEADER_CLASS =
+  'text-capitalize position-sticky start-0 table-primary border-1 border-top-0 border-primary'
+
 type Props = {
   readonly batches: BatchAnalytics[],
 }
@@ -22,7 +25,14 @@ const BatchTable = ({ batches }: Props) => {
         <tbody>
           <tr>
             <th
-              className='text-capitalize position-sticky start-0 table-primary border-1 border-primary'
+              className='
+                text-capitalize
+                position-sticky
+                start-0
+                table-primary
+                border-1
+                border-primary
+              '
               scope='row'
               style={{ width: '12.5rem' }}
             >
@@ -41,7 +51,7 @@ const BatchTable = ({ batches }: Props) => {
           </tr>
           <tr>
             <th
-              className='text-capitalize position-sticky start-0 table-primary border-1 border-top-0 border-primary'
+              className={BATCH_HEADER_CLASS}
               scope='row'
             >
               <span className='text-capitalize'>{t('analytics.table-row-2')}</span>
@@ -58,7 +68,7 @@ const BatchTable = ({ batches }: Props) => {
           </tr>
           <tr>
             <th
-              className='text-capitalize position-sticky start-0 table-primary border-1 border-top-0 border-primary'
+              className={BATCH_HEADER_CLASS}
               scope='row'
             >
               {t('analytics.table-row-3')}
@@ -71,7 +81,9 @@ const BatchTable = ({ batches }: Props) => {
               >
                 <ul>
                   {batch.species.map(type => (
-                    <li key={`batch-${batch.id}-treeType-${type.en}`}>{translateValue(type)} x {type.quantity}</li>
+                    <li key={`batch-${batch.id}-treeType-${type.en}`}>
+                      {translateValue(type)} x {type.quantity}
+                    </li>
                   ))}
                 </ul>
               </td>
@@ -79,7 +91,7 @@ const BatchTable = ({ batches }: Props) => {
           </tr>
           <tr>
             <th
-              className='text-capitalize position-sticky start-0 table-primary border-1 border-top-0 border-primary'
+              className={BATCH_HEADER_CLASS}
               scope='row'
             >
               {t('analytics.table-row-4')}
@@ -96,7 +108,7 @@ const BatchTable = ({ batches }: Props) => {
           </tr>
           <tr>
             <th
-              className='text-capitalize position-sticky start-0 table-primary border-1 border-top-0 border-primary'
+              className={BATCH_HEADER_CLASS}
               scope='row'
             >
               {t('analytics.table-row-5')}
@@ -113,7 +125,7 @@ const BatchTable = ({ batches }: Props) => {
           </tr>
           <tr>
             <th
-              className='text-capitalize position-sticky start-0 table-primary border-1 border-top-0 border-primary'
+              className={BATCH_HEADER_CLASS}
               scope='row'
             >
               {t('analytics.table-row-6')}
@@ -134,7 +146,7 @@ const BatchTable = ({ batches }: Props) => {
           </tr>
           <tr>
             <th
-              className='text-capitalize position-sticky start-0 table-primary border-1 border-top-0 border-primary'
+              className={BATCH_HEADER_CLASS}
               scope='row'
             >
               {t('analytics.table-row-7')}
@@ -155,7 +167,7 @@ const BatchTable = ({ batches }: Props) => {
           </tr>
           <tr>
             <th
-              className='text-capitalize position-sticky start-0 table-primary border-1 border-top-0 border-primary'
+              className={BATCH_HEADER_CLASS}
               scope='row'
             >
               {t('analytics.table-row-8')}
@@ -168,7 +180,9 @@ const BatchTable = ({ batches }: Props) => {
               >
                 <ul>
                   {batch.supportedSpecies.map(type => (
-                    <li key={`batch-${batch.id}-supportedTreeType-${type.en}`}>{translateValue(type)}</li>
+                    <li key={`batch-${batch.id}-supportedTreeType-${type.en}`}>
+                      {translateValue(type)}
+                    </li>
                   ))}
                 </ul>
               </td>
@@ -176,7 +190,7 @@ const BatchTable = ({ batches }: Props) => {
           </tr>
           <tr>
             <th
-              className='text-capitalize position-sticky start-0 table-primary border-1 border-top-0 border-primary'
+              className={BATCH_HEADER_CLASS}
               scope='row'
             >
               {t('analytics.table-row-9')}
@@ -193,7 +207,7 @@ const BatchTable = ({ batches }: Props) => {
           </tr>
           <tr>
             <th
-              className='text-capitalize position-sticky start-0 table-primary border-1 border-top-0 border-primary'
+              className={BATCH_HEADER_CLASS}
               scope='row'
             >
               {t('analytics.table-row-10')}
@@ -210,7 +224,7 @@ const BatchTable = ({ batches }: Props) => {
           </tr>
           <tr>
             <th
-              className='text-capitalize position-sticky start-0 table-primary border-1 border-top-0 border-primary'
+              className={BATCH_HEADER_CLASS}
               scope='row'
             >
               {t('analytics.table-row-11')}
@@ -227,7 +241,7 @@ const BatchTable = ({ batches }: Props) => {
           </tr>
           <tr>
             <th
-              className='text-capitalize position-sticky start-0 table-primary border-1 border-top-0 border-primary'
+              className={BATCH_HEADER_CLASS}
               scope='row'
             >
               {t('analytics.table-row-12')}
@@ -244,7 +258,7 @@ const BatchTable = ({ batches }: Props) => {
           </tr>
           <tr>
             <th
-              className='text-capitalize position-sticky start-0 table-primary border-1 border-top-0 border-primary'
+              className={BATCH_HEADER_CLASS}
               scope='row'
             >
               {t('analytics.table-row-13')}

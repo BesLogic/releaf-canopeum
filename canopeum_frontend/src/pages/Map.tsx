@@ -81,7 +81,11 @@ const Map = () => {
           <div className='py-3 d-flex flex-column gap-3'>
             {sites.map(site => (
               <Link id={`${site.id}`} key={site.id} to={appRoutes.siteSocial(site.id)}>
-                <div className={`card ${selectedSiteId === site.id && 'border border-secondary border-5'}`}>
+                <div
+                  className={`card ${
+                    selectedSiteId === site.id && 'border border-secondary border-5'
+                  }`}
+                >
                   <div className='row g-0'>
                     <div className='col-md-4'>
                       <img
@@ -94,11 +98,12 @@ const Map = () => {
                       <div className='card-body'>
                         <h5>{site.name}</h5>
                         <h6 className='text-primary'>
-                          <span className='material-symbols-outlined'>school</span> {site.siteType.en}
+                          <span className='material-symbols-outlined'>school</span>
+                          <span className='ms-1'>{site.siteType.en}</span>
                         </h6>
                         <h6 className='text-black-50'>
-                          <span className='material-symbols-outlined fill-icon'>location_on</span>{' '}
-                          {site.coordinates.address}
+                          <span className='material-symbols-outlined fill-icon'>location_on</span>
+                          <span className='ms-1'>{site.coordinates.address}</span>
                         </h6>
                       </div>
                     </div>
