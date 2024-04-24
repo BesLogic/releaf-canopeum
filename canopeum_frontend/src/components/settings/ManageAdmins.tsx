@@ -34,7 +34,7 @@ const ManageAdmins = () => {
 
         <div className='mt-3 row gx-3 gy-3'>
           {siteAdminList.map(admin => (
-            <div className='col-4' key={admin.id}>
+            <div className='col-12 col-lg-6 col-xl-4' key={admin.id}>
               <AdminCard admin={admin} />
             </div>
           ))}

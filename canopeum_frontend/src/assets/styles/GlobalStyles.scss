@@ -54,11 +54,17 @@ body {
 
 @media screen and (min-width: $medium-width) {
   .page-container {
-    padding: 1rem 3rem;
+    padding: 1rem 2rem;
   }
 }
 
 @media screen and (min-width: $large-width) {
+  .page-container {
+    padding: 1rem 4rem;
+  }
+}
+
+@media screen and (min-width: $xlarge-width) {
   .page-container {
     padding: 1rem 6rem;
   }
