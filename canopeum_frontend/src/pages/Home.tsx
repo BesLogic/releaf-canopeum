@@ -42,8 +42,6 @@ const Home = () => {
       })
     )
 
-  if (!currentUser) return <div />
-
   const renderPosts = () => {
     if (newsPosts.length === 0) {
       return (
@@ -59,6 +57,8 @@ const Home = () => {
       </div>
     )
   }
+
+  if (!currentUser) return <div />
 
   if (isLoading) return <LoadingPage />
 

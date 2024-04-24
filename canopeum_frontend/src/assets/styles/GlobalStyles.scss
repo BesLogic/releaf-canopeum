@@ -19,10 +19,6 @@
   border-radius: 5px;
 }
 
-.page-container {
-  padding: 2rem 12rem;
-}
-
 body {
   background-image: url('@assets/images/TreeBackground.png');
 }
@@ -50,4 +46,20 @@ body {
 
 .bg-lightgreen {
   background: #E8F3E9;
+}
+
+.page-container {
+  padding: 1rem 1rem;
+}
+
+@media screen and (min-width: $medium-width) {
+  .page-container {
+    padding: 1rem 3rem;
+  }
+}
+
+@media screen and (min-width: $large-width) {
+  .page-container {
+    padding: 1rem 6rem;
+  }
 }

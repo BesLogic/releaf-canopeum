@@ -1,6 +1,9 @@
 {
+  "title": "Gérer mes Sites",
+  "create-site": "Créer un Nouveau Site",
   "average": "moyenne",
-  "batches": "lots",
+  "batches_one": "lot",
+  "batches_other": "lots",
   "sufficient": "suffisant",
   "insufficient": "insuffisant",
   "table-row-1": "nom du lot / ID",
@@ -28,5 +31,11 @@
     "admins-saved": "Administrateurs sauvegardés avec succès pour {{siteName}}!",
     "site-deleted": "Le site {{siteName}} a été supprimé avec succès.",
     "site-deleted-error": "Un problème est survenu lors de la tentative de suppression du site {{siteName}}..."
+  },
+  "success-rate-chart": {
+    "title": "Taux De Réussite Annuel Moyen Par Site"
+  },
+  "batches": {
+    "batch-tracking": "Batch Tracking"
   }
 }
