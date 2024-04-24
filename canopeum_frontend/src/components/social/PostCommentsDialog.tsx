@@ -27,6 +27,7 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose, onCommentAction
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const { currentUser } = useContext(AuthenticationContext)
   const [comments, setComments] = useState<Comment[]>([])
+  const [commentsLoaded, setCommentsLoaded] = useState(false)
 
   const [commentBody, setCommentBody] = useState('')
   const [commentBodyNumberOfWords, setCommentBodyNumberOfWords] = useState(0)
@@ -36,10 +37,14 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose, onCommentAction
   const [confirmCommentText, setConfirmCommentText] = useState('')
 
   useEffect(() => {
+    // Since this is a dialog, we only want to fetch the comments once it is opened
+    if (!open || commentsLoaded) return
+
     const fetchComments = async () => setComments(await getApiClient().commentClient.all(postId))
 
     void fetchComments()
-  }, [postId])
+    setCommentsLoaded(true)
+  }, [postId, open, commentsLoaded])
 
   useEffect(() => {
     if (!confirmCommentDeleteOpen) {

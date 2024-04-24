@@ -360,7 +360,7 @@ class PostListAPIView(APIView):
     )
     def get(self, request):
         site_id = request.GET.get("siteId", "")
-        posts = Post.objects.filter(site=site_id) if not site_id else Post.objects.all()
+        posts = Post.objects.filter(site=site_id) if site_id else Post.objects.all()
         sorted_posts = posts.order_by("-created_at")
         serializer = PostSerializer(sorted_posts, many=True, context={"request": request})
         return Response(serializer.data)
