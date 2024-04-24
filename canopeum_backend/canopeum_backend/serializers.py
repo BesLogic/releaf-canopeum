@@ -121,10 +121,6 @@ class UserSerializer(serializers.ModelSerializer):
     def get_admin_site_ids(self, obj: User):
         return [siteadmin.site.id for siteadmin in Siteadmin.objects.filter(user=obj)]
 
-    @extend_schema_field(list[int])  # pyright: ignore[reportArgumentType]
-    def get_admin_site_ids(self, obj: User):
-        return [siteadmin.site.id for siteadmin in Siteadmin.objects.filter(user=obj)]
-
 
 class UserTokenSerializer(serializers.Serializer):
     token = TokenRefreshSerializer()

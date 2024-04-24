@@ -1,0 +1,18 @@
+// Used for CSSTransition, important to add classNames item-fadeinout
+.item-fadeinout-enter {
+  opacity: 0;
+}
+
+.item-fadeinout-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.item-fadeinout-exit {
+  opacity: 1;
+}
+
+.item-fadeinout-exit-active {
+  opacity: 0;
+  transition: opacity 500ms ease-in;
+}

@@ -34,15 +34,12 @@ const Home = () => {
             hasLiked: newLikeStatus,
             likeCount: newCount,
           }
-
           return new Post(updatedPost)
         }
 
         return post
       })
     )
-
-  if (!currentUser) return <div />
 
   const renderPosts = () => {
     if (newsPosts.length === 0) {
@@ -59,6 +56,8 @@ const Home = () => {
       </div>
     )
   }
+
+  if (!currentUser) return <div />
 
   if (isLoading) return <LoadingPage />
 

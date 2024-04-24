@@ -116,6 +116,11 @@ $link-decoration: none;
 $link-hover-color: darken($link-color, 15%);
 $link-hover-decoration: none;
 
+$small-width: 540px;
+$medium-width: 720px;
+$large-width: 960px;
+$xlarge-width: 1664px;
+
 
 // Grid
 $grid-breakpoints: (
@@ -123,13 +128,14 @@ $grid-breakpoints: (
   sm: 576px,
   md: 768px,
   lg: 992px,
-  xl: 1200px
+  xl: 1200px,
+  xxl: 1600px,
 );
 $container-max-widths: (
-  sm: 540px,
-  md: 720px,
-  lg: 960px,
-  xl: 1664px
+  sm: $small-width,
+  md: $medium-width,
+  lg: $large-width,
+  xl: $xlarge-width
 );
 $grid-columns: 12;
 $grid-gutter-width: 30px;
@@ -373,7 +379,7 @@ $navbar-dark-color: rgba($white, 0.5);
 $navbar-dark-hover-color: rgba($white, 0.75);
 $navbar-dark-active-color: rgba($white, 1);
 $navbar-dark-disabled-color: rgba($white, 0.25);
-$navbar-dark-toggler-border-color: rgba($white, 0.1);
+$navbar-dark-toggler-border-color: rgba($white, 1);
 $navbar-light-color: rgba($black, 0.5);
 $navbar-light-hover-color: rgba($black, 0.7);
 $navbar-light-active-color: rgba($black, 0.9);

@@ -10,7 +10,7 @@ import type { SiteSummary, User } from '../services/api'
 import getApiClient from '../services/apiInterface'
 
 const Analytics = () => {
-  const { t } = useTranslation()
+  const { t: translate } = useTranslation()
   const { formatDate } = useContext(LanguageContext)
   const { currentUser } = useContext(AuthenticationContext)
   const [siteSummaries, setSiteSummaries] = useState<SiteSummary[]>([])
@@ -53,12 +53,13 @@ const Analytics = () => {
               <div className='d-flex justify-content-between w-100 pe-3 fs-5'>
                 <span>{site.name}</span>
                 <span style={{ opacity: .5 }}>
-                  {t('analytics.last-update')}: {lastModifiedBatchDate
+                  {translate('analytics.last-update')}: {lastModifiedBatchDate
                     ? formatDate(lastModifiedBatchDate)
                     : 'N/A'}
                 </span>
                 <span className='text-capitalize'>
-                  {site.batches.length} {t('analytics.batches', { count: site.batches.length })}
+                  {site.batches.length}{' '}
+                  {translate('analytics.batches', { count: site.batches.length })}
                 </span>
               </div>
             </button>
@@ -79,11 +80,13 @@ const Analytics = () => {
 
   return (
     <div>
-      <div className='container d-flex flex-column gap-2' style={{ padding: '1rem 10rem' }}>
+      <div className='page-container d-flex flex-column gap-2'>
         <div className='d-flex justify-content-between'>
-          <h1 className='text-light'>Manage my Sites</h1>
+          <h1 className='text-light'>{translate('analytics.title')}</h1>
 
-          <button className='btn btn-secondary' type='button'>Create a New Site</button>
+          <button className='btn btn-secondary' type='button'>
+            {translate('analytics.create-site')}
+          </button>
         </div>
 
         <div className='mt-2 row gx-3 gy-3 pb-3'>
@@ -98,14 +101,14 @@ const Analytics = () => {
         </div>
 
         <div className='mt-4 bg-white rounded p-3'>
-          <h5>Average Annual Success Rate Per Site</h5>
+          <h5>{translate('analytics.success-rate-chart.title')}</h5>
           <SiteSuccessRatesChart siteSummaries={siteSummaries} />
         </div>
 
         <div className='mt-4'>
           <div className='bg-white rounded p-3 px-4'>
             <div className='d-flex justify-content-between'>
-              <div className='fs-5'>Batch Tracking</div>
+              <div className='fs-5'>{translate('analytics.batches.batch-tracking')}</div>
               <div>
                 <span>Filters Go Here</span>
               </div>

@@ -73,9 +73,9 @@ const UserManagement = () => {
       ))
 
   return (
-    <div className='container py-3 h-100'>
+    <div className='page-container h-100'>
       <div className='row' style={{ height: '80vh' }}>
-        <div className='col-3 h-100'>
+        <div className='col-5 col-lg-3 h-100'>
           <div className='bg-white rounded-2 py-3 px-4 h-100'>
             <div className='py-3'>
               <h4 className='text-center'>CANOPEUM</h4>
@@ -85,7 +85,7 @@ const UserManagement = () => {
           </div>
         </div>
 
-        <div className='col-7 px-5'>
+        <div className='col-7 col-lg-9'>
           {displayTabContent()}
         </div>
       </div>

@@ -1,4 +1,6 @@
 {
+  "title": "Manage my Sites",
+  "create-site": "Create a New Site",
   "average": "average",
   "batches_one": "batch",
   "batches_other": "batches",
@@ -28,8 +30,14 @@
     "unknown": "Unknown",
     "admins-saved": "Admins saved successfully for {{siteName}}!",
     "site-deleted": "Site {{siteName}} was successfully deleted.",
-    "site-deleted-error": "There was a problem while trying to delete the site {{siteName}}...",
+    "site-deleted-error": "There was a problem while trying to delete the site {{siteName}}..."
     "delete-site-confirmation-title": "Delete Site",
     "delete-site-confirmation-message": "Are you sure you want to delete {{siteName}}? Doing so will permanently delete this site; this action is irreversible."
+  },
+  "success-rate-chart": {
+    "title": "Average Annual Success Rate Per Site"
+  },
+  "batches": {
+    "batch-tracking": "Batch Tracking"
   }
 }

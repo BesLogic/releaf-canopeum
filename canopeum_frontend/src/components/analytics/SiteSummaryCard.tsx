@@ -26,7 +26,7 @@ const SiteSummaryCard = ({ site, admins, onSiteChange }: Props) => {
 
   return (
     <div
-      className='col-3'
+      className='col-12 col-md-6 col-xl-4 col-xxl-3'
       key={site.name}
     >
       <div className='card h-100 w-100 py-3'>
