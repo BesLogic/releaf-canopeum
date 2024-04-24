@@ -453,6 +453,50 @@ class Command(BaseCommand):
                     flora and fauna of Mont-Tremblant.""",
                 link="https://www.evergreentrail.com/guided-walks",
             ),
+
+    def create_roles(self):
+        Role.objects.create(name="User")
+        Role.objects.create(name="SiteManager")
+        Role.objects.create(name="MegaAdmin")
+
+    def create_users(self):
+        User.objects.create_user(
+            username="admin",
+            email="admin@beslogic.com",
+            password="Adminbeslogic!",  # noqa: S106 MOCK_PASSWORD
+            is_staff=True,
+            is_superuser=True,
+            role=Role.objects.get(name="MegaAdmin"),
+        )
+        User.objects.create_user(
+            username="TyrionLannister",
+            email="tyrion@lannister.com",
+            password="tyrion123",  # noqa: S106 MOCK_PASSWORD
+            role=Role.objects.get(name="SiteManager"),
+        )
+        User.objects.create_user(
+            username="DaenerysTargaryen",
+            email="daenerys@targaryen.com",
+            password="daenerys123",  # noqa: S106 MOCK_PASSWORD
+            role=Role.objects.get(name="SiteManager"),
+        )
+        User.objects.create_user(
+            username="JonSnow",
+            email="jon@snow.com",
+            password="jon123",  # noqa: S106 MOCK_PASSWORD
+            role=Role.objects.get(name="SiteManager"),
+        )
+        User.objects.create_user(
+            username="OberynMartell",
+            email="oberyn@martell.com",
+            password="oberyn123",  # noqa: S106 MOCK_PASSWORD
+            role=Role.objects.get(name="User"),
+        )
+        User.objects.create_user(
+            username="NormalUser",
+            email="normal@user.com",
+            password="normal123",  # noqa: S106 MOCK_PASSWORD
+            role=Role.objects.get(name="User"),
         )
         create_posts_for_site(site_4)
 
