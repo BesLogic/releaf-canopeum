@@ -45,11 +45,19 @@
     display: none;
   }
 
+  .navbar-nav {
+    align-items: center;
+  }
+
   .navbar-collapse.collapse.show,
   .navbar-collapse.collapsing {
     display: flex;
     flex-direction: column;
     align-items: start;
+
+    .navbar-nav {
+      align-items: flex-start;
+    }
 
     .nav-item {
       padding-left: 0.75rem;
