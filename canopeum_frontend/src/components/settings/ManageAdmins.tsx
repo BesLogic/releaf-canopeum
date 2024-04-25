@@ -5,17 +5,32 @@ import getApiClient from '@services/apiInterface'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import LoadingPage from '../../pages/LoadingPage'
+
 const ManageAdmins = () => {
   const { t: translate } = useTranslation()
+
+  const [isLoadingAdmins, setIsLoadingAdmins] = useState(true)
   const [siteAdminList, setSiteAdminList] = useState<AdminUserSites[]>([])
   const [showAdminInviteDialog, setShowAdminInviteDialog] = useState(false)
 
-  const fetchSiteAdmins = async () =>
-    setSiteAdminList(await getApiClient().adminUserSitesClient.all())
+  const fetchSiteAdmins = async () => {
+    try {
+      const adminsList = await getApiClient().adminUserSitesClient.all()
+      setSiteAdminList(adminsList)
+      setIsLoadingAdmins(false)
+    } catch {
+      setIsLoadingAdmins(false)
+    }
+  }
 
   useEffect((): void => {
     void fetchSiteAdmins()
   }, [])
+
+  if (isLoadingAdmins) {
+    return <LoadingPage />
+  }
 
   return (
     <>
