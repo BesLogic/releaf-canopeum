@@ -36,18 +36,6 @@ const PostWidget = ({ post, likePostEvent }: Props) => {
     }
   }
 
-  const handleCommentCountChange = (action: 'added' | 'deleted') => {
-    /* eslint-disable @typescript-eslint/no-explicit-any -- (NicolasDontigny) Temporary workaround.
-    We want the post commentCount property to be read-only;
-    figure out how to do so with the NSwag models generation */
-    if (action === 'added') {
-      ;(post.commentCount as any) += 1
-    } else {
-      ;(post.commentCount as any) -= 1
-    }
-    /* eslint-enable @typescript-eslint/no-explicit-any */
-  }
-
   return (
     <>
       <div className='bg-white rounded-2 px-5 py-4 d-flex flex-column gap-3'>
@@ -109,7 +97,6 @@ const PostWidget = ({ post, likePostEvent }: Props) => {
 
       <PostCommentsDialog
         handleClose={handleCommentsModalClose}
-        onCommentAction={handleCommentCountChange}
         open={commentsModalOpen}
         postId={post.id}
         siteId={post.site.id}

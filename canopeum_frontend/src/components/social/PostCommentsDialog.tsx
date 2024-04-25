@@ -9,6 +9,7 @@ import { type ChangeEvent, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 
+import usePostsStore from '../../store/postsStore'
 import { numberOfWordsInText } from '../../utils/stringUtils'
 import type { InputValidationError } from '../../utils/validators'
 
@@ -17,15 +18,16 @@ type Props = {
   readonly siteId: number,
   readonly open: boolean,
   readonly handleClose: () => void,
-  readonly onCommentAction: (action: 'added' | 'deleted') => void,
 }
 
 const MAXIMUM_WORDS_PER_COMMENT = 100
 
-const PostCommentsDialog = ({ open, postId, siteId, handleClose, onCommentAction }: Props) => {
+const PostCommentsDialog = ({ open, postId, siteId, handleClose }: Props) => {
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const { currentUser } = useContext(AuthenticationContext)
+  const { commentChange } = usePostsStore()
+
   const [comments, setComments] = useState<Comment[]>([])
   const [commentsLoaded, setCommentsLoaded] = useState(false)
 
@@ -105,14 +107,14 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose, onCommentAction
     setComments(previous => [newComment, ...previous])
     setCommentBody('')
     setCommentBodyNumberOfWords(0)
-    onCommentAction('added')
+    commentChange(postId, 'added')
   }
 
   const deleteComment = async (commentToDelete: Comment) => {
     try {
       await getApiClient().commentClient.delete(commentToDelete.id, postId)
       setComments(previous => previous.filter(comment => comment.id !== commentToDelete.id))
-      onCommentAction('deleted')
+      commentChange(postId, 'removed')
     } catch {
       openAlertSnackbar(translate('social.comments.comment-deletion-error'), { severity: 'error' })
     }

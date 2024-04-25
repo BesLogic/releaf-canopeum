@@ -17,8 +17,12 @@ const MAX_FILE_DEPTH = 1920
 const MAX_FILE_SIZE = MAX_FILE_WIDTH * MAX_FILE_HEIGHT * MAX_FILE_DEPTH
 const MAXIMUM_WORDS_PER_POST = 3000
 
-const CreatePostWidget = (props: { readonly addNewPost: (newPost: Post) => void }) => {
-  const { addNewPost } = props
+type Props = {
+  readonly siteId: number,
+  readonly addNewPost: (newPost: Post) => void,
+}
+
+const CreatePostWidget = ({ siteId, addNewPost }: Props) => {
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
 
@@ -36,7 +40,7 @@ const CreatePostWidget = (props: { readonly addNewPost: (newPost: Post) => void 
       const isPostBodyValid = validatePostBody(true)
       if (!isPostBodyValid) return
 
-      const newPost = await getApiClient().postClient.create(1, body, files)
+      const newPost = await getApiClient().postClient.create(siteId, body, files)
       setFiles([])
       addNewPost(newPost)
     } catch {
