@@ -1,6 +1,7 @@
 import type { Asset } from '@services/api'
-import AssetViewer from './AssetViewer'
 import { useState } from 'react'
+
+import AssetViewer from './AssetViewer'
 
 type Props = {
   readonly medias: Asset[],
@@ -16,19 +17,17 @@ const AssetGrid = ({ medias, isEditable }: Props) => {
     setViewModeActivated(true)
   }
 
-  const handleCloseClick = () => {
-    setViewModeActivated(false)
-  }
+  const handleCloseClick = () => setViewModeActivated(false)
 
   return (
     <div>
       <div className='row'>
         {medias.map((media, index) => (
-          <div
-            className='position-relative col-md-3 flex-grow-1 p-1 cursor-pointer'
+          <button
+            className='unstyled-button position-relative col-md-3 flex-grow-1 p-1 cursor-pointer '
             key={media.id}
             onClick={() => handleAssetClick(index)}
-            role='button'
+            type='button'
           >
             <div className='w-100' style={{ height: '200px', overflow: 'hidden' }}>
               <img
@@ -59,15 +58,15 @@ const AssetGrid = ({ medias, isEditable }: Props) => {
                   </span>
                 </button>
               )}
-          </div>
+          </button>
         ))}
       </div>
       <div>
         {viewModeActivated && (
           <AssetViewer
-            medias={medias}
             handleClose={handleCloseClick}
             mediaSelectedIndex={mediaSelectedIndex}
+            medias={medias}
           />
         )}
       </div>
