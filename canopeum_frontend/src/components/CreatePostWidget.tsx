@@ -9,7 +9,7 @@ import { assetFormatter } from '../utils/assetFormatter'
 import { numberOfWordsInText } from '../utils/stringUtils'
 import textAreaAutoGrow from '../utils/textAreaAutoGrow'
 import type { InputValidationError } from '../utils/validators'
-import AssetGrid from './AssetGrid'
+import AssetGrid from './assets/AssetGrid'
 
 const MAX_FILE_WIDTH = 1920
 const MAX_FILE_HEIGHT = 1920
