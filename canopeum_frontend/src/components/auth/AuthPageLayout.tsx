@@ -14,7 +14,7 @@ const AuthPageLayout = ({ children }: Props) => (
       d-flex
       flex-column
       align-items-center
-      bg-white
+      bg-cream
       px-3
       py-4
       overflow-y-auto

@@ -22,7 +22,7 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
   const { translateValue } = useContext(LanguageContext)
 
   return (
-    <div className='bg-white rounded d-flex m-0 header-card'>
+    <div className='bg-cream rounded d-flex m-0 header-card'>
       <div
         className='
           weather-container

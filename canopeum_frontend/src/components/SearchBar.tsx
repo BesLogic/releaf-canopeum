@@ -42,7 +42,7 @@ const SearchBar = ({ initialValue, onChange }: Props) => {
           className='
             btn
             btn-outline-secondary
-            bg-white
+            bg-cream
             border-start-0
             border
             rounded-end-pill

@@ -49,8 +49,8 @@ const PostWidget = ({ post, likePostEvent }: Props) => {
   }
 
   return (
-    <>
-      <div className='bg-white rounded-2 px-5 py-4 d-flex flex-column gap-3'>
+    <div className='card'>
+      <div className='card-body rounded-2 d-flex flex-column gap-3'>
         <div className='d-flex justify-content-start gap-2'>
           <img
             alt='site'
@@ -120,7 +120,7 @@ const PostWidget = ({ post, likePostEvent }: Props) => {
         open={shareModalOpen}
         post={post}
       />
-    </>
+    </div>
   )
 }
 
