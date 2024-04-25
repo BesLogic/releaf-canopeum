@@ -1,6 +1,8 @@
+/* eslint-disable max-lines -- Could be fixed by creating a global Input component */
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { SnackbarContext } from '@components/context/SnackbarContext'
-import { ChangePassword, type IPatchedUpdateUser, PatchedUpdateUser } from '@services/api'
+import { ERROR_MESSAGES } from '@constants/errorMessages'
+import { ApiException, ChangePassword, type IPatchedUpdateUser, PatchedUpdateUser } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { type InputValidationError, isValidEmail, isValidPassword, mustMatch } from '@utils/validators'
 import { useContext, useEffect, useState } from 'react'
@@ -29,6 +31,7 @@ const EditProfile = () => {
     InputValidationError | undefined
   >()
 
+  const [saveProfileError, setSaveProfileError] = useState<string>()
   const [changesToSave, setChangesToSave] = useState(false)
 
   useEffect(() => {
@@ -172,18 +175,29 @@ const EditProfile = () => {
     const isFormValid = validateForm()
     if (!isFormValid) return
 
-    const updateUserBody: IPatchedUpdateUser = { username, email }
-    if (doChangePassword) {
-      updateUserBody.changePassword = new ChangePassword({
-        currentPassword,
-        newPassword,
-        newPasswordConfirmation,
-      })
+    try {
+      const updateUserBody: IPatchedUpdateUser = { username, email }
+      if (doChangePassword) {
+        updateUserBody.changePassword = new ChangePassword({
+          currentPassword,
+          newPassword,
+          newPasswordConfirmation,
+        })
+      }
+      const updatedInfo = new PatchedUpdateUser(updateUserBody)
+      const updatedUser = await getApiClient().userClient.update(currentUser.id, updatedInfo)
+      updateUser(updatedUser)
+      openAlertSnackbar(translate('settings.edit-profile.profile-saved'), { severity: 'success' })
+    } catch (error: unknown) {
+      if (
+        error instanceof ApiException &&
+        error.response.replaceAll('"', '') === ERROR_MESSAGES.currentPasswordInvalid
+      ) {
+        setSaveProfileError(translate('settings.edit-profile.current-password-invalid'))
+      } else {
+        setSaveProfileError(translate('settings.edit-profile.save-profile-error'))
+      }
     }
-    const updatedInfo = new PatchedUpdateUser(updateUserBody)
-    const updatedUser = await getApiClient().userClient.update(currentUser.id, updatedInfo)
-    updateUser(updatedUser)
-    openAlertSnackbar(translate('settings.edit-profile.profile-saved'), { severity: 'success' })
   }
 
   return (
@@ -263,6 +277,8 @@ const EditProfile = () => {
                   </label>
 
                   <input
+                    // Could be fixed by creating a global Input component
+                    // eslint-disable-next-line sonarjs/no-duplicate-string -- See above
                     className={`form-control ${currentPasswordError && 'is-invalid'} `}
                     id='password-input'
                     onBlur={() => validateCurrentPassword()}
@@ -323,6 +339,12 @@ const EditProfile = () => {
                   )}
                 </div>
               </>
+            )}
+
+            {saveProfileError && (
+              <div className='mb-4'>
+                <span className='help-block text-danger'>{saveProfileError}</span>
+              </div>
             )}
           </form>
 

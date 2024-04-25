@@ -10,7 +10,9 @@
     "profile-saved": "Profile successfully saved!",
     "current-password": "Current Password",
     "new-password": "New Password",
-    "new-password-confirmation": "Confirm New Password"
+    "new-password-confirmation": "Confirm New Password",
+    "current-password-invalid": "The entered current password is invalid.",
+    "save-profile-error": "There was a problem while saving your profile."
   },
   "manage-admins": {
     "title": "Manage Administrators",
