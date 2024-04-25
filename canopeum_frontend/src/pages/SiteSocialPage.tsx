@@ -63,27 +63,6 @@ const SiteSocialPage = () => {
 
   const addNewPost = (newPost: Post) => addPost(newPost)
 
-  const likePost = (postId: number) => {}
-  // setPosts(previous =>
-  //   previous.map(post => {
-  //     const newLikeStatus = !post.hasLiked
-  //     if (post.id === postId) {
-  //       const newCount = newLikeStatus
-  //         ? post.likeCount + 1
-  //         : post.likeCount - 1
-  //       const updatedPost: IPost = {
-  //         ...post,
-  //         hasLiked: newLikeStatus,
-  //         likeCount: newCount,
-  //       }
-
-  //       return new Post(updatedPost)
-  //     }
-
-  //     return post
-  //   })
-  // )
-
   useEffect((): void => {
     void fetchSiteData(siteId)
     void fetchPosts(siteId)
@@ -136,9 +115,7 @@ const SiteSocialPage = () => {
                     <p>{errorPosts.message}</p>
                   </div>
                 )
-                : sitePosts.map(post => (
-                  <PostWidget key={post.id} likePostEvent={likePost} post={post} />
-                ))}
+                : sitePosts.map(post => <PostWidget key={post.id} post={post} />)}
             </div>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import PostWidget from '@components/social/PostWidget'
 import { appRoutes } from '@constants/routes.constant'
-import { Post } from '@services/api'
+import type { Post } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -46,16 +46,6 @@ const PostDetailsPage = () => {
     void fetchPost(postIdNumber)
   }, [postIdFromParams])
 
-  const handlePostLike = (_postId: number) => {
-    if (!post) return
-
-    const newLikeStatus = !post.hasLiked
-    setPost(previous => (previous
-      ? new Post({ ...previous, hasLiked: newLikeStatus })
-      : undefined)
-    )
-  }
-
   if (isLoading) {
     return <LoadingPage />
   }
@@ -77,7 +67,7 @@ const PostDetailsPage = () => {
         <span className=' ms-1 text-light'>{translate('posts.back-to-social')}</span>
       </Link>
 
-      <PostWidget likePostEvent={handlePostLike} post={post} />
+      <PostWidget post={post} />
     </div>
   )
 }

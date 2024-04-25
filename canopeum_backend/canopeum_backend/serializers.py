@@ -597,15 +597,14 @@ class PostSerializer(serializers.ModelSerializer):
         return obj.comment_set.count()
 
     @extend_schema_field(serializers.IntegerField())
-    def get_like_count(self, obj):
+    def get_like_count(self, obj: Post):
         return Like.objects.filter(post=obj).count()
 
-    @extend_schema_field(bool)  # pyright: ignore[reportArgumentType]
-    def get_has_liked(self, obj: Post):
+    def get_has_liked(self, obj: Post) -> bool:
         user = self.context["request"].user
         if user.is_anonymous:
             return False
-        return Like.objects.filter(user=user).exists()
+        return Like.objects.filter(user=user, post=obj).exists()
 
 
 class CreateCommentSerializer(serializers.ModelSerializer):

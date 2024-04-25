@@ -7,14 +7,16 @@ import getApiClient from '@services/apiInterface'
 import { useContext, useState } from 'react'
 
 import type { Post } from '../../services/api'
+import usePostsStore from '../../store/postsStore'
 
 type Props = {
   readonly post: Post,
-  readonly likePostEvent: (postId: number) => void,
 }
 
-const PostWidget = ({ post, likePostEvent }: Props) => {
+const PostWidget = ({ post }: Props) => {
   const { formatDate } = useContext(LanguageContext)
+  const { toggleLike } = usePostsStore()
+
   const [commentsModalOpen, setCommentsModalOpen] = useState(false)
   const [shareModalOpen, setShareModalOpen] = useState(false)
 
@@ -29,10 +31,10 @@ const PostWidget = ({ post, likePostEvent }: Props) => {
   const likePost = async () => {
     if (post.hasLiked) {
       await getApiClient().likeClient.delete(post.id)
-      likePostEvent(post.id)
+      toggleLike(post.id)
     } else {
       await getApiClient().likeClient.likePost(post.id, {})
-      likePostEvent(post.id)
+      toggleLike(post.id)
     }
   }
 

@@ -9,6 +9,7 @@ type Action = {
   setPosts: (posts: Post[]) => void,
   addPost: (newPost: Post) => void,
   commentChange: (postId: number, action: 'added' | 'removed') => void,
+  toggleLike: (postId: number) => void,
 }
 
 const usePostsStore = create<Action & PostsState>(set => ({
@@ -26,6 +27,25 @@ const usePostsStore = create<Action & PostsState>(set => ({
           commentCount: action === 'added'
             ? post.commentCount + 1
             : post.commentCount - 1,
+        })
+      })
+
+      return ({ posts: mappedPosts })
+    }),
+  toggleLike: postId =>
+    set(state => {
+      const { posts } = state
+      const mappedPosts = posts.map(post => {
+        if (post.id !== postId) return post
+
+        const newLikeStatus = !post.hasLiked
+
+        return new Post({
+          ...post,
+          hasLiked: newLikeStatus,
+          likeCount: newLikeStatus
+            ? post.likeCount + 1
+            : post.likeCount - 1,
         })
       })
 
