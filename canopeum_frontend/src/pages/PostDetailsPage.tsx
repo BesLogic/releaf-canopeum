@@ -2,32 +2,42 @@ import PostWidget from '@components/social/PostWidget'
 import { appRoutes } from '@constants/routes.constant'
 import type { Post } from '@services/api'
 import getApiClient from '@services/apiInterface'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router-dom'
 
+import usePostsStore from '../store/postsStore'
 import LoadingPage from './LoadingPage'
 
 const PostDetailsPage = () => {
   const { t: translate } = useTranslation()
   const { postId: postIdFromParams } = useParams()
+  const { posts, setPosts } = usePostsStore()
 
-  const [post, setPost] = useState<Post>()
+  const [postId, setPostId] = useState<number>()
+  const [postDetail, setPostDetail] = useState<Post>()
   const [isLoading, setIsLoading] = useState(false)
   const [postError, setPostError] = useState(false)
 
-  const fetchPost = async (detailPostId: number) => {
+  useEffect(() => {
+    if (!postId) return
+    const matchingPost = posts.find(post => post.id === postId)
+
+    setPostDetail(matchingPost)
+  }, [posts, postId])
+
+  const fetchPost = useCallback(async (detailPostId: number) => {
     setIsLoading(true)
     try {
       const postResponse = await getApiClient().postClient.detail(detailPostId)
-      setPost(postResponse)
+      setPosts([postResponse])
       setIsLoading(false)
       setPostError(false)
     } catch {
       setIsLoading(false)
       setPostError(true)
     }
-  }
+  }, [setPosts, setIsLoading, setPostError])
 
   useEffect(() => {
     if (!postIdFromParams) {
@@ -44,13 +54,14 @@ const PostDetailsPage = () => {
     }
 
     void fetchPost(postIdNumber)
-  }, [postIdFromParams])
+    setPostId(postIdNumber)
+  }, [fetchPost, postIdFromParams])
 
   if (isLoading) {
     return <LoadingPage />
   }
 
-  if (!post || postError) {
+  if (!postDetail || postError) {
     return (
       <div className='container py-5'>
         <div className='bg-white rounded-2 px-5 py-4'>
@@ -62,12 +73,15 @@ const PostDetailsPage = () => {
 
   return (
     <div className='container py-5'>
-      <Link className='mb-3 d-flex align-items-center' to={appRoutes.siteSocial(post.site.id)}>
+      <Link
+        className='mb-3 d-flex align-items-center'
+        to={appRoutes.siteSocial(postDetail.site.id)}
+      >
         <span className='material-symbols-outlined text-light'>arrow_back</span>
         <span className=' ms-1 text-light'>{translate('posts.back-to-social')}</span>
       </Link>
 
-      <PostWidget post={post} />
+      <PostWidget post={postDetail} />
     </div>
   )
 }
