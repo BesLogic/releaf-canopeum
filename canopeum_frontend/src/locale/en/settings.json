@@ -7,7 +7,10 @@
   },
   "edit-profile": {
     "title": "Edit My Profile",
-    "profile-saved": "Profile successfully saved!"
+    "profile-saved": "Profile successfully saved!",
+    "current-password": "Current Password",
+    "new-password": "New Password",
+    "new-password-confirmation": "Confirm New Password"
   },
   "manage-admins": {
     "title": "Manage Administrators",

@@ -7,7 +7,10 @@
   },
   "edit-profile": {
     "title": "Modifier Mon Profil",
-    "profile-saved": "Profil sauvegardé avec succès!"
+    "profile-saved": "Profil sauvegardé avec succès!",
+    "current-password": "Mot de passe actuel",
+    "new-password": "Nouveau mot de passe",
+    "new-password-confirmation": "Confirmation du nouveau mot de passe"
   },
   "manage-admins": {
     "title": "Gérer les Administrateurs",
