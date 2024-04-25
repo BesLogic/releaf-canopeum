@@ -194,7 +194,9 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange }: Props) => {
         open={!!confirmCommentDeleteOpen}
         title={translate('analytics.site-summary.delete-site-confirmation-title')}
       >
-        {translate('analytics.site-summary.delete-site-confirmation-message', { siteName: siteSummary.name })}
+        {translate('analytics.site-summary.delete-site-confirmation-message', {
+          siteName: siteSummary.name,
+        })}
       </ConfirmationDialog>
     </>
   )
