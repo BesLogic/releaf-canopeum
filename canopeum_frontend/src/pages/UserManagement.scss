@@ -1,0 +1,20 @@
+@import '../assets/styles/theme-variables.module.scss';
+
+.settings-left-nav-menu {
+  margin-bottom: 2rem;
+}
+
+.settings-tab-content-container {
+  padding-bottom: 2rem;
+}
+
+@media screen and (min-width: $medium-width) {
+  .settings-left-nav-menu {
+    height: 100%;
+    margin-bottom: 0;
+  }
+
+  .settings-tab-content-container {
+    padding-bottom: 0;
+  }
+}

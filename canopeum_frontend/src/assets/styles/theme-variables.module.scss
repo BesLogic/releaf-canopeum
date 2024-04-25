@@ -119,23 +119,24 @@ $link-hover-decoration: none;
 $small-width: 540px;
 $medium-width: 720px;
 $large-width: 960px;
-$xlarge-width: 1664px;
+$xlarge-width: 1200px;
+$xxlarge-width: 1600px;
 
 
 // Grid
 $grid-breakpoints: (
   xs: 0,
-  sm: 576px,
-  md: 768px,
-  lg: 992px,
-  xl: 1200px,
-  xxl: 1600px,
+  sm: $small-width,
+  md: $medium-width,
+  lg: $large-width,
+  xl: $xlarge-width,
+  xxl: $xxlarge-width,
 );
 $container-max-widths: (
   sm: $small-width,
   md: $medium-width,
   lg: $large-width,
-  xl: $xlarge-width
+  xl: $xlarge-width,
 );
 $grid-columns: 12;
 $grid-gutter-width: 30px;
