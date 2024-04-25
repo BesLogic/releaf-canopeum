@@ -1,7 +1,6 @@
 import type { Asset } from '@services/api'
 import AssetViewer from './AssetViewer'
 import { useState } from 'react'
-import { set } from 'date-fns'
 
 type Props = {
   readonly medias: Asset[],
