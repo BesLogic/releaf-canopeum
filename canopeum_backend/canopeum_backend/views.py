@@ -648,7 +648,7 @@ class UserDetailAPIView(APIView):
         self.check_object_permissions(request, user)
 
         change_password_request = request.data.get("changePassword")
-        if (change_password_request is not None):
+        if change_password_request is not None:
             change_password_serializer = ChangePasswordSerializer(data=change_password_request)
             change_password_serializer.is_valid()
             current_password = change_password_request["currentPassword"]
