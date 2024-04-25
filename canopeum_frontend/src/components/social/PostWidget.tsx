@@ -1,4 +1,4 @@
-import AssetGrid from '@components/AssetGrid'
+import AssetGrid from '@components/assets/AssetGrid'
 import { LanguageContext } from '@components/context/LanguageContext'
 import TextExpansion from '@components/inputs/TextExpansion'
 import PostCommentsDialog from '@components/social/PostCommentsDialog'
