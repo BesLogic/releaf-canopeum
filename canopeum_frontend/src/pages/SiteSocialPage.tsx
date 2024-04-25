@@ -52,7 +52,7 @@ const SiteSocialPage = () => {
   const fetchPosts = useCallback(async (parsedSiteId: number) => {
     setIsLoadingPosts(true)
     try {
-      const fetchedPosts = await getApiClient().postClient.all(parsedSiteId)
+      const fetchedPosts = await getApiClient().postClient.all([parsedSiteId])
       setPosts(fetchedPosts)
     } catch (error_: unknown) {
       setErrorPosts(ensureError(error_))

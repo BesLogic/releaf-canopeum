@@ -3,7 +3,6 @@ import PostWidget from '@components/social/PostWidget.tsx'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { type IPost, Post } from '../services/api.ts'
 import getApiClient from '../services/apiInterface.ts'
 import usePostsStore from '../store/postsStore.ts'
 import LoadingPage from './LoadingPage.tsx'
@@ -16,10 +15,10 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true)
 
   const fetchNewsPosts = useCallback(async () => {
-    const response = await getApiClient().newsClient.all()
+    const response = await getApiClient().postClient.all(currentUser?.followedSiteIds ?? [])
     setPosts(response)
     setIsLoading(false)
-  }, [setPosts, setIsLoading])
+  }, [setPosts, setIsLoading, currentUser])
 
   useEffect(() => void fetchNewsPosts(), [fetchNewsPosts])
 
