@@ -41,6 +41,10 @@
     min-width: 44px;
   }
 
+  .nav-link-label {
+    display: none;
+  }
+
   .navbar-collapse.collapse.show,
   .navbar-collapse.collapsing {
     display: flex;
@@ -54,6 +58,11 @@
         padding: 0;
         min-width: 0;
       }
+    }
+
+    .nav-link-label {
+      display: block;
+      margin-left: 0.5rem;
     }
   }
 }
