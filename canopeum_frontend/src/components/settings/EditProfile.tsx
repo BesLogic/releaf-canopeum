@@ -113,7 +113,7 @@ const EditProfile = () => {
               <label className='form-label' htmlFor='username'>
                 {translate('auth.username-label')}
               </label>
-
+              
               <input
                 className='form-control'
                 id='username'

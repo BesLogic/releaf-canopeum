@@ -30,7 +30,9 @@
     "unknown": "Inconnu",
     "admins-saved": "Administrateurs sauvegardés avec succès pour {{siteName}}!",
     "site-deleted": "Le site {{siteName}} a été supprimé avec succès.",
-    "site-deleted-error": "Un problème est survenu lors de la tentative de suppression du site {{siteName}}..."
+    "site-deleted-error": "Un problème est survenu lors de la tentative de suppression du site {{siteName}}...",
+    "delete-site-confirmation-title": "Supprimer le Site",
+    "delete-site-confirmation-message": "Êtes-vous sûr de vouloir supprimer {{siteName}}? Cela supprimera définitivement le site; cette action est irréversible."
   },
   "success-rate-chart": {
     "title": "Taux De Réussite Annuel Moyen Par Site"

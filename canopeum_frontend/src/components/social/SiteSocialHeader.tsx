@@ -103,7 +103,6 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
               <span className='material-symbols-outlined align-middle'>person</span>
               <span>{translate('social.site-social-header.sponsors')}:</span>
             </div>
-
             <div className='row'>
               {site.sponsors.map(sponsorName => (
                 <div className='col-12 col-sm-6 col-md-4 col-lg-3 mb-3' key={sponsorName}>
