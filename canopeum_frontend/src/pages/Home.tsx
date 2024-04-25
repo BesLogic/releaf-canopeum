@@ -1,4 +1,5 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext.tsx'
+import InfiniteScroll from '@components/InfiniteScroll.tsx'
 import PostWidget from '@components/social/PostWidget.tsx'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -22,6 +23,10 @@ const Home = () => {
 
   useEffect(() => void fetchNewsPosts(), [fetchNewsPosts])
 
+  const handleLoadMorePosts = () => {
+    console.log('=======LOAD')
+  }
+
   const renderPosts = () => {
     if (newsPosts.length === 0) {
       return (
@@ -32,9 +37,11 @@ const Home = () => {
     }
 
     return (
-      <div className='d-flex flex-column gap-3'>
-        {newsPosts.map(post => <PostWidget key={post.id} post={post} />)}
-      </div>
+      <InfiniteScroll load={handleLoadMorePosts}>
+        <div className='d-flex flex-column gap-3'>
+          {newsPosts.map(post => <PostWidget key={post.id} post={post} />)}
+        </div>
+      </InfiniteScroll>
     )
   }
 
