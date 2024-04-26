@@ -49,6 +49,7 @@ from .serializers import (
     CreateUserInvitationSerializer,
     LikeSerializer,
     LoginUserSerializer,
+    PostPaginationSerializer,
     PostPostSerializer,
     PostSerializer,
     RegisterUserSerializer,
@@ -356,7 +357,7 @@ class PostListAPIView(APIView, PageNumberPagination):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     @extend_schema(
-        responses=PageNumberPagination(),
+        responses=PostPaginationSerializer,
         operation_id="post_all",
         parameters=[
             OpenApiParameter(name="siteId", type=OpenApiTypes.INT, many=True, location=OpenApiParameter.QUERY),
@@ -381,7 +382,7 @@ class PostListAPIView(APIView, PageNumberPagination):
         self.page = page_posts
         self.page_size = int(size)
 
-        serializer = PostSerializer(sorted_posts, many=True, context={"request": request})
+        serializer = PostSerializer(page_posts, many=True, context={"request": request})
         return self.get_paginated_response(serializer.data)
 
     parser_classes = (MultiPartParser, FormParser)

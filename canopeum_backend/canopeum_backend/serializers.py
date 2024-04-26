@@ -1,5 +1,3 @@
-import random
-
 from django.contrib.auth.password_validation import validate_password
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
@@ -574,7 +572,6 @@ class PostPostSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
-    id = serializers.SerializerMethodField()
     site = SiteOverviewSerializer()
     comment_count = serializers.SerializerMethodField()
     like_count = serializers.SerializerMethodField()
@@ -596,10 +593,6 @@ class PostSerializer(serializers.ModelSerializer):
         )
 
     @extend_schema_field(serializers.IntegerField())
-    def get_id(self, obj):
-        return random.randint(1, 999)
-
-    @extend_schema_field(serializers.IntegerField())
     def get_comment_count(self, obj):
         return obj.comment_set.count()
 
@@ -612,6 +605,16 @@ class PostSerializer(serializers.ModelSerializer):
         if user.is_anonymous:
             return False
         return Like.objects.filter(user=user, post=obj).exists()
+
+
+class PostPaginationSerializer(serializers.Serializer):
+    count = serializers.IntegerField()
+    next = serializers.CharField(required=False)
+    previous = serializers.CharField(required=False)
+    results = PostSerializer(many=True)
+
+    class Meta:
+        fields = ("count", "next", "previous", "results")
 
 
 class CreateCommentSerializer(serializers.ModelSerializer):

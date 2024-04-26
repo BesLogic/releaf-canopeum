@@ -9,7 +9,7 @@ import usePostsStore from '../store/postsStore.ts'
 import LoadingPage from './LoadingPage.tsx'
 
 const INCERTITUDE_MARGIN = 3
-const PAGE_SIZE = 4
+const PAGE_SIZE = 5
 
 const Home = () => {
   const { t: translate } = useTranslation()
@@ -21,14 +21,14 @@ const Home = () => {
 
   const listInnerRef = useRef<HTMLDivElement>(null)
 
-  const [currentPage, setCurrentPage] = useState(0) // storing current page number
-  const [previousPage, setPreviousPage] = useState(0) // storing prev page number
-  const [wasLastList, setWasLastList] = useState(false) // setting a flag to know the last list
+  const [currentPage, setCurrentPage] = useState(0)
+  const [postsAreAllLoaded, setPostsAreAllLoaded] = useState(false)
 
   const onScroll = () => {
     if (
       isLoading ||
       isLoadingMore ||
+      postsAreAllLoaded ||
       !listInnerRef.current
     ) return
 
@@ -37,12 +37,13 @@ const Home = () => {
     if (scrollTop + clientHeight < scrollHeight - INCERTITUDE_MARGIN) return
 
     setIsLoadingMore(true)
-    setTimeout(() => void fetchNewsPosts(), 3000)
+    void fetchNewsPosts()
   }
 
   const fetchNewsPosts = useCallback(async () => {
     if (
-      !currentUser || newsPosts.length > PAGE_SIZE * currentPage
+      !currentUser ||
+      newsPosts.length > PAGE_SIZE * currentPage
     ) return
 
     const response = await getApiClient().postClient.all(
@@ -50,17 +51,27 @@ const Home = () => {
       currentUser.followedSiteIds,
       PAGE_SIZE,
     )
+    if (!response.next) {
+      setPostsAreAllLoaded(true)
+    }
 
     if (currentPage === 0) {
-      setPosts(response)
+      setPosts(response.results)
     } else {
-      morePostsLoaded(response)
+      morePostsLoaded(response.results)
     }
 
     setCurrentPage(previous => previous + 1)
     setIsLoading(false)
     setIsLoadingMore(false)
-  }, [setPosts, setIsLoading, morePostsLoaded, currentUser, currentPage, newsPosts])
+  }, [
+    setPosts,
+    setIsLoading,
+    morePostsLoaded,
+    currentUser,
+    currentPage,
+    newsPosts,
+  ])
 
   // Find the best way to prevent an infinite loop, fetch news posts only ONCE on render
   // eslint-disable-next-line react-hooks/exhaustive-deps -- This creates an infinite loop
