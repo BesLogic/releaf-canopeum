@@ -73,7 +73,7 @@ const Home = () => {
     newsPosts,
   ])
 
-  // Find the best way to prevent an infinite loop, fetch news posts only ONCE on render
+  // TODO: Find the best way to prevent an infinite loop, fetch news posts only ONCE on render
   // eslint-disable-next-line react-hooks/exhaustive-deps -- This creates an infinite loop
   useEffect(() => void fetchNewsPosts(), [])
 
