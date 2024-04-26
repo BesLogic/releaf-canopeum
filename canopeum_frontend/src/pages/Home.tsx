@@ -1,31 +1,70 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext.tsx'
-import InfiniteScroll from '@components/InfiniteScroll.tsx'
 import PostWidget from '@components/social/PostWidget.tsx'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { CircularProgress } from '@mui/material'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import getApiClient from '../services/apiInterface.ts'
 import usePostsStore from '../store/postsStore.ts'
 import LoadingPage from './LoadingPage.tsx'
 
+const INCERTITUDE_MARGIN = 3
+const PAGE_SIZE = 4
+
 const Home = () => {
   const { t: translate } = useTranslation()
   const { currentUser } = useContext(AuthenticationContext)
-  const { posts: newsPosts, setPosts } = usePostsStore()
+  const { posts: newsPosts, setPosts, morePostsLoaded } = usePostsStore()
 
   const [isLoading, setIsLoading] = useState(true)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
+
+  const listInnerRef = useRef<HTMLDivElement>(null)
+
+  const [currentPage, setCurrentPage] = useState(0) // storing current page number
+  const [previousPage, setPreviousPage] = useState(0) // storing prev page number
+  const [wasLastList, setWasLastList] = useState(false) // setting a flag to know the last list
+
+  const onScroll = () => {
+    if (
+      isLoading ||
+      isLoadingMore ||
+      !listInnerRef.current
+    ) return
+
+    const { scrollTop, scrollHeight, clientHeight } = listInnerRef.current
+
+    if (scrollTop + clientHeight < scrollHeight - INCERTITUDE_MARGIN) return
+
+    setIsLoadingMore(true)
+    setTimeout(() => void fetchNewsPosts(), 3000)
+  }
 
   const fetchNewsPosts = useCallback(async () => {
-    const response = await getApiClient().postClient.all(currentUser?.followedSiteIds)
-    setPosts(response)
+    if (
+      !currentUser || newsPosts.length > PAGE_SIZE * currentPage
+    ) return
+
+    const response = await getApiClient().postClient.all(
+      PAGE_SIZE,
+      currentPage + 1,
+      currentUser.followedSiteIds,
+    )
+
+    if (currentPage === 0) {
+      setPosts(response)
+    } else {
+      morePostsLoaded(response)
+    }
+
+    setCurrentPage(previous => previous + 1)
     setIsLoading(false)
-  }, [setPosts, setIsLoading, currentUser])
+    setIsLoadingMore(false)
+  }, [setPosts, setIsLoading, morePostsLoaded, currentUser, currentPage, newsPosts])
 
-  useEffect(() => void fetchNewsPosts(), [fetchNewsPosts])
-
-  const handleLoadMorePosts = () => {
-    console.log('=======LOAD')
-  }
+  // Find the best way to prevent an infinite loop, fetch news posts only ONCE on render
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- This creates an infinite loop
+  useEffect(() => void fetchNewsPosts(), [])
 
   const renderPosts = () => {
     if (newsPosts.length === 0) {
@@ -37,11 +76,9 @@ const Home = () => {
     }
 
     return (
-      <InfiniteScroll load={handleLoadMorePosts}>
-        <div className='d-flex flex-column gap-3'>
-          {newsPosts.map(post => <PostWidget key={post.id} post={post} />)}
-        </div>
-      </InfiniteScroll>
+      <div className='d-flex flex-column gap-3'>
+        {newsPosts.map(post => <PostWidget key={post.id} post={post} />)}
+      </div>
     )
   }
 
@@ -50,18 +87,22 @@ const Home = () => {
   if (isLoading) return <LoadingPage />
 
   return (
-    <div>
-      <div className='page-container'>
-        <div className='mb-4'>
-          <h1 className='text-light'>
-            {translate('home.title', { username: currentUser.username })}
-          </h1>
+    <div className='page-container h-100 overflow-y-auto' onScroll={onScroll} ref={listInnerRef}>
+      <div className='mb-4'>
+        <h1 className='text-light'>
+          {translate('home.title', { username: currentUser.username })}
+        </h1>
 
-          <h6 className='text-light'>{translate('home.subtitle')}</h6>
-        </div>
-
-        {renderPosts()}
+        <h6 className='text-light'>{translate('home.subtitle')}</h6>
       </div>
+
+      {renderPosts()}
+
+      {isLoadingMore && (
+        <div className='w-100 d-flex justify-content-center align-items-center pt-4 pb-2'>
+          <CircularProgress color='secondary' size={50} thickness={5} />
+        </div>
+      )}
     </div>
   )
 }

@@ -2,6 +2,7 @@ import secrets
 from typing import cast
 
 from django.contrib.auth import authenticate
+from django.core.paginator import Paginator
 from django.http import QueryDict
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
@@ -356,12 +357,25 @@ class PostListAPIView(APIView):
     @extend_schema(
         responses=PostSerializer(many=True),
         operation_id="post_all",
-        parameters=[OpenApiParameter(name="siteId", type=OpenApiTypes.INT, many=True, location=OpenApiParameter.QUERY)],
+        parameters=[
+            OpenApiParameter(name="siteId", type=OpenApiTypes.INT, many=True, location=OpenApiParameter.QUERY),
+            OpenApiParameter(name="page", type=OpenApiTypes.INT, required=False, location=OpenApiParameter.QUERY),
+            OpenApiParameter(name="count", type=OpenApiTypes.INT, required=False, location=OpenApiParameter.QUERY),
+        ],
     )
     def get(self, request):
         site_ids = request.GET.getlist("siteId")
+        page = request.GET.get("page")
+        count = request.GET.get("count")
         posts = Post.objects.filter(site__in=site_ids) if site_ids else Post.objects.all()
         sorted_posts = posts.order_by("-created_at")
+
+        if isinstance(page, str) and page.isnumeric() and isinstance(count, str) and count.isnumeric():
+            posts_paginator = Paginator(object_list=sorted_posts, per_page=int(count))
+            page_posts = posts_paginator.page(int(page))
+            serializer = PostSerializer(page_posts, many=True, context={"request": request})
+            return Response(serializer.data)
+
         serializer = PostSerializer(sorted_posts, many=True, context={"request": request})
         return Response(serializer.data)
 

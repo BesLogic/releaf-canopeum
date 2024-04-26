@@ -1,3 +1,5 @@
+import random
+
 from django.contrib.auth.password_validation import validate_password
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
@@ -572,6 +574,7 @@ class PostPostSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
+    id = serializers.SerializerMethodField()
     site = SiteOverviewSerializer()
     comment_count = serializers.SerializerMethodField()
     like_count = serializers.SerializerMethodField()
@@ -591,6 +594,10 @@ class PostSerializer(serializers.ModelSerializer):
             "has_liked",
             "media",
         )
+
+    @extend_schema_field(serializers.IntegerField())
+    def get_id(self, obj):
+        return random.randint(1, 999)
 
     @extend_schema_field(serializers.IntegerField())
     def get_comment_count(self, obj):

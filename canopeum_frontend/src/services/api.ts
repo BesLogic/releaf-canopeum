@@ -1105,8 +1105,16 @@ export class PostClient {
       this.baseUrl = baseUrl ?? "";
   }
 
-  all(siteId: number[] | undefined): Promise<Post[]> {
+  all(count: number | undefined, page: number | undefined, siteId: number[] | undefined): Promise<Post[]> {
       let url_ = this.baseUrl + "/social/posts/?";
+      if (count === null)
+          throw new Error("The parameter 'count' cannot be null.");
+      else if (count !== undefined)
+          url_ += "count=" + encodeURIComponent("" + count) + "&";
+      if (page === null)
+          throw new Error("The parameter 'page' cannot be null.");
+      else if (page !== undefined)
+          url_ += "page=" + encodeURIComponent("" + page) + "&";
       if (siteId === null)
           throw new Error("The parameter 'siteId' cannot be null.");
       else if (siteId !== undefined)
