@@ -1105,20 +1105,20 @@ export class PostClient {
       this.baseUrl = baseUrl ?? "";
   }
 
-  all(count: number | undefined, page: number | undefined, siteId: number[] | undefined): Promise<Post[]> {
+  all(page: number, siteId: number[] | undefined, size: number): Promise<Post[]> {
       let url_ = this.baseUrl + "/social/posts/?";
-      if (count === null)
-          throw new Error("The parameter 'count' cannot be null.");
-      else if (count !== undefined)
-          url_ += "count=" + encodeURIComponent("" + count) + "&";
-      if (page === null)
-          throw new Error("The parameter 'page' cannot be null.");
-      else if (page !== undefined)
+      if (page === undefined || page === null)
+          throw new Error("The parameter 'page' must be defined and cannot be null.");
+      else
           url_ += "page=" + encodeURIComponent("" + page) + "&";
       if (siteId === null)
           throw new Error("The parameter 'siteId' cannot be null.");
       else if (siteId !== undefined)
           siteId && siteId.forEach(item => { url_ += "siteId=" + encodeURIComponent("" + item) + "&"; });
+      if (size === undefined || size === null)
+          throw new Error("The parameter 'size' must be defined and cannot be null.");
+      else
+          url_ += "size=" + encodeURIComponent("" + size) + "&";
       url_ = url_.replace(/[?&]$/, "");
 
       let options_: RequestInit = {

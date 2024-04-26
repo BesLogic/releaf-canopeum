@@ -7,6 +7,7 @@ from django.http import QueryDict
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import status
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
@@ -351,33 +352,37 @@ class SiteMapListAPIView(APIView):
         return Response(serializer.data)
 
 
-class PostListAPIView(APIView):
+class PostListAPIView(APIView, PageNumberPagination):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     @extend_schema(
-        responses=PostSerializer(many=True),
+        responses=PageNumberPagination(),
         operation_id="post_all",
         parameters=[
             OpenApiParameter(name="siteId", type=OpenApiTypes.INT, many=True, location=OpenApiParameter.QUERY),
-            OpenApiParameter(name="page", type=OpenApiTypes.INT, required=False, location=OpenApiParameter.QUERY),
-            OpenApiParameter(name="count", type=OpenApiTypes.INT, required=False, location=OpenApiParameter.QUERY),
+            OpenApiParameter(name="page", type=OpenApiTypes.INT, required=True, location=OpenApiParameter.QUERY),
+            OpenApiParameter(name="size", type=OpenApiTypes.INT, required=True, location=OpenApiParameter.QUERY),
         ],
     )
     def get(self, request):
         site_ids = request.GET.getlist("siteId")
-        page = request.GET.get("page")
-        count = request.GET.get("count")
         posts = Post.objects.filter(site__in=site_ids) if site_ids else Post.objects.all()
         sorted_posts = posts.order_by("-created_at")
 
-        if isinstance(page, str) and page.isnumeric() and isinstance(count, str) and count.isnumeric():
-            posts_paginator = Paginator(object_list=sorted_posts, per_page=int(count))
-            page_posts = posts_paginator.page(int(page))
-            serializer = PostSerializer(page_posts, many=True, context={"request": request})
-            return Response(serializer.data)
+        page = request.GET.get("page")
+        size = request.GET.get("size")
+
+        if not isinstance(page, str) or not page.isnumeric() or not isinstance(size, str) or not size.isnumeric():
+            return Response("Page and size are missing or invalid", status=status.HTTP_400_BAD_REQUEST)
+
+        posts_paginator = Paginator(object_list=sorted_posts, per_page=int(size))
+        page_posts = posts_paginator.page(int(page))
+
+        self.page = page_posts
+        self.page_size = int(size)
 
         serializer = PostSerializer(sorted_posts, many=True, context={"request": request})
-        return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)
 
     parser_classes = (MultiPartParser, FormParser)
 

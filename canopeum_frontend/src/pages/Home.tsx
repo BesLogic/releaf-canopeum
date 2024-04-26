@@ -46,9 +46,9 @@ const Home = () => {
     ) return
 
     const response = await getApiClient().postClient.all(
-      PAGE_SIZE,
       currentPage + 1,
       currentUser.followedSiteIds,
+      PAGE_SIZE,
     )
 
     if (currentPage === 0) {
