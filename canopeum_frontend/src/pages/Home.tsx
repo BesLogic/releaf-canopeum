@@ -16,6 +16,7 @@ const Home = () => {
     setSiteIds,
     isLoadingMore,
     isLoadingFirstPage,
+    loadingError,
   } = usePostsInfiniteScrolling()
   const { posts: newsPosts } = usePostsStore()
 
@@ -27,8 +28,18 @@ const Home = () => {
     setSiteIds(currentUser.followedSiteIds)
   }, [setSiteIds, currentUser])
 
+  if (!currentUser) return <div />
+
   const renderPosts = () => {
-    if (newsPosts.length === 0) {
+    if (loadingError) {
+      return (
+        <div className='bg-white rounded-2 px-5 py-4 d-flex flex-column gap-3'>
+          <span>{loadingError}</span>
+        </div>
+      )
+    }
+
+    if (currentUser.followedSiteIds.length === 0 || newsPosts.length === 0) {
       return (
         <div className='bg-white rounded-2 px-5 py-4 d-flex flex-column gap-3'>
           <span>{translate('home.no-news')}</span>
@@ -42,8 +53,6 @@ const Home = () => {
       </div>
     )
   }
-
-  if (!currentUser) return <div />
 
   if (isLoadingFirstPage) return <LoadingPage />
 

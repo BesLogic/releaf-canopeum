@@ -27,14 +27,13 @@ const SiteSocialPage = () => {
     setSiteIds,
     isLoadingMore,
     isLoadingFirstPage,
+    loadingError,
   } = usePostsInfiniteScrolling()
 
   const [isLoadingSite, setIsLoadingSite] = useState(true)
   const [error, setError] = useState<Error | undefined>(undefined)
   const [site, setSite] = useState<SiteSocial>()
   const [sitePosts, setSitePosts] = useState<Post[]>([])
-
-  const [errorPosts, setErrorPosts] = useState<Error | undefined>(undefined)
 
   const siteId = siteIdParam
     ? Number.parseInt(siteIdParam, 10) || 0
@@ -106,14 +105,18 @@ const SiteSocialPage = () => {
             <div className='d-flex flex-column gap-4'>
               {isLoadingFirstPage
                 ? (
-                  <div className='bg-white rounded-2 2 py-2'>
-                    <LoadingPage />
+                  <div className='card'>
+                    <div className='card-body'>
+                      <LoadingPage />
+                    </div>
                   </div>
                 )
-                : errorPosts
+                : loadingError
                 ? (
-                  <div className='bg-white rounded-2 2 py-2'>
-                    <p>{errorPosts.message}</p>
+                  <div className='card'>
+                    <div className='card-body'>
+                      <span>{loadingError}</span>
+                    </div>
                   </div>
                 )
                 : sitePosts.map(post => <PostWidget key={post.id} post={post} />)}

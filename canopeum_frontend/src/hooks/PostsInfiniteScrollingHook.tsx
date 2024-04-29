@@ -16,7 +16,7 @@ const usePostsInfiniteScrolling = () => {
   const [siteIds, setSiteIds] = useState<number[]>()
   const [currentPage, setCurrentPage] = useState(0)
   const [postsAreAllLoaded, setPostsAreAllLoaded] = useState(false)
-  const [isLoadingFirstPage, setIsLoadingFirstPage] = useState(false)
+  const [isLoadingFirstPage, setIsLoadingFirstPage] = useState(true)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [loadingError, setLoadingError] = useState<string>()
 
@@ -53,15 +53,24 @@ const usePostsInfiniteScrolling = () => {
     setIsLoadingFirstPage(false)
     setIsLoadingMore(false)
   }, [
-    setPosts,
     siteIds,
-    morePostsLoaded,
     currentPage,
+    setPosts,
+    morePostsLoaded,
+    setLoadingError,
+    getErrorMessage,
+    translate,
   ])
 
   useEffect(() => {
     // Call only on initial render
-    if (!siteIds || siteIds.length === 0 || isMounted.current) return
+    if (!siteIds || isMounted.current) return
+
+    if (siteIds.length === 0) {
+      setIsLoadingFirstPage(false)
+
+      return
+    }
 
     void fetchPostsPage()
     isMounted.current = true
@@ -82,7 +91,7 @@ const usePostsInfiniteScrolling = () => {
     if (scrollTop + clientHeight < scrollHeight - INCERTITUDE_MARGIN) return
 
     setIsLoadingMore(true)
-    setTimeout(() => void fetchPostsPage(), 1500)
+    void fetchPostsPage()
   }
 
   return {
