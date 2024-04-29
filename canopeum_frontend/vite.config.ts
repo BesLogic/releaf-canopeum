@@ -12,6 +12,7 @@ export default ({ mode }: { mode: string }) => {
         '@components': '/src/components',
         '@config': '/src/config',
         '@constants': '/src/constants',
+        '@hooks': '/src/hooks',
         '@models': '/src/models',
         '@services': '/src/services',
         '@utils': '/src/utils',

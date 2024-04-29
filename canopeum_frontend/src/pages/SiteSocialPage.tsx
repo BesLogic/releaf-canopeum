@@ -1,36 +1,39 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import SiteSocialHeader from '@components/social/SiteSocialHeader'
 import type { PageViewMode } from '@models/types/PageViewMode.Type'
+import { CircularProgress } from '@mui/material'
 import type { Post, SiteSocial } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { ensureError } from '@services/errors'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import AnnouncementCard from '../components/AnnouncementCard'
 import ContactCard from '../components/ContactCard'
 import CreatePostWidget from '../components/CreatePostWidget'
 import PostWidget from '../components/social/PostWidget'
+import usePostsInfiniteScrolling from '../hooks/PostsInfiniteScrollingHook'
 import usePostsStore from '../store/postsStore'
 import LoadingPage from './LoadingPage'
-
-// TODO(NicolasDontigny): Implement pagination here
-const PAGE_SIZE = 100
 
 const SiteSocialPage = () => {
   const { siteId: siteIdParam } = useParams()
   const { currentUser } = useContext(AuthenticationContext)
-  const { posts, setPosts, addPost } = usePostsStore()
+  const { posts, addPost } = usePostsStore()
+  const scrollableContainerRef = useRef<HTMLDivElement>(null)
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- To Implement
-  const [currentPage, setCurrentPage] = useState(1)
+  const {
+    onScroll,
+    setSiteIds,
+    isLoadingMore,
+    isLoadingFirstPage,
+  } = usePostsInfiniteScrolling()
 
   const [isLoadingSite, setIsLoadingSite] = useState(true)
   const [error, setError] = useState<Error | undefined>(undefined)
   const [site, setSite] = useState<SiteSocial>()
   const [sitePosts, setSitePosts] = useState<Post[]>([])
 
-  const [isLoadingPosts, setIsLoadingPosts] = useState(true)
   const [errorPosts, setErrorPosts] = useState<Error | undefined>(undefined)
 
   const siteId = siteIdParam
@@ -55,28 +58,12 @@ const SiteSocialPage = () => {
     }
   }
 
-  const fetchPosts = useCallback(async (parsedSiteId: number) => {
-    setIsLoadingPosts(true)
-    try {
-      const fetchedPosts = await getApiClient().postClient.all(
-        currentPage,
-        [parsedSiteId],
-        PAGE_SIZE,
-      )
-      setPosts(fetchedPosts.results)
-    } catch (error_: unknown) {
-      setErrorPosts(ensureError(error_))
-    } finally {
-      setIsLoadingPosts(false)
-    }
-  }, [setPosts, currentPage])
-
   const addNewPost = (newPost: Post) => addPost(newPost)
 
   useEffect((): void => {
     void fetchSiteData(siteId)
-    void fetchPosts(siteId)
-  }, [siteId, fetchPosts])
+    setSiteIds([siteId])
+  }, [siteId, setSiteIds])
 
   useEffect(
     () => setSitePosts(posts.filter(post => post.site.id === siteId)),
@@ -98,7 +85,11 @@ const SiteSocialPage = () => {
   if (!site) return <div />
 
   return (
-    <div className='page-container mt-2 d-flex flex-column gap-4'>
+    <div
+      className='page-container h-100 overflow-y-auto d-flex flex-column gap-4'
+      onScroll={() => onScroll(scrollableContainerRef)}
+      ref={scrollableContainerRef}
+    >
       <SiteSocialHeader site={site} viewMode={viewMode} />
 
       <div className='row row-gap-4'>
@@ -113,10 +104,10 @@ const SiteSocialPage = () => {
           <div className='rounded-2 d-flex flex-column gap-4'>
             {viewMode === 'admin' && <CreatePostWidget addNewPost={addNewPost} siteId={siteId} />}
             <div className='d-flex flex-column gap-4'>
-              {isLoadingPosts
+              {isLoadingFirstPage
                 ? (
                   <div className='bg-white rounded-2 2 py-2'>
-                    <p>Loading...</p>
+                    <LoadingPage />
                   </div>
                 )
                 : errorPosts
@@ -127,6 +118,12 @@ const SiteSocialPage = () => {
                 )
                 : sitePosts.map(post => <PostWidget key={post.id} post={post} />)}
             </div>
+
+            {isLoadingMore && (
+              <div className='w-100 d-flex justify-content-center align-items-center py-2'>
+                <CircularProgress color='secondary' size={50} thickness={5} />
+              </div>
+            )}
           </div>
         </div>
       </div>
