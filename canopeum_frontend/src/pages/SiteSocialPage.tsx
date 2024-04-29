@@ -14,10 +14,16 @@ import PostWidget from '../components/social/PostWidget'
 import usePostsStore from '../store/postsStore'
 import LoadingPage from './LoadingPage'
 
+// TODO(NicolasDontigny): Implement pagination here
+const PAGE_SIZE = 100
+
 const SiteSocialPage = () => {
   const { siteId: siteIdParam } = useParams()
   const { currentUser } = useContext(AuthenticationContext)
   const { posts, setPosts, addPost } = usePostsStore()
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- To Implement
+  const [currentPage, setCurrentPage] = useState(1)
 
   const [isLoadingSite, setIsLoadingSite] = useState(true)
   const [error, setError] = useState<Error | undefined>(undefined)
@@ -52,14 +58,18 @@ const SiteSocialPage = () => {
   const fetchPosts = useCallback(async (parsedSiteId: number) => {
     setIsLoadingPosts(true)
     try {
-      const fetchedPosts = await getApiClient().postClient.all([parsedSiteId])
-      setPosts(fetchedPosts)
+      const fetchedPosts = await getApiClient().postClient.all(
+        currentPage,
+        [parsedSiteId],
+        PAGE_SIZE,
+      )
+      setPosts(fetchedPosts.results)
     } catch (error_: unknown) {
       setErrorPosts(ensureError(error_))
     } finally {
       setIsLoadingPosts(false)
     }
-  }, [setPosts])
+  }, [setPosts, currentPage])
 
   const addNewPost = (newPost: Post) => addPost(newPost)
 
