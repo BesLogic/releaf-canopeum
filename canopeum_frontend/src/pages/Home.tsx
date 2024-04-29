@@ -1,5 +1,6 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext.tsx'
 import PostWidget from '@components/social/PostWidget.tsx'
+import useApiClient from '@hooks/ApiClientHook.tsx'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -12,10 +13,15 @@ const Home = () => {
   const { currentUser } = useContext(AuthenticationContext)
   const [isLoading, setIsLoading] = useState(true)
   const [newsPosts, setNewsPosts] = useState<Post[]>([])
+  const { newsClient } = useApiClient()
 
   const fetchNewsPosts = useCallback(async () => {
-    const response = await getApiClient().newsClient.all()
-    setNewsPosts(response)
+    try {
+      const response = await newsClient.all()
+      setNewsPosts(response)
+    } catch (error: unknown) {
+      console.log('err:', error)
+    }
     setIsLoading(false)
   }, [setNewsPosts, setIsLoading])
 

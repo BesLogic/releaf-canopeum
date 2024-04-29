@@ -1,7 +1,7 @@
+import useApiClient from '@hooks/ApiClientHook'
 import type { TokenRefresh, User } from '@services/api'
-import getApiClient from '@services/apiInterface'
 import type { FunctionComponent, ReactNode } from 'react'
-import { createContext, memo, useCallback, useMemo, useState } from 'react'
+import { createContext, memo, useCallback, useMemo, useRef, useState } from 'react'
 
 export const STORAGE_ACCESS_TOKEN_KEY = 'token'
 export const STORAGE_REFRESH_TOKEN_KEY = 'refreshToken'
@@ -44,6 +44,9 @@ const AuthenticationContextProvider: FunctionComponent<{ readonly children?: Rea
   props => {
     const [user, setUser] = useState<User>()
     const [isSessionLoaded, setIsSessionLoaded] = useState(false)
+    const isInitiatedRef = useRef(false)
+
+    const { userClient } = useApiClient()
 
     const loadSession = useCallback(() => setIsSessionLoaded(true), [setIsSessionLoaded])
 
@@ -55,21 +58,28 @@ const AuthenticationContextProvider: FunctionComponent<{ readonly children?: Rea
     const updateUser = useCallback((updatedUser: User) => setUser(updatedUser), [setUser])
 
     const initAuth = useCallback(async () => {
+      if (isInitiatedRef.current) return
+
       const accessToken = sessionStorage.getItem(STORAGE_ACCESS_TOKEN_KEY) ??
         localStorage.getItem(STORAGE_ACCESS_TOKEN_KEY)
+
       if (!accessToken) {
         loadSession()
+
+        isInitiatedRef.current = true
 
         return
       }
 
       try {
-        const currentUser = await getApiClient().userClient.current()
+        const currentUser = await userClient.current()
+        console.log('currentUser:', currentUser)
         authenticate(currentUser)
       } catch { /* empty */ }
 
+      isInitiatedRef.current = true
       loadSession()
-    }, [authenticate, loadSession])
+    }, [authenticate, loadSession, userClient])
 
     const logout = useCallback(() => {
       sessionStorage.removeItem(STORAGE_ACCESS_TOKEN_KEY)
