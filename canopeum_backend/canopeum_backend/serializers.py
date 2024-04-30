@@ -43,10 +43,21 @@ class LoginUserSerializer(serializers.ModelSerializer):
         fields = ("email", "password")
 
 
+class ChangePasswordSerializer(serializers.Serializer):
+    current_password = serializers.CharField(write_only=True, required=True)
+    new_password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    new_password_confirmation = serializers.CharField(write_only=True, required=True)
+
+    class Meta:
+        fields = ("current_password", "new_password", "new_password_confirmation")
+
+
 class UpdateUserSerializer(serializers.ModelSerializer):
+    change_password = ChangePasswordSerializer(required=False)
+
     class Meta:
         model = User
-        fields = ("username", "email")
+        fields = ("username", "email", "change_password")
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):

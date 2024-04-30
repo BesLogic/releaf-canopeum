@@ -41,7 +41,7 @@ const Home = () => {
 
     if (currentUser.followedSiteIds.length === 0 || newsPosts.length === 0) {
       return (
-        <div className='bg-white rounded-2 px-5 py-4 d-flex flex-column gap-3'>
+        <div className='bg-cream rounded-2 px-5 py-4 d-flex flex-column gap-3'>
           <span>{translate('home.no-news')}</span>
         </div>
       )

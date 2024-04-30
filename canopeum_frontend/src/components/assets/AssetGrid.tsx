@@ -21,7 +21,7 @@ const AssetGrid = ({ medias, isEditable }: Props) => {
 
   return (
     <div>
-      <div className='row'>
+      <div className='row m-0'>
         {medias.map((media, index) => (
           <button
             className='unstyled-button position-relative col-md-3 flex-grow-1 p-1 cursor-pointer '

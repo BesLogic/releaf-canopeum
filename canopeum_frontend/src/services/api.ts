@@ -2732,6 +2732,62 @@ export interface IBatchfertilizer {
   [key: string]: any;
 }
 
+export class ChangePassword implements IChangePassword {
+  currentPassword!: string;
+  newPassword!: string;
+  newPasswordConfirmation!: string;
+
+  [key: string]: any;
+
+  constructor(data?: IChangePassword) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          this.currentPassword = _data["currentPassword"];
+          this.newPassword = _data["newPassword"];
+          this.newPasswordConfirmation = _data["newPasswordConfirmation"];
+      }
+  }
+
+  static fromJS(data: any): ChangePassword {
+      data = typeof data === 'object' ? data : {};
+      let result = new ChangePassword();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["currentPassword"] = this.currentPassword;
+      data["newPassword"] = this.newPassword;
+      data["newPasswordConfirmation"] = this.newPasswordConfirmation;
+      return data;
+  }
+}
+
+export interface IChangePassword {
+  currentPassword: string;
+  newPassword: string;
+  newPasswordConfirmation: string;
+
+  [key: string]: any;
+}
+
 export class Comment implements IComment {
   readonly id!: number;
   body!: string;
@@ -3595,6 +3651,7 @@ export class PatchedUpdateUser implements IPatchedUpdateUser {
   /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
   username?: string;
   email?: string;
+  changePassword?: ChangePassword;
 
   [key: string]: any;
 
@@ -3615,6 +3672,7 @@ export class PatchedUpdateUser implements IPatchedUpdateUser {
           }
           this.username = _data["username"];
           this.email = _data["email"];
+          this.changePassword = _data["changePassword"] ? ChangePassword.fromJS(_data["changePassword"]) : <any>undefined;
       }
   }
 
@@ -3633,6 +3691,7 @@ export class PatchedUpdateUser implements IPatchedUpdateUser {
       }
       data["username"] = this.username;
       data["email"] = this.email;
+      data["changePassword"] = this.changePassword ? this.changePassword.toJSON() : <any>undefined;
       return data;
   }
 }
@@ -3641,6 +3700,7 @@ export interface IPatchedUpdateUser {
   /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
   username?: string;
   email?: string;
+  changePassword?: ChangePassword;
 
   [key: string]: any;
 }

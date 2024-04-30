@@ -43,6 +43,7 @@ from .serializers import (
     AssetSerializer,
     BatchAnalyticsSerializer,
     BatchSerializer,
+    ChangePasswordSerializer,
     CommentSerializer,
     ContactSerializer,
     CreateCommentSerializer,
@@ -652,6 +653,24 @@ class UserDetailAPIView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         self.check_object_permissions(request, user)
+
+        change_password_request = request.data.get("changePassword")
+        if change_password_request is not None:
+            change_password_serializer = ChangePasswordSerializer(data=change_password_request)
+            change_password_serializer.is_valid()
+            current_password = change_password_request["currentPassword"]
+
+            if isinstance(current_password, str):
+                is_valid = user.check_password(current_password)
+                if is_valid is not True:
+                    return Response("CURRENT_PASSWORD_INVALID", status=status.HTTP_400_BAD_REQUEST)
+                new_password = change_password_request["newPassword"]
+                new_password_confirmation = current_password = change_password_request["newPasswordConfirmation"]
+                if new_password != new_password_confirmation:
+                    return Response("NEW_PASSWORDS_DO_NOT_MATCH", status=status.HTTP_400_BAD_REQUEST)
+                user.set_password(new_password)
+                user.save()
+
         serializer = UserSerializer(user, data=request.data)
         if serializer.is_valid():
             serializer.save()

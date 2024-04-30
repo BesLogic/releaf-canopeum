@@ -7,7 +7,12 @@
   },
   "edit-profile": {
     "title": "Modifier Mon Profil",
-    "profile-saved": "Profil sauvegardé avec succès!"
+    "profile-saved": "Profil sauvegardé avec succès!",
+    "current-password": "Mot de passe actuel",
+    "new-password": "Nouveau mot de passe",
+    "new-password-confirmation": "Confirmation du nouveau mot de passe",
+    "current-password-invalid": "Le mot de passe actuel entré est invalide.",
+    "save-profile-error": "Un problème est survenu lors de la sauvegarde de votre profil."
   },
   "manage-admins": {
     "title": "Gérer les Administrateurs",
