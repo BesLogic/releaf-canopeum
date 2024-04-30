@@ -1,5 +1,5 @@
+import useApiClient from '@hooks/ApiClientHook'
 import useErrorHandling from '@hooks/ErrorHandlingHook'
-import getApiClient from '@services/apiInterface'
 import { type RefObject, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -12,6 +12,7 @@ const usePostsInfiniteScrolling = () => {
   const { setPosts, morePostsLoaded } = usePostsStore()
   const { t: translate } = useTranslation()
   const { getErrorMessage } = useErrorHandling()
+  const { postClient } = useApiClient()
 
   const [siteIds, setSiteIds] = useState<number[]>()
   const [currentPage, setCurrentPage] = useState(0)
@@ -28,7 +29,7 @@ const usePostsInfiniteScrolling = () => {
     setIsLoadingMore(true)
 
     try {
-      const response = await getApiClient().postClient.all(
+      const response = await postClient.all(
         currentPage + 1,
         siteIds,
         PAGE_SIZE,

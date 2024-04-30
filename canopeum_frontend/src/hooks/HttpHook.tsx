@@ -7,7 +7,7 @@ import { useContext } from 'react'
 const refreshClient = () => new RefreshClient(getApiBaseUrl())
 
 const useHttp = () => {
-  const { logout, authenticate } = useContext(AuthenticationContext)
+  const { logout } = useContext(AuthenticationContext)
 
   const fetchWithAuth = async (url: string, options: RequestInit) => {
     let accessToken = sessionStorage.getItem(STORAGE_ACCESS_TOKEN_KEY) ??
