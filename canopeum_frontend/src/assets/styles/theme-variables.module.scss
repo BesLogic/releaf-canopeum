@@ -119,23 +119,24 @@ $link-hover-decoration: none;
 $small-width: 540px;
 $medium-width: 720px;
 $large-width: 960px;
-$xlarge-width: 1664px;
+$xlarge-width: 1200px;
+$xxlarge-width: 1600px;
 
 
 // Grid
 $grid-breakpoints: (
   xs: 0,
-  sm: 576px,
-  md: 768px,
-  lg: 992px,
-  xl: 1200px,
-  xxl: 1600px,
+  sm: $small-width,
+  md: $medium-width,
+  lg: $large-width,
+  xl: $xlarge-width,
+  xxl: $xxlarge-width,
 );
 $container-max-widths: (
   sm: $small-width,
   md: $medium-width,
   lg: $large-width,
-  xl: $xlarge-width
+  xl: $xlarge-width,
 );
 $grid-columns: 12;
 $grid-gutter-width: 30px;
@@ -175,7 +176,7 @@ $h5-font-size: 1.25rem;
 $h6-font-size: 1rem;
 $headings-margin-bottom: calc(($spacer / 2));
 $headings-font-family: Lato;
-$headings-font-weight: 500;
+$headings-font-weight: 700;
 $headings-line-height: 1.1;
 $headings-color: $default-text-color;
 $display1-size: 6rem;
@@ -451,7 +452,7 @@ $card-border-radius: $border-radius;
 $card-border-color: rgba($black, 0.125);
 $card-inner-border-radius: calc(#{$card-border-radius} - #{$card-border-width});
 $card-cap-bg: rgba($black, 0.03);
-$card-bg: $white;
+$card-bg: $cream;
 $card-img-overlay-padding: 1.25rem;
 $card-deck-margin: calc($grid-gutter-width / 2);
 $card-columns-count: 3;
@@ -639,7 +640,7 @@ $enable-print-styles: true;
 $accordion-padding-y: 1rem;
 $accordion-padding-x: 1.25rem;
 $accordion-color: $body-color;
-$accordion-bg: $body-bg;
+$accordion-bg: $cream;
 $accordion-border-width: $border-width;
 $accordion-border-color: rgba($black, .125);
 $accordion-border-radius: $border-radius;

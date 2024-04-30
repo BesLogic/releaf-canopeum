@@ -9,29 +9,34 @@ import { AuthenticationContext } from './context/AuthenticationContext'
 type NavbarItem = {
   icon: MaterialIcon,
   linkTo: string,
+  label: string,
 }
 
 const NAVBAR_ITEMS: NavbarItem[] = [
   {
     icon: 'home',
     linkTo: appRoutes.home,
+    label: 'home',
   },
   {
     icon: 'donut_small',
     linkTo: appRoutes.sites,
+    label: 'sites',
   },
   {
     icon: 'pin_drop',
     linkTo: appRoutes.map,
+    label: 'map',
   },
   {
     icon: 'style',
     linkTo: appRoutes.utilities,
+    label: 'utilities',
   },
 ]
 
 const Navbar = () => {
-  const { i18n: { changeLanguage, language } } = useTranslation()
+  const { i18n: { changeLanguage, language }, t: translate } = useTranslation()
   const [currentLanguage, setCurrentLanguage] = useState(language)
 
   const location = useLocation()
@@ -83,7 +88,7 @@ const Navbar = () => {
           className='collapse navbar-collapse justify-content-between w-100 gap-3'
           id='main-navbar'
         >
-          <ul className='navbar-nav gap-3 align-items-center'>
+          <ul className='navbar-nav gap-3'>
             {isAuthenticated && (NAVBAR_ITEMS.map(item => (
               <li
                 className={`nav-item ${
@@ -95,12 +100,15 @@ const Navbar = () => {
               >
                 <Link className='nav-link' to={item.linkTo}>
                   <span className='material-symbols-outlined text-light'>{item.icon}</span>
+                  <span className='nav-link-label text-light'>
+                    {translate(`navbar.${item.label}`)}
+                  </span>
                 </Link>
               </li>
             )))}
           </ul>
 
-          <ul className='navbar-nav gap-3 align-items-center'>
+          <ul className='navbar-nav gap-3'>
             {isAuthenticated && (
               <li
                 className={`nav-item ${
@@ -111,6 +119,7 @@ const Navbar = () => {
               >
                 <Link className='nav-link' to={appRoutes.userManagment}>
                   <span className='material-symbols-outlined text-light'>account_circle</span>
+                  <span className='nav-link-label text-light'>{translate('navbar.settings')}</span>
                 </Link>
               </li>
             )}
@@ -124,7 +133,7 @@ const Navbar = () => {
                     style={{ width: 100 }}
                     type='button'
                   >
-                    Log In
+                    {translate('navbar.log-in')}
                   </button>
                 </Link>
               </li>

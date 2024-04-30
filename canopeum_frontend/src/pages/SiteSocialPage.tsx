@@ -79,7 +79,7 @@ const SiteSocialPage = () => {
 
   if (error) {
     return (
-      <div className='bg-white rounded-2 2 py-2'>
+      <div className='bg-cream rounded-2 2 py-2'>
         <p>{error.message}</p>
       </div>
     )
@@ -89,9 +89,13 @@ const SiteSocialPage = () => {
 
   return (
     <div className='page-container mt-2 d-flex flex-column gap-4'>
-      <SiteSocialHeader site={site} viewMode={viewMode} />
+      <div className='row m-0'>
+        <div className='col-12'>
+          <SiteSocialHeader site={site} viewMode={viewMode} />
+        </div>
+      </div>
 
-      <div className='row row-gap-4'>
+      <div className='row row-gap-3 m-0'>
         <div className='col-12 col-md-6 col-lg-5 col-xl-4'>
           <div className='d-flex flex-column gap-4'>
             <AnnouncementCard announcement={site.announcement} viewMode={viewMode} />
@@ -105,13 +109,13 @@ const SiteSocialPage = () => {
             <div className='d-flex flex-column gap-4'>
               {isLoadingPosts
                 ? (
-                  <div className='bg-white rounded-2 2 py-2'>
+                  <div className='bg-cream rounded-2 2 py-2'>
                     <p>Loading...</p>
                   </div>
                 )
                 : errorPosts
                 ? (
-                  <div className='bg-white rounded-2 2 py-2'>
+                  <div className='bg-cream rounded-2 2 py-2'>
                     <p>{errorPosts.message}</p>
                   </div>
                 )
