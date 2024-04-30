@@ -7,14 +7,16 @@ import getApiClient from '@services/apiInterface'
 import { useContext, useState } from 'react'
 
 import type { Post } from '../../services/api'
+import usePostsStore from '../../store/postsStore'
 
 type Props = {
   readonly post: Post,
-  readonly likePostEvent: (postId: number) => void,
 }
 
-const PostWidget = ({ post, likePostEvent }: Props) => {
+const PostWidget = ({ post }: Props) => {
   const { formatDate } = useContext(LanguageContext)
+  const { toggleLike } = usePostsStore()
+
   const [commentsModalOpen, setCommentsModalOpen] = useState(false)
   const [shareModalOpen, setShareModalOpen] = useState(false)
 
@@ -29,28 +31,16 @@ const PostWidget = ({ post, likePostEvent }: Props) => {
   const likePost = async () => {
     if (post.hasLiked) {
       await getApiClient().likeClient.delete(post.id)
-      likePostEvent(post.id)
+      toggleLike(post.id)
     } else {
       await getApiClient().likeClient.likePost(post.id, {})
-      likePostEvent(post.id)
+      toggleLike(post.id)
     }
-  }
-
-  const handleCommentCountChange = (action: 'added' | 'deleted') => {
-    /* eslint-disable @typescript-eslint/no-explicit-any -- (NicolasDontigny) Temporary workaround.
-    We want the post commentCount property to be read-only;
-    figure out how to do so with the NSwag models generation */
-    if (action === 'added') {
-      ;(post.commentCount as any) += 1
-    } else {
-      ;(post.commentCount as any) -= 1
-    }
-    /* eslint-enable @typescript-eslint/no-explicit-any */
   }
 
   return (
-    <>
-      <div className='bg-white rounded-2 px-5 py-4 d-flex flex-column gap-3'>
+    <div className='card'>
+      <div className='card-body rounded-2 d-flex flex-column gap-3'>
         <div className='d-flex justify-content-start gap-2'>
           <img
             alt='site'
@@ -109,7 +99,6 @@ const PostWidget = ({ post, likePostEvent }: Props) => {
 
       <PostCommentsDialog
         handleClose={handleCommentsModalClose}
-        onCommentAction={handleCommentCountChange}
         open={commentsModalOpen}
         postId={post.id}
         siteId={post.site.id}
@@ -120,7 +109,7 @@ const PostWidget = ({ post, likePostEvent }: Props) => {
         open={shareModalOpen}
         post={post}
       />
-    </>
+    </div>
   )
 }
 

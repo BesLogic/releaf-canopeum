@@ -23,5 +23,8 @@
     "title": "Share Post",
     "message": "To share this post, simply copy this link and paste it on your favorite social media platforms, or send to a friend!",
     "copy-link": "Copy Link"
+  },
+  "posts": {
+    "post-body-required": "You must enter a message in order to publish your post."
   }
 }

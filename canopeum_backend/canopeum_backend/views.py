@@ -2,10 +2,12 @@ import secrets
 from typing import cast
 
 from django.contrib.auth import authenticate
+from django.core.paginator import Paginator
 from django.http import QueryDict
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import status
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
@@ -41,12 +43,14 @@ from .serializers import (
     AssetSerializer,
     BatchAnalyticsSerializer,
     BatchSerializer,
+    ChangePasswordSerializer,
     CommentSerializer,
     ContactSerializer,
     CreateCommentSerializer,
     CreateUserInvitationSerializer,
     LikeSerializer,
     LoginUserSerializer,
+    PostPaginationSerializer,
     PostPostSerializer,
     PostSerializer,
     RegisterUserSerializer,
@@ -350,20 +354,37 @@ class SiteMapListAPIView(APIView):
         return Response(serializer.data)
 
 
-class PostListAPIView(APIView):
+class PostListAPIView(APIView, PageNumberPagination):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     @extend_schema(
-        responses=PostSerializer(many=True),
+        responses=PostPaginationSerializer,
         operation_id="post_all",
-        parameters=[OpenApiParameter(name="siteId", type=OpenApiTypes.INT, location=OpenApiParameter.QUERY)],
+        parameters=[
+            OpenApiParameter(name="siteId", type=OpenApiTypes.INT, many=True, location=OpenApiParameter.QUERY),
+            OpenApiParameter(name="page", type=OpenApiTypes.INT, required=True, location=OpenApiParameter.QUERY),
+            OpenApiParameter(name="size", type=OpenApiTypes.INT, required=True, location=OpenApiParameter.QUERY),
+        ],
     )
     def get(self, request):
-        site_id = request.GET.get("siteId", "")
-        posts = Post.objects.filter(site=site_id) if site_id else Post.objects.all()
+        site_ids = request.GET.getlist("siteId")
+        posts = Post.objects.filter(site__in=site_ids) if site_ids else Post.objects.all()
         sorted_posts = posts.order_by("-created_at")
-        serializer = PostSerializer(sorted_posts, many=True, context={"request": request})
-        return Response(serializer.data)
+
+        page = request.GET.get("page")
+        size = request.GET.get("size")
+
+        if not isinstance(page, str) or not page.isnumeric() or not isinstance(size, str) or not size.isnumeric():
+            return Response("Page and size are missing or invalid", status=status.HTTP_400_BAD_REQUEST)
+
+        posts_paginator = Paginator(object_list=sorted_posts, per_page=int(size))
+        page_posts = posts_paginator.page(int(page))
+
+        self.page = page_posts
+        self.page_size = int(size)
+
+        serializer = PostSerializer(page_posts, many=True, context={"request": request})
+        return self.get_paginated_response(serializer.data)
 
     parser_classes = (MultiPartParser, FormParser)
 
@@ -414,19 +435,6 @@ class PostDetailAPIView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         serializer = PostSerializer(post, context={"request": request})
-        return Response(serializer.data)
-
-
-class NewsListApiView(APIView):
-    @extend_schema(
-        responses=PostSerializer(many=True),
-        operation_id="news_all",
-    )
-    def get(self, request):
-        followed_sites = SiteFollower.objects.filter(user=request.user).values_list("site")
-
-        posts = Post.objects.filter(site__in=followed_sites).order_by("-created_at")
-        serializer = PostSerializer(posts, many=True, context={"request": request})
         return Response(serializer.data)
 
 
@@ -645,6 +653,24 @@ class UserDetailAPIView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         self.check_object_permissions(request, user)
+
+        change_password_request = request.data.get("changePassword")
+        if change_password_request is not None:
+            change_password_serializer = ChangePasswordSerializer(data=change_password_request)
+            change_password_serializer.is_valid()
+            current_password = change_password_request["currentPassword"]
+
+            if isinstance(current_password, str):
+                is_valid = user.check_password(current_password)
+                if is_valid is not True:
+                    return Response("CURRENT_PASSWORD_INVALID", status=status.HTTP_400_BAD_REQUEST)
+                new_password = change_password_request["newPassword"]
+                new_password_confirmation = current_password = change_password_request["newPasswordConfirmation"]
+                if new_password != new_password_confirmation:
+                    return Response("NEW_PASSWORDS_DO_NOT_MATCH", status=status.HTTP_400_BAD_REQUEST)
+                user.set_password(new_password)
+                user.save()
+
         serializer = UserSerializer(user, data=request.data)
         if serializer.is_valid():
             serializer.save()

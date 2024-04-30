@@ -5,7 +5,7 @@ import { LanguageContext } from '@components/context/LanguageContext'
 import ToggleSwitch from '@components/inputs/ToggleSwitch'
 import PrimaryIconBadge from '@components/PrimaryIconBadge'
 import type { PageViewMode } from '@models/types/PageViewMode.Type'
-import type { SiteSocial } from '@services/api'
+import { type SiteSocial, User } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { getApiBaseUrl } from '@services/apiSettings'
 import { useCallback, useContext, useEffect, useState } from 'react'
@@ -23,7 +23,7 @@ const updateSiteIsPublic = async (_: boolean) => {
 const SiteSocialHeader = ({ site, viewMode }: Props) => {
   const { t: translate } = useTranslation()
   const { translateValue } = useContext(LanguageContext)
-  const { currentUser } = useContext(AuthenticationContext)
+  const { currentUser, updateUser } = useContext(AuthenticationContext)
 
   const [isPublic, setIsPublic] = useState(true)
   const [isFollowing, setIsFollowing] = useState<boolean | undefined>()
@@ -38,12 +38,26 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
   useEffect(() => void fetchIsFollowing(), [fetchIsFollowing])
 
   const onFollowClick = async () => {
+    if (!currentUser) return
+
     if (isFollowing) {
       await getApiClient().siteClient.unfollow(site.id)
       setIsFollowing(false)
+      updateUser(
+        new User({
+          ...currentUser,
+          followedSiteIds: currentUser.followedSiteIds.filter(id => id !== site.id),
+        }),
+      )
     } else {
       await getApiClient().siteClient.follow(site.id)
       setIsFollowing(true)
+      updateUser(
+        new User({
+          ...currentUser,
+          followedSiteIds: [...currentUser.followedSiteIds, site.id],
+        }),
+      )
     }
   }
 

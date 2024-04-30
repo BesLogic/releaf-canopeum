@@ -1095,58 +1095,6 @@ export class RefreshClient {
   }
 }
 
-export class NewsClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-      this.http = http ? http : window as any;
-      this.baseUrl = baseUrl ?? "";
-  }
-
-  all(): Promise<Post[]> {
-      let url_ = this.baseUrl + "/news/";
-      url_ = url_.replace(/[?&]$/, "");
-
-      let options_: RequestInit = {
-          method: "GET",
-          headers: {
-              "Accept": "application/json"
-          }
-      };
-
-      return this.http.fetch(url_, options_).then((_response: Response) => {
-          return this.processAll(_response);
-      });
-  }
-
-  protected processAll(response: Response): Promise<Post[]> {
-      const status = response.status;
-      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
-          return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          if (Array.isArray(resultData200)) {
-              result200 = [] as any;
-              for (let item of resultData200)
-                  result200!.push(Post.fromJS(item));
-          }
-          else {
-              result200 = <any>null;
-          }
-          return result200;
-          });
-      } else if (status !== 200 && status !== 204) {
-          return response.text().then((_responseText) => {
-          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-          });
-      }
-      return Promise.resolve<Post[]>(null as any);
-  }
-}
-
 export class PostClient {
   private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
   private baseUrl: string;
@@ -1157,12 +1105,20 @@ export class PostClient {
       this.baseUrl = baseUrl ?? "";
   }
 
-  all(siteId: number | undefined): Promise<Post[]> {
+  all(page: number, siteId: number[] | undefined, size: number): Promise<PostPagination> {
       let url_ = this.baseUrl + "/social/posts/?";
+      if (page === undefined || page === null)
+          throw new Error("The parameter 'page' must be defined and cannot be null.");
+      else
+          url_ += "page=" + encodeURIComponent("" + page) + "&";
       if (siteId === null)
           throw new Error("The parameter 'siteId' cannot be null.");
       else if (siteId !== undefined)
-          url_ += "siteId=" + encodeURIComponent("" + siteId) + "&";
+          siteId && siteId.forEach(item => { url_ += "siteId=" + encodeURIComponent("" + item) + "&"; });
+      if (size === undefined || size === null)
+          throw new Error("The parameter 'size' must be defined and cannot be null.");
+      else
+          url_ += "size=" + encodeURIComponent("" + size) + "&";
       url_ = url_.replace(/[?&]$/, "");
 
       let options_: RequestInit = {
@@ -1177,21 +1133,14 @@ export class PostClient {
       });
   }
 
-  protected processAll(response: Response): Promise<Post[]> {
+  protected processAll(response: Response): Promise<PostPagination> {
       const status = response.status;
       let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
       if (status === 200) {
           return response.text().then((_responseText) => {
           let result200: any = null;
           let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          if (Array.isArray(resultData200)) {
-              result200 = [] as any;
-              for (let item of resultData200)
-                  result200!.push(Post.fromJS(item));
-          }
-          else {
-              result200 = <any>null;
-          }
+          result200 = PostPagination.fromJS(resultData200);
           return result200;
           });
       } else if (status !== 200 && status !== 204) {
@@ -1199,7 +1148,7 @@ export class PostClient {
           return throwException("An unexpected server error occurred.", status, _responseText, _headers);
           });
       }
-      return Promise.resolve<Post[]>(null as any);
+      return Promise.resolve<PostPagination>(null as any);
   }
 
   create(site: number | undefined, body: string | undefined, media: FileParameter[] | undefined): Promise<Post> {
@@ -2783,6 +2732,62 @@ export interface IBatchfertilizer {
   [key: string]: any;
 }
 
+export class ChangePassword implements IChangePassword {
+  currentPassword!: string;
+  newPassword!: string;
+  newPasswordConfirmation!: string;
+
+  [key: string]: any;
+
+  constructor(data?: IChangePassword) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          this.currentPassword = _data["currentPassword"];
+          this.newPassword = _data["newPassword"];
+          this.newPasswordConfirmation = _data["newPasswordConfirmation"];
+      }
+  }
+
+  static fromJS(data: any): ChangePassword {
+      data = typeof data === 'object' ? data : {};
+      let result = new ChangePassword();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["currentPassword"] = this.currentPassword;
+      data["newPassword"] = this.newPassword;
+      data["newPasswordConfirmation"] = this.newPasswordConfirmation;
+      return data;
+  }
+}
+
+export interface IChangePassword {
+  currentPassword: string;
+  newPassword: string;
+  newPasswordConfirmation: string;
+
+  [key: string]: any;
+}
+
 export class Comment implements IComment {
   readonly id!: number;
   body!: string;
@@ -3646,6 +3651,7 @@ export class PatchedUpdateUser implements IPatchedUpdateUser {
   /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
   username?: string;
   email?: string;
+  changePassword?: ChangePassword;
 
   [key: string]: any;
 
@@ -3666,6 +3672,7 @@ export class PatchedUpdateUser implements IPatchedUpdateUser {
           }
           this.username = _data["username"];
           this.email = _data["email"];
+          this.changePassword = _data["changePassword"] ? ChangePassword.fromJS(_data["changePassword"]) : <any>undefined;
       }
   }
 
@@ -3684,6 +3691,7 @@ export class PatchedUpdateUser implements IPatchedUpdateUser {
       }
       data["username"] = this.username;
       data["email"] = this.email;
+      data["changePassword"] = this.changePassword ? this.changePassword.toJSON() : <any>undefined;
       return data;
   }
 }
@@ -3692,6 +3700,7 @@ export interface IPatchedUpdateUser {
   /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
   username?: string;
   email?: string;
+  changePassword?: ChangePassword;
 
   [key: string]: any;
 }
@@ -3844,6 +3853,77 @@ export interface IPost {
   commentCount: number;
   hasLiked: boolean;
   media: Asset[];
+
+  [key: string]: any;
+}
+
+export class PostPagination implements IPostPagination {
+  count!: number;
+  next?: string;
+  previous?: string;
+  results!: Post[];
+
+  [key: string]: any;
+
+  constructor(data?: IPostPagination) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+      if (!data) {
+          this.results = [];
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          this.count = _data["count"];
+          this.next = _data["next"];
+          this.previous = _data["previous"];
+          if (Array.isArray(_data["results"])) {
+              this.results = [] as any;
+              for (let item of _data["results"])
+                  this.results!.push(Post.fromJS(item));
+          }
+      }
+  }
+
+  static fromJS(data: any): PostPagination {
+      data = typeof data === 'object' ? data : {};
+      let result = new PostPagination();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["count"] = this.count;
+      data["next"] = this.next;
+      data["previous"] = this.previous;
+      if (Array.isArray(this.results)) {
+          data["results"] = [];
+          for (let item of this.results)
+              data["results"].push(item.toJSON());
+      }
+      return data;
+  }
+}
+
+export interface IPostPagination {
+  count: number;
+  next?: string;
+  previous?: string;
+  results: Post[];
 
   [key: string]: any;
 }
@@ -4716,6 +4796,7 @@ export class User implements IUser {
   readonly id!: number;
   readonly role!: RoleEnum;
   readonly adminSiteIds!: number[];
+  readonly followedSiteIds!: number[];
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;
@@ -4745,6 +4826,7 @@ export class User implements IUser {
       }
       if (!data) {
           this.adminSiteIds = [];
+          this.followedSiteIds = [];
       }
   }
 
@@ -4760,6 +4842,11 @@ export class User implements IUser {
               (<any>this).adminSiteIds = [] as any;
               for (let item of _data["adminSiteIds"])
                   (<any>this).adminSiteIds!.push(item);
+          }
+          if (Array.isArray(_data["followedSiteIds"])) {
+              (<any>this).followedSiteIds = [] as any;
+              for (let item of _data["followedSiteIds"])
+                  (<any>this).followedSiteIds!.push(item);
           }
           this.lastLogin = _data["lastLogin"] ? new Date(_data["lastLogin"].toString()) : <any>undefined;
           this.isSuperuser = _data["isSuperuser"];
@@ -4803,6 +4890,11 @@ export class User implements IUser {
           for (let item of this.adminSiteIds)
               data["adminSiteIds"].push(item);
       }
+      if (Array.isArray(this.followedSiteIds)) {
+          data["followedSiteIds"] = [];
+          for (let item of this.followedSiteIds)
+              data["followedSiteIds"].push(item);
+      }
       data["lastLogin"] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined;
       data["isSuperuser"] = this.isSuperuser;
       data["username"] = this.username;
@@ -4830,6 +4922,7 @@ export interface IUser {
   id: number;
   role: RoleEnum;
   adminSiteIds: number[];
+  followedSiteIds: number[];
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;

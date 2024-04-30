@@ -174,7 +174,7 @@ const Register = () => {
           <h1 style={{ textAlign: 'center' }}>{translate('auth.sign-up-header-text')}</h1>
         </div>
 
-        <div className='d-flex flex-column gap-4' style={{ width: '60%' }}>
+        <div className='col-10 col-sm-8 col-xl-6 d-flex flex-column gap-4'>
           <div className='w-100'>
             <label htmlFor='username-input'>{translate('auth.username-label')}</label>
             <input

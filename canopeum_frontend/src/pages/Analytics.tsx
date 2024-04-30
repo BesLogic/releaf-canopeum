@@ -100,13 +100,13 @@ const Analytics = () => {
           ))}
         </div>
 
-        <div className='mt-4 bg-white rounded p-3'>
+        <div className='mt-4 bg-cream rounded p-3'>
           <h5>{translate('analytics.success-rate-chart.title')}</h5>
           <SiteSuccessRatesChart siteSummaries={siteSummaries} />
         </div>
 
         <div className='mt-4'>
-          <div className='bg-white rounded p-3 px-4'>
+          <div className='bg-cream rounded p-3 px-4'>
             <div className='d-flex justify-content-between'>
               <div className='fs-5'>{translate('analytics.batches.batch-tracking')}</div>
               <div>

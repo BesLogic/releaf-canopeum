@@ -43,10 +43,21 @@ class LoginUserSerializer(serializers.ModelSerializer):
         fields = ("email", "password")
 
 
+class ChangePasswordSerializer(serializers.Serializer):
+    current_password = serializers.CharField(write_only=True, required=True)
+    new_password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    new_password_confirmation = serializers.CharField(write_only=True, required=True)
+
+    class Meta:
+        fields = ("current_password", "new_password", "new_password_confirmation")
+
+
 class UpdateUserSerializer(serializers.ModelSerializer):
+    change_password = ChangePasswordSerializer(required=False)
+
     class Meta:
         model = User
-        fields = ("username", "email")
+        fields = ("username", "email", "change_password")
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
@@ -108,6 +119,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     role = serializers.SerializerMethodField()
     admin_site_ids = serializers.SerializerMethodField()
+    followed_site_ids = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -117,9 +129,11 @@ class UserSerializer(serializers.ModelSerializer):
         role_name = obj.role.name
         return RoleName.from_string(RoleName.USER, role_name)
 
-    @extend_schema_field(list[int])  # pyright: ignore[reportArgumentType]
-    def get_admin_site_ids(self, obj: User):
+    def get_admin_site_ids(self, obj: User) -> list[int]:
         return [siteadmin.site.id for siteadmin in Siteadmin.objects.filter(user=obj)]
+
+    def get_followed_site_ids(self, obj: User) -> list[int]:
+        return [site_follower.site.id for site_follower in SiteFollower.objects.filter(user=obj)]
 
 
 class UserTokenSerializer(serializers.Serializer):
@@ -594,15 +608,24 @@ class PostSerializer(serializers.ModelSerializer):
         return obj.comment_set.count()
 
     @extend_schema_field(serializers.IntegerField())
-    def get_like_count(self, obj):
+    def get_like_count(self, obj: Post):
         return Like.objects.filter(post=obj).count()
 
-    @extend_schema_field(bool)  # pyright: ignore[reportArgumentType]
-    def get_has_liked(self, obj: Post):
+    def get_has_liked(self, obj: Post) -> bool:
         user = self.context["request"].user
         if user.is_anonymous:
             return False
-        return Like.objects.filter(user=user).exists()
+        return Like.objects.filter(user=user, post=obj).exists()
+
+
+class PostPaginationSerializer(serializers.Serializer):
+    count = serializers.IntegerField()
+    next = serializers.CharField(required=False)
+    previous = serializers.CharField(required=False)
+    results = PostSerializer(many=True)
+
+    class Meta:
+        fields = ("count", "next", "previous", "results")
 
 
 class CreateCommentSerializer(serializers.ModelSerializer):

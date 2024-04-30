@@ -13,9 +13,6 @@ urlpatterns = [
     path("auth/login/", views.LoginAPIView.as_view(), name="login"),
     path("auth/logout/", views.LogoutAPIView.as_view(), name="logout"),
     path("auth/register/", views.RegisterAPIView.as_view(), name="register"),
-    # News
-    path("news/", views.NewsListApiView.as_view(), name="news-list"),
-    # Social
     # Post
     path("social/posts/", views.PostListAPIView.as_view(), name="post-list"),
     path("social/posts/<int:postId>/", views.PostDetailAPIView.as_view(), name="post-detail"),

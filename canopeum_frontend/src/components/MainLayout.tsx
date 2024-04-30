@@ -17,9 +17,11 @@ import { AuthenticationContext } from './context/AuthenticationContext'
 import Navbar from './Navbar'
 
 const NavbarLayout = () => (
-  <div className='d-flex flex-column min-vh-100'>
+  <div className='d-flex flex-column vh-100'>
     <Navbar />
-    <Outlet />
+    <div className='' style={{ height: 'calc(100vh - 63.8px)' }}>
+      <Outlet />
+    </div>
   </div>
 )
 

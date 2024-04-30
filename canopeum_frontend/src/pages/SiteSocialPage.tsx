@@ -1,28 +1,39 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import SiteSocialHeader from '@components/social/SiteSocialHeader'
 import type { PageViewMode } from '@models/types/PageViewMode.Type'
-import { type IPost, Post, type SiteSocial } from '@services/api'
+import { CircularProgress } from '@mui/material'
+import type { Post, SiteSocial } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { ensureError } from '@services/errors'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import AnnouncementCard from '../components/AnnouncementCard'
 import ContactCard from '../components/ContactCard'
 import CreatePostWidget from '../components/CreatePostWidget'
 import PostWidget from '../components/social/PostWidget'
+import usePostsInfiniteScrolling from '../hooks/PostsInfiniteScrollingHook'
+import usePostsStore from '../store/postsStore'
 import LoadingPage from './LoadingPage'
 
 const SiteSocialPage = () => {
   const { siteId: siteIdParam } = useParams()
   const { currentUser } = useContext(AuthenticationContext)
+  const { posts, addPost } = usePostsStore()
+  const scrollableContainerRef = useRef<HTMLDivElement>(null)
+
+  const {
+    onScroll,
+    setSiteIds,
+    isLoadingMore,
+    isLoadingFirstPage,
+    loadingError,
+  } = usePostsInfiniteScrolling()
+
   const [isLoadingSite, setIsLoadingSite] = useState(true)
   const [error, setError] = useState<Error | undefined>(undefined)
   const [site, setSite] = useState<SiteSocial>()
-
-  const [isLoadingPosts, setIsLoadingPosts] = useState(true)
-  const [errorPosts, setErrorPosts] = useState<Error | undefined>(undefined)
-  const [posts, setPosts] = useState<Post[]>([])
+  const [sitePosts, setSitePosts] = useState<Post[]>([])
 
   const siteId = siteIdParam
     ? Number.parseInt(siteIdParam, 10) || 0
@@ -46,45 +57,17 @@ const SiteSocialPage = () => {
     }
   }
 
-  const fetchPosts = async (parsedSiteId: number) => {
-    setIsLoadingPosts(true)
-    try {
-      const fetchedPosts = await getApiClient().postClient.all(parsedSiteId)
-      setPosts(fetchedPosts)
-    } catch (error_: unknown) {
-      setErrorPosts(ensureError(error_))
-    } finally {
-      setIsLoadingPosts(false)
-    }
-  }
-
-  const addNewPost = (newPost: Post) => setPosts(previous => [newPost, ...previous])
-
-  const likePost = (postId: number) =>
-    setPosts(previous =>
-      previous.map(post => {
-        const newLikeStatus = !post.hasLiked
-        if (post.id === postId) {
-          const newCount = newLikeStatus
-            ? post.likeCount + 1
-            : post.likeCount - 1
-          const updatedPost: IPost = {
-            ...post,
-            hasLiked: newLikeStatus,
-            likeCount: newCount,
-          }
-
-          return new Post(updatedPost)
-        }
-
-        return post
-      })
-    )
+  const addNewPost = (newPost: Post) => addPost(newPost)
 
   useEffect((): void => {
     void fetchSiteData(siteId)
-    void fetchPosts(siteId)
-  }, [siteId])
+    setSiteIds([siteId])
+  }, [siteId, setSiteIds])
+
+  useEffect(
+    () => setSitePosts(posts.filter(post => post.site.id === siteId)),
+    [posts, siteId],
+  )
 
   if (isLoadingSite) {
     return <LoadingPage />
@@ -92,7 +75,7 @@ const SiteSocialPage = () => {
 
   if (error) {
     return (
-      <div className='bg-white rounded-2 2 py-2'>
+      <div className='bg-cream rounded-2 2 py-2'>
         <p>{error.message}</p>
       </div>
     )
@@ -101,10 +84,14 @@ const SiteSocialPage = () => {
   if (!site) return <div />
 
   return (
-    <div className='page-container mt-2 d-flex flex-column gap-4'>
+    <div
+      className='page-container h-100 overflow-y-auto d-flex flex-column gap-4'
+      onScroll={() => onScroll(scrollableContainerRef)}
+      ref={scrollableContainerRef}
+    >
       <SiteSocialHeader site={site} viewMode={viewMode} />
 
-      <div className='row row-gap-4'>
+      <div className='row row-gap-3 m-0'>
         <div className='col-12 col-md-6 col-lg-5 col-xl-4'>
           <div className='d-flex flex-column gap-4'>
             <AnnouncementCard announcement={site.announcement} viewMode={viewMode} />
@@ -114,24 +101,32 @@ const SiteSocialPage = () => {
 
         <div className='col-12 col-md-6 col-lg-7 col-xl-8'>
           <div className='rounded-2 d-flex flex-column gap-4'>
-            {viewMode === 'admin' && <CreatePostWidget addNewPost={addNewPost} />}
+            {viewMode === 'admin' && <CreatePostWidget addNewPost={addNewPost} siteId={siteId} />}
             <div className='d-flex flex-column gap-4'>
-              {isLoadingPosts
+              {isLoadingFirstPage
                 ? (
-                  <div className='bg-white rounded-2 2 py-2'>
-                    <p>Loading...</p>
+                  <div className='card'>
+                    <div className='card-body'>
+                      <LoadingPage />
+                    </div>
                   </div>
                 )
-                : errorPosts
+                : loadingError
                 ? (
-                  <div className='bg-white rounded-2 2 py-2'>
-                    <p>{errorPosts.message}</p>
+                  <div className='card'>
+                    <div className='card-body'>
+                      <span>{loadingError}</span>
+                    </div>
                   </div>
                 )
-                : posts.map(post => (
-                  <PostWidget key={post.id} likePostEvent={likePost} post={post} />
-                ))}
+                : sitePosts.map(post => <PostWidget key={post.id} post={post} />)}
             </div>
+
+            {isLoadingMore && (
+              <div className='w-100 d-flex justify-content-center align-items-center py-2'>
+                <CircularProgress color='secondary' size={50} thickness={5} />
+              </div>
+            )}
           </div>
         </div>
       </div>
