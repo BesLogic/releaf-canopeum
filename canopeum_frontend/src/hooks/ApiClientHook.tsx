@@ -1,4 +1,4 @@
-import { AdminUserSitesClient, AnnouncementClient, AuthenticationClient, BatchClient, CommentClient, ContactClient, LikeClient, NewsClient, PostClient, RefreshClient, SiteClient, SocialClient, SummaryClient, TokenClient, UserClient, UserInvitationClient, WidgetClient } from '@services/api'
+import { AdminUserSitesClient, AnnouncementClient, AuthenticationClient, BatchClient, CommentClient, ContactClient, LikeClient, PostClient, RefreshClient, SiteClient, SocialClient, SummaryClient, TokenClient, UserClient, UserInvitationClient, WidgetClient } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 
 import useHttp from './HttpHook'
@@ -11,7 +11,6 @@ const useApiClient = () => {
     batchClient: new BatchClient(getApiBaseUrl(), { fetch: fetchWithAuth }),
     socialClient: new SocialClient(getApiBaseUrl(), { fetch: fetchWithAuth }),
     postClient: new PostClient(getApiBaseUrl(), { fetch: fetchWithAuth }),
-    newsClient: new NewsClient(getApiBaseUrl(), { fetch: fetchWithAuth }),
     commentClient: new CommentClient(getApiBaseUrl(), { fetch: fetchWithAuth }),
     likeClient: new LikeClient(getApiBaseUrl(), { fetch: fetchWithAuth }),
     userClient: new UserClient(getApiBaseUrl(), { fetch: fetchWithAuth }),

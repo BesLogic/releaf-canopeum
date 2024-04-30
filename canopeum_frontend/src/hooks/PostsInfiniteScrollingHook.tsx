@@ -56,11 +56,12 @@ const usePostsInfiniteScrolling = () => {
   }, [
     siteIds,
     currentPage,
+    postClient,
+    translate,
     setPosts,
     morePostsLoaded,
     setLoadingError,
     getErrorMessage,
-    translate,
   ])
 
   useEffect(() => {

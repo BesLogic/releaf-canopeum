@@ -10,6 +10,7 @@ const useHttp = () => {
   const { logout } = useContext(AuthenticationContext)
 
   const fetchWithAuth = async (url: string, options: RequestInit) => {
+    // Store token in zustand store?
     let accessToken = sessionStorage.getItem(STORAGE_ACCESS_TOKEN_KEY) ??
       localStorage.getItem(STORAGE_ACCESS_TOKEN_KEY)
 
