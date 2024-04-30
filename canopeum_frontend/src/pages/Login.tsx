@@ -81,7 +81,7 @@ const Login = () => {
         <h1 style={{ textAlign: 'center' }}>{translate('auth.log-in-header-text')}</h1>
       </div>
 
-      <div className='d-flex flex-column gap-4' style={{ width: '60%' }}>
+      <div className='col-10 col-sm-6 col-md-8 col-xl-6 d-flex flex-column gap-4'>
         <div className='w-100'>
           <label htmlFor='email-input'>{translate('auth.email-label')}</label>
           <input

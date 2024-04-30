@@ -63,7 +63,7 @@ const PostDetailsPage = () => {
   if (!post || postError) {
     return (
       <div className='container py-5'>
-        <div className='bg-white rounded-2 px-5 py-4'>
+        <div className='bg-cream rounded-2 px-5 py-4'>
           <span>{translate('posts.error-loading-post')}</span>
         </div>
       </div>

@@ -5,12 +5,20 @@ type Props = {
 }
 
 const AuthPageLayout = ({ children }: Props) => (
-  <div className='d-flex bg-primary' style={{ height: '100vh' }}>
-    <div className='login-background' style={{ width: '55%' }} />
-    <div
-      className='d-flex flex-column align-items-center bg-white px-3 py-4 overflow-y-auto'
-      style={{ width: '45%' }}
-    >
+  <div className='d-flex bg-primary vh-100'>
+    <div className='d-none d-md-block col-md-6 login-background' />
+
+    <div className='
+      col-12
+      col-md-6
+      d-flex
+      flex-column
+      align-items-center
+      bg-cream
+      px-3
+      py-4
+      overflow-y-auto
+    '>
       {children}
     </div>
   </div>

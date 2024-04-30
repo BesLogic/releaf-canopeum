@@ -96,7 +96,7 @@ const EditProfile = () => {
     <div className='d-flex flex-column h-100'>
       <h2 className='text-light'>{translate('settings.edit-profile.title')}</h2>
 
-      <div className='bg-white rounded-2 mt-4 px-4 py-3 flex-grow-1 row m-0 justify-content-center'>
+      <div className='bg-cream rounded-2 mt-4 px-4 py-3 flex-grow-1 row m-0 justify-content-center'>
         <div className='
           h-100
           col-12
@@ -113,6 +113,7 @@ const EditProfile = () => {
               <label className='form-label' htmlFor='username'>
                 {translate('auth.username-label')}
               </label>
+
               <input
                 className='form-control'
                 id='username'

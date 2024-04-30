@@ -1,3 +1,5 @@
+import './UserManagement.scss'
+
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import EditProfile from '@components/settings/EditProfile'
 import ManageAdmins from '@components/settings/ManageAdmins'
@@ -75,9 +77,9 @@ const UserManagement = () => {
   return (
     <div className='page-container h-100'>
       <div className='row' style={{ height: '80vh' }}>
-        <div className='col-5 col-lg-3 h-100'>
-          <div className='bg-white rounded-2 py-3 px-4 h-100'>
-            <div className='py-3'>
+        <div className='col-12 col-md-5 col-lg-3'>
+          <div className='settings-left-nav-menu bg-cream rounded-2 py-3 px-4'>
+            <div className='py-3 d-none d-md-block'>
               <h4 className='text-center'>CANOPEUM</h4>
             </div>
 
@@ -85,7 +87,7 @@ const UserManagement = () => {
           </div>
         </div>
 
-        <div className='col-7 col-lg-9'>
+        <div className='settings-tab-content-container col-12 col-md-7 col-lg-9'>
           {displayTabContent()}
         </div>
       </div>
