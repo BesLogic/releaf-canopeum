@@ -21,7 +21,6 @@
     "copy-link": "Copier le Lien",
     "assign-to-label": "Assigner à",
     "generate-link-error": "Une erreur est survenue en essayant de générer le lien.",
-    "copy-link-message": "Veuillez copier et partager ce lien avec le propriétaire de l'adresse courriel suivante:",
-    "email-taken": "Il y a déjà un utilisateur qui utilise cette adresse courriel."
+    "copy-link-message": "Veuillez copier et partager ce lien avec le propriétaire de l'adresse courriel suivante:"
   }
 }

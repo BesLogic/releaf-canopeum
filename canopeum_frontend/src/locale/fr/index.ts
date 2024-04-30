@@ -1,6 +1,7 @@
 import analyticsJSON from './analytics.json'
 import analyticsSiteJSON from './analyticsSite.json'
 import authJSON from './auth.json'
+import errorsJSON from './errors.json'
 import genericJSON from './generic.json'
 import homeJSON from './home.json'
 import navbarJSON from './navbar.json'
@@ -13,6 +14,7 @@ const frJSON = {
     analytics: { ...analyticsJSON },
     analyticsSite: { ...analyticsSiteJSON },
     auth: { ...authJSON },
+    errors: { ...errorsJSON },
     generic: { ...genericJSON },
     home: { ...homeJSON },
     navbar: { ...navbarJSON },

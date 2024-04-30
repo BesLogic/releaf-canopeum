@@ -1105,12 +1105,20 @@ export class PostClient {
       this.baseUrl = baseUrl ?? "";
   }
 
-  all(siteId: number[] | undefined): Promise<Post[]> {
+  all(page: number, siteId: number[] | undefined, size: number): Promise<PostPagination> {
       let url_ = this.baseUrl + "/social/posts/?";
+      if (page === undefined || page === null)
+          throw new Error("The parameter 'page' must be defined and cannot be null.");
+      else
+          url_ += "page=" + encodeURIComponent("" + page) + "&";
       if (siteId === null)
           throw new Error("The parameter 'siteId' cannot be null.");
       else if (siteId !== undefined)
           siteId && siteId.forEach(item => { url_ += "siteId=" + encodeURIComponent("" + item) + "&"; });
+      if (size === undefined || size === null)
+          throw new Error("The parameter 'size' must be defined and cannot be null.");
+      else
+          url_ += "size=" + encodeURIComponent("" + size) + "&";
       url_ = url_.replace(/[?&]$/, "");
 
       let options_: RequestInit = {
@@ -1125,21 +1133,14 @@ export class PostClient {
       });
   }
 
-  protected processAll(response: Response): Promise<Post[]> {
+  protected processAll(response: Response): Promise<PostPagination> {
       const status = response.status;
       let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
       if (status === 200) {
           return response.text().then((_responseText) => {
           let result200: any = null;
           let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          if (Array.isArray(resultData200)) {
-              result200 = [] as any;
-              for (let item of resultData200)
-                  result200!.push(Post.fromJS(item));
-          }
-          else {
-              result200 = <any>null;
-          }
+          result200 = PostPagination.fromJS(resultData200);
           return result200;
           });
       } else if (status !== 200 && status !== 204) {
@@ -1147,7 +1148,7 @@ export class PostClient {
           return throwException("An unexpected server error occurred.", status, _responseText, _headers);
           });
       }
-      return Promise.resolve<Post[]>(null as any);
+      return Promise.resolve<PostPagination>(null as any);
   }
 
   create(site: number | undefined, body: string | undefined, media: FileParameter[] | undefined): Promise<Post> {
@@ -3852,6 +3853,77 @@ export interface IPost {
   commentCount: number;
   hasLiked: boolean;
   media: Asset[];
+
+  [key: string]: any;
+}
+
+export class PostPagination implements IPostPagination {
+  count!: number;
+  next?: string;
+  previous?: string;
+  results!: Post[];
+
+  [key: string]: any;
+
+  constructor(data?: IPostPagination) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+      if (!data) {
+          this.results = [];
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          this.count = _data["count"];
+          this.next = _data["next"];
+          this.previous = _data["previous"];
+          if (Array.isArray(_data["results"])) {
+              this.results = [] as any;
+              for (let item of _data["results"])
+                  this.results!.push(Post.fromJS(item));
+          }
+      }
+  }
+
+  static fromJS(data: any): PostPagination {
+      data = typeof data === 'object' ? data : {};
+      let result = new PostPagination();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["count"] = this.count;
+      data["next"] = this.next;
+      data["previous"] = this.previous;
+      if (Array.isArray(this.results)) {
+          data["results"] = [];
+          for (let item of this.results)
+              data["results"].push(item.toJSON());
+      }
+      return data;
+  }
+}
+
+export interface IPostPagination {
+  count: number;
+  next?: string;
+  previous?: string;
+  results: Post[];
 
   [key: string]: any;
 }

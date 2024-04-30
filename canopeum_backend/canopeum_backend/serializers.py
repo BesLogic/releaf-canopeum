@@ -618,6 +618,16 @@ class PostSerializer(serializers.ModelSerializer):
         return Like.objects.filter(user=user, post=obj).exists()
 
 
+class PostPaginationSerializer(serializers.Serializer):
+    count = serializers.IntegerField()
+    next = serializers.CharField(required=False)
+    previous = serializers.CharField(required=False)
+    results = PostSerializer(many=True)
+
+    class Meta:
+        fields = ("count", "next", "previous", "results")
+
+
 class CreateCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment

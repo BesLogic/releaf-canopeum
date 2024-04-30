@@ -3,5 +3,6 @@
   "delete": "Delete",
   "ok": "Ok",
   "save": "Save",
-  "copied-clipboard": "Copied to clipboard"
+  "copied-clipboard": "Copied to clipboard",
+  "error-default": "Oooops! There was a problem while loading the data."
 }

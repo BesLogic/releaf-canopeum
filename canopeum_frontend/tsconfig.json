@@ -19,6 +19,9 @@
       "@constants/*": [
         "./src/constants/*"
       ],
+      "@hooks/*": [
+        "./src/hooks/*"
+      ],
       "@models/*": [
         "./src/models/*"
       ],
