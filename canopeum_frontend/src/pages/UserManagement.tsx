@@ -77,7 +77,7 @@ const UserManagement = () => {
   return (
     <div className='page-container h-100'>
       <div className='row' style={{ height: '80vh' }}>
-        <div className='col-12 col-md-5 col-lg-3'>
+        <div className='col-12 col-md-5 col-lg-3 pb-4'>
           <div className='settings-left-nav-menu bg-cream rounded-2 py-3 px-4'>
             <div className='py-3 d-none d-md-block'>
               <h4 className='text-center'>CANOPEUM</h4>
@@ -87,7 +87,7 @@ const UserManagement = () => {
           </div>
         </div>
 
-        <div className='settings-tab-content-container col-12 col-md-7 col-lg-9'>
+        <div className='settings-tab-content-container col-12 col-md-7 col-lg-9 pb-4'>
           {displayTabContent()}
         </div>
       </div>
