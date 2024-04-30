@@ -3,44 +3,24 @@ import PostWidget from '@components/social/PostWidget.tsx'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { type IPost, Post } from '../services/api.ts'
 import getApiClient from '../services/apiInterface.ts'
+import usePostsStore from '../store/postsStore.ts'
 import LoadingPage from './LoadingPage.tsx'
 
 const Home = () => {
   const { t: translate } = useTranslation()
   const { currentUser } = useContext(AuthenticationContext)
+  const { posts: newsPosts, setPosts } = usePostsStore()
+
   const [isLoading, setIsLoading] = useState(true)
-  const [newsPosts, setNewsPosts] = useState<Post[]>([])
 
   const fetchNewsPosts = useCallback(async () => {
-    const response = await getApiClient().newsClient.all()
-    setNewsPosts(response)
+    const response = await getApiClient().postClient.all(currentUser?.followedSiteIds)
+    setPosts(response)
     setIsLoading(false)
-  }, [setNewsPosts, setIsLoading])
+  }, [setPosts, setIsLoading, currentUser])
 
   useEffect(() => void fetchNewsPosts(), [fetchNewsPosts])
-
-  const likePost = (postId: number) =>
-    setNewsPosts(previous =>
-      previous.map(post => {
-        const newLikeStatus = !post.hasLiked
-        if (post.id === postId) {
-          const newCount = newLikeStatus
-            ? post.likeCount + 1
-            : post.likeCount - 1
-          const updatedPost: IPost = {
-            ...post,
-            hasLiked: newLikeStatus,
-            likeCount: newCount,
-          }
-
-          return new Post(updatedPost)
-        }
-
-        return post
-      })
-    )
 
   const renderPosts = () => {
     if (newsPosts.length === 0) {
@@ -53,7 +33,7 @@ const Home = () => {
 
     return (
       <div className='d-flex flex-column gap-3'>
-        {newsPosts.map(post => <PostWidget key={post.id} likePostEvent={likePost} post={post} />)}
+        {newsPosts.map(post => <PostWidget key={post.id} post={post} />)}
       </div>
     )
   }

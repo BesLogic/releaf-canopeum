@@ -1,28 +1,31 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import SiteSocialHeader from '@components/social/SiteSocialHeader'
 import type { PageViewMode } from '@models/types/PageViewMode.Type'
-import { type IPost, Post, type SiteSocial } from '@services/api'
+import type { Post, SiteSocial } from '@services/api'
 import getApiClient from '@services/apiInterface'
 import { ensureError } from '@services/errors'
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import AnnouncementCard from '../components/AnnouncementCard'
 import ContactCard from '../components/ContactCard'
 import CreatePostWidget from '../components/CreatePostWidget'
 import PostWidget from '../components/social/PostWidget'
+import usePostsStore from '../store/postsStore'
 import LoadingPage from './LoadingPage'
 
 const SiteSocialPage = () => {
   const { siteId: siteIdParam } = useParams()
   const { currentUser } = useContext(AuthenticationContext)
+  const { posts, setPosts, addPost } = usePostsStore()
+
   const [isLoadingSite, setIsLoadingSite] = useState(true)
   const [error, setError] = useState<Error | undefined>(undefined)
   const [site, setSite] = useState<SiteSocial>()
+  const [sitePosts, setSitePosts] = useState<Post[]>([])
 
   const [isLoadingPosts, setIsLoadingPosts] = useState(true)
   const [errorPosts, setErrorPosts] = useState<Error | undefined>(undefined)
-  const [posts, setPosts] = useState<Post[]>([])
 
   const siteId = siteIdParam
     ? Number.parseInt(siteIdParam, 10) || 0
@@ -46,45 +49,29 @@ const SiteSocialPage = () => {
     }
   }
 
-  const fetchPosts = async (parsedSiteId: number) => {
+  const fetchPosts = useCallback(async (parsedSiteId: number) => {
     setIsLoadingPosts(true)
     try {
-      const fetchedPosts = await getApiClient().postClient.all(parsedSiteId)
+      const fetchedPosts = await getApiClient().postClient.all([parsedSiteId])
       setPosts(fetchedPosts)
     } catch (error_: unknown) {
       setErrorPosts(ensureError(error_))
     } finally {
       setIsLoadingPosts(false)
     }
-  }
+  }, [setPosts])
 
-  const addNewPost = (newPost: Post) => setPosts(previous => [newPost, ...previous])
-
-  const likePost = (postId: number) =>
-    setPosts(previous =>
-      previous.map(post => {
-        const newLikeStatus = !post.hasLiked
-        if (post.id === postId) {
-          const newCount = newLikeStatus
-            ? post.likeCount + 1
-            : post.likeCount - 1
-          const updatedPost: IPost = {
-            ...post,
-            hasLiked: newLikeStatus,
-            likeCount: newCount,
-          }
-
-          return new Post(updatedPost)
-        }
-
-        return post
-      })
-    )
+  const addNewPost = (newPost: Post) => addPost(newPost)
 
   useEffect((): void => {
     void fetchSiteData(siteId)
     void fetchPosts(siteId)
-  }, [siteId])
+  }, [siteId, fetchPosts])
+
+  useEffect(
+    () => setSitePosts(posts.filter(post => post.site.id === siteId)),
+    [posts, siteId],
+  )
 
   if (isLoadingSite) {
     return <LoadingPage />
@@ -118,7 +105,7 @@ const SiteSocialPage = () => {
 
         <div className='col-12 col-md-6 col-lg-7 col-xl-8'>
           <div className='rounded-2 d-flex flex-column gap-4'>
-            {viewMode === 'admin' && <CreatePostWidget addNewPost={addNewPost} />}
+            {viewMode === 'admin' && <CreatePostWidget addNewPost={addNewPost} siteId={siteId} />}
             <div className='d-flex flex-column gap-4'>
               {isLoadingPosts
                 ? (
@@ -132,9 +119,7 @@ const SiteSocialPage = () => {
                     <p>{errorPosts.message}</p>
                   </div>
                 )
-                : posts.map(post => (
-                  <PostWidget key={post.id} likePostEvent={likePost} post={post} />
-                ))}
+                : sitePosts.map(post => <PostWidget key={post.id} post={post} />)}
             </div>
           </div>
         </div>

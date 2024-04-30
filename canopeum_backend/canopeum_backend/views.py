@@ -357,11 +357,11 @@ class PostListAPIView(APIView):
     @extend_schema(
         responses=PostSerializer(many=True),
         operation_id="post_all",
-        parameters=[OpenApiParameter(name="siteId", type=OpenApiTypes.INT, location=OpenApiParameter.QUERY)],
+        parameters=[OpenApiParameter(name="siteId", type=OpenApiTypes.INT, many=True, location=OpenApiParameter.QUERY)],
     )
     def get(self, request):
-        site_id = request.GET.get("siteId", "")
-        posts = Post.objects.filter(site=site_id) if site_id else Post.objects.all()
+        site_ids = request.GET.getlist("siteId")
+        posts = Post.objects.filter(site__in=site_ids) if site_ids else Post.objects.all()
         sorted_posts = posts.order_by("-created_at")
         serializer = PostSerializer(sorted_posts, many=True, context={"request": request})
         return Response(serializer.data)
@@ -415,19 +415,6 @@ class PostDetailAPIView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         serializer = PostSerializer(post, context={"request": request})
-        return Response(serializer.data)
-
-
-class NewsListApiView(APIView):
-    @extend_schema(
-        responses=PostSerializer(many=True),
-        operation_id="news_all",
-    )
-    def get(self, request):
-        followed_sites = SiteFollower.objects.filter(user=request.user).values_list("site")
-
-        posts = Post.objects.filter(site__in=followed_sites).order_by("-created_at")
-        serializer = PostSerializer(posts, many=True, context={"request": request})
         return Response(serializer.data)
 
 
