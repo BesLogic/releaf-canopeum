@@ -4,7 +4,7 @@ import { appRoutes } from '@constants/routes.constant'
 import useApiClient from '@hooks/ApiClientHook'
 import type { UserInvitation } from '@services/api'
 import { RegisterUser } from '@services/api'
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useSearchParams } from 'react-router-dom'
 
@@ -34,7 +34,7 @@ const Register = () => {
 
   const [userInvitation, setUserInvitation] = useState<UserInvitation>()
 
-  const fetchUserInvitation = async (code: string) => {
+  const fetchUserInvitation = useCallback(async (code: string) => {
     try {
       const userInvitationResponse = await getApiClient().userInvitationClient.detail(code)
       if (userInvitationResponse.expiresAt <= new Date()) {
@@ -54,14 +54,14 @@ const Register = () => {
       setCodeExpired(false)
       setUserInvitation(undefined)
     }
-  }
+  }, [getApiClient])
 
   useEffect(() => {
     const code = searchParams.get('code')
     if (!code) return
 
     void fetchUserInvitation(code)
-  }, [searchParams])
+  }, [searchParams, fetchUserInvitation])
 
   const validateUsername = () => {
     if (!username) {

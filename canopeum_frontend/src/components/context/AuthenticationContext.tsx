@@ -73,7 +73,6 @@ const AuthenticationContextProvider: FunctionComponent<{ readonly children?: Rea
           return
         }
 
-        console.log('CURRENT USER CALL')
         const currentUser = await getApiClient().userClient.current()
         authenticate(currentUser)
       } catch {
