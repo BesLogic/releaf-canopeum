@@ -8,7 +8,7 @@ import useApiClient from '@hooks/ApiClientHook'
 import type { PageViewMode } from '@models/types/PageViewMode.Type'
 import { type SiteSocial, User } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 type Props = {
@@ -29,14 +29,12 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
   const [isPublic, setIsPublic] = useState(true)
   const [isFollowing, setIsFollowing] = useState<boolean | undefined>()
 
-  const fetchIsFollowing = useCallback(
-    async () => setIsFollowing(await getApiClient().siteClient.isFollowing(site.id)),
-    [site, getApiClient, setIsFollowing],
-  )
-
   useEffect(() => void updateSiteIsPublic(isPublic), [isPublic])
 
-  useEffect(() => void fetchIsFollowing(), [fetchIsFollowing])
+  useEffect(() => setIsFollowing(currentUser?.followedSiteIds.includes(site.id)), [
+    currentUser?.followedSiteIds,
+    site.id,
+  ])
 
   const onFollowClick = async () => {
     if (!currentUser) return
