@@ -198,13 +198,17 @@ class SiteSocialDetailPublicStatusAPIView(APIView):
         except Site.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        new_is_public_status = request.data["is_public"]
-        if new_is_public_status is not str or (new_is_public_status not in {"true", "false"}):
+        new_is_public_status = request.data["isPublic"]
+        if new_is_public_status is not bool:
             Response("is_public data is invalid", status=status.HTTP_400_BAD_REQUEST)
 
-        site.is_public = new_is_public_status == "true"
+        site.is_public = new_is_public_status
         site.save()
-        return Response(site.is_public)
+
+        serializer = UpdateSitePublicStatusSerializer(data={"is_public": site.is_public})
+        serializer.is_valid()
+
+        return Response(serializer.data)
 
 
 class SiteSummaryListAPIView(APIView):

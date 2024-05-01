@@ -23,11 +23,14 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
   const { getApiClient } = useApiClient()
 
   const [isFollowing, setIsFollowing] = useState<boolean | undefined>()
+  const [isPublic, setIsPublic] = useState(!!site.isPublic)
 
   useEffect(() => setIsFollowing(currentUser?.followedSiteIds.includes(site.id)), [
     currentUser?.followedSiteIds,
     site.id,
   ])
+
+  useEffect(() => setIsPublic(!!site.isPublic), [site])
 
   const onFollowClick = async () => {
     if (!currentUser) return
@@ -64,7 +67,7 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
       patchPublicStatusRequest,
     )
 
-    site.isPublic = updatedPublicStatus.isPublic
+    setIsPublic(updatedPublicStatus.isPublic)
   }
 
   return (
@@ -91,7 +94,7 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
               {viewMode === 'admin' && (
                 <ToggleSwitch
                   additionalClassNames='fs-4'
-                  checked={!!site.isPublic}
+                  checked={isPublic}
                   onChange={toggleSitePublicStatus}
                   text={translate('social.site-social-header.public')}
                 />
