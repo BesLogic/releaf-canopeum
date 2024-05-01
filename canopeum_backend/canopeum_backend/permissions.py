@@ -17,7 +17,8 @@ class DeleteCommentPermission(permissions.BasePermission):
 class PublicSiteReadPermission(permissions.BasePermission):
     """Site methods only allowed if they are public, or the user is a site admin."""
 
-    def has_object_permission(self, request, view, obj: Site) -> bool:  # type: ignore -- Base permission return type is Literal True but should be bool
+    # About the type ignore: Base permission return type is Literal True but should be bool
+    def has_object_permission(self, request, view, obj: Site) -> bool:  # type: ignore
         if obj.is_public or (isinstance(request.user, User) and request.user.role.name == "MegaAdmin"):
             return True
         if not isinstance(request.user, User) or request.user.role.name != "SiteManager":
@@ -29,7 +30,8 @@ class PublicSiteReadPermission(permissions.BasePermission):
 class SiteAdminPermission(permissions.BasePermission):
     """Allows mega admins and a specific site's admin to perform site actions."""
 
-    def has_object_permission(self, request, view, obj: Site) -> bool:  # type: ignore -- Base permission return type is Literal True but should be bool
+    # About the type ignore: Base permission return type is Literal True but should be bool
+    def has_object_permission(self, request, view, obj: Site) -> bool:  # type: ignore
         current_user_role = request.user.role.name
         if current_user_role == "MegaAdmin":
             return True
