@@ -369,43 +369,6 @@ export class SiteClient {
       return Promise.resolve<Site>(null as any);
   }
 
-  detail(siteId: number): Promise<Site> {
-      let url_ = this.baseUrl + "/analytics/sites/{siteId}/";
-      if (siteId === undefined || siteId === null)
-          throw new Error("The parameter 'siteId' must be defined.");
-      url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
-      url_ = url_.replace(/[?&]$/, "");
-
-      let options_: RequestInit = {
-          method: "GET",
-          headers: {
-              "Accept": "application/json"
-          }
-      };
-
-      return this.http.fetch(url_, options_).then((_response: Response) => {
-          return this.processDetail(_response);
-      });
-  }
-
-  protected processDetail(response: Response): Promise<Site> {
-      const status = response.status;
-      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
-          return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = Site.fromJS(resultData200);
-          return result200;
-          });
-      } else if (status !== 200 && status !== 204) {
-          return response.text().then((_responseText) => {
-          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-          });
-      }
-      return Promise.resolve<Site>(null as any);
-  }
-
   update(siteId: number, body: PatchedSite | undefined): Promise<Site> {
       let url_ = this.baseUrl + "/analytics/sites/{siteId}/";
       if (siteId === undefined || siteId === null)
@@ -1466,92 +1429,6 @@ export class LikeClient {
   }
 }
 
-export class SocialClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-      this.http = http ? http : window as any;
-      this.baseUrl = baseUrl ?? "";
-  }
-
-  all(): Promise<SiteSocial> {
-      let url_ = this.baseUrl + "/social/sites/";
-      url_ = url_.replace(/[?&]$/, "");
-
-      let options_: RequestInit = {
-          method: "GET",
-          headers: {
-              "Accept": "application/json"
-          }
-      };
-
-      return this.http.fetch(url_, options_).then((_response: Response) => {
-          return this.processAll(_response);
-      });
-  }
-
-  protected processAll(response: Response): Promise<SiteSocial> {
-      const status = response.status;
-      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
-          return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = SiteSocial.fromJS(resultData200);
-          return result200;
-          });
-      } else if (status !== 200 && status !== 204) {
-          return response.text().then((_responseText) => {
-          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-          });
-      }
-      return Promise.resolve<SiteSocial>(null as any);
-  }
-
-  updatePublicStatus(siteId: number, body: PatchedUpdateSitePublicStatus | undefined): Promise<UpdateSitePublicStatus> {
-      let url_ = this.baseUrl + "/social/sites/{siteId}/public-status";
-      if (siteId === undefined || siteId === null)
-          throw new Error("The parameter 'siteId' must be defined.");
-      url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
-      url_ = url_.replace(/[?&]$/, "");
-
-      const content_ = JSON.stringify(body);
-
-      let options_: RequestInit = {
-          body: content_,
-          method: "PATCH",
-          headers: {
-              "Content-Type": "application/json",
-              "Accept": "application/json"
-          }
-      };
-
-      return this.http.fetch(url_, options_).then((_response: Response) => {
-          return this.processUpdatePublicStatus(_response);
-      });
-  }
-
-  protected processUpdatePublicStatus(response: Response): Promise<UpdateSitePublicStatus> {
-      const status = response.status;
-      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
-          return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = UpdateSitePublicStatus.fromJS(resultData200);
-          return result200;
-          });
-      } else if (status !== 200 && status !== 204) {
-          return response.text().then((_responseText) => {
-          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-          });
-      }
-      return Promise.resolve<UpdateSitePublicStatus>(null as any);
-  }
-}
-
 export class AnnouncementClient {
   private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
   private baseUrl: string;
@@ -1656,6 +1533,58 @@ export class ContactClient {
           });
       }
       return Promise.resolve<Contact>(null as any);
+  }
+}
+
+export class SocialClient {
+  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+      this.http = http ? http : window as any;
+      this.baseUrl = baseUrl ?? "";
+  }
+
+  updatePublicStatus(siteId: number, body: PatchedUpdateSitePublicStatus | undefined): Promise<UpdateSitePublicStatus> {
+      let url_ = this.baseUrl + "/social/sites/{siteId}/public-status";
+      if (siteId === undefined || siteId === null)
+          throw new Error("The parameter 'siteId' must be defined.");
+      url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+      url_ = url_.replace(/[?&]$/, "");
+
+      const content_ = JSON.stringify(body);
+
+      let options_: RequestInit = {
+          body: content_,
+          method: "PATCH",
+          headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processUpdatePublicStatus(_response);
+      });
+  }
+
+  protected processUpdatePublicStatus(response: Response): Promise<UpdateSitePublicStatus> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = UpdateSitePublicStatus.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<UpdateSitePublicStatus>(null as any);
   }
 }
 

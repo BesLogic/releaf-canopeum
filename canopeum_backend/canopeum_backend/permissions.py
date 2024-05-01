@@ -1,6 +1,6 @@
 from rest_framework import permissions
 
-from .models import Comment, Site, Siteadmin
+from .models import Comment, Site, Siteadmin, User
 
 
 class DeleteCommentPermission(permissions.BasePermission):
@@ -12,6 +12,18 @@ class DeleteCommentPermission(permissions.BasePermission):
             return True
         is_admin_for_this_post = obj.post.site.siteadmin_set.filter(user__id__exact=request.user.id).exists()
         return is_admin_for_this_post or obj.user == request.user
+
+
+class PublicSiteReadPermission(permissions.BasePermission):
+    """Site methods only allowed if they are public, or the user is a site admin."""
+
+    def has_object_permission(self, request, view, obj: Site) -> bool:  # type: ignore -- Base permission return type is Literal True but should be bool
+        if obj.is_public or (isinstance(request.user, User) and request.user.role.name == "MegaAdmin"):
+            return True
+        if not isinstance(request.user, User) or request.user.role.name != "SiteManager":
+            return False
+
+        return Siteadmin.objects.filter(user__id__exact=request.user.pk).filter(site=obj.pk).exists()
 
 
 class SiteAdminPermission(permissions.BasePermission):

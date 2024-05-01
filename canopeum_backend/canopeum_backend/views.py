@@ -3,6 +3,7 @@ from typing import cast
 
 from django.contrib.auth import authenticate
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import QueryDict
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
@@ -20,6 +21,7 @@ from canopeum_backend.permissions import (
     DeleteCommentPermission,
     MegaAdminPermission,
     MegaAdminPermissionReadOnly,
+    PublicSiteReadPermission,
     SiteAdminPermission,
 )
 
@@ -69,6 +71,17 @@ from .serializers import (
     UserTokenSerializer,
     WidgetSerializer,
 )
+
+
+def get_public_sites_unless_admin(user: User | None):
+    if isinstance(user, User) and user.role.name == "MegaAdmin":
+        sites = Site.objects.all()
+    elif isinstance(user, User) and user.role.name == "SiteManager":
+        admin_site_ids = [siteadmin.site.pk for siteadmin in Siteadmin.objects.filter(user=user)]
+        sites = Site.objects.filter(Q(id__in=admin_site_ids) | Q(is_public=True))
+    else:
+        sites = Site.objects.filter(is_public=True)
+    return sites
 
 
 class LoginAPIView(APIView):
@@ -129,7 +142,7 @@ class LogoutAPIView(APIView):
 class SiteListAPIView(APIView):
     @extend_schema(responses=SiteSerializer(many=True), operation_id="site_all")
     def get(self, request):
-        sites = Site.objects.all()
+        sites = get_public_sites_unless_admin(request.user)
         serializer = SiteSerializer(sites, many=True)
         return Response(serializer.data)
 
@@ -150,16 +163,6 @@ class SiteListAPIView(APIView):
 
 class SiteDetailAPIView(APIView):
     permission_classes = (MegaAdminPermissionReadOnly,)
-
-    @extend_schema(request=SiteSerializer, responses=SiteSerializer, operation_id="site_detail")
-    def get(self, request, siteId):
-        try:
-            site = Site.objects.prefetch_related("image").get(pk=siteId)
-        except Site.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        serializer = SiteSerializer(site)
-        return Response(serializer.data)
 
     @extend_schema(request=SiteSerializer, responses=SiteSerializer, operation_id="site_update")
     def patch(self, request, siteId):
@@ -217,7 +220,7 @@ class SiteSocialDetailPublicStatusAPIView(APIView):
 class SiteSummaryListAPIView(APIView):
     @extend_schema(responses=SiteSummarySerializer(many=True), operation_id="site_summary_all")
     def get(self, request):
-        sites = Site.objects.all()
+        sites = get_public_sites_unless_admin(request.user)
         plant_count = 0
         survived_count = 0
         propagation_count = 0
@@ -236,12 +239,17 @@ class SiteSummaryListAPIView(APIView):
 
 
 class SiteSummaryDetailAPIView(APIView):
+    permission_classes = (PublicSiteReadPermission,)
+
     @extend_schema(responses=SiteSummarySerializer, operation_id="site_summary")
     def get(self, request, siteId):
         try:
             site = Site.objects.get(pk=siteId)
         except Site.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+        self.check_object_permissions(request, site)
+
         plant_count = 0
         survived_count = 0
         propagation_count = 0
@@ -347,7 +355,7 @@ class AdminUserSitesAPIView(APIView):
 
 
 class SiteSocialDetailAPIView(APIView):
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (PublicSiteReadPermission,)
 
     @extend_schema(request=SiteSocialSerializer, responses=SiteSocialSerializer, operation_id="site_social")
     def get(self, request, siteId):
@@ -356,22 +364,12 @@ class SiteSocialDetailAPIView(APIView):
         except Site.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+        self.check_object_permissions(request, site)
+
         batches = Batch.objects.filter(site=siteId)
         sponsors = [batch.sponsor for batch in batches]
 
         serializer = SiteSocialSerializer(site, context={"sponsors": sponsors})
-        return Response(serializer.data)
-
-
-class SiteSocialListAPIView(APIView):
-    permission_classes = (IsAuthenticatedOrReadOnly,)
-
-    @extend_schema(
-        request=SiteSocialSerializer(many=True), responses=SiteSocialSerializer, operation_id="site_social_all"
-    )
-    def get(self, request):
-        sites = Site.objects.all()
-        serializer = SiteSocialSerializer(sites, many=True)
         return Response(serializer.data)
 
 
@@ -380,7 +378,7 @@ class SiteMapListAPIView(APIView):
 
     @extend_schema(responses=SiteMapSerializer(many=True), operation_id="site_map")
     def get(self, request):
-        sites = Site.objects.all()
+        sites = get_public_sites_unless_admin(request.user)
         serializer = SiteMapSerializer(sites, many=True)
         return Response(serializer.data)
 

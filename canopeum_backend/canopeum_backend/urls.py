@@ -26,7 +26,6 @@ urlpatterns = [
     # Like
     path("social/posts/<int:postId>/likes/", views.LikeListAPIView.as_view(), name="like-list"),
     # Site
-    path("social/sites/", views.SiteSocialListAPIView.as_view(), name="site-list"),
     path("social/sites/<int:siteId>/", views.SiteSocialDetailAPIView.as_view(), name="site-detail"),
     path(
         "social/sites/<int:siteId>/public-status",
