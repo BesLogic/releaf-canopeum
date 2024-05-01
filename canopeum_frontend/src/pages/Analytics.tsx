@@ -3,28 +3,41 @@ import SiteSuccessRatesChart from '@components/analytics/SiteSuccessRatesChart'
 import SiteSummaryCard from '@components/analytics/SiteSummaryCard'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { LanguageContext } from '@components/context/LanguageContext'
-import { useContext, useEffect, useState } from 'react'
+import useApiClient from '@hooks/ApiClientHook'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { SiteSummary, User } from '../services/api'
-import getApiClient from '../services/apiInterface'
 
 const Analytics = () => {
   const { t: translate } = useTranslation()
   const { formatDate } = useContext(LanguageContext)
   const { currentUser } = useContext(AuthenticationContext)
+  const { getApiClient } = useApiClient()
+
   const [siteSummaries, setSiteSummaries] = useState<SiteSummary[]>([])
   const [adminList, setAdminList] = useState<User[]>([])
 
-  const fetchSites = async () => setSiteSummaries(await getApiClient().summaryClient.all())
-  const fetchAdmins = async () => setAdminList(await getApiClient().userClient.allSiteManagers())
+  const fetchSites = useCallback(
+    async () => setSiteSummaries(await getApiClient().summaryClient.all()),
+    [getApiClient],
+  )
+
+  const fetchAdmins = useCallback(
+    async () => setAdminList(await getApiClient().userClient.allSiteManagers()),
+    [getApiClient],
+  )
 
   useEffect((): void => {
-    void fetchSites()
     if (currentUser?.role !== 'MegaAdmin') return
 
     void fetchAdmins()
-  }, [currentUser?.role])
+  }, [currentUser?.role, fetchAdmins])
+
+  useEffect(
+    (): void => void fetchSites(),
+    [fetchSites],
+  )
 
   const renderBatches = () =>
     siteSummaries.map(site => {
@@ -64,6 +77,7 @@ const Analytics = () => {
               </div>
             </button>
           </h2>
+
           <div
             aria-labelledby={`heading-${site.id}`}
             className='accordion-collapse collapse'
@@ -114,6 +128,7 @@ const Analytics = () => {
               </div>
             </div>
           </div>
+
           <div className='accordion mt-4' id='accordion-batches'>
             {renderBatches()}
           </div>

@@ -1,12 +1,13 @@
 import { AdminUserSitesClient, AnnouncementClient, AuthenticationClient, BatchClient, CommentClient, ContactClient, LikeClient, PostClient, RefreshClient, SiteClient, SocialClient, SummaryClient, TokenClient, UserClient, UserInvitationClient, WidgetClient } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
+import { useCallback } from 'react'
 
 import useHttp from './HttpHook'
 
 const useApiClient = () => {
   const { fetchWithAuth } = useHttp()
 
-  return {
+  const getApiClient = useCallback(() => ({
     authenticationClient: new AuthenticationClient(getApiBaseUrl()),
     batchClient: new BatchClient(getApiBaseUrl(), { fetch: fetchWithAuth }),
     socialClient: new SocialClient(getApiBaseUrl(), { fetch: fetchWithAuth }),
@@ -23,6 +24,10 @@ const useApiClient = () => {
     widgetClient: new WidgetClient(getApiBaseUrl(), { fetch: fetchWithAuth }),
     tokenClient: new TokenClient(getApiBaseUrl(), { fetch: fetchWithAuth }),
     refreshClient: new RefreshClient(getApiBaseUrl(), { fetch: fetchWithAuth }),
+  }), [fetchWithAuth])
+
+  return {
+    getApiClient,
   }
 }
 

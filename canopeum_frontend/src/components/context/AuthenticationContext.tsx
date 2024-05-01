@@ -44,9 +44,10 @@ const AuthenticationContextProvider: FunctionComponent<{ readonly children?: Rea
   props => {
     const [user, setUser] = useState<User>()
     const [isSessionLoaded, setIsSessionLoaded] = useState(false)
-    const isInitiatedRef = useRef(false)
+    const [isInitiated, setIsInitiated] = useState<boolean>(false)
+    const isInitiatedRef = useRef(isInitiated)
 
-    const { userClient } = useApiClient()
+    const { getApiClient } = useApiClient()
 
     const loadSession = useCallback(() => setIsSessionLoaded(true), [setIsSessionLoaded])
 
@@ -60,26 +61,27 @@ const AuthenticationContextProvider: FunctionComponent<{ readonly children?: Rea
     const initAuth = useCallback(async () => {
       if (isInitiatedRef.current) return
 
-      const accessToken = sessionStorage.getItem(STORAGE_ACCESS_TOKEN_KEY) ??
-        localStorage.getItem(STORAGE_ACCESS_TOKEN_KEY)
-
-      if (!accessToken) {
-        loadSession()
-
-        isInitiatedRef.current = true
-
-        return
-      }
-
       try {
-        const currentUser = await userClient.current()
-        console.log('currentUser:', currentUser)
-        authenticate(currentUser)
-      } catch { /* empty */ }
+        const accessToken = sessionStorage.getItem(STORAGE_ACCESS_TOKEN_KEY) ??
+          localStorage.getItem(STORAGE_ACCESS_TOKEN_KEY)
 
-      isInitiatedRef.current = true
-      loadSession()
-    }, [authenticate, loadSession, userClient])
+        if (!accessToken) {
+          loadSession()
+
+          isInitiatedRef.current = true
+
+          return
+        }
+
+        const currentUser = await getApiClient().userClient.current()
+        authenticate(currentUser)
+      } catch {
+        /* empty */
+      } finally {
+        loadSession()
+        setIsInitiated(true)
+      }
+    }, [authenticate, loadSession, getApiClient])
 
     const logout = useCallback(() => {
       sessionStorage.removeItem(STORAGE_ACCESS_TOKEN_KEY)

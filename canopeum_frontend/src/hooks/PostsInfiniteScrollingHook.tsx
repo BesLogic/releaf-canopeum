@@ -12,7 +12,7 @@ const usePostsInfiniteScrolling = () => {
   const { setPosts, morePostsLoaded } = usePostsStore()
   const { t: translate } = useTranslation()
   const { getErrorMessage } = useErrorHandling()
-  const { postClient } = useApiClient()
+  const { getApiClient } = useApiClient()
 
   const [siteIds, setSiteIds] = useState<number[]>()
   const [currentPage, setCurrentPage] = useState(0)
@@ -29,7 +29,7 @@ const usePostsInfiniteScrolling = () => {
     setIsLoadingMore(true)
 
     try {
-      const response = await postClient.all(
+      const response = await getApiClient().postClient.all(
         currentPage + 1,
         siteIds,
         PAGE_SIZE,
@@ -56,8 +56,8 @@ const usePostsInfiniteScrolling = () => {
   }, [
     siteIds,
     currentPage,
-    postClient,
     translate,
+    getApiClient,
     setPosts,
     morePostsLoaded,
     setLoadingError,

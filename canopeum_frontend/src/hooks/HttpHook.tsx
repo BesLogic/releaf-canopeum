@@ -1,15 +1,17 @@
 import { AuthenticationContext, STORAGE_ACCESS_TOKEN_KEY, STORAGE_REFRESH_TOKEN_KEY } from '@components/context/AuthenticationContext'
-import { ApiException, RefreshClient, TokenRefresh } from '@services/api'
+import { RefreshClient, TokenRefresh } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 import { jwtDecode } from 'jwt-decode'
-import { useContext } from 'react'
+import { useCallback, useContext } from 'react'
+
+const MILLISECONDS_IN_SECOND = 1000
 
 const refreshClient = () => new RefreshClient(getApiBaseUrl())
 
 const useHttp = () => {
   const { logout } = useContext(AuthenticationContext)
 
-  const fetchWithAuth = async (url: string, options: RequestInit) => {
+  const fetchWithAuth = useCallback(async (url: string, options: RequestInit) => {
     // Store token in zustand store?
     let accessToken = sessionStorage.getItem(STORAGE_ACCESS_TOKEN_KEY) ??
       localStorage.getItem(STORAGE_ACCESS_TOKEN_KEY)
@@ -19,9 +21,10 @@ const useHttp = () => {
       throw new Error('No access token')
     }
 
-    const decodedToken = jwtDecode(accessToken)
+    const decodedAccessToken = jwtDecode(accessToken)
     if (
-      !decodedToken.exp || new Date() > new Date(decodedToken.exp * 1000)
+      !decodedAccessToken.exp ||
+      new Date() > new Date(decodedAccessToken.exp * MILLISECONDS_IN_SECOND)
     ) {
       const refreshToken = sessionStorage.getItem(STORAGE_REFRESH_TOKEN_KEY) ??
         localStorage.getItem(STORAGE_REFRESH_TOKEN_KEY)
@@ -30,13 +33,20 @@ const useHttp = () => {
       if (!refreshToken) {
         throw new Error('No refresh token')
       }
-      // CHECK IF REFRESH TOKEN IS EXPIRED
+
+      const decodedRefreshToken = jwtDecode(refreshToken)
+      if (
+        !decodedRefreshToken.exp ||
+        new Date() > new Date(decodedRefreshToken.exp * MILLISECONDS_IN_SECOND)
+      ) {
+        logout()
+      }
+
       const tokenRefresh = new TokenRefresh({
         access: accessToken,
         refresh: refreshToken,
       })
       const newTokenRefresh = await refreshClient().create(tokenRefresh)
-      console.log('newTokenRefresh:', newTokenRefresh)
 
       localStorage.removeItem(STORAGE_ACCESS_TOKEN_KEY)
       sessionStorage.removeItem(STORAGE_ACCESS_TOKEN_KEY)
@@ -51,23 +61,10 @@ const useHttp = () => {
     }
 
     const headers = new Headers(options.headers)
-    if (accessToken) {
-      headers.set('Authorization', `Bearer ${accessToken}`)
-    }
+    headers.set('Authorization', `Bearer ${accessToken}`)
 
-    let fetchTest: Promise<Response>
-    try {
-      fetchTest = fetch(url, { ...options, headers })
-    } catch (error: unknown) {
-      console.log('error 1:', error)
-      if (error instanceof ApiException) {
-        console.log('error 2:', error)
-      }
-      throw new Error('')
-    }
-
-    return fetchTest
-  }
+    return fetch(url, { ...options, headers })
+  }, [logout])
 
   return {
     fetchWithAuth,
