@@ -1,9 +1,9 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import SiteSocialHeader from '@components/social/SiteSocialHeader'
+import useApiClient from '@hooks/ApiClientHook'
 import type { PageViewMode } from '@models/types/PageViewMode.Type'
 import { CircularProgress } from '@mui/material'
 import type { Post, SiteSocial } from '@services/api'
-import getApiClient from '@services/apiInterface'
 import { ensureError } from '@services/errors'
 import { useContext, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
@@ -20,6 +20,7 @@ const SiteSocialPage = () => {
   const { siteId: siteIdParam } = useParams()
   const { currentUser } = useContext(AuthenticationContext)
   const { posts, addPost } = usePostsStore()
+  const { getApiClient } = useApiClient()
   const scrollableContainerRef = useRef<HTMLDivElement>(null)
 
   const {

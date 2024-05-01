@@ -7,13 +7,13 @@ import FarmsLandPin from '@assets/icons/pins/farms-land-pin.svg'
 import IndegeniousCommunityPin from '@assets/icons/pins/indegenious-community-pin.svg'
 import ParkPin from '@assets/icons/pins/park-pin.svg'
 import { appRoutes } from '@constants/routes.constant'
+import useApiClient from '@hooks/ApiClientHook'
 import { getApiBaseUrl } from '@services/apiSettings'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import ReactMap, { GeolocateControl, Marker, NavigationControl, ScaleControl, type ViewState } from 'react-map-gl/maplibre'
 import { Link } from 'react-router-dom'
 
 import type { SiteMap } from '../services/api'
-import getApiClient from '../services/apiInterface'
 
 const pinMap: Record<number, string> = {
   1: CanopeumPin,
@@ -34,6 +34,8 @@ type MarkerEvent = {
 }
 
 const Map = () => {
+  const { getApiClient } = useApiClient()
+
   const [sites, setSites] = useState<SiteMap[]>([])
   const [selectedSiteId, setSelectedSiteId] = useState<number | undefined>(undefined)
 
@@ -43,10 +45,10 @@ const Map = () => {
     zoom: 5,
   })
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     const response = await getApiClient().siteClient.map()
     setSites(response)
-  }
+  }, [getApiClient])
 
   const onMarkerClick = (event: MarkerEvent, site: SiteMap) => {
     const { lat, lng } = event.target._lngLat
@@ -71,7 +73,7 @@ const Map = () => {
       const { latitude, longitude } = position.coords
       setMapViewState(mvs => ({ ...mvs, latitude, longitude }))
     })
-  }, [])
+  }, [fetchData])
 
   return (
     <div className='container-fluid p-0'>

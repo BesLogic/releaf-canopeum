@@ -1,12 +1,12 @@
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import MultipleSelectChip, { type SelectionItem } from '@components/inputs/MultipleSelectChip'
 import { APP_CONFIG } from '@config/config'
+import useApiClient from '@hooks/ApiClientHook'
 import useErrorHandling from '@hooks/ErrorHandlingHook'
 import { Dialog, DialogContent, DialogTitle } from '@mui/material'
 import { CreateUserInvitation } from '@services/api'
-import getApiClient from '@services/apiInterface'
 import { type InputValidationError, isValidEmail } from '@utils/validators'
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 type Props = {
@@ -18,6 +18,7 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const { getErrorMessage } = useErrorHandling()
+  const { getApiClient } = useApiClient()
 
   const [siteOptions, setSiteOptions] = useState<SelectionItem<number>[]>([])
   const [invitationLink, setInvitationLink] = useState<string>()
@@ -28,12 +29,13 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
   const [emailError, setEmailError] = useState<InputValidationError | undefined>()
   const [generateLinkError, setGenerateLinkError] = useState<string>()
 
-  const fetchAllSites = async () => {
+  const fetchAllSites = useCallback(async () => {
     const sites = await getApiClient().siteClient.all()
-    setSiteOptions(sites.map(site => ({ displayText: site.name, value: site.id })))
-  }
 
-  useEffect(() => void fetchAllSites(), [])
+    setSiteOptions(sites.map(site => ({ displayText: site.name, value: site.id })))
+  }, [getApiClient])
+
+  useEffect(() => void fetchAllSites(), [fetchAllSites])
 
   const validateEmail = () => {
     if (!email) {

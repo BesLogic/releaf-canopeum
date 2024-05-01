@@ -1,9 +1,9 @@
 import AuthPageLayout from '@components/auth/AuthPageLayout'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { appRoutes } from '@constants/routes.constant'
+import useApiClient from '@hooks/ApiClientHook'
 import type { UserInvitation } from '@services/api'
 import { RegisterUser } from '@services/api'
-import getApiClient from '@services/apiInterface'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useSearchParams } from 'react-router-dom'
@@ -14,6 +14,7 @@ const Register = () => {
   const [searchParams, _setSearchParams] = useSearchParams()
   const { authenticate, storeToken } = useContext(AuthenticationContext)
   const { t: translate } = useTranslation()
+  const { getApiClient } = useApiClient()
 
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
