@@ -1969,7 +1969,7 @@ export class UserClient {
       url_ = url_.replace(/[?&]$/, "");
 
       let options_: RequestInit = {
-          method: "POST",
+          method: "GET",
           headers: {
               "Accept": "application/json"
           }

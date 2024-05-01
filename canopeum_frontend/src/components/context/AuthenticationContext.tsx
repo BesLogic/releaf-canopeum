@@ -1,7 +1,7 @@
+import useApiClient from '@hooks/ApiClientHook'
 import type { TokenRefresh, User } from '@services/api'
-import getApiClient from '@services/apiInterface'
 import type { FunctionComponent, ReactNode } from 'react'
-import { createContext, memo, useCallback, useMemo, useState } from 'react'
+import { createContext, memo, useCallback, useMemo, useRef, useState } from 'react'
 
 export const STORAGE_ACCESS_TOKEN_KEY = 'token'
 export const STORAGE_REFRESH_TOKEN_KEY = 'refreshToken'
@@ -44,6 +44,10 @@ const AuthenticationContextProvider: FunctionComponent<{ readonly children?: Rea
   props => {
     const [user, setUser] = useState<User>()
     const [isSessionLoaded, setIsSessionLoaded] = useState(false)
+    const [isInitiated, setIsInitiated] = useState<boolean>(false)
+    const isInitiatedRef = useRef(isInitiated)
+
+    const { getApiClient } = useApiClient()
 
     const loadSession = useCallback(() => setIsSessionLoaded(true), [setIsSessionLoaded])
 
@@ -55,21 +59,29 @@ const AuthenticationContextProvider: FunctionComponent<{ readonly children?: Rea
     const updateUser = useCallback((updatedUser: User) => setUser(updatedUser), [setUser])
 
     const initAuth = useCallback(async () => {
-      const accessToken = sessionStorage.getItem(STORAGE_ACCESS_TOKEN_KEY) ??
-        localStorage.getItem(STORAGE_ACCESS_TOKEN_KEY)
-      if (!accessToken) {
-        loadSession()
-
-        return
-      }
+      if (isInitiatedRef.current) return
 
       try {
+        const accessToken = sessionStorage.getItem(STORAGE_ACCESS_TOKEN_KEY) ??
+          localStorage.getItem(STORAGE_ACCESS_TOKEN_KEY)
+
+        if (!accessToken) {
+          loadSession()
+
+          isInitiatedRef.current = true
+
+          return
+        }
+
         const currentUser = await getApiClient().userClient.current()
         authenticate(currentUser)
-      } catch { /* empty */ }
-
-      loadSession()
-    }, [authenticate, loadSession])
+      } catch {
+        /* empty */
+      } finally {
+        loadSession()
+        setIsInitiated(true)
+      }
+    }, [authenticate, loadSession, getApiClient])
 
     const logout = useCallback(() => {
       sessionStorage.removeItem(STORAGE_ACCESS_TOKEN_KEY)

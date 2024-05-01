@@ -1,7 +1,7 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { SnackbarContext } from '@components/context/SnackbarContext'
+import useApiClient from '@hooks/ApiClientHook'
 import { PatchedUpdateUser } from '@services/api'
-import getApiClient from '@services/apiInterface'
 import { type InputValidationError, isValidEmail } from '@utils/validators'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -10,6 +10,7 @@ const EditProfile = () => {
   const { t: translate } = useTranslation()
   const { currentUser, updateUser } = useContext(AuthenticationContext)
   const { openAlertSnackbar } = useContext(SnackbarContext)
+  const { getApiClient } = useApiClient()
 
   const [username, setUsername] = useState(currentUser?.username ?? '')
   const [email, setEmail] = useState(currentUser?.email ?? '')

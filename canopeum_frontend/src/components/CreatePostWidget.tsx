@@ -1,6 +1,6 @@
 import { SnackbarContext } from '@components/context/SnackbarContext'
+import useApiClient from '@hooks/ApiClientHook'
 import { CircularProgress } from '@mui/material'
-import getApiClient from '@services/apiInterface'
 import { type ChangeEvent, useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -25,6 +25,7 @@ type Props = {
 const CreatePostWidget = ({ siteId, addNewPost }: Props) => {
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
+  const { getApiClient } = useApiClient()
 
   const [isSendingPost, setIsSendingPost] = useState(false)
   const [postBody, setPostBody] = useState<string>('')

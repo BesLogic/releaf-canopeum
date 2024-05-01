@@ -2,9 +2,9 @@ import { AuthenticationContext } from '@components/context/AuthenticationContext
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import ConfirmationDialog from '@components/dialogs/ConfirmationDialog'
 import PostComment from '@components/social/PostComment'
+import useApiClient from '@hooks/ApiClientHook'
 import { Dialog, DialogContent } from '@mui/material'
 import { type Comment, CreateComment } from '@services/api'
-import getApiClient from '@services/apiInterface'
 import { type ChangeEvent, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
@@ -27,6 +27,7 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose }: Props) => {
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const { currentUser } = useContext(AuthenticationContext)
   const { commentChange } = usePostsStore()
+  const { getApiClient } = useApiClient()
 
   const [comments, setComments] = useState<Comment[]>([])
   const [commentsLoaded, setCommentsLoaded] = useState(false)

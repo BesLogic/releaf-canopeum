@@ -1,11 +1,11 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import SiteSocialHeader from '@components/social/SiteSocialHeader'
+import useApiClient from '@hooks/ApiClientHook'
 import type { PageViewMode } from '@models/types/PageViewMode.Type'
 import { CircularProgress } from '@mui/material'
 import type { Post, SiteSocial } from '@services/api'
-import getApiClient from '@services/apiInterface'
 import { ensureError } from '@services/errors'
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import AnnouncementCard from '../components/AnnouncementCard'
@@ -20,6 +20,7 @@ const SiteSocialPage = () => {
   const { siteId: siteIdParam } = useParams()
   const { currentUser } = useContext(AuthenticationContext)
   const { posts, addPost } = usePostsStore()
+  const { getApiClient } = useApiClient()
   const scrollableContainerRef = useRef<HTMLDivElement>(null)
 
   const {
@@ -45,7 +46,7 @@ const SiteSocialPage = () => {
       : 'user'
     : 'visitor'
 
-  const fetchSiteData = async (parsedSiteId: number) => {
+  const fetchSiteData = useCallback(async (parsedSiteId: number) => {
     setIsLoadingSite(true)
     try {
       const fetchedSite = await getApiClient().siteClient.social(parsedSiteId)
@@ -55,14 +56,14 @@ const SiteSocialPage = () => {
     } finally {
       setIsLoadingSite(false)
     }
-  }
+  }, [getApiClient])
 
   const addNewPost = (newPost: Post) => addPost(newPost)
 
   useEffect((): void => {
     void fetchSiteData(siteId)
     setSiteIds([siteId])
-  }, [siteId, setSiteIds])
+  }, [siteId, fetchSiteData, setSiteIds])
 
   useEffect(
     () => setSitePosts(posts.filter(post => post.site.id === siteId)),

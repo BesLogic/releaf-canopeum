@@ -680,7 +680,7 @@ class UserDetailAPIView(APIView):
 
 class UserCurrentUserAPIView(APIView):
     @extend_schema(responses=UserSerializer, operation_id="user_current")
-    def post(self, request):
+    def get(self, request):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
 

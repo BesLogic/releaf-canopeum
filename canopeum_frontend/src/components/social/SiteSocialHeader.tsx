@@ -4,11 +4,11 @@ import { AuthenticationContext } from '@components/context/AuthenticationContext
 import { LanguageContext } from '@components/context/LanguageContext'
 import ToggleSwitch from '@components/inputs/ToggleSwitch'
 import PrimaryIconBadge from '@components/PrimaryIconBadge'
+import useApiClient from '@hooks/ApiClientHook'
 import type { PageViewMode } from '@models/types/PageViewMode.Type'
 import { type SiteSocial, User } from '@services/api'
-import getApiClient from '@services/apiInterface'
 import { getApiBaseUrl } from '@services/apiSettings'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 type Props = {
@@ -24,18 +24,17 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
   const { t: translate } = useTranslation()
   const { translateValue } = useContext(LanguageContext)
   const { currentUser, updateUser } = useContext(AuthenticationContext)
+  const { getApiClient } = useApiClient()
 
   const [isPublic, setIsPublic] = useState(true)
   const [isFollowing, setIsFollowing] = useState<boolean | undefined>()
 
-  const fetchIsFollowing = useCallback(
-    async () => setIsFollowing(await getApiClient().siteClient.isFollowing(site.id)),
-    [site, setIsFollowing],
-  )
-
   useEffect(() => void updateSiteIsPublic(isPublic), [isPublic])
 
-  useEffect(() => void fetchIsFollowing(), [fetchIsFollowing])
+  useEffect(() => setIsFollowing(currentUser?.followedSiteIds.includes(site.id)), [
+    currentUser?.followedSiteIds,
+    site.id,
+  ])
 
   const onFollowClick = async () => {
     if (!currentUser) return

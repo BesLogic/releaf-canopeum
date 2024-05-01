@@ -1,7 +1,7 @@
 import PostWidget from '@components/social/PostWidget'
 import { appRoutes } from '@constants/routes.constant'
+import useApiClient from '@hooks/ApiClientHook'
 import type { Post } from '@services/api'
-import getApiClient from '@services/apiInterface'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router-dom'
@@ -13,6 +13,7 @@ const PostDetailsPage = () => {
   const { t: translate } = useTranslation()
   const { postId: postIdFromParams } = useParams()
   const { posts, setPosts } = usePostsStore()
+  const { getApiClient } = useApiClient()
 
   const [postId, setPostId] = useState<number>()
   const [postDetail, setPostDetail] = useState<Post>()
@@ -37,7 +38,7 @@ const PostDetailsPage = () => {
       setIsLoading(false)
       setPostError(true)
     }
-  }, [setPosts, setIsLoading, setPostError])
+  }, [getApiClient, setPosts, setIsLoading, setPostError])
 
   useEffect(() => {
     if (!postIdFromParams) {

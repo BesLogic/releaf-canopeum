@@ -3,7 +3,7 @@ import { LanguageContext } from '@components/context/LanguageContext'
 import TextExpansion from '@components/inputs/TextExpansion'
 import PostCommentsDialog from '@components/social/PostCommentsDialog'
 import SharePostDialog from '@components/social/SharePostDialog'
-import getApiClient from '@services/apiInterface'
+import useApiClient from '@hooks/ApiClientHook'
 import { useContext, useState } from 'react'
 
 import type { Post } from '../../services/api'
@@ -16,6 +16,7 @@ type Props = {
 const PostWidget = ({ post }: Props) => {
   const { formatDate } = useContext(LanguageContext)
   const { toggleLike } = usePostsStore()
+  const { getApiClient } = useApiClient()
 
   const [commentsModalOpen, setCommentsModalOpen] = useState(false)
   const [shareModalOpen, setShareModalOpen] = useState(false)

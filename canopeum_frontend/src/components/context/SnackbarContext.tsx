@@ -74,10 +74,9 @@ const SnackbarContextProvider: FunctionComponent<{ readonly children?: ReactNode
     ), [openAlertSnackbar])
 
     return (
-      <SnackbarContext.Provider
-        value={context}
-      >
+      <SnackbarContext.Provider value={context}>
         {props.children}
+
         <Snackbar
           TransitionProps={{ onExited: handleExited }}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}

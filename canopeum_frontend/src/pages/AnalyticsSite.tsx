@@ -1,9 +1,9 @@
 import AnalyticsSiteHeader from '@components/analytics/AnalyticsSiteHeader'
 import BatchTable from '@components/analytics/BatchTable'
 import { LanguageContext } from '@components/context/LanguageContext'
+import useApiClient from '@hooks/ApiClientHook'
 import type { SiteSummary } from '@services/api'
-import getApiClient from '@services/apiInterface'
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 
@@ -13,12 +13,15 @@ const AnalyticsSite = () => {
   const { t: translate } = useTranslation<'analytics'>()
   const { siteId: siteIdFromParams } = useParams()
   const { formatDate } = useContext(LanguageContext)
+  const { getApiClient } = useApiClient()
 
   const [siteSummary, setSiteSummary] = useState<SiteSummary | undefined>()
   const [lastModifiedBatchDate, setLastModifiedBatchDate] = useState<Date | undefined>()
 
-  const fetchSite = async (siteId: number) =>
-    setSiteSummary(await getApiClient().siteClient.summary(siteId))
+  const fetchSite = useCallback(
+    async (siteId: number) => setSiteSummary(await getApiClient().siteClient.summary(siteId)),
+    [getApiClient],
+  )
 
   useEffect(() => {
     if (!siteIdFromParams) return
@@ -27,7 +30,7 @@ const AnalyticsSite = () => {
     if (!siteIdNumber) return
 
     void fetchSite(siteIdNumber)
-  }, [siteIdFromParams])
+  }, [fetchSite, siteIdFromParams])
 
   useEffect(() => {
     if (!siteSummary || siteSummary.batches.length === 0) {
