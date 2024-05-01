@@ -20,6 +20,7 @@ from canopeum_backend.permissions import (
     DeleteCommentPermission,
     MegaAdminPermission,
     MegaAdminPermissionReadOnly,
+    SiteAdminPermission,
 )
 
 from .models import (
@@ -185,7 +186,7 @@ class SiteDetailAPIView(APIView):
 
 
 class SiteSocialDetailPublicStatusAPIView(APIView):
-    permission_classes = (MegaAdminPermission,)
+    permission_classes = (SiteAdminPermission,)
 
     @extend_schema(
         request=UpdateSitePublicStatusSerializer,
@@ -197,6 +198,8 @@ class SiteSocialDetailPublicStatusAPIView(APIView):
             site = Site.objects.get(pk=siteId)
         except Site.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+        self.check_object_permissions(request, site)
 
         new_is_public_status = request.data["isPublic"]
         if new_is_public_status is not bool:

@@ -57,7 +57,7 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
   }
 
   const toggleSitePublicStatus = async () => {
-    const newPublicStatus = !site.isPublic
+    const newPublicStatus = !isPublic
 
     const patchPublicStatusRequest = new PatchedUpdateSitePublicStatus({
       isPublic: newPublicStatus,

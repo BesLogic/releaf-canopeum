@@ -1,6 +1,6 @@
 from rest_framework import permissions
 
-from .models import Comment
+from .models import Comment, Site, Siteadmin
 
 
 class DeleteCommentPermission(permissions.BasePermission):
@@ -8,8 +8,20 @@ class DeleteCommentPermission(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj: Comment):
         current_user_role = request.user.role.name
+        if current_user_role == "MegaAdmin":
+            return True
         is_admin_for_this_post = obj.post.site.siteadmin_set.filter(user__id__exact=request.user.id).exists()
-        return current_user_role == "MegaAdmin" or is_admin_for_this_post or obj.user == request.user
+        return is_admin_for_this_post or obj.user == request.user
+
+
+class SiteAdminPermission(permissions.BasePermission):
+    """Allows mega admins and a specific site's admin to perform site actions."""
+
+    def has_object_permission(self, request, view, obj: Site) -> bool:  # type: ignore -- Base permission return type is Literal True but should be bool
+        current_user_role = request.user.role.name
+        if current_user_role == "MegaAdmin":
+            return True
+        return Siteadmin.objects.filter(user__id__exact=request.user.id).filter(site=obj.pk).exists()
 
 
 class MegaAdminPermission(permissions.BasePermission):
