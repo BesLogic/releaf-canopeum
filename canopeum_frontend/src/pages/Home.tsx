@@ -58,7 +58,7 @@ const Home = () => {
 
   return (
     <div
-      className='page-container h-100 overflow-y-auto'
+      className='page-container h-100'
       onScroll={() => onScroll(listInnerRef)}
       ref={listInnerRef}
     >

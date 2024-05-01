@@ -86,7 +86,7 @@ const SiteSocialPage = () => {
 
   return (
     <div
-      className='page-container h-100 overflow-y-auto d-flex flex-column gap-4'
+      className='page-container h-100 d-flex flex-column gap-4'
       onScroll={() => onScroll(scrollableContainerRef)}
       ref={scrollableContainerRef}
     >
