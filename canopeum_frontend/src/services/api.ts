@@ -278,7 +278,7 @@ export class SiteClient {
       return Promise.resolve<Site[]>(null as any);
   }
 
-  create(id: number | undefined, siteType: SiteType | undefined, coordinate: Coordinates | undefined, siteTreeSpecies: Sitetreespecies[] | undefined, contact: Contact | undefined, announcement: Announcement | undefined, image: Asset | undefined, name: string | undefined, description: string | null | undefined, size: string | null | undefined, researchPartnership: boolean | null | undefined, visibleMap: boolean | null | undefined, visitorCount: number | null | undefined): Promise<Site> {
+  create(id: number | undefined, siteType: SiteType | undefined, coordinate: Coordinates | undefined, siteTreeSpecies: Sitetreespecies[] | undefined, contact: Contact | undefined, announcement: Announcement | undefined, image: Asset | undefined, name: string | undefined, isPublic: boolean | undefined, description: string | null | undefined, size: string | null | undefined, researchPartnership: boolean | null | undefined, visibleMap: boolean | null | undefined, visitorCount: number | null | undefined): Promise<Site> {
       let url_ = this.baseUrl + "/analytics/sites/";
       url_ = url_.replace(/[?&]$/, "");
 
@@ -321,6 +321,10 @@ export class SiteClient {
           throw new Error("The parameter 'name' cannot be null.");
       else if (name !== undefined)
           content_ += encodeURIComponent("name") + "=" + encodeURIComponent("" + name) + "&";
+      if (isPublic === null)
+          throw new Error("The parameter 'isPublic' cannot be null.");
+      else if (isPublic !== undefined)
+          content_ += encodeURIComponent("isPublic") + "=" + encodeURIComponent("" + isPublic) + "&";
       if (description !== undefined)
           content_ += encodeURIComponent("description") + "=" + encodeURIComponent("" + description) + "&";
       if (size !== undefined)
@@ -1504,6 +1508,47 @@ export class SocialClient {
           });
       }
       return Promise.resolve<SiteSocial>(null as any);
+  }
+
+  updatePublicStatus(siteId: number, body: PatchedUpdateSitePublicStatus | undefined): Promise<UpdateSitePublicStatus> {
+      let url_ = this.baseUrl + "/social/sites/{siteId}/public-status";
+      if (siteId === undefined || siteId === null)
+          throw new Error("The parameter 'siteId' must be defined.");
+      url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+      url_ = url_.replace(/[?&]$/, "");
+
+      const content_ = JSON.stringify(body);
+
+      let options_: RequestInit = {
+          body: content_,
+          method: "PATCH",
+          headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processUpdatePublicStatus(_response);
+      });
+  }
+
+  protected processUpdatePublicStatus(response: Response): Promise<UpdateSitePublicStatus> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = UpdateSitePublicStatus.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<UpdateSitePublicStatus>(null as any);
   }
 }
 
@@ -3496,6 +3541,7 @@ export class PatchedSite implements IPatchedSite {
   announcement?: Announcement;
   image?: Asset;
   name?: string;
+  isPublic?: boolean;
   description?: string | undefined;
   size?: string | undefined;
   researchPartnership?: boolean | undefined;
@@ -3531,6 +3577,7 @@ export class PatchedSite implements IPatchedSite {
           this.announcement = _data["announcement"] ? Announcement.fromJS(_data["announcement"]) : <any>undefined;
           this.image = _data["image"] ? Asset.fromJS(_data["image"]) : <any>undefined;
           this.name = _data["name"];
+          this.isPublic = _data["isPublic"];
           this.description = _data["description"];
           this.size = _data["size"];
           this.researchPartnership = _data["researchPartnership"];
@@ -3564,6 +3611,7 @@ export class PatchedSite implements IPatchedSite {
       data["announcement"] = this.announcement ? this.announcement.toJSON() : <any>undefined;
       data["image"] = this.image ? this.image.toJSON() : <any>undefined;
       data["name"] = this.name;
+      data["isPublic"] = this.isPublic;
       data["description"] = this.description;
       data["size"] = this.size;
       data["researchPartnership"] = this.researchPartnership;
@@ -3582,6 +3630,7 @@ export interface IPatchedSite {
   announcement?: Announcement;
   image?: Asset;
   name?: string;
+  isPublic?: boolean;
   description?: string | undefined;
   size?: string | undefined;
   researchPartnership?: boolean | undefined;
@@ -3643,6 +3692,54 @@ export class PatchedSiteAdminUpdateRequest implements IPatchedSiteAdminUpdateReq
 
 export interface IPatchedSiteAdminUpdateRequest {
   ids?: number[];
+
+  [key: string]: any;
+}
+
+export class PatchedUpdateSitePublicStatus implements IPatchedUpdateSitePublicStatus {
+  isPublic?: boolean;
+
+  [key: string]: any;
+
+  constructor(data?: IPatchedUpdateSitePublicStatus) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          this.isPublic = _data["isPublic"];
+      }
+  }
+
+  static fromJS(data: any): PatchedUpdateSitePublicStatus {
+      data = typeof data === 'object' ? data : {};
+      let result = new PatchedUpdateSitePublicStatus();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["isPublic"] = this.isPublic;
+      return data;
+  }
+}
+
+export interface IPatchedUpdateSitePublicStatus {
+  isPublic?: boolean;
 
   [key: string]: any;
 }
@@ -4003,6 +4100,7 @@ export class Site implements ISite {
   announcement!: Announcement;
   image!: Asset;
   name!: string;
+  isPublic?: boolean;
   description?: string | undefined;
   size?: string | undefined;
   researchPartnership?: boolean | undefined;
@@ -4046,6 +4144,7 @@ export class Site implements ISite {
           this.announcement = _data["announcement"] ? Announcement.fromJS(_data["announcement"]) : new Announcement();
           this.image = _data["image"] ? Asset.fromJS(_data["image"]) : new Asset();
           this.name = _data["name"];
+          this.isPublic = _data["isPublic"];
           this.description = _data["description"];
           this.size = _data["size"];
           this.researchPartnership = _data["researchPartnership"];
@@ -4079,6 +4178,7 @@ export class Site implements ISite {
       data["announcement"] = this.announcement ? this.announcement.toJSON() : <any>undefined;
       data["image"] = this.image ? this.image.toJSON() : <any>undefined;
       data["name"] = this.name;
+      data["isPublic"] = this.isPublic;
       data["description"] = this.description;
       data["size"] = this.size;
       data["researchPartnership"] = this.researchPartnership;
@@ -4097,6 +4197,7 @@ export interface ISite {
   announcement: Announcement;
   image: Asset;
   name: string;
+  isPublic?: boolean;
   description?: string | undefined;
   size?: string | undefined;
   researchPartnership?: boolean | undefined;
@@ -4340,6 +4441,7 @@ export interface ISiteOverview {
 export class SiteSocial implements ISiteSocial {
   readonly id!: number;
   name!: string;
+  isPublic?: boolean;
   siteType!: SiteType;
   image!: Asset;
   description?: string | undefined;
@@ -4375,6 +4477,7 @@ export class SiteSocial implements ISiteSocial {
           }
           (<any>this).id = _data["id"];
           this.name = _data["name"];
+          this.isPublic = _data["isPublic"];
           this.siteType = _data["siteType"] ? SiteType.fromJS(_data["siteType"]) : new SiteType();
           this.image = _data["image"] ? Asset.fromJS(_data["image"]) : new Asset();
           this.description = _data["description"];
@@ -4408,6 +4511,7 @@ export class SiteSocial implements ISiteSocial {
       }
       data["id"] = this.id;
       data["name"] = this.name;
+      data["isPublic"] = this.isPublic;
       data["siteType"] = this.siteType ? this.siteType.toJSON() : <any>undefined;
       data["image"] = this.image ? this.image.toJSON() : <any>undefined;
       data["description"] = this.description;
@@ -4430,6 +4534,7 @@ export class SiteSocial implements ISiteSocial {
 export interface ISiteSocial {
   id: number;
   name: string;
+  isPublic?: boolean;
   siteType: SiteType;
   image: Asset;
   description?: string | undefined;
@@ -4788,6 +4893,54 @@ export class TokenRefresh implements ITokenRefresh {
 export interface ITokenRefresh {
   access: string;
   refresh: string;
+
+  [key: string]: any;
+}
+
+export class UpdateSitePublicStatus implements IUpdateSitePublicStatus {
+  isPublic!: boolean;
+
+  [key: string]: any;
+
+  constructor(data?: IUpdateSitePublicStatus) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          this.isPublic = _data["isPublic"];
+      }
+  }
+
+  static fromJS(data: any): UpdateSitePublicStatus {
+      data = typeof data === 'object' ? data : {};
+      let result = new UpdateSitePublicStatus();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["isPublic"] = this.isPublic;
+      return data;
+  }
+}
+
+export interface IUpdateSitePublicStatus {
+  isPublic: boolean;
 
   [key: string]: any;
 }

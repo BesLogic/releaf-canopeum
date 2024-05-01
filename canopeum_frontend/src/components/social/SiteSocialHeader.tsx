@@ -6,7 +6,7 @@ import ToggleSwitch from '@components/inputs/ToggleSwitch'
 import PrimaryIconBadge from '@components/PrimaryIconBadge'
 import useApiClient from '@hooks/ApiClientHook'
 import type { PageViewMode } from '@models/types/PageViewMode.Type'
-import { type SiteSocial, User } from '@services/api'
+import { PatchedUpdateSitePublicStatus, type SiteSocial, User } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -16,20 +16,13 @@ type Props = {
   readonly site: SiteSocial,
 }
 
-const updateSiteIsPublic = async (_: boolean) => {
-  // TODO Implement site update when backend is ready
-}
-
 const SiteSocialHeader = ({ site, viewMode }: Props) => {
   const { t: translate } = useTranslation()
   const { translateValue } = useContext(LanguageContext)
   const { currentUser, updateUser } = useContext(AuthenticationContext)
   const { getApiClient } = useApiClient()
 
-  const [isPublic, setIsPublic] = useState(true)
   const [isFollowing, setIsFollowing] = useState<boolean | undefined>()
-
-  useEffect(() => void updateSiteIsPublic(isPublic), [isPublic])
 
   useEffect(() => setIsFollowing(currentUser?.followedSiteIds.includes(site.id)), [
     currentUser?.followedSiteIds,
@@ -60,6 +53,20 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
     }
   }
 
+  const toggleSitePublicStatus = async () => {
+    const newPublicStatus = !site.isPublic
+
+    const patchPublicStatusRequest = new PatchedUpdateSitePublicStatus({
+      isPublic: newPublicStatus,
+    })
+    const updatedPublicStatus = await getApiClient().socialClient.updatePublicStatus(
+      site.id,
+      patchPublicStatusRequest,
+    )
+
+    site.isPublic = updatedPublicStatus.isPublic
+  }
+
   return (
     <div className='card border-0'>
       <div className='site-social-header-card'>
@@ -84,8 +91,8 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
               {viewMode === 'admin' && (
                 <ToggleSwitch
                   additionalClassNames='fs-4'
-                  checked={isPublic}
-                  onChange={setIsPublic}
+                  checked={!!site.isPublic}
+                  onChange={toggleSitePublicStatus}
                   text={translate('social.site-social-header.public')}
                 />
               )}

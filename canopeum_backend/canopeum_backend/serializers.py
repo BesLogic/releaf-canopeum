@@ -257,6 +257,13 @@ class SiteSerializer(serializers.ModelSerializer):
         return SitetreespeciesSerializer(obj.sitetreespecies_set.all(), many=True).data
 
 
+class UpdateSitePublicStatusSerializer(serializers.Serializer):
+    is_public = serializers.BooleanField(required=True)
+
+    class Meta:
+        fields = ("is_public",)
+
+
 class SiteNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Site
@@ -286,7 +293,18 @@ class SiteSocialSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Site
-        fields = ("id", "name", "site_type", "image", "description", "contact", "announcement", "sponsors", "widget")
+        fields = (
+            "id",
+            "name",
+            "is_public",
+            "site_type",
+            "image",
+            "description",
+            "contact",
+            "announcement",
+            "sponsors",
+            "widget",
+        )
 
     # Bug in the extend_schema_field type annotation, they should allow
     # base python types supported by open api specs

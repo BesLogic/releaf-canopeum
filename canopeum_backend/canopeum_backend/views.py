@@ -61,6 +61,7 @@ from .serializers import (
     SiteSerializer,
     SiteSocialSerializer,
     SiteSummarySerializer,
+    UpdateSitePublicStatusSerializer,
     UpdateUserSerializer,
     UserInvitationSerializer,
     UserSerializer,
@@ -181,6 +182,29 @@ class SiteDetailAPIView(APIView):
 
         site.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class SiteSocialDetailPublicStatusAPIView(APIView):
+    permission_classes = (MegaAdminPermission,)
+
+    @extend_schema(
+        request=UpdateSitePublicStatusSerializer,
+        responses=UpdateSitePublicStatusSerializer,
+        operation_id="site_social_updatePublicStatus",
+    )
+    def patch(self, request, siteId):
+        try:
+            site = Site.objects.get(pk=siteId)
+        except Site.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        new_is_public_status = request.data["is_public"]
+        if new_is_public_status is not str or (new_is_public_status not in {"true", "false"}):
+            Response("is_public data is invalid", status=status.HTTP_400_BAD_REQUEST)
+
+        site.is_public = new_is_public_status == "true"
+        site.save()
+        return Response(site.is_public)
 
 
 class SiteSummaryListAPIView(APIView):

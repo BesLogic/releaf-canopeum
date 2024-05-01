@@ -24,7 +24,10 @@ READONLY_METHODS = ["GET", "HEAD", "OPTIONS"]
 
 
 class MegaAdminPermissionReadOnly(permissions.BasePermission):
-    """Global permission for actions only allowed to MegaAdmin users. This one will allow GET requests only."""
+    """
+    Global permission for actions only allowed to MegaAdmin users.
+    This one will allow GET requests for any user, though.
+    """
 
     def has_permission(self, request, view):
         if request.method in READONLY_METHODS:

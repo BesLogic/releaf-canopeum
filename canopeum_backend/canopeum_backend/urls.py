@@ -28,6 +28,11 @@ urlpatterns = [
     # Site
     path("social/sites/", views.SiteSocialListAPIView.as_view(), name="site-list"),
     path("social/sites/<int:siteId>/", views.SiteSocialDetailAPIView.as_view(), name="site-detail"),
+    path(
+        "social/sites/<int:siteId>/public-status",
+        views.SiteSocialDetailPublicStatusAPIView.as_view(),
+        name="site-detail",
+    ),
     # Announcement
     path(
         "social/sites/<int:siteId>/announcements/",
