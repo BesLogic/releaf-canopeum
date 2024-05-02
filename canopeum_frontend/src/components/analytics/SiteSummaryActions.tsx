@@ -13,9 +13,10 @@ type Props = {
   readonly siteSummary: SiteSummary,
   readonly admins: User[],
   readonly onSiteChange: Dispatch<SetStateAction<SiteSummary[]>>,
+  readonly onSiteEdit: (siteId: number) => void,
 }
 
-const SiteSummaryActions = ({ siteSummary, admins, onSiteChange }: Props) => {
+const SiteSummaryActions = ({ siteSummary, admins, onSiteChange, onSiteEdit }: Props) => {
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const whisperRef = useRef<OverlayTriggerHandle>(null)
@@ -139,7 +140,7 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange }: Props) => {
         <Dropdown.Menu title='Select Administrator'>
           {administratorsSelection}
         </Dropdown.Menu>
-        <Dropdown.Item>Edit Site Information</Dropdown.Item>
+        <Dropdown.Item onClick={() => onSiteEdit(siteSummary.id)}>Edit Site Information</Dropdown.Item>
         <Dropdown.Item onClick={onDeleteSite}>Delete</Dropdown.Item>
       </Dropdown.Menu>
     </Popover>

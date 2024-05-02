@@ -1,13 +1,15 @@
 import BatchTable from '@components/analytics/BatchTable'
-import SiteModal from '@components/analytics/SiteModal'
+import type { SiteDto } from '@components/analytics/site-modal/SiteModal'
+import SiteModal from '@components/analytics/site-modal/SiteModal'
 import SiteSuccessRatesChart from '@components/analytics/SiteSuccessRatesChart'
 import SiteSummaryCard from '@components/analytics/SiteSummaryCard'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { LanguageContext } from '@components/context/LanguageContext'
+import { assetFormatter } from '@utils/assetFormatter'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import type { SiteSummary, User } from '../services/api'
+import { type SiteSummary, Species, type User } from '../services/api'
 import getApiClient from '../services/apiInterface'
 
 const Analytics = () => {
@@ -16,9 +18,75 @@ const Analytics = () => {
   const { currentUser } = useContext(AuthenticationContext)
   const [siteSummaries, setSiteSummaries] = useState<SiteSummary[]>([])
   const [adminList, setAdminList] = useState<User[]>([])
+  const [siteId, setSiteId] = useState<number>()
+
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const fetchSites = async () => setSiteSummaries(await getApiClient().summaryClient.all())
   const fetchAdmins = async () => setAdminList(await getApiClient().userClient.allAdmins())
+
+  const handleModalClose = async (reason?: 'backdropClick' | 'escapeKeyDown' | 'save', data?: SiteDto) => {
+    if (reason && reason !== 'save') {
+      setIsModalOpen(false)
+      setSiteId(undefined)
+
+      return
+    }
+
+    if (reason === 'save' && data) {
+      const image = data.siteImage
+        ? await assetFormatter(data.siteImage)
+        : undefined
+
+      const { dmsLatitude } = data
+      const latitude =
+        // eslint-disable-next-line max-len -- string
+        `${dmsLatitude.degrees}°${dmsLatitude.minutes}'${dmsLatitude.seconds}.${dmsLatitude.miliseconds}"${dmsLatitude.cardinal}`
+
+      const { dmsLongitude, siteName, siteType, presentation, researchPartner, size, species, visibleOnMap } = data
+      const longitude =
+        // eslint-disable-next-line max-len -- string
+        `${dmsLongitude.degrees}°${dmsLongitude.minutes}'${dmsLongitude.seconds}.${dmsLongitude.miliseconds}"${dmsLongitude.cardinal}`
+
+      if (siteId) {
+        void getApiClient().siteClient.update(
+          siteId,
+          siteName,
+          siteType,
+          image,
+          latitude,
+          longitude,
+          presentation,
+          size,
+          species.map(specie => new Species({ id: specie.id, quantity: specie.quantity })),
+          researchPartner,
+          visibleOnMap,
+        )
+      } else {
+        void getApiClient().siteClient.create(
+          siteName,
+          siteType,
+          image,
+          latitude,
+          longitude,
+          presentation,
+          size,
+          species.map(specie => new Species({ id: specie.id, quantity: specie.quantity })),
+          researchPartner,
+          visibleOnMap,
+        )
+      }
+
+    }
+
+    setIsModalOpen(false)
+    setSiteId(undefined)
+  }
+
+  const handleSiteEdit = (_siteId: number) => {
+    setSiteId(_siteId);
+    setIsModalOpen(true);
+  }
 
   useEffect((): void => {
     void fetchSites()
@@ -84,10 +152,14 @@ const Analytics = () => {
         <div className='d-flex justify-content-between'>
           <h1 className='text-light'>Manage my Sites</h1>
 
-          <button className='btn btn-secondary' data-bs-target='#site-modal' data-bs-toggle='modal' type='button'>
+          <button className='btn btn-secondary' onClick={() => setIsModalOpen(true)} type='button'>
             Create a New Site
           </button>
-          <SiteModal modalId='site-modal' siteId={undefined} />
+          <SiteModal
+            handleClose={handleModalClose}
+            open={isModalOpen}
+            siteId={siteId}
+          />
         </div>
 
         <div className='mt-2 row gx-3 gy-3 pb-3'>
@@ -96,6 +168,7 @@ const Analytics = () => {
               admins={adminList}
               key={`site-${site.id}-card`}
               onSiteChange={setSiteSummaries}
+              onSiteEdit={handleSiteEdit}
               site={site}
             />
           ))}

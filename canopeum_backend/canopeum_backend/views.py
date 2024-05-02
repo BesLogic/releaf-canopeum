@@ -1,7 +1,8 @@
 from typing import cast
-
+import json
 from django.contrib.auth import authenticate
 from django.http import QueryDict
+from django.core import serializers
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import status
@@ -19,7 +20,7 @@ from canopeum_backend.permissions import (
     MegaAdminPermissionReadOnly,
 )
 
-from .models import Announcement, Batch, Comment, Contact, Like, Post, Site, Siteadmin, SiteFollower, User, Widget
+from .models import Announcement, Batch, Comment, Contact, Coordinate, Like, Post, Site, Siteadmin, SiteFollower, Sitetreespecies, Sitetype, Treetype, User, Widget
 from .serializers import (
     AdminUserSitesSerializer,
     AnnouncementSerializer,
@@ -41,6 +42,8 @@ from .serializers import (
     SiteSerializer,
     SiteSocialSerializer,
     SiteSummarySerializer,
+    SiteTypeSerializer,
+    TreeTypeSerializer,
     UpdateUserSerializer,
     UserSerializer,
     UserTokenSerializer,
@@ -102,6 +105,19 @@ class LogoutAPIView(APIView):
         request.user.auth_token.delete()
         return Response(status=status.HTTP_200_OK)
 
+class TreeSpeciesAPIView(APIView):
+    @extend_schema(responses=TreeTypeSerializer(many=True), operation_id="tree_species")
+    def get(self, request):
+        tree_species = Treetype.objects.all()
+        serializer = TreeTypeSerializer(tree_species, many=True)
+        return Response(serializer.data)
+
+class SiteTypesAPIView(APIView):
+    @extend_schema(responses=SiteTypeSerializer(many=True), operation_id="site_types")
+    def get(self, request):
+        tree_species = Sitetype.objects.all()
+        serializer = SiteTypeSerializer(tree_species, many=True)
+        return Response(serializer.data)
 
 class SiteListAPIView(APIView):
     @extend_schema(responses=SiteSerializer(many=True), operation_id="site_all")
@@ -112,21 +128,71 @@ class SiteListAPIView(APIView):
 
     parser_classes = (MultiPartParser, FormParser)
 
-    @extend_schema(request=SiteSerializer, responses={201: SiteSerializer}, operation_id="site_create")
+    @extend_schema(
+        # request={"multipart/form-data": SiteSerializer}, TODO: Add serializer for multipart/form-data
+        request={
+            "multipart/form-data": {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string"},
+                    "siteType": {"type": "number"},
+                    "image": {"type": "string", "format": "binary"},
+                    "latitude": {"type": "string"},
+                    "longitude": {"type": "string"},
+                    "description": {"type": "string"},
+                    "size": {"type": "number"},
+                    "species": {"type": "array", "items": {
+                        "type": "object",
+                        "properties": {
+                            "id": {"type": "number"},
+                            "quantity": {"type": "number"}
+                        }
+                    }},
+                    "researchPartnership": {"type": "boolean"},
+                    "visibleMap": {"type": "boolean"},
+                },
+            },
+        },
+        responses={201: SiteSerializer},
+        operation_id="site_create",
+    )
     def post(self, request):
         asset = AssetSerializer(data=request.data)
         if not asset.is_valid():
             return Response(data=asset.errors, status=status.HTTP_400_BAD_REQUEST)
         asset = asset.save()
+
+        site_type = Sitetype.objects.get(pk=request.data['siteType'])
+        # (TODO) For the coordinates, we need to calculate the ddLat and ddLong and also use the Google API for the address
+        coordinate = Coordinate.objects.create(dms_latitude=request.data['latitude'], dms_longitude=request.data['longitude'])
+        announcement = Announcement.objects.create()
+        contact = Contact.objects.create()
+
         serializer = SitePostSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(image=asset)
+            site = serializer.save(
+                image=asset,
+                site_type=site_type,
+                coordinate=coordinate,
+                announcement=announcement,
+                contact=contact,
+                visitor_count=0,
+                research_partnership=json.loads(request.data['researchPartnership']),
+                visible_map=json.loads(request.data['visibleMap']))
+
+            for tree_type_json in request.data.getlist('species'):
+                tree_type_obj = json.loads(tree_type_json)
+                tree_type = Treetype.objects.get(pk=tree_type_obj['id'])
+                Sitetreespecies.objects.create(site=site, tree_type=tree_type, quantity=tree_type_obj['quantity'])
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class SiteDetailAPIView(APIView):
     permission_classes = (MegaAdminPermissionReadOnly,)
+
+    parser_classes = (MultiPartParser, FormParser)
 
     @extend_schema(request=SiteSerializer, responses=SiteSerializer, operation_id="site_detail")
     def get(self, request, siteId):
@@ -138,17 +204,67 @@ class SiteDetailAPIView(APIView):
         serializer = SiteSerializer(site)
         return Response(serializer.data)
 
-    @extend_schema(request=SiteSerializer, responses=SiteSerializer, operation_id="site_update")
+    @extend_schema(
+        request={
+            "multipart/form-data": {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string"},
+                    "siteType": {"type": "number"},
+                    "image": {"type": "string", "format": "binary"},
+                    "latitude": {"type": "string"},
+                    "longitude": {"type": "string"},
+                    "description": {"type": "string"},
+                    "size": {"type": "number"},
+                    "species": {"type": "array", "items": {
+                        "type": "object",
+                        "properties": {
+                            "id": {"type": "number"},
+                            "quantity": {"type": "number"}
+                        }
+                    }},
+                    "researchPartnership": {"type": "boolean"},
+                    "visibleMap": {"type": "boolean"},
+                },
+            },
+        },
+        responses=SiteSerializer,
+        operation_id="site_update"
+    )
     def patch(self, request, siteId):
         try:
             site = Site.objects.get(pk=siteId)
         except Site.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        serializer = SiteSerializer(site, data=request.data)
+        asset = AssetSerializer(data=request.data)
+        if not asset.is_valid():
+            return Response(data=asset.errors, status=status.HTTP_400_BAD_REQUEST)
+        asset = asset.save()
+
+        site_type = Sitetype.objects.get(pk=request.data['siteType'])
+        # (TODO) For the coordinates, we need to calculate the ddLat and ddLong and also use the Google API for the address
+        coordinate = Coordinate.objects.create(dms_latitude=request.data['latitude'], dms_longitude=request.data['longitude'])
+        announcement = Announcement.objects.create()
+        contact = Contact.objects.create()
+
+        serializer = SiteSerializer(site, data=request.data, partial=True)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
+            site = serializer.save(
+                image=asset,
+                site_type=site_type,
+                coordinate=coordinate,
+                announcement=announcement,
+                contact=contact,
+                visitor_count=0,
+                research_partnership=json.loads(request.data['researchPartnership']),
+                visible_map=json.loads(request.data['visibleMap']))
+
+            for tree_type_json in request.data.getlist('species'):
+                tree_type_obj = json.loads(tree_type_json)
+                tree_type = Treetype.objects.get(pk=tree_type_obj['id'])
+                Sitetreespecies.objects.create(site=site, tree_type=tree_type, quantity=tree_type_obj['quantity'])
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @extend_schema(responses={status.HTTP_204_NO_CONTENT: None}, operation_id="site_delete")

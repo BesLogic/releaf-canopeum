@@ -41,6 +41,14 @@
     "site-gps-coordinates": "GPS coordinates",
     "site-dms-latitude": "DMS latitude",
     "site-dms-longitude": "DMS longitude",
-    "site-presentation": "brief presentation"
+    "site-presentation": "brief presentation",
+    "site-size": "size of the land",
+    "site-tree-species": "number of trees per species",
+    "site-research-partner": "research partnership?",
+    "site-map-visibility": "visibility on the map",
+    "yes": "yes",
+    "no": "no",
+    "visible": "visible",
+    "invisible": "invisible"
   }
 }

@@ -237,6 +237,47 @@ export class SiteClient {
       this.baseUrl = baseUrl ?? "";
   }
 
+  types(): Promise<SiteType[]> {
+      let url_ = this.baseUrl + "/analytics/site-types";
+      url_ = url_.replace(/[?&]$/, "");
+
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processTypes(_response);
+      });
+  }
+
+  protected processTypes(response: Response): Promise<SiteType[]> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          if (Array.isArray(resultData200)) {
+              result200 = [] as any;
+              for (let item of resultData200)
+                  result200!.push(SiteType.fromJS(item));
+          }
+          else {
+              result200 = <any>null;
+          }
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<SiteType[]>(null as any);
+  }
+
   all(): Promise<Site[]> {
       let url_ = this.baseUrl + "/analytics/sites/";
       url_ = url_.replace(/[?&]$/, "");
@@ -278,64 +319,56 @@ export class SiteClient {
       return Promise.resolve<Site[]>(null as any);
   }
 
-  create(id: number | undefined, siteType: SiteType | undefined, coordinate: Coordinates | undefined, siteTreeSpecies: Sitetreespecies[] | undefined, contact: Contact | undefined, announcement: Announcement | undefined, image: Asset | undefined, name: string | null | undefined, description: string | null | undefined, size: string | null | undefined, researchPartnership: boolean | null | undefined, visibleMap: boolean | null | undefined, visitorCount: number | null | undefined): Promise<Site> {
+  create(name: string | undefined, siteType: number | undefined, image: FileParameter | undefined, latitude: string | undefined, longitude: string | undefined, description: string | undefined, size: number | undefined, species: Species[] | undefined, researchPartnership: boolean | undefined, visibleMap: boolean | undefined): Promise<Site> {
       let url_ = this.baseUrl + "/analytics/sites/";
       url_ = url_.replace(/[?&]$/, "");
 
-      let content_ = "";
-      if (id === null)
-          throw new Error("The parameter 'id' cannot be null.");
-      else if (id !== undefined)
-          content_ += encodeURIComponent("id") + "=" + encodeURIComponent("" + id) + "&";
-      if (siteType === null)
+      const content_ = new FormData();
+      if (name === null || name === undefined)
+          throw new Error("The parameter 'name' cannot be null.");
+      else
+          content_.append("name", name.toString());
+      if (siteType === null || siteType === undefined)
           throw new Error("The parameter 'siteType' cannot be null.");
-      else if (siteType !== undefined)
-          content_ += encodeURIComponent("siteType") + "=" + encodeURIComponent("" + siteType) + "&";
-      if (coordinate === null)
-          throw new Error("The parameter 'coordinate' cannot be null.");
-      else if (coordinate !== undefined)
-          content_ += encodeURIComponent("coordinate") + "=" + encodeURIComponent("" + coordinate) + "&";
-      if (siteTreeSpecies === null)
-          throw new Error("The parameter 'siteTreeSpecies' cannot be null.");
-      else if (siteTreeSpecies !== undefined)
-          siteTreeSpecies && siteTreeSpecies.forEach((item_, index_) => {
-              for (const attr_ in item_) {
-                 if (item_.hasOwnProperty(attr_)) {
-                      content_ += encodeURIComponent("siteTreeSpecies[" + index_ + "]." + attr_) + "=" + encodeURIComponent("" + (item_ as any)[attr_]) + "&";
-                 }
-              }
-          });
-      if (contact === null)
-          throw new Error("The parameter 'contact' cannot be null.");
-      else if (contact !== undefined)
-          content_ += encodeURIComponent("contact") + "=" + encodeURIComponent("" + contact) + "&";
-      if (announcement === null)
-          throw new Error("The parameter 'announcement' cannot be null.");
-      else if (announcement !== undefined)
-          content_ += encodeURIComponent("announcement") + "=" + encodeURIComponent("" + announcement) + "&";
-      if (image === null)
+      else
+          content_.append("siteType", siteType.toString());
+      if (image === null || image === undefined)
           throw new Error("The parameter 'image' cannot be null.");
-      else if (image !== undefined)
-          content_ += encodeURIComponent("image") + "=" + encodeURIComponent("" + image) + "&";
-      if (name !== undefined)
-          content_ += encodeURIComponent("name") + "=" + encodeURIComponent("" + name) + "&";
-      if (description !== undefined)
-          content_ += encodeURIComponent("description") + "=" + encodeURIComponent("" + description) + "&";
-      if (size !== undefined)
-          content_ += encodeURIComponent("size") + "=" + encodeURIComponent("" + size) + "&";
-      if (researchPartnership !== undefined)
-          content_ += encodeURIComponent("researchPartnership") + "=" + encodeURIComponent("" + researchPartnership) + "&";
-      if (visibleMap !== undefined)
-          content_ += encodeURIComponent("visibleMap") + "=" + encodeURIComponent("" + visibleMap) + "&";
-      if (visitorCount !== undefined)
-          content_ += encodeURIComponent("visitorCount") + "=" + encodeURIComponent("" + visitorCount) + "&";
-      content_ = content_.replace(/&$/, "");
+      else
+          content_.append("image", image.data, image.fileName ? image.fileName : "image");
+      if (latitude === null || latitude === undefined)
+          throw new Error("The parameter 'latitude' cannot be null.");
+      else
+          content_.append("latitude", latitude.toString());
+      if (longitude === null || longitude === undefined)
+          throw new Error("The parameter 'longitude' cannot be null.");
+      else
+          content_.append("longitude", longitude.toString());
+      if (description === null || description === undefined)
+          throw new Error("The parameter 'description' cannot be null.");
+      else
+          content_.append("description", description.toString());
+      if (size === null || size === undefined)
+          throw new Error("The parameter 'size' cannot be null.");
+      else
+          content_.append("size", size.toString());
+      if (species === null || species === undefined)
+          throw new Error("The parameter 'species' cannot be null.");
+      else
+          species.forEach(item_ => content_.append("species", item_.toString()));
+      if (researchPartnership === null || researchPartnership === undefined)
+          throw new Error("The parameter 'researchPartnership' cannot be null.");
+      else
+          content_.append("researchPartnership", researchPartnership.toString());
+      if (visibleMap === null || visibleMap === undefined)
+          throw new Error("The parameter 'visibleMap' cannot be null.");
+      else
+          content_.append("visibleMap", visibleMap.toString());
 
       let options_: RequestInit = {
           body: content_,
           method: "POST",
           headers: {
-              "Content-Type": "multipart/form-data",
               "Accept": "application/json"
           }
       };
@@ -400,20 +433,59 @@ export class SiteClient {
       return Promise.resolve<Site>(null as any);
   }
 
-  update(siteId: number, body: PatchedSite | undefined): Promise<Site> {
+  update(siteId: number, name: string | undefined, siteType: number | undefined, image: FileParameter | undefined, latitude: string | undefined, longitude: string | undefined, description: string | undefined, size: number | undefined, species: Species2[] | undefined, researchPartnership: boolean | undefined, visibleMap: boolean | undefined): Promise<Site> {
       let url_ = this.baseUrl + "/analytics/sites/{siteId}/";
       if (siteId === undefined || siteId === null)
           throw new Error("The parameter 'siteId' must be defined.");
       url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
       url_ = url_.replace(/[?&]$/, "");
 
-      const content_ = JSON.stringify(body);
+      const content_ = new FormData();
+      if (name === null || name === undefined)
+          throw new Error("The parameter 'name' cannot be null.");
+      else
+          content_.append("name", name.toString());
+      if (siteType === null || siteType === undefined)
+          throw new Error("The parameter 'siteType' cannot be null.");
+      else
+          content_.append("siteType", siteType.toString());
+      if (image === null || image === undefined)
+          throw new Error("The parameter 'image' cannot be null.");
+      else
+          content_.append("image", image.data, image.fileName ? image.fileName : "image");
+      if (latitude === null || latitude === undefined)
+          throw new Error("The parameter 'latitude' cannot be null.");
+      else
+          content_.append("latitude", latitude.toString());
+      if (longitude === null || longitude === undefined)
+          throw new Error("The parameter 'longitude' cannot be null.");
+      else
+          content_.append("longitude", longitude.toString());
+      if (description === null || description === undefined)
+          throw new Error("The parameter 'description' cannot be null.");
+      else
+          content_.append("description", description.toString());
+      if (size === null || size === undefined)
+          throw new Error("The parameter 'size' cannot be null.");
+      else
+          content_.append("size", size.toString());
+      if (species === null || species === undefined)
+          throw new Error("The parameter 'species' cannot be null.");
+      else
+          species.forEach(item_ => content_.append("species", item_.toString()));
+      if (researchPartnership === null || researchPartnership === undefined)
+          throw new Error("The parameter 'researchPartnership' cannot be null.");
+      else
+          content_.append("researchPartnership", researchPartnership.toString());
+      if (visibleMap === null || visibleMap === undefined)
+          throw new Error("The parameter 'visibleMap' cannot be null.");
+      else
+          content_.append("visibleMap", visibleMap.toString());
 
       let options_: RequestInit = {
           body: content_,
           method: "PATCH",
           headers: {
-              "Content-Type": "application/json",
               "Accept": "application/json"
           }
       };
@@ -800,6 +872,58 @@ export class SummaryClient {
           });
       }
       return Promise.resolve<SiteSummary[]>(null as any);
+  }
+}
+
+export class TreeClient {
+  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+      this.http = http ? http : window as any;
+      this.baseUrl = baseUrl ?? "";
+  }
+
+  species(): Promise<TreeType[]> {
+      let url_ = this.baseUrl + "/analytics/tree-species";
+      url_ = url_.replace(/[?&]$/, "");
+
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processSpecies(_response);
+      });
+  }
+
+  protected processSpecies(response: Response): Promise<TreeType[]> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          if (Array.isArray(resultData200)) {
+              result200 = [] as any;
+              for (let item of resultData200)
+                  result200!.push(TreeType.fromJS(item));
+          }
+          else {
+              result200 = <any>null;
+          }
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<TreeType[]>(null as any);
   }
 }
 
@@ -3290,110 +3414,6 @@ export interface IPatchedContact {
   [key: string]: any;
 }
 
-export class PatchedSite implements IPatchedSite {
-  readonly id?: number;
-  siteType?: SiteType;
-  coordinate?: Coordinates;
-  readonly siteTreeSpecies?: Sitetreespecies[];
-  contact?: Contact;
-  announcement?: Announcement;
-  image?: Asset;
-  name?: string | undefined;
-  description?: string | undefined;
-  size?: string | undefined;
-  researchPartnership?: boolean | undefined;
-  visibleMap?: boolean | undefined;
-  visitorCount?: number | undefined;
-
-  [key: string]: any;
-
-  constructor(data?: IPatchedSite) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-  }
-
-  init(_data?: any) {
-      if (_data) {
-          for (var property in _data) {
-              if (_data.hasOwnProperty(property))
-                  this[property] = _data[property];
-          }
-          (<any>this).id = _data["id"];
-          this.siteType = _data["siteType"] ? SiteType.fromJS(_data["siteType"]) : <any>undefined;
-          this.coordinate = _data["coordinate"] ? Coordinates.fromJS(_data["coordinate"]) : <any>undefined;
-          if (Array.isArray(_data["siteTreeSpecies"])) {
-              (<any>this).siteTreeSpecies = [] as any;
-              for (let item of _data["siteTreeSpecies"])
-                  (<any>this).siteTreeSpecies!.push(Sitetreespecies.fromJS(item));
-          }
-          this.contact = _data["contact"] ? Contact.fromJS(_data["contact"]) : <any>undefined;
-          this.announcement = _data["announcement"] ? Announcement.fromJS(_data["announcement"]) : <any>undefined;
-          this.image = _data["image"] ? Asset.fromJS(_data["image"]) : <any>undefined;
-          this.name = _data["name"];
-          this.description = _data["description"];
-          this.size = _data["size"];
-          this.researchPartnership = _data["researchPartnership"];
-          this.visibleMap = _data["visibleMap"];
-          this.visitorCount = _data["visitorCount"];
-      }
-  }
-
-  static fromJS(data: any): PatchedSite {
-      data = typeof data === 'object' ? data : {};
-      let result = new PatchedSite();
-      result.init(data);
-      return result;
-  }
-
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      for (var property in this) {
-          if (this.hasOwnProperty(property))
-              data[property] = this[property];
-      }
-      data["id"] = this.id;
-      data["siteType"] = this.siteType ? this.siteType.toJSON() : <any>undefined;
-      data["coordinate"] = this.coordinate ? this.coordinate.toJSON() : <any>undefined;
-      if (Array.isArray(this.siteTreeSpecies)) {
-          data["siteTreeSpecies"] = [];
-          for (let item of this.siteTreeSpecies)
-              data["siteTreeSpecies"].push(item.toJSON());
-      }
-      data["contact"] = this.contact ? this.contact.toJSON() : <any>undefined;
-      data["announcement"] = this.announcement ? this.announcement.toJSON() : <any>undefined;
-      data["image"] = this.image ? this.image.toJSON() : <any>undefined;
-      data["name"] = this.name;
-      data["description"] = this.description;
-      data["size"] = this.size;
-      data["researchPartnership"] = this.researchPartnership;
-      data["visibleMap"] = this.visibleMap;
-      data["visitorCount"] = this.visitorCount;
-      return data;
-  }
-}
-
-export interface IPatchedSite {
-  id?: number;
-  siteType?: SiteType;
-  coordinate?: Coordinates;
-  siteTreeSpecies?: Sitetreespecies[];
-  contact?: Contact;
-  announcement?: Announcement;
-  image?: Asset;
-  name?: string | undefined;
-  description?: string | undefined;
-  size?: string | undefined;
-  researchPartnership?: boolean | undefined;
-  visibleMap?: boolean | undefined;
-  visitorCount?: number | undefined;
-
-  [key: string]: any;
-}
-
 export class PatchedSiteAdminUpdateRequest implements IPatchedSiteAdminUpdateRequest {
   ids?: number[];
 
@@ -4523,6 +4543,62 @@ export interface ITokenRefresh {
   [key: string]: any;
 }
 
+export class TreeType implements ITreeType {
+  readonly id!: number;
+  readonly en!: string;
+  readonly fr!: string;
+
+  [key: string]: any;
+
+  constructor(data?: ITreeType) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          (<any>this).en = _data["en"];
+          (<any>this).fr = _data["fr"];
+      }
+  }
+
+  static fromJS(data: any): TreeType {
+      data = typeof data === 'object' ? data : {};
+      let result = new TreeType();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["en"] = this.en;
+      data["fr"] = this.fr;
+      return data;
+  }
+}
+
+export interface ITreeType {
+  id: number;
+  en: string;
+  fr: string;
+
+  [key: string]: any;
+}
+
 export class User implements IUser {
   readonly id!: number;
   readonly role!: RoleEnum;
@@ -4759,6 +4835,118 @@ export interface IWidget {
   title?: string | undefined;
   body?: string | undefined;
   site?: number | undefined;
+
+  [key: string]: any;
+}
+
+export class Species implements ISpecies {
+  id?: number;
+  quantity?: number;
+
+  [key: string]: any;
+
+  constructor(data?: ISpecies) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          this.id = _data["id"];
+          this.quantity = _data["quantity"];
+      }
+  }
+
+  static fromJS(data: any): Species {
+      data = typeof data === 'object' ? data : {};
+      let result = new Species();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["quantity"] = this.quantity;
+      return data;
+  }
+
+  toString() {
+    return JSON.stringify(this)
+  }
+}
+
+export interface ISpecies {
+  id?: number;
+  quantity?: number;
+
+  [key: string]: any;
+}
+
+export class Species2 implements ISpecies2 {
+  id?: number;
+  quantity?: number;
+
+  [key: string]: any;
+
+  constructor(data?: ISpecies2) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          this.id = _data["id"];
+          this.quantity = _data["quantity"];
+      }
+  }
+
+  static fromJS(data: any): Species2 {
+      data = typeof data === 'object' ? data : {};
+      let result = new Species2();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["quantity"] = this.quantity;
+      return data;
+  }
+
+  toString() {
+    return JSON.stringify(this)
+  }
+}
+
+export interface ISpecies2 {
+  id?: number;
+  quantity?: number;
 
   [key: string]: any;
 }
