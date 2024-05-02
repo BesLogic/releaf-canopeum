@@ -449,19 +449,19 @@ class BatchAnalyticsSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_plant_count(self, obj):
-        return random.randint(100, 200)
+        return random.randint(100, 200)  # noqa: S311
 
     @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_survived_count(self, obj):
-        return random.randint(50, 100)
+        return random.randint(50, 100)  # noqa: S311
 
     @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_replace_count(self, obj):
-        return random.randint(25, 50)
+        return random.randint(25, 50)  # noqa: S311
 
     @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_seed_collected_count(self, obj):
-        return random.randint(50, 300)
+        return random.randint(50, 300)  # noqa: S311
 
     @extend_schema_field(BatchfertilizerSerializer(many=True))
     def get_fertilizers(self, obj):
@@ -554,19 +554,19 @@ class SiteSummarySerializer(serializers.ModelSerializer):
 
     @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_plant_count(self, obj):
-        return random.randint(100, 200)
+        return random.randint(100, 200)  # noqa: S311
 
     @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_survived_count(self, obj):
-        return random.randint(50, 100)
+        return random.randint(50, 100)  # noqa: S311
 
     @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_propagation_count(self, obj):
-        return random.randint(5, 50)
+        return random.randint(5, 50)  # noqa: S311
 
     @extend_schema_field(float)  # pyright: ignore[reportArgumentType]
     def get_progress(self, obj):
-        return random.randint(0, 100)
+        return random.randint(0, 100)  # noqa: S311
 
     @extend_schema_field(list[str])  # pyright: ignore[reportArgumentType]
     def get_sponsors(self, obj):

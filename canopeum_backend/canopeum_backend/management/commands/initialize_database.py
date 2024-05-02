@@ -422,7 +422,9 @@ class Command(BaseCommand):
         create_batches_for_site(site)
         post = Post.objects.create(
             site=site,
-            body="The season is officially started; new plants are starting to grow and our volunteers are very dedicated!",
+            body="""
+            The season is officially started; new plants are starting to grow and our volunteers are very dedicated!
+            """,
             share_count=5,
             created_at=timezone.now(),
         )
