@@ -174,13 +174,20 @@ const Analytics = () => {
 
   return (
     <div>
-      <div className='container d-flex flex-column gap-2 mt-3'>
+      <div className='page-container d-flex flex-column gap-2 mt-3'>
         <div className='d-flex justify-content-between'>
           <h1 className='text-light'>{translate('analytics.title')}</h1>
 
-          <button className='btn btn-secondary' onClick={() => setIsModalOpen(true)} type='button'>
-            {translate('analytics.create-site')}
-          </button>
+          {currentUser?.role === 'MegaAdmin' &&
+            (
+              <button
+                className='btn btn-secondary'
+                onClick={() => setIsModalOpen(true)}
+                type='button'
+              >
+                {translate('analytics.create-site')}
+              </button>
+            )}
           <SiteModal
             handleClose={handleModalClose}
             open={isModalOpen}

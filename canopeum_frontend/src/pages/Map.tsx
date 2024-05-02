@@ -117,8 +117,9 @@ const Map = () => {
                   className={`card ${
                     selectedSiteId === site.id && 'border border-secondary border-5'
                   }`}
+                  style={{ height: '150px' }}
                 >
-                  <div className='row g-0'>
+                  <div className='row g-0 h-100'>
                     <div className='col-lg-4'>
                       <img
                         alt=''

@@ -22,8 +22,6 @@
   "last-update": "Last Update",
   "visitors": "Visitors",
   "sponsored": "Sponsored",
-  "no-admins": "No Admins",
-  "unknown": "Unknown",
   "unnamed-site": "Unnamed site",
   "admins-saved": "Admins saved successfully for {{siteName}}!",
   "site-deleted": "Site {{siteName}} was successfully deleted.",
@@ -39,7 +37,8 @@
     "survived": "Survived",
     "propagation": "Propagation",
     "sponsored": "Sponsored",
-    "no-admins": "No Admins"
+    "no-admins": "No Admins",
+    "unknown": "Unknown"
   },
   "site-modal": {
     "create-site": "create site",
