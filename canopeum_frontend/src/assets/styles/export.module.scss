@@ -1,0 +1,7 @@
+@import '../../App.scss';
+
+:export {
+  primary: $primary;
+  secondary: $secondary;
+  success: map-get($theme-colors, success);
+}

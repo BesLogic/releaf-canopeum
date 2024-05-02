@@ -1,4 +1,4 @@
-import { AdminUserSitesClient, AnnouncementClient, AuthenticationClient, BatchClient, CommentClient, ContactClient, LikeClient, PostClient, RefreshClient, SiteClient, SocialClient, SummaryClient, TokenClient, UserClient, UserInvitationClient, WidgetClient } from '@services/api'
+import { AdminUserSitesClient, AnnouncementClient, AuthenticationClient, BatchClient, CommentClient, ContactClient, LikeClient, PostClient, RefreshClient, SiteClient, SocialClient, SummaryClient, TokenClient, TreeClient, UserClient, UserInvitationClient, WidgetClient } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 import { useCallback } from 'react'
 
@@ -23,6 +23,7 @@ const useApiClient = () => {
     contactClient: new ContactClient(getApiBaseUrl(), { fetch: fetchWithAuth }),
     widgetClient: new WidgetClient(getApiBaseUrl(), { fetch: fetchWithAuth }),
     tokenClient: new TokenClient(getApiBaseUrl(), { fetch: fetchWithAuth }),
+    treeClient: new TreeClient(getApiBaseUrl(), { fetch: fetchWithAuth }),
     refreshClient: new RefreshClient(getApiBaseUrl(), { fetch: fetchWithAuth }),
   }), [fetchWithAuth])
 

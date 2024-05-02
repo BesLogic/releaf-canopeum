@@ -183,7 +183,7 @@ class TreeTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Treetype
-        fields = ("en", "fr")
+        fields = ("id", "en", "fr")
 
     def get_en(self, obj):
         return InternationalizationSerializer(obj.name).data.get("en", None)
@@ -237,7 +237,7 @@ class AssetSerializer(serializers.ModelSerializer):
 class SitePostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Site
-        fields = ("id", "name", "description", "image")
+        fields = "__all__"
 
 
 class SiteSerializer(serializers.ModelSerializer):
@@ -255,6 +255,13 @@ class SiteSerializer(serializers.ModelSerializer):
     @extend_schema_field(SitetreespeciesSerializer(many=True))
     def get_site_tree_species(self, obj):
         return SitetreespeciesSerializer(obj.sitetreespecies_set.all(), many=True).data
+
+
+class SitePatchSerializer(serializers.Serializer):
+    site_type = serializers.IntegerField()
+
+    class Meta:
+        fields = ("site_type",)
 
 
 class UpdateSitePublicStatusSerializer(serializers.Serializer):
@@ -565,9 +572,11 @@ class CoordinatesMapSerializer(serializers.ModelSerializer):
         model = Coordinate
         fields = ("latitude", "longitude", "address")
 
+    @extend_schema_field(float)  # pyright: ignore[reportArgumentType]
     def get_latitude(self, obj):
         return obj.dd_latitude
 
+    @extend_schema_field(float)  # pyright: ignore[reportArgumentType]
     def get_longitude(self, obj):
         return obj.dd_longitude
 

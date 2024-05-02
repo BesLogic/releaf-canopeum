@@ -1,4 +1,9 @@
-@import '../assets/styles/theme-variables.module.scss';
+@import '../App.scss';
+
+a,
+a:hover {
+  text-decoration: none !important;
+}
 
 #map-page-row-container {
   padding: 0 2rem;
@@ -43,7 +48,7 @@
   }
 
   #map-page-row-container {
-    height: calc(100vh - 3.3rem);
+    height: calc(100vh - 4rem);
   }
 
   .map-site-image {

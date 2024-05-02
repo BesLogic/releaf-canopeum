@@ -1,11 +1,28 @@
-@import "bootstrap/scss/functions";
-@import "bootstrap/scss/mixins";
-@import "bootstrap/scss/variables";
+@import "../node_modules/bootstrap/scss/functions";
 
-@import "@assets/styles/theme-variables.module";
+$primary: #007E51;
+$secondary: #F18200;
+$border-radius: 0.5rem;
+$link-decoration: none;
+$green: #06C270;
 
-@import "bootstrap/scss/bootstrap";
+$font-family-sans-serif: -apple-system, BlinkMacSystemFont, 'Lato', Roboto, 'Helvetica Neue', Arial, sans-serif;
+$font-family-monospace: 'Helvetica Neue', Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+$font-family-base: $font-family-sans-serif;
+$headings-font-family: Lato;
+
+$headings-font-weight: 700;
+
 
 @import "rsuite/dist/rsuite.min.css";
 
 @import "./assets/styles/GlobalStyles.scss";
+
+@import "../node_modules/bootstrap/scss/variables";
+@import "../node_modules/bootstrap/scss/mixins";
+
+@import "../node_modules/bootstrap/scss/bootstrap.scss";
+
+$navbar-dark-toggler-border-color: rgba($white, 1);
+$card-bg: $cream;
+$accordion-bg: $cream;
