@@ -20,6 +20,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from canopeum_backend.permissions import (
     CurrentUserPermission,
     DeleteCommentPermission,
+    MegaAdminOrSiteManagerPermission,
     MegaAdminPermission,
     MegaAdminPermissionReadOnly,
     PublicSiteReadPermission,
@@ -89,6 +90,16 @@ def get_public_sites_unless_admin(user: User | None):
     else:
         sites = Site.objects.filter(is_public=True)
     return sites
+
+
+def get_admin_sites(user: User):
+    if user.role.name == "MegaAdmin":
+        return Site.objects.all()
+    if isinstance(user, User) and user.role.name == "SiteManager":
+        admin_site_ids = [siteadmin.site.pk for siteadmin in Siteadmin.objects.filter(user=user)]
+        return Site.objects.filter(Q(id__in=admin_site_ids))
+
+    return None
 
 
 class LoginAPIView(APIView):
@@ -163,6 +174,8 @@ class SiteTypesAPIView(APIView):
 
 
 class SiteListAPIView(APIView):
+    permission_classes = (MegaAdminPermission,)
+
     @extend_schema(responses=SiteSerializer(many=True), operation_id="site_all")
     def get(self, request):
         sites = get_public_sites_unless_admin(request.user)
@@ -206,7 +219,8 @@ class SiteListAPIView(APIView):
         asset = asset.save()
 
         site_type = Sitetype.objects.get(pk=request.data["siteType"])
-        # (TODO) For the coordinates, we need to calculate the ddLat and ddLong and also use the Google API for the address
+        # (TODO) For the coordinates,
+        # we need to calculate the ddLat and ddLong and also use the Google API for the address
         coordinate = Coordinate.objects.create(
             dms_latitude=request.data["latitude"], dms_longitude=request.data["longitude"]
         )
@@ -236,7 +250,7 @@ class SiteListAPIView(APIView):
 
 
 class SiteDetailAPIView(APIView):
-    permission_classes = (MegaAdminPermissionReadOnly,)
+    permission_classes = (MegaAdminPermissionReadOnly, SiteAdminPermission)
 
     parser_classes = (MultiPartParser, FormParser)
 
@@ -289,7 +303,8 @@ class SiteDetailAPIView(APIView):
         asset = asset.save()
 
         site_type = Sitetype.objects.get(pk=request.data["siteType"])
-        # (TODO) For the coordinates, we need to calculate the ddLat and ddLong and also use the Google API for the address
+        # (TODO) For the coordinates,
+        # we need to calculate the ddLat and ddLong and also use the Google API for the address
         coordinate = Coordinate.objects.create(
             dms_latitude=request.data["latitude"], dms_longitude=request.data["longitude"]
         )
@@ -357,9 +372,14 @@ class SiteSocialDetailPublicStatusAPIView(APIView):
 
 
 class SiteSummaryListAPIView(APIView):
+    permission_classes = (MegaAdminOrSiteManagerPermission,)
+
     @extend_schema(responses=SiteSummarySerializer(many=True), operation_id="site_summary_all")
     def get(self, request):
-        sites = get_public_sites_unless_admin(request.user)
+        # TODO(NicolasDontigny): Only get
+        sites = get_admin_sites(request.user)
+        if sites is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         serializer = SiteSummarySerializer(
             sites,
             many=True,
@@ -368,7 +388,7 @@ class SiteSummaryListAPIView(APIView):
 
 
 class SiteSummaryDetailAPIView(APIView):
-    permission_classes = (PublicSiteReadPermission,)
+    permission_classes = (SiteAdminPermission,)
 
     @extend_schema(responses=SiteSummarySerializer, operation_id="site_summary")
     def get(self, request, siteId):

@@ -212,6 +212,7 @@ const EditProfile = () => {
           flex-column
           justify-content-between
           py-3
+          gap-2
         '>
           <form className='form'>
             <div className='mb-4'>
