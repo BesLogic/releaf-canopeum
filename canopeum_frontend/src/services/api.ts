@@ -1217,58 +1217,6 @@ export class RefreshClient {
   }
 }
 
-export class NewsClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-      this.http = http ? http : window as any;
-      this.baseUrl = baseUrl ?? "";
-  }
-
-  all(): Promise<Post[]> {
-      let url_ = this.baseUrl + "/news/";
-      url_ = url_.replace(/[?&]$/, "");
-
-      let options_: RequestInit = {
-          method: "GET",
-          headers: {
-              "Accept": "application/json"
-          }
-      };
-
-      return this.http.fetch(url_, options_).then((_response: Response) => {
-          return this.processAll(_response);
-      });
-  }
-
-  protected processAll(response: Response): Promise<Post[]> {
-      const status = response.status;
-      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
-          return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          if (Array.isArray(resultData200)) {
-              result200 = [] as any;
-              for (let item of resultData200)
-                  result200!.push(Post.fromJS(item));
-          }
-          else {
-              result200 = <any>null;
-          }
-          return result200;
-          });
-      } else if (status !== 200 && status !== 204) {
-          return response.text().then((_responseText) => {
-          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-          });
-      }
-      return Promise.resolve<Post[]>(null as any);
-  }
-}
-
 export class PostClient {
   private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
   private baseUrl: string;
@@ -1279,12 +1227,20 @@ export class PostClient {
       this.baseUrl = baseUrl ?? "";
   }
 
-  all(siteId: number | undefined): Promise<Post[]> {
+  all(page: number, siteId: number[] | undefined, size: number): Promise<PostPagination> {
       let url_ = this.baseUrl + "/social/posts/?";
+      if (page === undefined || page === null)
+          throw new Error("The parameter 'page' must be defined and cannot be null.");
+      else
+          url_ += "page=" + encodeURIComponent("" + page) + "&";
       if (siteId === null)
           throw new Error("The parameter 'siteId' cannot be null.");
       else if (siteId !== undefined)
-          url_ += "siteId=" + encodeURIComponent("" + siteId) + "&";
+          siteId && siteId.forEach(item => { url_ += "siteId=" + encodeURIComponent("" + item) + "&"; });
+      if (size === undefined || size === null)
+          throw new Error("The parameter 'size' must be defined and cannot be null.");
+      else
+          url_ += "size=" + encodeURIComponent("" + size) + "&";
       url_ = url_.replace(/[?&]$/, "");
 
       let options_: RequestInit = {
@@ -1299,21 +1255,14 @@ export class PostClient {
       });
   }
 
-  protected processAll(response: Response): Promise<Post[]> {
+  protected processAll(response: Response): Promise<PostPagination> {
       const status = response.status;
       let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
       if (status === 200) {
           return response.text().then((_responseText) => {
           let result200: any = null;
           let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          if (Array.isArray(resultData200)) {
-              result200 = [] as any;
-              for (let item of resultData200)
-                  result200!.push(Post.fromJS(item));
-          }
-          else {
-              result200 = <any>null;
-          }
+          result200 = PostPagination.fromJS(resultData200);
           return result200;
           });
       } else if (status !== 200 && status !== 204) {
@@ -1321,7 +1270,7 @@ export class PostClient {
           return throwException("An unexpected server error occurred.", status, _responseText, _headers);
           });
       }
-      return Promise.resolve<Post[]>(null as any);
+      return Promise.resolve<PostPagination>(null as any);
   }
 
   create(site: number | undefined, body: string | undefined, media: FileParameter[] | undefined): Promise<Post> {
@@ -1364,6 +1313,43 @@ export class PostClient {
           let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
           result201 = Post.fromJS(resultData201);
           return result201;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<Post>(null as any);
+  }
+
+  detail(postId: number): Promise<Post> {
+      let url_ = this.baseUrl + "/social/posts/{postId}/";
+      if (postId === undefined || postId === null)
+          throw new Error("The parameter 'postId' must be defined.");
+      url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
+      url_ = url_.replace(/[?&]$/, "");
+
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processDetail(_response);
+      });
+  }
+
+  protected processDetail(response: Response): Promise<Post> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Post.fromJS(resultData200);
+          return result200;
           });
       } else if (status !== 200 && status !== 204) {
           return response.text().then((_responseText) => {
@@ -1598,51 +1584,6 @@ export class LikeClient {
   }
 }
 
-export class SocialClient {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-      this.http = http ? http : window as any;
-      this.baseUrl = baseUrl ?? "";
-  }
-
-  all(): Promise<SiteSocial> {
-      let url_ = this.baseUrl + "/social/sites/";
-      url_ = url_.replace(/[?&]$/, "");
-
-      let options_: RequestInit = {
-          method: "GET",
-          headers: {
-              "Accept": "application/json"
-          }
-      };
-
-      return this.http.fetch(url_, options_).then((_response: Response) => {
-          return this.processAll(_response);
-      });
-  }
-
-  protected processAll(response: Response): Promise<SiteSocial> {
-      const status = response.status;
-      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
-          return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = SiteSocial.fromJS(resultData200);
-          return result200;
-          });
-      } else if (status !== 200 && status !== 204) {
-          return response.text().then((_responseText) => {
-          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-          });
-      }
-      return Promise.resolve<SiteSocial>(null as any);
-  }
-}
-
 export class AnnouncementClient {
   private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
   private baseUrl: string;
@@ -1747,6 +1688,58 @@ export class ContactClient {
           });
       }
       return Promise.resolve<Contact>(null as any);
+  }
+}
+
+export class SocialClient {
+  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+      this.http = http ? http : window as any;
+      this.baseUrl = baseUrl ?? "";
+  }
+
+  updatePublicStatus(siteId: number, body: PatchedUpdateSitePublicStatus | undefined): Promise<UpdateSitePublicStatus> {
+      let url_ = this.baseUrl + "/social/sites/{siteId}/public-status";
+      if (siteId === undefined || siteId === null)
+          throw new Error("The parameter 'siteId' must be defined.");
+      url_ = url_.replace("{siteId}", encodeURIComponent("" + siteId));
+      url_ = url_.replace(/[?&]$/, "");
+
+      const content_ = JSON.stringify(body);
+
+      let options_: RequestInit = {
+          body: content_,
+          method: "PATCH",
+          headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processUpdatePublicStatus(_response);
+      });
+  }
+
+  protected processUpdatePublicStatus(response: Response): Promise<UpdateSitePublicStatus> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = UpdateSitePublicStatus.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<UpdateSitePublicStatus>(null as any);
   }
 }
 
@@ -1885,6 +1878,92 @@ export class WidgetClient {
   }
 }
 
+export class UserInvitationClient {
+  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+      this.http = http ? http : window as any;
+      this.baseUrl = baseUrl ?? "";
+  }
+
+  create(body: CreateUserInvitation): Promise<UserInvitation> {
+      let url_ = this.baseUrl + "/user-invitations/";
+      url_ = url_.replace(/[?&]$/, "");
+
+      const content_ = JSON.stringify(body);
+
+      let options_: RequestInit = {
+          body: content_,
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processCreate(_response);
+      });
+  }
+
+  protected processCreate(response: Response): Promise<UserInvitation> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = UserInvitation.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<UserInvitation>(null as any);
+  }
+
+  detail(code: string): Promise<UserInvitation> {
+      let url_ = this.baseUrl + "/user-invitations/{code}";
+      if (code === undefined || code === null)
+          throw new Error("The parameter 'code' must be defined.");
+      url_ = url_.replace("{code}", encodeURIComponent("" + code));
+      url_ = url_.replace(/[?&]$/, "");
+
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processDetail(_response);
+      });
+  }
+
+  protected processDetail(response: Response): Promise<UserInvitation> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = UserInvitation.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<UserInvitation>(null as any);
+  }
+}
+
 export class UserClient {
   private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
   private baseUrl: string;
@@ -2014,47 +2093,6 @@ export class UserClient {
       return Promise.resolve<User>(null as any);
   }
 
-  allAdmins(): Promise<User[]> {
-      let url_ = this.baseUrl + "/users/admins";
-      url_ = url_.replace(/[?&]$/, "");
-
-      let options_: RequestInit = {
-          method: "GET",
-          headers: {
-              "Accept": "application/json"
-          }
-      };
-
-      return this.http.fetch(url_, options_).then((_response: Response) => {
-          return this.processAllAdmins(_response);
-      });
-  }
-
-  protected processAllAdmins(response: Response): Promise<User[]> {
-      const status = response.status;
-      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
-          return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          if (Array.isArray(resultData200)) {
-              result200 = [] as any;
-              for (let item of resultData200)
-                  result200!.push(User.fromJS(item));
-          }
-          else {
-              result200 = <any>null;
-          }
-          return result200;
-          });
-      } else if (status !== 200 && status !== 204) {
-          return response.text().then((_responseText) => {
-          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-          });
-      }
-      return Promise.resolve<User[]>(null as any);
-  }
-
   current(): Promise<User> {
       let url_ = this.baseUrl + "/users/current_user/";
       url_ = url_.replace(/[?&]$/, "");
@@ -2087,6 +2125,47 @@ export class UserClient {
           });
       }
       return Promise.resolve<User>(null as any);
+  }
+
+  allSiteManagers(): Promise<User[]> {
+      let url_ = this.baseUrl + "/users/site-managers";
+      url_ = url_.replace(/[?&]$/, "");
+
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processAllSiteManagers(_response);
+      });
+  }
+
+  protected processAllSiteManagers(response: Response): Promise<User[]> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          if (Array.isArray(resultData200)) {
+              result200 = [] as any;
+              for (let item of resultData200)
+                  result200!.push(User.fromJS(item));
+          }
+          else {
+              result200 = <any>null;
+          }
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<User[]>(null as any);
   }
 }
 
@@ -2220,6 +2299,7 @@ export interface IAnnouncement {
 }
 
 export class Asset implements IAsset {
+  readonly id!: number;
   asset!: string;
 
   [key: string]: any;
@@ -2239,6 +2319,7 @@ export class Asset implements IAsset {
               if (_data.hasOwnProperty(property))
                   this[property] = _data[property];
           }
+          (<any>this).id = _data["id"];
           this.asset = _data["asset"];
       }
   }
@@ -2256,12 +2337,14 @@ export class Asset implements IAsset {
           if (this.hasOwnProperty(property))
               data[property] = this[property];
       }
+      data["id"] = this.id;
       data["asset"] = this.asset;
       return data;
   }
 }
 
 export interface IAsset {
+  id: number;
   asset: string;
 
   [key: string]: any;
@@ -2778,6 +2861,62 @@ export interface IBatchfertilizer {
   [key: string]: any;
 }
 
+export class ChangePassword implements IChangePassword {
+  currentPassword!: string;
+  newPassword!: string;
+  newPasswordConfirmation!: string;
+
+  [key: string]: any;
+
+  constructor(data?: IChangePassword) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          this.currentPassword = _data["currentPassword"];
+          this.newPassword = _data["newPassword"];
+          this.newPasswordConfirmation = _data["newPasswordConfirmation"];
+      }
+  }
+
+  static fromJS(data: any): ChangePassword {
+      data = typeof data === 'object' ? data : {};
+      let result = new ChangePassword();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["currentPassword"] = this.currentPassword;
+      data["newPassword"] = this.newPassword;
+      data["newPasswordConfirmation"] = this.newPasswordConfirmation;
+      return data;
+  }
+}
+
+export interface IChangePassword {
+  currentPassword: string;
+  newPassword: string;
+  newPasswordConfirmation: string;
+
+  [key: string]: any;
+}
+
 export class Comment implements IComment {
   readonly id!: number;
   body!: string;
@@ -3086,6 +3225,69 @@ export class CreateComment implements ICreateComment {
 
 export interface ICreateComment {
   body: string;
+
+  [key: string]: any;
+}
+
+export class CreateUserInvitation implements ICreateUserInvitation {
+  siteIds!: number[];
+  email!: string;
+
+  [key: string]: any;
+
+  constructor(data?: ICreateUserInvitation) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+      if (!data) {
+          this.siteIds = [];
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          if (Array.isArray(_data["siteIds"])) {
+              this.siteIds = [] as any;
+              for (let item of _data["siteIds"])
+                  this.siteIds!.push(item);
+          }
+          this.email = _data["email"];
+      }
+  }
+
+  static fromJS(data: any): CreateUserInvitation {
+      data = typeof data === 'object' ? data : {};
+      let result = new CreateUserInvitation();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      if (Array.isArray(this.siteIds)) {
+          data["siteIds"] = [];
+          for (let item of this.siteIds)
+              data["siteIds"].push(item);
+      }
+      data["email"] = this.email;
+      return data;
+  }
+}
+
+export interface ICreateUserInvitation {
+  siteIds: number[];
+  email: string;
 
   [key: string]: any;
 }
@@ -3470,10 +3672,59 @@ export interface IPatchedSiteAdminUpdateRequest {
   [key: string]: any;
 }
 
+export class PatchedUpdateSitePublicStatus implements IPatchedUpdateSitePublicStatus {
+  isPublic?: boolean;
+
+  [key: string]: any;
+
+  constructor(data?: IPatchedUpdateSitePublicStatus) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          this.isPublic = _data["isPublic"];
+      }
+  }
+
+  static fromJS(data: any): PatchedUpdateSitePublicStatus {
+      data = typeof data === 'object' ? data : {};
+      let result = new PatchedUpdateSitePublicStatus();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["isPublic"] = this.isPublic;
+      return data;
+  }
+}
+
+export interface IPatchedUpdateSitePublicStatus {
+  isPublic?: boolean;
+
+  [key: string]: any;
+}
+
 export class PatchedUpdateUser implements IPatchedUpdateUser {
   /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
   username?: string;
   email?: string;
+  changePassword?: ChangePassword;
 
   [key: string]: any;
 
@@ -3494,6 +3745,7 @@ export class PatchedUpdateUser implements IPatchedUpdateUser {
           }
           this.username = _data["username"];
           this.email = _data["email"];
+          this.changePassword = _data["changePassword"] ? ChangePassword.fromJS(_data["changePassword"]) : <any>undefined;
       }
   }
 
@@ -3512,6 +3764,7 @@ export class PatchedUpdateUser implements IPatchedUpdateUser {
       }
       data["username"] = this.username;
       data["email"] = this.email;
+      data["changePassword"] = this.changePassword ? this.changePassword.toJSON() : <any>undefined;
       return data;
   }
 }
@@ -3520,6 +3773,7 @@ export interface IPatchedUpdateUser {
   /** Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. */
   username?: string;
   email?: string;
+  changePassword?: ChangePassword;
 
   [key: string]: any;
 }
@@ -3676,12 +3930,83 @@ export interface IPost {
   [key: string]: any;
 }
 
+export class PostPagination implements IPostPagination {
+  count!: number;
+  next?: string;
+  previous?: string;
+  results!: Post[];
+
+  [key: string]: any;
+
+  constructor(data?: IPostPagination) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+      if (!data) {
+          this.results = [];
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          this.count = _data["count"];
+          this.next = _data["next"];
+          this.previous = _data["previous"];
+          if (Array.isArray(_data["results"])) {
+              this.results = [] as any;
+              for (let item of _data["results"])
+                  this.results!.push(Post.fromJS(item));
+          }
+      }
+  }
+
+  static fromJS(data: any): PostPagination {
+      data = typeof data === 'object' ? data : {};
+      let result = new PostPagination();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["count"] = this.count;
+      data["next"] = this.next;
+      data["previous"] = this.previous;
+      if (Array.isArray(this.results)) {
+          data["results"] = [];
+          for (let item of this.results)
+              data["results"].push(item.toJSON());
+      }
+      return data;
+  }
+}
+
+export interface IPostPagination {
+  count: number;
+  next?: string;
+  previous?: string;
+  results: Post[];
+
+  [key: string]: any;
+}
+
 export class RegisterUser implements IRegisterUser {
   username!: string;
   email!: string;
   password!: string;
   passwordConfirmation!: string;
-  role?: string;
+  code?: string;
 
   [key: string]: any;
 
@@ -3691,9 +4016,6 @@ export class RegisterUser implements IRegisterUser {
               if (data.hasOwnProperty(property))
                   (<any>this)[property] = (<any>data)[property];
           }
-      }
-      if (!data) {
-          this.role = "User";
       }
   }
 
@@ -3707,7 +4029,7 @@ export class RegisterUser implements IRegisterUser {
           this.email = _data["email"];
           this.password = _data["password"];
           this.passwordConfirmation = _data["passwordConfirmation"];
-          this.role = _data["role"] !== undefined ? _data["role"] : "User";
+          this.code = _data["code"];
       }
   }
 
@@ -3728,7 +4050,7 @@ export class RegisterUser implements IRegisterUser {
       data["email"] = this.email;
       data["password"] = this.password;
       data["passwordConfirmation"] = this.passwordConfirmation;
-      data["role"] = this.role;
+      data["code"] = this.code;
       return data;
   }
 }
@@ -3738,12 +4060,12 @@ export interface IRegisterUser {
   email: string;
   password: string;
   passwordConfirmation: string;
-  role?: string;
+  code?: string;
 
   [key: string]: any;
 }
 
-export type RoleEnum = "User" | "Admin" | "MegaAdmin";
+export type RoleEnum = "User" | "SiteManager" | "MegaAdmin";
 
 export class Site implements ISite {
   readonly id!: number;
@@ -3753,7 +4075,8 @@ export class Site implements ISite {
   contact!: Contact;
   announcement!: Announcement;
   image!: Asset;
-  name?: string | undefined;
+  name!: string;
+  isPublic?: boolean;
   description?: string | undefined;
   size?: string | undefined;
   researchPartnership?: boolean | undefined;
@@ -3797,6 +4120,7 @@ export class Site implements ISite {
           this.announcement = _data["announcement"] ? Announcement.fromJS(_data["announcement"]) : new Announcement();
           this.image = _data["image"] ? Asset.fromJS(_data["image"]) : new Asset();
           this.name = _data["name"];
+          this.isPublic = _data["isPublic"];
           this.description = _data["description"];
           this.size = _data["size"];
           this.researchPartnership = _data["researchPartnership"];
@@ -3830,6 +4154,7 @@ export class Site implements ISite {
       data["announcement"] = this.announcement ? this.announcement.toJSON() : <any>undefined;
       data["image"] = this.image ? this.image.toJSON() : <any>undefined;
       data["name"] = this.name;
+      data["isPublic"] = this.isPublic;
       data["description"] = this.description;
       data["size"] = this.size;
       data["researchPartnership"] = this.researchPartnership;
@@ -3847,7 +4172,8 @@ export interface ISite {
   contact: Contact;
   announcement: Announcement;
   image: Asset;
-  name?: string | undefined;
+  name: string;
+  isPublic?: boolean;
   description?: string | undefined;
   size?: string | undefined;
   researchPartnership?: boolean | undefined;
@@ -3910,7 +4236,7 @@ export interface ISiteAdmin {
 
 export class SiteMap implements ISiteMap {
   readonly id!: number;
-  name?: string | undefined;
+  name!: string;
   siteType!: SiteType;
   readonly coordinates!: CoordinatesMap;
   image!: Asset;
@@ -3969,7 +4295,7 @@ export class SiteMap implements ISiteMap {
 
 export interface ISiteMap {
   id: number;
-  name?: string | undefined;
+  name: string;
   siteType: SiteType;
   coordinates: CoordinatesMap;
   image: Asset;
@@ -3979,7 +4305,7 @@ export interface ISiteMap {
 
 export class SiteName implements ISiteName {
   readonly id!: number;
-  name?: string | undefined;
+  name!: string;
 
   [key: string]: any;
 
@@ -4024,14 +4350,14 @@ export class SiteName implements ISiteName {
 
 export interface ISiteName {
   id: number;
-  name?: string | undefined;
+  name: string;
 
   [key: string]: any;
 }
 
 export class SiteOverview implements ISiteOverview {
   readonly id!: number;
-  name?: string | undefined;
+  name!: string;
   image!: Asset;
 
   [key: string]: any;
@@ -4082,7 +4408,7 @@ export class SiteOverview implements ISiteOverview {
 
 export interface ISiteOverview {
   id: number;
-  name?: string | undefined;
+  name: string;
   image: Asset;
 
   [key: string]: any;
@@ -4090,7 +4416,8 @@ export interface ISiteOverview {
 
 export class SiteSocial implements ISiteSocial {
   readonly id!: number;
-  name?: string | undefined;
+  name!: string;
+  isPublic?: boolean;
   siteType!: SiteType;
   image!: Asset;
   description?: string | undefined;
@@ -4126,6 +4453,7 @@ export class SiteSocial implements ISiteSocial {
           }
           (<any>this).id = _data["id"];
           this.name = _data["name"];
+          this.isPublic = _data["isPublic"];
           this.siteType = _data["siteType"] ? SiteType.fromJS(_data["siteType"]) : new SiteType();
           this.image = _data["image"] ? Asset.fromJS(_data["image"]) : new Asset();
           this.description = _data["description"];
@@ -4159,6 +4487,7 @@ export class SiteSocial implements ISiteSocial {
       }
       data["id"] = this.id;
       data["name"] = this.name;
+      data["isPublic"] = this.isPublic;
       data["siteType"] = this.siteType ? this.siteType.toJSON() : <any>undefined;
       data["image"] = this.image ? this.image.toJSON() : <any>undefined;
       data["description"] = this.description;
@@ -4180,7 +4509,8 @@ export class SiteSocial implements ISiteSocial {
 
 export interface ISiteSocial {
   id: number;
-  name?: string | undefined;
+  name: string;
+  isPublic?: boolean;
   siteType: SiteType;
   image: Asset;
   description?: string | undefined;
@@ -4194,7 +4524,7 @@ export interface ISiteSocial {
 
 export class SiteSummary implements ISiteSummary {
   readonly id!: number;
-  name?: string | undefined;
+  name!: string;
   coordinate!: Coordinates;
   siteType!: SiteType;
   readonly plantCount!: number;
@@ -4300,7 +4630,7 @@ export class SiteSummary implements ISiteSummary {
 
 export interface ISiteSummary {
   id: number;
-  name?: string | undefined;
+  name: string;
   coordinate: Coordinates;
   siteType: SiteType;
   plantCount: number;
@@ -4599,9 +4929,59 @@ export interface ITreeType {
   [key: string]: any;
 }
 
+export class UpdateSitePublicStatus implements IUpdateSitePublicStatus {
+  isPublic!: boolean;
+
+  [key: string]: any;
+
+  constructor(data?: IUpdateSitePublicStatus) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          this.isPublic = _data["isPublic"];
+      }
+  }
+
+  static fromJS(data: any): UpdateSitePublicStatus {
+      data = typeof data === 'object' ? data : {};
+      let result = new UpdateSitePublicStatus();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["isPublic"] = this.isPublic;
+      return data;
+  }
+}
+
+export interface IUpdateSitePublicStatus {
+  isPublic: boolean;
+
+  [key: string]: any;
+}
+
 export class User implements IUser {
   readonly id!: number;
   readonly role!: RoleEnum;
+  readonly adminSiteIds!: number[];
+  readonly followedSiteIds!: number[];
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;
@@ -4629,6 +5009,10 @@ export class User implements IUser {
                   (<any>this)[property] = (<any>data)[property];
           }
       }
+      if (!data) {
+          this.adminSiteIds = [];
+          this.followedSiteIds = [];
+      }
   }
 
   init(_data?: any) {
@@ -4639,6 +5023,16 @@ export class User implements IUser {
           }
           (<any>this).id = _data["id"];
           (<any>this).role = _data["role"];
+          if (Array.isArray(_data["adminSiteIds"])) {
+              (<any>this).adminSiteIds = [] as any;
+              for (let item of _data["adminSiteIds"])
+                  (<any>this).adminSiteIds!.push(item);
+          }
+          if (Array.isArray(_data["followedSiteIds"])) {
+              (<any>this).followedSiteIds = [] as any;
+              for (let item of _data["followedSiteIds"])
+                  (<any>this).followedSiteIds!.push(item);
+          }
           this.lastLogin = _data["lastLogin"] ? new Date(_data["lastLogin"].toString()) : <any>undefined;
           this.isSuperuser = _data["isSuperuser"];
           this.username = _data["username"];
@@ -4676,6 +5070,16 @@ export class User implements IUser {
       }
       data["id"] = this.id;
       data["role"] = this.role;
+      if (Array.isArray(this.adminSiteIds)) {
+          data["adminSiteIds"] = [];
+          for (let item of this.adminSiteIds)
+              data["adminSiteIds"].push(item);
+      }
+      if (Array.isArray(this.followedSiteIds)) {
+          data["followedSiteIds"] = [];
+          for (let item of this.followedSiteIds)
+              data["followedSiteIds"].push(item);
+      }
       data["lastLogin"] = this.lastLogin ? this.lastLogin.toISOString() : <any>undefined;
       data["isSuperuser"] = this.isSuperuser;
       data["username"] = this.username;
@@ -4702,6 +5106,8 @@ export class User implements IUser {
 export interface IUser {
   id: number;
   role: RoleEnum;
+  adminSiteIds: number[];
+  followedSiteIds: number[];
   lastLogin?: Date | undefined;
   /** Designates that this user has all permissions without explicitly assigning them. */
   isSuperuser?: boolean;
@@ -4719,6 +5125,66 @@ export interface IUser {
   groups?: number[];
   /** Specific permissions for this user. */
   userPermissions?: number[];
+
+  [key: string]: any;
+}
+
+export class UserInvitation implements IUserInvitation {
+  readonly id!: number;
+  code!: string;
+  email!: string;
+  expiresAt!: Date;
+
+  [key: string]: any;
+
+  constructor(data?: IUserInvitation) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          this.code = _data["code"];
+          this.email = _data["email"];
+          this.expiresAt = _data["expiresAt"] ? new Date(_data["expiresAt"].toString()) : <any>undefined;
+      }
+  }
+
+  static fromJS(data: any): UserInvitation {
+      data = typeof data === 'object' ? data : {};
+      let result = new UserInvitation();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["code"] = this.code;
+      data["email"] = this.email;
+      data["expiresAt"] = this.expiresAt ? this.expiresAt.toISOString() : <any>undefined;
+      return data;
+  }
+}
+
+export interface IUserInvitation {
+  id: number;
+  code: string;
+  email: string;
+  expiresAt: Date;
 
   [key: string]: any;
 }

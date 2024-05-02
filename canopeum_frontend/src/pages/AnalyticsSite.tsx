@@ -1,21 +1,27 @@
 import AnalyticsSiteHeader from '@components/analytics/AnalyticsSiteHeader'
 import BatchTable from '@components/analytics/BatchTable'
 import { LanguageContext } from '@components/context/LanguageContext'
+import useApiClient from '@hooks/ApiClientHook'
 import type { SiteSummary } from '@services/api'
-import getApiClient from '@services/apiInterface'
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
+
+import LoadingPage from './LoadingPage'
 
 const AnalyticsSite = () => {
   const { t: translate } = useTranslation<'analytics'>()
   const { siteId: siteIdFromParams } = useParams()
   const { formatDate } = useContext(LanguageContext)
+  const { getApiClient } = useApiClient()
 
   const [siteSummary, setSiteSummary] = useState<SiteSummary | undefined>()
   const [lastModifiedBatchDate, setLastModifiedBatchDate] = useState<Date | undefined>()
 
-  const fetchSite = async (siteId: number) => setSiteSummary(await getApiClient().siteClient.summary(siteId))
+  const fetchSite = useCallback(
+    async (siteId: number) => setSiteSummary(await getApiClient().siteClient.summary(siteId)),
+    [getApiClient],
+  )
 
   useEffect(() => {
     if (!siteIdFromParams) return
@@ -24,7 +30,7 @@ const AnalyticsSite = () => {
     if (!siteIdNumber) return
 
     void fetchSite(siteIdNumber)
-  }, [siteIdFromParams])
+  }, [fetchSite, siteIdFromParams])
 
   useEffect(() => {
     if (!siteSummary || siteSummary.batches.length === 0) {
@@ -47,14 +53,14 @@ const AnalyticsSite = () => {
   }, [siteSummary])
 
   if (!siteSummary) {
-    return <div>Loading...</div>
+    return <LoadingPage />
   }
 
   return (
-    <div className='container py-3 d-flex flex-column gap-4'>
+    <div className='page-container d-flex flex-column gap-4'>
       <AnalyticsSiteHeader siteSummary={siteSummary} />
 
-      <div className='bg-white rounded py-4 px-5'>
+      <div className='bg-cream rounded py-4 px-5'>
         <div className='d-flex justify-content-between mb-3'>
           <h4>{translate('analyticsSite.batch-tracking')} ({siteSummary.batches.length})</h4>
 

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import ClassVar
 
 import pytz
@@ -8,13 +8,20 @@ from django.db import models
 
 class RoleName(models.TextChoices):
     USER = "User"
-    ADMIN = "Admin"
+    SITEMANAGER = "SiteManager"
     MEGAADMIN = "MegaAdmin"
+
+    def from_string(self, value):
+        if value == self.MEGAADMIN:
+            return self.MEGAADMIN
+        if value == self.SITEMANAGER:
+            return self.SITEMANAGER
+        return self.USER
 
 
 class Role(models.Model):
     name = models.CharField(
-        max_length=9,
+        max_length=11,
         choices=RoleName.choices,
         default=RoleName.USER,
     )
@@ -28,7 +35,7 @@ class User(AbstractUser):
     )
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS: ClassVar[list[str]] = []  # type: ignore
-    role = models.ForeignKey(Role, models.DO_NOTHING, null=False, default=1)  # type: ignore
+    role = models.ForeignKey(Role, models.RESTRICT, null=False, default=1)  # type: ignore
 
 
 class Announcement(models.Model):
@@ -73,13 +80,6 @@ class BatchSeed(models.Model):
 class BatchSupportedSpecies(models.Model):
     batch = models.ForeignKey(Batch, models.DO_NOTHING, blank=True, null=True)
     tree_type = models.ForeignKey("Treetype", models.DO_NOTHING, blank=True, null=True)
-
-
-class Comment(models.Model):
-    body = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, models.DO_NOTHING)
-    post = models.ForeignKey("Post", models.DO_NOTHING)
 
 
 class Contact(models.Model):
@@ -127,6 +127,21 @@ class Asset(models.Model):
     asset = models.FileField(upload_to=upload_to, null=False)
 
 
+class Site(models.Model):
+    name = models.TextField()
+    is_public = models.BooleanField(blank=False, null=False, default=False)
+    site_type = models.ForeignKey("Sitetype", models.DO_NOTHING, blank=True, null=True)
+    coordinate = models.ForeignKey(Coordinate, models.DO_NOTHING, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    size = models.TextField(blank=True, null=True)
+    research_partnership = models.BooleanField(blank=True, null=True)
+    visible_map = models.BooleanField(blank=True, null=True)
+    visitor_count = models.IntegerField(blank=True, null=True)
+    contact = models.ForeignKey(Contact, models.DO_NOTHING, blank=True, null=True)
+    announcement = models.ForeignKey(Announcement, models.DO_NOTHING, blank=True, null=True)
+    image = models.ForeignKey(Asset, models.DO_NOTHING, blank=True, null=True)
+
+
 class Post(models.Model):
     site = models.ForeignKey("Site", models.DO_NOTHING, blank=False, null=False)
     body = models.TextField(blank=False, null=False)
@@ -141,29 +156,36 @@ class PostAsset(models.Model):
     asset = models.ForeignKey(Asset, models.DO_NOTHING, null=False)
 
 
-class Site(models.Model):
-    name = models.TextField(blank=True, null=True)
-    site_type = models.ForeignKey("Sitetype", models.DO_NOTHING, blank=True, null=True)
-    coordinate = models.ForeignKey(Coordinate, models.DO_NOTHING, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-    size = models.TextField(blank=True, null=True)
-    research_partnership = models.BooleanField(blank=True, null=True)
-    visible_map = models.BooleanField(blank=True, null=True)
-    visitor_count = models.IntegerField(blank=True, null=True)
-    contact = models.ForeignKey(Contact, models.DO_NOTHING, blank=True, null=True)
-    announcement = models.ForeignKey(Announcement, models.DO_NOTHING, blank=True, null=True)
-    image = models.ForeignKey(Asset, models.DO_NOTHING, blank=True, null=True)
+class Comment(models.Model):
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
 
 class Siteadmin(models.Model):
-    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
-    site = models.ForeignKey(Site, models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE)
+
+
+def one_week_from_today():
+    return datetime.now(pytz.utc) + timedelta(days=7)
+
+
+class UserInvitation(models.Model):
+    code = models.CharField(max_length=64, unique=True)
+    expires_at = models.DateTimeField(default=one_week_from_today, blank=False, null=False)
+    email = models.EmailField()
+    assigned_to_sites = models.ManyToManyField(Site)
+
+    def is_expired(self) -> bool:
+        return self.expires_at <= datetime.now(pytz.utc)
 
 
 class SiteFollower(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, models.DO_NOTHING)
-    site = models.ForeignKey(Site, models.DO_NOTHING)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE)
 
 
 class Sitetreespecies(models.Model):
@@ -198,7 +220,7 @@ class Widget(models.Model):
 
 class Like(models.Model):
     user = models.ForeignKey(User, models.DO_NOTHING)
-    post = models.OneToOneField(Post, models.DO_NOTHING)
+    post = models.ForeignKey(Post, models.DO_NOTHING)
 
 
 class Internationalization(models.Model):

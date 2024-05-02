@@ -18,5 +18,13 @@
     "comment-deletion-confirm-title": "Supprimer le Commentaire",
     "comment-deletion-confirm-self": "Êtes-vous sûr de vouloir supprimer votre commentaire? Cela supprimera définitivement le commentaire; cette action est irréversible.",
     "comment-deletion-confirm-other": "Êtes-vous sûr de vouloir supprimer ce commentaire de {{author}}? Cela supprimera définitivement le commentaire; cette action est irréversible."
+  },
+  "share-dialog": {
+    "title": "Partager le Message",
+    "message": "Pour partager ce message, copiez simplement ce lien et collez-le sur vos plateformes de réseaux sociaux préférées, ou envoyez-le à un ami!",
+    "copy-link": "Copier le lien"
+  },
+  "posts": {
+    "post-body-required": "Vous devez saisir un message pour pouvoir publier votre message."
   }
 }

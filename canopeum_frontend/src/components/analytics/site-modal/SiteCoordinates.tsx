@@ -38,7 +38,8 @@ const SiteCoordinates = ({ latitude, longitude, onChange }: Props) => {
             <input
               className='form-control'
               id='site-dms-latitude-ddd'
-              onChange={event => setLat(current => ({ ...current, degrees: Number(event.target.value) }))}
+              onChange={event =>
+                setLat(current => ({ ...current, degrees: Number(event.target.value) }))}
               style={{ width: '5rem' }}
               type='number'
               value={lat.degrees}
@@ -47,7 +48,8 @@ const SiteCoordinates = ({ latitude, longitude, onChange }: Props) => {
             <input
               className='form-control'
               id='site-dms-latitude-mm'
-              onChange={event => setLat(current => ({ ...current, minutes: Number(event.target.value) }))}
+              onChange={event =>
+                setLat(current => ({ ...current, minutes: Number(event.target.value) }))}
               style={{ width: '5rem' }}
               type='number'
               value={lat.minutes}
@@ -56,7 +58,8 @@ const SiteCoordinates = ({ latitude, longitude, onChange }: Props) => {
             <input
               className='form-control'
               id='site-dms-latitude-ss'
-              onChange={event => setLat(current => ({ ...current, seconds: Number(event.target.value) }))}
+              onChange={event =>
+                setLat(current => ({ ...current, seconds: Number(event.target.value) }))}
               style={{ width: '5rem' }}
               type='number'
               value={lat.seconds}
@@ -65,7 +68,8 @@ const SiteCoordinates = ({ latitude, longitude, onChange }: Props) => {
             <input
               className='form-control'
               id='site-dms-latitude-ssss'
-              onChange={event => setLat(current => ({ ...current, miliseconds: Number(event.target.value) }))}
+              onChange={event =>
+                setLat(current => ({ ...current, miliseconds: Number(event.target.value) }))}
               style={{ width: '5rem' }}
               type='number'
               value={lat.miliseconds}
@@ -90,7 +94,7 @@ const SiteCoordinates = ({ latitude, longitude, onChange }: Props) => {
                 name='site-dms-latitude-cardinal'
                 onChange={() => setLat(current => ({ ...current, cardinal: 'S' }))}
                 type='radio'
-                value="S"
+                value='S'
               />
               <label className='form-check-label' htmlFor='site-dms-latitude-cardinal-s'>
                 S
@@ -106,7 +110,8 @@ const SiteCoordinates = ({ latitude, longitude, onChange }: Props) => {
             <input
               className='form-control'
               id='site-dms-longitude-ddd'
-              onChange={event => setLong(current => ({ ...current, degrees: Number(event.target.value) }))}
+              onChange={event =>
+                setLong(current => ({ ...current, degrees: Number(event.target.value) }))}
               style={{ width: '5rem' }}
               type='number'
               value={long.degrees}
@@ -115,7 +120,8 @@ const SiteCoordinates = ({ latitude, longitude, onChange }: Props) => {
             <input
               className='form-control'
               id='site-dms-longitude-mm'
-              onChange={event => setLong(current => ({ ...current, minutes: Number(event.target.value) }))}
+              onChange={event =>
+                setLong(current => ({ ...current, minutes: Number(event.target.value) }))}
               style={{ width: '5rem' }}
               type='number'
               value={long.minutes}
@@ -124,7 +130,8 @@ const SiteCoordinates = ({ latitude, longitude, onChange }: Props) => {
             <input
               className='form-control'
               id='site-dms-longitude-ss'
-              onChange={event => setLong(current => ({ ...current, seconds: Number(event.target.value) }))}
+              onChange={event =>
+                setLong(current => ({ ...current, seconds: Number(event.target.value) }))}
               style={{ width: '5rem' }}
               type='number'
               value={long.seconds}
@@ -133,7 +140,8 @@ const SiteCoordinates = ({ latitude, longitude, onChange }: Props) => {
             <input
               className='form-control'
               id='site-dms-longitude-ssss'
-              onChange={event => setLong(current => ({ ...current, miliseconds: Number(event.target.value) }))}
+              onChange={event =>
+                setLong(current => ({ ...current, miliseconds: Number(event.target.value) }))}
               style={{ width: '5rem' }}
               type='number'
               value={long.miliseconds}

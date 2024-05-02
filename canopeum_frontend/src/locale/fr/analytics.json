@@ -1,6 +1,9 @@
 {
+  "title": "Gérer mes Sites",
+  "create-site": "Créer un Nouveau Site",
   "average": "moyenne",
-  "batches": "lots",
+  "batches_one": "lot",
+  "batches_other": "lots",
   "sufficient": "suffisant",
   "insufficient": "insuffisant",
   "table-row-1": "nom du lot / ID",
@@ -17,6 +20,12 @@
   "table-row-12": "quantité de graines collectées dans la zone",
   "table-row-13": "types de graines collectées",
   "last-update": "Dernière Mise à Jour",
+  "success-rate-chart": {
+    "title": "Taux De Réussite Annuel Moyen Par Site"
+  },
+  "batches": {
+    "batch-tracking": "Batch Tracking"
+  },
   "site-summary": {
     "planted": "Planté",
     "survived": "Survécu",

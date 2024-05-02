@@ -18,5 +18,13 @@
     "comment-deletion-confirm-title": "Delete Comment",
     "comment-deletion-confirm-self": "Are you sure you want to delete your comment? Doing so will permanently delete this comment; this action is irreversible.",
     "comment-deletion-confirm-other": "Are you sure you want to delete this comment by {{author}}? Doing so will permanently delete this comment; this action is irreversible."
+  },
+  "share-dialog": {
+    "title": "Share Post",
+    "message": "To share this post, simply copy this link and paste it on your favorite social media platforms, or send to a friend!",
+    "copy-link": "Copy Link"
+  },
+  "posts": {
+    "post-body-required": "You must enter a message in order to publish your post."
   }
 }

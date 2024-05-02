@@ -1,0 +1,87 @@
+// Import here all global style modules from this same folder
+
+@import "./Buttons.scss";
+@import "./Forms.scss";
+@import "./Icons.scss";
+@import "./Navbar.scss";
+@import "./Transitions.scss";
+
+$cream: #FFFAF5;
+
+$small-width: 540px;
+$medium-width: 720px;
+$large-width: 960px;
+$xlarge-width: 1200px;
+$xxlarge-width: 1600px;
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #b8bcc0;
+  border-radius: 5px;
+}
+
+body {
+  background-image: url('@assets/images/TreeBackground.png');
+}
+
+.login-background {
+  background-image: url('@assets/images/LoginBackground.png');
+  background-position: top;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.text-small {
+  font-size: 90%;
+}
+
+.text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lightgreen-color {
+  color: #E8F3E9;
+}
+
+.bg-lightgreen {
+  background: #E8F3E9;
+}
+
+.bg-cream {
+  background-color: $cream;
+}
+
+.card-title {
+  font-weight: bold;
+}
+
+.page-container {
+  padding: 1rem 1rem;
+}
+
+@media screen and (min-width: $medium-width) {
+  .page-container {
+    padding: 1rem 2rem;
+  }
+}
+
+@media screen and (min-width: $large-width) {
+  .page-container {
+    padding: 1rem 4rem;
+  }
+}
+
+@media screen and (min-width: $xlarge-width) {
+  .page-container {
+    padding: 1rem 6rem;
+  }
+}

@@ -1,43 +1,47 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext.tsx'
 import PostWidget from '@components/social/PostWidget.tsx'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { CircularProgress } from '@mui/material'
+import { useContext, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import type { Post } from '../services/api.ts'
-import getApiClient from '../services/apiInterface.ts'
+import usePostsInfiniteScrolling from '../hooks/PostsInfiniteScrollingHook.tsx'
+import usePostsStore from '../store/postsStore.ts'
 import LoadingPage from './LoadingPage.tsx'
 
 const Home = () => {
   const { t: translate } = useTranslation()
   const { currentUser } = useContext(AuthenticationContext)
-  const [isLoading, setIsLoading] = useState(true)
-  const [newsPosts, setNewsPosts] = useState<Post[]>([])
+  const {
+    onScroll,
+    setSiteIds,
+    isLoadingMore,
+    isLoadingFirstPage,
+    loadingError,
+  } = usePostsInfiniteScrolling()
+  const { posts: newsPosts } = usePostsStore()
 
-  const fetchNewsPosts = useCallback(async () => {
-    const response = await getApiClient().newsClient.all()
-    setNewsPosts(response)
-    setIsLoading(false)
-  }, [setNewsPosts, setIsLoading])
+  const listInnerRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => void fetchNewsPosts(), [fetchNewsPosts])
+  useEffect(() => {
+    if (!currentUser) return
 
-  const likePost = async (postId: number) => {
-    const post = newsPosts.find(post => post.id === postId)
-    if (!post) return
-    const newPost = { ...post, hasLiked: !post.hasLiked }
-    newPost.likeCount = post.hasLiked
-      ? post.likeCount! - 1
-      : post.likeCount! + 1
-    newsPosts.splice(newsPosts.indexOf(post), 1)
-    setNewsPosts([newPost as Post, ...newsPosts || []])
-  }
+    setSiteIds(currentUser.followedSiteIds)
+  }, [setSiteIds, currentUser])
 
   if (!currentUser) return <div />
 
   const renderPosts = () => {
-    if (newsPosts.length === 0) {
+    if (loadingError) {
       return (
         <div className='bg-white rounded-2 px-5 py-4 d-flex flex-column gap-3'>
+          <span>{loadingError}</span>
+        </div>
+      )
+    }
+
+    if (currentUser.followedSiteIds.length === 0 || newsPosts.length === 0) {
+      return (
+        <div className='bg-cream rounded-2 px-5 py-4 d-flex flex-column gap-3'>
           <span>{translate('home.no-news')}</span>
         </div>
       )
@@ -45,24 +49,34 @@ const Home = () => {
 
     return (
       <div className='d-flex flex-column gap-3'>
-        {newsPosts.map(post => <PostWidget key={post.id} likePostEvent={likePost} post={post} viewMode='user' />)}
+        {newsPosts.map(post => <PostWidget key={post.id} post={post} />)}
       </div>
     )
   }
 
-  if (isLoading) return <LoadingPage />
+  if (isLoadingFirstPage) return <LoadingPage />
 
   return (
-    <div>
-      <div className='page-container'>
-        <div className='mb-4'>
-          <h1 className='text-light'>{translate('home.title', { username: currentUser.username })}</h1>
+    <div
+      className='page-container h-100 overflow-y-auto'
+      onScroll={() => onScroll(listInnerRef)}
+      ref={listInnerRef}
+    >
+      <div className='mb-4'>
+        <h1 className='text-light'>
+          {translate('home.title', { username: currentUser.username })}
+        </h1>
 
-          <h6 className='text-light'>{translate('home.subtitle')}</h6>
-        </div>
-
-        {renderPosts()}
+        <h6 className='text-light'>{translate('home.subtitle')}</h6>
       </div>
+
+      {renderPosts()}
+
+      {isLoadingMore && (
+        <div className='w-100 d-flex justify-content-center align-items-center pt-4 pb-2'>
+          <CircularProgress color='secondary' size={50} thickness={5} />
+        </div>
+      )}
     </div>
   )
 }

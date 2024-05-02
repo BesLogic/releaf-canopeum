@@ -2,7 +2,7 @@ import facebookLogo from '@assets/icons/facebook-contact-logo.svg'
 import instagramLogo from '@assets/icons/instagram-contact-logo.svg'
 import linkedinLogo from '@assets/icons/linkedin-contact-logo.svg'
 import xLogo from '@assets/icons/x-contact-logo.svg'
-import type { PageViewMode } from '@models/types/PageViewMode'
+import type { PageViewMode } from '@models/types/PageViewMode.Type'
 import type { Contact } from '@services/api'
 import { Link } from 'react-router-dom'
 
@@ -13,12 +13,14 @@ type Props = {
 
 const ContactCard = ({ contact, viewMode }: Props) => {
   const renderContactCard = () => (
-    <div className='card rounded px-3 py-2'>
+    <div className='card rounded'>
       <div className='card-body'>
         <div className='d-flex justify-content-between align-items-center pb-3'>
           <h2 className='card-title'>Contact</h2>
           <div>
-            {viewMode === 'admin' && <span className='material-symbols-outlined text-primary fs-2'>edit_square</span>}
+            {viewMode === 'admin' && (
+              <span className='material-symbols-outlined text-primary fs-2'>edit_square</span>
+            )}
           </div>
         </div>
         <div className='info-section d-flex flex-column'>

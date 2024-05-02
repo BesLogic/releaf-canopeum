@@ -27,7 +27,9 @@ const TreeSpeciesSelector = ({ onChange, searchBarLabel, speciesOptions, species
 
   const onSearchChange = (searchValue: string): void => {
     setFilteredSpecies(
-      availableSpecies.filter(value => translateValue(value).toLowerCase().startsWith(searchValue.toLowerCase())),
+      availableSpecies.filter(value =>
+        translateValue(value).toLowerCase().startsWith(searchValue.toLowerCase())
+      ),
     )
   }
 
@@ -75,7 +77,11 @@ const TreeSpeciesSelector = ({ onChange, searchBarLabel, speciesOptions, species
   return (
     <div className='position-relative'>
       {searchBarLabel &&
-        <label className='form-label text-capitalize' htmlFor='tree-type-search'>{t(searchBarLabel)}</label>}
+        (
+          <label className='form-label text-capitalize' htmlFor='tree-type-search'>
+            {t(searchBarLabel)}
+          </label>
+        )}
       <input
         className='form-control tree-type-search'
         id='tree-type-search'
@@ -118,20 +124,36 @@ const TreeSpeciesSelector = ({ onChange, searchBarLabel, speciesOptions, species
             <div className='col-4'>
               <div className='row'>
                 <div className='col'>
-                  <button className='btn btn-outline-dark btn-sm' onClick={() => subQuantity(value)} type='button'>
+                  <button
+                    className='btn btn-outline-dark btn-sm'
+                    onClick={() =>
+                      subQuantity(value)}
+                    type='button'
+                  >
                     -
                   </button>
                 </div>
                 <div className='col text-center'>{value.quantity}</div>
                 <div className='col'>
-                  <button className='btn btn-outline-dark btn-sm' onClick={() => addQuantity(value)} type='button'>
+                  <button
+                    className='btn btn-outline-dark btn-sm'
+                    onClick={() =>
+                      addQuantity(value)}
+                    type='button'
+                  >
                     +
                   </button>
                 </div>
               </div>
             </div>
             <div className='col-1'>
-              <button className='btn btn-outline-dark btn-sm' onClick={() => removeType(value)} type='button'>X</button>
+              <button
+                className='btn btn-outline-dark btn-sm'
+                onClick={() => removeType(value)}
+                type='button'
+              >
+                X
+              </button>
             </div>
           </li>
         ))}

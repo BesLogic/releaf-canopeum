@@ -1,4 +1,6 @@
 {
+  "title": "Manage my Sites",
+  "create-site": "Create a New Site",
   "average": "average",
   "batches_one": "batch",
   "batches_other": "batches",
@@ -26,11 +28,18 @@
   "admins-saved": "Admins saved successfully for {{siteName}}!",
   "site-deleted": "Site {{siteName}} was successfully deleted.",
   "site-deleted-error": "There was a problem while trying to delete the site {{siteName}}...",
+  "success-rate-chart": {
+    "title": "Average Annual Success Rate Per Site"
+  },
+  "batches": {
+    "batch-tracking": "Batch Tracking"
+  },
   "site-summary": {
     "planted": "Planted",
     "survived": "Survived",
     "propagation": "Propagation",
-    "sponsored": "Sponsored"
+    "sponsored": "Sponsored",
+    "no-admins": "No Admins"
   },
   "site-modal": {
     "create-site": "create site",

@@ -1,49 +1,47 @@
-import AssetGrid from '@components/AssetGrid'
+import AssetGrid from '@components/assets/AssetGrid'
 import { LanguageContext } from '@components/context/LanguageContext'
-import TextExpansion from '@components/inputs/textExpansion'
+import TextExpansion from '@components/inputs/TextExpansion'
 import PostCommentsDialog from '@components/social/PostCommentsDialog'
-import type { PageViewMode } from '@models/types/PageViewMode'
-import getApiClient from '@services/apiInterface'
+import SharePostDialog from '@components/social/SharePostDialog'
+import useApiClient from '@hooks/ApiClientHook'
 import { useContext, useState } from 'react'
 
 import type { Post } from '../../services/api'
+import usePostsStore from '../../store/postsStore'
 
-const PostWidget = (
-  props: { readonly post: Post, readonly likePostEvent: (postId: number) => void, readonly viewMode: PageViewMode },
-) => {
-  const { post, likePostEvent, viewMode } = props
+type Props = {
+  readonly post: Post,
+}
 
+const PostWidget = ({ post }: Props) => {
   const { formatDate } = useContext(LanguageContext)
+  const { toggleLike } = usePostsStore()
+  const { getApiClient } = useApiClient()
+
   const [commentsModalOpen, setCommentsModalOpen] = useState(false)
+  const [shareModalOpen, setShareModalOpen] = useState(false)
 
   const openPostComments = () => setCommentsModalOpen(true)
 
   const handleCommentsModalClose = () => setCommentsModalOpen(false)
 
+  const openPostShareModal = () => setShareModalOpen(true)
+
+  const handleShareModalClose = () => setShareModalOpen(false)
+
   const likePost = async () => {
     if (post.hasLiked) {
       await getApiClient().likeClient.delete(post.id)
-      likePostEvent(post.id)
+      toggleLike(post.id)
     } else {
       await getApiClient().likeClient.likePost(post.id, {})
-      likePostEvent(post.id)
+      toggleLike(post.id)
     }
-  }
-
-  const handleCommentCountChange = (action: 'added' | 'deleted') => {
-    /* eslint-disable @typescript-eslint/no-explicit-any -- Temporary workaround.
-    We want the post commentCount property to be read-only; figure out how to do so with the NSwag models generation */
-    if (action === 'added') {
-      ;(post.commentCount as any) += 1
-    } else {
-      ;(post.commentCount as any) -= 1
-    }
-    /* eslint-enable @typescript-eslint/no-explicit-any */
   }
 
   return (
-    <>
-      <div className='bg-white rounded-2 px-5 py-4 d-flex flex-column gap-3'>
+    <div className='card'>
+      <div className='card-body rounded-2 d-flex flex-column gap-3'>
         <div className='d-flex justify-content-start gap-2'>
           <img
             alt='site'
@@ -64,19 +62,21 @@ const PostWidget = (
         {post.media.length > 0 && <AssetGrid medias={post.media} />}
 
         <div className='d-flex justify-content-end gap-4'>
-          <button className='d-flex gap-2 unstyled-button' type='button'>
-            <span
-              className={`material-symbols-outlined${
-                post.hasLiked
-                  ? ' fill-icon'
-                  : ''
-              }`}
-              onClick={likePost}
-            >
-              eco
-            </span>
+          <div className='d-flex gap-2'>
+            <button className='unstyled-button' onClick={likePost} type='button'>
+              <span
+                className={`material-symbols-outlined text-primary ${
+                  post.hasLiked
+                    ? 'fill-icon'
+                    : ''
+                }`}
+              >
+                eco
+              </span>
+            </button>
+
             <div>{post.likeCount}</div>
-          </button>
+          </div>
 
           <button
             className='d-flex gap-2 unstyled-button'
@@ -87,7 +87,11 @@ const PostWidget = (
             <div>{post.commentCount}</div>
           </button>
 
-          <button className='d-flex gap-2 unstyled-button' type='button'>
+          <button
+            className='d-flex gap-2 unstyled-button'
+            onClick={openPostShareModal}
+            type='button'
+          >
             <span className='material-symbols-outlined text-primary'>share</span>
             <div>{post.shareCount}</div>
           </button>
@@ -96,12 +100,17 @@ const PostWidget = (
 
       <PostCommentsDialog
         handleClose={handleCommentsModalClose}
-        onCommentAction={handleCommentCountChange}
         open={commentsModalOpen}
         postId={post.id}
-        viewMode={viewMode}
+        siteId={post.site.id}
       />
-    </>
+
+      <SharePostDialog
+        onClose={handleShareModalClose}
+        open={shareModalOpen}
+        post={post}
+      />
+    </div>
   )
 }
 

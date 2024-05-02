@@ -1,11 +1,14 @@
+import secrets
 from typing import cast
 import json
 from django.contrib.auth import authenticate
+from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import QueryDict
-from django.core import serializers
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import status
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
@@ -18,20 +21,44 @@ from canopeum_backend.permissions import (
     DeleteCommentPermission,
     MegaAdminPermission,
     MegaAdminPermissionReadOnly,
+    PublicSiteReadPermission,
+    SiteAdminPermission,
 )
 
-from .models import Announcement, Batch, Comment, Contact, Coordinate, Like, Post, Site, Siteadmin, SiteFollower, Sitetreespecies, Sitetype, Treetype, User, Widget
+from .models import (
+    Announcement,
+    Batch,
+    Comment,
+    Contact,
+    Coordinate,
+    Like,
+    Post,
+    RoleName,
+    Site,
+    Siteadmin,
+    SiteFollower,
+    Sitetreespecies,
+    Sitetype,
+    Treetype,
+    User,
+    UserInvitation,
+    Widget
+)
+
 from .serializers import (
     AdminUserSitesSerializer,
     AnnouncementSerializer,
     AssetSerializer,
     BatchAnalyticsSerializer,
     BatchSerializer,
+    ChangePasswordSerializer,
     CommentSerializer,
     ContactSerializer,
     CreateCommentSerializer,
+    CreateUserInvitationSerializer,
     LikeSerializer,
     LoginUserSerializer,
+    PostPaginationSerializer,
     PostPostSerializer,
     PostSerializer,
     RegisterUserSerializer,
@@ -44,11 +71,24 @@ from .serializers import (
     SiteSummarySerializer,
     SiteTypeSerializer,
     TreeTypeSerializer,
+    UpdateSitePublicStatusSerializer,
     UpdateUserSerializer,
+    UserInvitationSerializer,
     UserSerializer,
     UserTokenSerializer,
     WidgetSerializer,
 )
+
+
+def get_public_sites_unless_admin(user: User | None):
+    if isinstance(user, User) and user.role.name == "MegaAdmin":
+        sites = Site.objects.all()
+    elif isinstance(user, User) and user.role.name == "SiteManager":
+        admin_site_ids = [siteadmin.site.pk for siteadmin in Siteadmin.objects.filter(user=user)]
+        sites = Site.objects.filter(Q(id__in=admin_site_ids) | Q(is_public=True))
+    else:
+        sites = Site.objects.filter(is_public=True)
+    return sites
 
 
 class LoginAPIView(APIView):
@@ -122,7 +162,7 @@ class SiteTypesAPIView(APIView):
 class SiteListAPIView(APIView):
     @extend_schema(responses=SiteSerializer(many=True), operation_id="site_all")
     def get(self, request):
-        sites = Site.objects.all()
+        sites = get_public_sites_unless_admin(request.user)
         serializer = SiteSerializer(sites, many=True)
         return Response(serializer.data)
 
@@ -278,10 +318,39 @@ class SiteDetailAPIView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class SiteSocialDetailPublicStatusAPIView(APIView):
+    permission_classes = (SiteAdminPermission,)
+
+    @extend_schema(
+        request=UpdateSitePublicStatusSerializer,
+        responses=UpdateSitePublicStatusSerializer,
+        operation_id="site_social_updatePublicStatus",
+    )
+    def patch(self, request, siteId):
+        try:
+            site = Site.objects.get(pk=siteId)
+        except Site.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        self.check_object_permissions(request, site)
+
+        new_is_public_status = request.data["isPublic"]
+        if new_is_public_status is not bool:
+            Response("is_public data is invalid", status=status.HTTP_400_BAD_REQUEST)
+
+        site.is_public = new_is_public_status
+        site.save()
+
+        serializer = UpdateSitePublicStatusSerializer(data={"is_public": site.is_public})
+        serializer.is_valid()
+
+        return Response(serializer.data)
+
+
 class SiteSummaryListAPIView(APIView):
     @extend_schema(responses=SiteSummarySerializer(many=True), operation_id="site_summary_all")
     def get(self, request):
-        sites = Site.objects.all()
+        sites = get_public_sites_unless_admin(request.user)
         plant_count = 0
         survived_count = 0
         propagation_count = 0
@@ -300,12 +369,17 @@ class SiteSummaryListAPIView(APIView):
 
 
 class SiteSummaryDetailAPIView(APIView):
+    permission_classes = (PublicSiteReadPermission,)
+
     @extend_schema(responses=SiteSummarySerializer, operation_id="site_summary")
     def get(self, request, siteId):
         try:
             site = Site.objects.get(pk=siteId)
         except Site.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+        self.check_object_permissions(request, site)
+
         plant_count = 0
         survived_count = 0
         propagation_count = 0
@@ -343,7 +417,7 @@ class SiteDetailAdminsAPIView(APIView):
         updated_admin_users_list = User.objects.filter(id__in=admin_ids)
 
         for user in updated_admin_users_list:
-            if user not in existing_admin_users:
+            if user not in existing_admin_users and user.role.name == RoleName.SITEMANAGER:
                 Siteadmin.objects.create(
                     user=user,
                     site=site,
@@ -405,13 +479,13 @@ class AdminUserSitesAPIView(APIView):
         operation_id="admin-user-sites_all",
     )
     def get(self, request):
-        adminusers = User.objects.filter(role__name__exact="Admin")
-        serializer = AdminUserSitesSerializer(adminusers, many=True)
+        site_manager_users = User.objects.filter(role__name__iexact=RoleName.SITEMANAGER).order_by("username")
+        serializer = AdminUserSitesSerializer(site_manager_users, many=True)
         return Response(serializer.data)
 
 
 class SiteSocialDetailAPIView(APIView):
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (PublicSiteReadPermission,)
 
     @extend_schema(request=SiteSocialSerializer, responses=SiteSocialSerializer, operation_id="site_social")
     def get(self, request, siteId):
@@ -420,22 +494,12 @@ class SiteSocialDetailAPIView(APIView):
         except Site.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+        self.check_object_permissions(request, site)
+
         batches = Batch.objects.filter(site=siteId)
         sponsors = [batch.sponsor for batch in batches]
 
         serializer = SiteSocialSerializer(site, context={"sponsors": sponsors})
-        return Response(serializer.data)
-
-
-class SiteSocialListAPIView(APIView):
-    permission_classes = (IsAuthenticatedOrReadOnly,)
-
-    @extend_schema(
-        request=SiteSocialSerializer(many=True), responses=SiteSocialSerializer, operation_id="site_social_all"
-    )
-    def get(self, request):
-        sites = Site.objects.all()
-        serializer = SiteSocialSerializer(sites, many=True)
         return Response(serializer.data)
 
 
@@ -444,24 +508,42 @@ class SiteMapListAPIView(APIView):
 
     @extend_schema(responses=SiteMapSerializer(many=True), operation_id="site_map")
     def get(self, request):
-        sites = Site.objects.all()
+        sites = get_public_sites_unless_admin(request.user)
         serializer = SiteMapSerializer(sites, many=True)
         return Response(serializer.data)
 
 
-class PostListAPIView(APIView):
+class PostListAPIView(APIView, PageNumberPagination):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     @extend_schema(
-        responses=PostSerializer(many=True),
+        responses=PostPaginationSerializer,
         operation_id="post_all",
-        parameters=[OpenApiParameter(name="siteId", type=OpenApiTypes.INT, location=OpenApiParameter.QUERY)],
+        parameters=[
+            OpenApiParameter(name="siteId", type=OpenApiTypes.INT, many=True, location=OpenApiParameter.QUERY),
+            OpenApiParameter(name="page", type=OpenApiTypes.INT, required=True, location=OpenApiParameter.QUERY),
+            OpenApiParameter(name="size", type=OpenApiTypes.INT, required=True, location=OpenApiParameter.QUERY),
+        ],
     )
     def get(self, request):
-        site_id = request.GET.get("siteId", "")
-        posts = Post.objects.filter(site=site_id) if not site_id else Post.objects.all()
-        serializer = PostSerializer(posts, many=True, context={"request": request})
-        return Response(serializer.data)
+        site_ids = request.GET.getlist("siteId")
+        posts = Post.objects.filter(site__in=site_ids) if site_ids else Post.objects.all()
+        sorted_posts = posts.order_by("-created_at")
+
+        page = request.GET.get("page")
+        size = request.GET.get("size")
+
+        if not isinstance(page, str) or not page.isnumeric() or not isinstance(size, str) or not size.isnumeric():
+            return Response("Page and size are missing or invalid", status=status.HTTP_400_BAD_REQUEST)
+
+        posts_paginator = Paginator(object_list=sorted_posts, per_page=int(size))
+        page_posts = posts_paginator.page(int(page))
+
+        self.page = page_posts
+        self.page_size = int(size)
+
+        serializer = PostSerializer(page_posts, many=True, context={"request": request})
+        return self.get_paginated_response(serializer.data)
 
     parser_classes = (MultiPartParser, FormParser)
 
@@ -501,16 +583,17 @@ class PostListAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class NewsListApiView(APIView):
-    @extend_schema(
-        responses=PostSerializer(many=True),
-        operation_id="news_all",
-    )
-    def get(self, request):
-        followed_sites = SiteFollower.objects.filter(user=request.user).values_list("site")
+class PostDetailAPIView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
-        posts = Post.objects.filter(site__in=followed_sites).order_by("-created_at")
-        serializer = PostSerializer(posts, many=True)
+    @extend_schema(responses=PostSerializer, operation_id="post_detail")
+    def get(self, request, postId):
+        try:
+            post = Post.objects.get(pk=postId)
+        except Post.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = PostSerializer(post, context={"request": request})
         return Response(serializer.data)
 
 
@@ -627,9 +710,7 @@ class LikeListAPIView(APIView):
             user = User.objects.get(pk=request.user.id)
         except Post.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = LikeSerializer(data=request.data)
-        serializer.initial_data["post"] = post.pk  # type: ignore
-        serializer.initial_data["user"] = user.pk  # type: ignore
+        serializer = LikeSerializer(data={"post": post.pk, "user": user.pk})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -642,7 +723,7 @@ class LikeListAPIView(APIView):
         except Post.DoesNotExist:
             return Response(status="sef")
         try:
-            like = Like.objects.get(post=post)
+            like = Like.objects.get(post=post, user=request.user)
         except Like.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -694,17 +775,17 @@ class BatchDetailAPIView(APIView):
 class UserListAPIView(APIView):
     @extend_schema(responses=UserSerializer(many=True), operation_id="user_all")
     def get(self, request):
-        users = User.objects.all()
+        users = User.objects.all().order_by("username")
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
 
 
-class AdminUsersListAPIView(APIView):
+class SiteManagersListAPIView(APIView):
     permission_classes = (MegaAdminPermission,)
 
-    @extend_schema(responses=UserSerializer(many=True), operation_id="user_allAdmins")
+    @extend_schema(responses=UserSerializer(many=True), operation_id="user_allSiteManagers")
     def get(self, request):
-        users = User.objects.filter(role__name__iexact="admin")
+        users = User.objects.filter(role__name__iexact=RoleName.SITEMANAGER).order_by("username")
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
 
@@ -731,6 +812,24 @@ class UserDetailAPIView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         self.check_object_permissions(request, user)
+
+        change_password_request = request.data.get("changePassword")
+        if change_password_request is not None:
+            change_password_serializer = ChangePasswordSerializer(data=change_password_request)
+            change_password_serializer.is_valid()
+            current_password = change_password_request["currentPassword"]
+
+            if isinstance(current_password, str):
+                is_valid = user.check_password(current_password)
+                if is_valid is not True:
+                    return Response("CURRENT_PASSWORD_INVALID", status=status.HTTP_400_BAD_REQUEST)
+                new_password = change_password_request["newPassword"]
+                new_password_confirmation = current_password = change_password_request["newPasswordConfirmation"]
+                if new_password != new_password_confirmation:
+                    return Response("NEW_PASSWORDS_DO_NOT_MATCH", status=status.HTTP_400_BAD_REQUEST)
+                user.set_password(new_password)
+                user.save()
+
         serializer = UserSerializer(user, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -742,6 +841,51 @@ class UserCurrentUserAPIView(APIView):
     @extend_schema(responses=UserSerializer, operation_id="user_current")
     def get(self, request):
         serializer = UserSerializer(request.user)
+        return Response(serializer.data)
+
+
+class UserInvitationListAPIView(APIView):
+    permission_classes = (MegaAdminPermission,)
+
+    @extend_schema(
+        request=CreateUserInvitationSerializer,
+        responses=UserInvitationSerializer,
+        operation_id="user-invitation_create",
+    )
+    def post(self, request):
+        site_ids = request.data.get("siteIds")
+        if site_ids is None:
+            return Response("SITE_IDS_INVALID", status=status.HTTP_400_BAD_REQUEST)
+        email = request.data.get("email")
+        if User.objects.filter(email=email).exists():
+            return Response("EMAIL_TAKEN", status=status.HTTP_400_BAD_REQUEST)
+        code = secrets.token_urlsafe(32)
+        user_invitation = UserInvitation.objects.create(
+            code=code,
+            email=email,
+        )
+        sites_to_assign_to = Site.objects.filter(id__in=site_ids)
+        user_invitation.assigned_to_sites.add(*sites_to_assign_to)
+        user_invitation.save()
+        serializer = UserInvitationSerializer(user_invitation)
+
+        return Response(serializer.data)
+
+
+class UserInvitationDetailAPIView(APIView):
+    permission_classes = (AllowAny,)
+
+    @extend_schema(
+        responses=UserInvitationSerializer,
+        operation_id="user-invitation_detail",
+    )
+    def get(self, request, code: str):
+        try:
+            user_invitation = UserInvitation.objects.get(code=code)
+        except UserInvitation.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserInvitationSerializer(user_invitation)
         return Response(serializer.data)
 
 

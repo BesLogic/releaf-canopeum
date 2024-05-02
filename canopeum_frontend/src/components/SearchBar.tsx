@@ -40,7 +40,15 @@ const SearchBar = ({ initialValue, onChange }: Props) => {
       <span className='input-group-append'>
         <button
           className='
-            btn btn-outline-secondary bg-white border-start-0 border rounded-end-pill d-flex align-items-center'
+            btn
+            btn-outline-secondary
+            bg-cream
+            border-start-0
+            border
+            rounded-end-pill
+            d-flex
+            align-items-center
+          '
           onClick={() => onChange(searchValue)}
           type='button'
         >

@@ -13,8 +13,14 @@
       "@components/*": [
         "./src/components/*"
       ],
+      "@config/*": [
+        "./src/config/*"
+      ],
       "@constants/*": [
         "./src/constants/*"
+      ],
+      "@hooks/*": [
+        "./src/hooks/*"
       ],
       "@models/*": [
         "./src/models/*"

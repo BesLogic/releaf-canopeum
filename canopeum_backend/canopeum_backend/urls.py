@@ -13,11 +13,9 @@ urlpatterns = [
     path("auth/login/", views.LoginAPIView.as_view(), name="login"),
     path("auth/logout/", views.LogoutAPIView.as_view(), name="logout"),
     path("auth/register/", views.RegisterAPIView.as_view(), name="register"),
-    # News
-    path("news/", views.NewsListApiView.as_view(), name="news-list"),
-    # Social
     # Post
     path("social/posts/", views.PostListAPIView.as_view(), name="post-list"),
+    path("social/posts/<int:postId>/", views.PostDetailAPIView.as_view(), name="post-detail"),
     # Comment
     path("social/posts/<int:postId>/comments/", views.CommentListAPIView.as_view(), name="comment-list"),
     path(
@@ -28,8 +26,12 @@ urlpatterns = [
     # Like
     path("social/posts/<int:postId>/likes/", views.LikeListAPIView.as_view(), name="like-list"),
     # Site
-    path("social/sites/", views.SiteSocialListAPIView.as_view(), name="site-list"),
     path("social/sites/<int:siteId>/", views.SiteSocialDetailAPIView.as_view(), name="site-detail"),
+    path(
+        "social/sites/<int:siteId>/public-status",
+        views.SiteSocialDetailPublicStatusAPIView.as_view(),
+        name="site-detail",
+    ),
     # Announcement
     path(
         "social/sites/<int:siteId>/announcements/",
@@ -79,9 +81,11 @@ urlpatterns = [
     path("map/sites/", views.SiteMapListAPIView.as_view(), name="coordinate-list-sites"),
     # User
     path("users/", views.UserListAPIView.as_view(), name="user-list"),
-    path("users/admins", views.AdminUsersListAPIView.as_view(), name="admin-user-list"),
+    path("users/site-managers", views.SiteManagersListAPIView.as_view(), name="site-managers-list"),
     path("users/<int:userId>/", views.UserDetailAPIView.as_view(), name="user-detail"),
     path("users/current_user/", views.UserCurrentUserAPIView.as_view(), name="current-user"),
+    path("user-invitations/", views.UserInvitationListAPIView.as_view(), name="user-invitation-list"),
+    path("user-invitations/<str:code>", views.UserInvitationDetailAPIView.as_view(), name="user-invitation-list"),
     # Site admins
     path(
         "admin-user-sites/",

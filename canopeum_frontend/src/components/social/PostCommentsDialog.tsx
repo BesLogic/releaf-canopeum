@@ -2,32 +2,35 @@ import { AuthenticationContext } from '@components/context/AuthenticationContext
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import ConfirmationDialog from '@components/dialogs/ConfirmationDialog'
 import PostComment from '@components/social/PostComment'
-import type { PageViewMode } from '@models/types/PageViewMode'
+import useApiClient from '@hooks/ApiClientHook'
 import { Dialog, DialogContent } from '@mui/material'
 import { type Comment, CreateComment } from '@services/api'
-import getApiClient from '@services/apiInterface'
 import { type ChangeEvent, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 
+import usePostsStore from '../../store/postsStore'
 import { numberOfWordsInText } from '../../utils/stringUtils'
 import type { InputValidationError } from '../../utils/validators'
 
 type Props = {
   readonly postId: number,
+  readonly siteId: number,
   readonly open: boolean,
   readonly handleClose: () => void,
-  readonly onCommentAction: (action: 'added' | 'deleted') => void,
-  readonly viewMode: PageViewMode,
 }
 
 const MAXIMUM_WORDS_PER_COMMENT = 100
 
-const PostCommentsDialog = ({ open, postId, handleClose, onCommentAction, viewMode }: Props) => {
+const PostCommentsDialog = ({ open, postId, siteId, handleClose }: Props) => {
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const { currentUser } = useContext(AuthenticationContext)
+  const { commentChange } = usePostsStore()
+  const { getApiClient } = useApiClient()
+
   const [comments, setComments] = useState<Comment[]>([])
+  const [commentsLoaded, setCommentsLoaded] = useState(false)
 
   const [commentBody, setCommentBody] = useState('')
   const [commentBodyNumberOfWords, setCommentBodyNumberOfWords] = useState(0)
@@ -37,10 +40,14 @@ const PostCommentsDialog = ({ open, postId, handleClose, onCommentAction, viewMo
   const [confirmCommentText, setConfirmCommentText] = useState('')
 
   useEffect(() => {
+    // Since this is a dialog, we only want to fetch the comments once it is opened
+    if (!open || commentsLoaded) return
+
     const fetchComments = async () => setComments(await getApiClient().commentClient.all(postId))
 
     void fetchComments()
-  }, [postId])
+    setCommentsLoaded(true)
+  }, [postId, open, commentsLoaded])
 
   useEffect(() => {
     if (!confirmCommentDeleteOpen) {
@@ -101,20 +108,21 @@ const PostCommentsDialog = ({ open, postId, handleClose, onCommentAction, viewMo
     setComments(previous => [newComment, ...previous])
     setCommentBody('')
     setCommentBodyNumberOfWords(0)
-    onCommentAction('added')
+    commentChange(postId, 'added')
   }
 
   const deleteComment = async (commentToDelete: Comment) => {
     try {
       await getApiClient().commentClient.delete(commentToDelete.id, postId)
       setComments(previous => previous.filter(comment => comment.id !== commentToDelete.id))
-      onCommentAction('deleted')
+      commentChange(postId, 'removed')
     } catch {
       openAlertSnackbar(translate('social.comments.comment-deletion-error'), { severity: 'error' })
     }
   }
 
-  const handleDeleteCommentClick = (commentToDelete: Comment) => setConfirmCommentDeleteOpen(commentToDelete)
+  const handleDeleteCommentClick = (commentToDelete: Comment) =>
+    setConfirmCommentDeleteOpen(commentToDelete)
 
   const handleConfirmDeleteAction = (proceedWithDelete: boolean) => {
     const commentToDelete = confirmCommentDeleteOpen
@@ -129,7 +137,7 @@ const PostCommentsDialog = ({ open, postId, handleClose, onCommentAction, viewMo
     <>
       <Dialog fullWidth maxWidth='sm' onClose={handleClose} open={open}>
         <DialogContent className='pb-5'>
-          {viewMode !== 'visitor' && (
+          {currentUser && (
             <div className='mb-5'>
               <div className='d-flex justify-content-between align-items-center pb-1'>
                 <label className='form-label mb-0 flex-grow-1' htmlFor='new-comment-body-input'>
@@ -151,7 +159,10 @@ const PostCommentsDialog = ({ open, postId, handleClose, onCommentAction, viewMo
                     rows={5}
                     value={commentBody}
                   />
-                  <div className='max-words position-absolute end-0 pe-2' style={{ bottom: '-1.6rem' }}>
+                  <div
+                    className='max-words position-absolute end-0 pe-2'
+                    style={{ bottom: '-1.6rem' }}
+                  >
                     <span>{commentBodyNumberOfWords}/{MAXIMUM_WORDS_PER_COMMENT}</span>
                     <span className='ms-1'>
                       {translate('social.comments.words', { count: MAXIMUM_WORDS_PER_COMMENT })}
@@ -167,7 +178,9 @@ const PostCommentsDialog = ({ open, postId, handleClose, onCommentAction, viewMo
 
                 {commentBodyError === 'maximumChars' && (
                   <span className='help-block text-danger'>
-                    {translate('social.comments.comment-body-max-chars', { count: MAXIMUM_WORDS_PER_COMMENT })}
+                    {translate('social.comments.comment-body-max-chars', {
+                      count: MAXIMUM_WORDS_PER_COMMENT,
+                    })}
                   </span>
                 )}
               </div>
@@ -189,6 +202,7 @@ const PostCommentsDialog = ({ open, postId, handleClose, onCommentAction, viewMo
                 <PostComment
                   comment={comment}
                   onDelete={handleDeleteCommentClick}
+                  siteId={siteId}
                 />
               </CSSTransition>
             ))}

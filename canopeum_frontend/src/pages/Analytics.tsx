@@ -5,27 +5,39 @@ import SiteSuccessRatesChart from '@components/analytics/SiteSuccessRatesChart'
 import SiteSummaryCard from '@components/analytics/SiteSummaryCard'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { LanguageContext } from '@components/context/LanguageContext'
+import useApiClient from '@hooks/ApiClientHook'
 import { assetFormatter } from '@utils/assetFormatter'
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { type SiteSummary, Species, type User } from '../services/api'
-import getApiClient from '../services/apiInterface'
 
 const Analytics = () => {
-  const { t } = useTranslation()
+  const { t: translate } = useTranslation()
   const { formatDate } = useContext(LanguageContext)
   const { currentUser } = useContext(AuthenticationContext)
+  const { getApiClient } = useApiClient()
+
   const [siteSummaries, setSiteSummaries] = useState<SiteSummary[]>([])
   const [adminList, setAdminList] = useState<User[]>([])
   const [siteId, setSiteId] = useState<number>()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const fetchSites = async () => setSiteSummaries(await getApiClient().summaryClient.all())
-  const fetchAdmins = async () => setAdminList(await getApiClient().userClient.allAdmins())
+  const fetchSites = useCallback(
+    async () => setSiteSummaries(await getApiClient().summaryClient.all()),
+    [getApiClient],
+  )
 
-  const handleModalClose = async (reason?: 'backdropClick' | 'escapeKeyDown' | 'save', data?: SiteDto) => {
+  const fetchAdmins = useCallback(
+    async () => setAdminList(await getApiClient().userClient.allSiteManagers()),
+    [getApiClient],
+  )
+
+  const handleModalClose = async (
+    reason?: 'backdropClick' | 'escapeKeyDown' | 'save',
+    data?: SiteDto,
+  ) => {
     if (reason && reason !== 'save') {
       setIsModalOpen(false)
       setSiteId(undefined)
@@ -43,7 +55,16 @@ const Analytics = () => {
         // eslint-disable-next-line max-len -- string
         `${dmsLatitude.degrees}°${dmsLatitude.minutes}'${dmsLatitude.seconds}.${dmsLatitude.miliseconds}"${dmsLatitude.cardinal}`
 
-      const { dmsLongitude, siteName, siteType, presentation, researchPartner, size, species, visibleOnMap } = data
+      const {
+        dmsLongitude,
+        siteName,
+        siteType,
+        presentation,
+        researchPartner,
+        size,
+        species,
+        visibleOnMap,
+      } = data
       const longitude =
         // eslint-disable-next-line max-len -- string
         `${dmsLongitude.degrees}°${dmsLongitude.minutes}'${dmsLongitude.seconds}.${dmsLongitude.miliseconds}"${dmsLongitude.cardinal}`
@@ -76,7 +97,6 @@ const Analytics = () => {
           visibleOnMap,
         )
       }
-
     }
 
     setIsModalOpen(false)
@@ -84,16 +104,20 @@ const Analytics = () => {
   }
 
   const handleSiteEdit = (_siteId: number) => {
-    setSiteId(_siteId);
-    setIsModalOpen(true);
+    setSiteId(_siteId)
+    setIsModalOpen(true)
   }
 
   useEffect((): void => {
-    void fetchSites()
     if (currentUser?.role !== 'MegaAdmin') return
 
     void fetchAdmins()
-  }, [currentUser?.role])
+  }, [currentUser?.role, fetchAdmins])
+
+  useEffect(
+    (): void => void fetchSites(),
+    [fetchSites],
+  )
 
   const renderBatches = () =>
     siteSummaries.map(site => {
@@ -122,16 +146,18 @@ const Analytics = () => {
               <div className='d-flex justify-content-between w-100 pe-3 fs-5'>
                 <span>{site.name}</span>
                 <span style={{ opacity: .5 }}>
-                  {t('analytics.last-update')}: {lastModifiedBatchDate
+                  {translate('analytics.last-update')}: {lastModifiedBatchDate
                     ? formatDate(lastModifiedBatchDate)
                     : 'N/A'}
                 </span>
                 <span className='text-capitalize'>
-                  {site.batches.length} {t('analytics.batches', { count: site.batches.length })}
+                  {site.batches.length}{' '}
+                  {translate('analytics.batches', { count: site.batches.length })}
                 </span>
               </div>
             </button>
           </h2>
+
           <div
             aria-labelledby={`heading-${site.id}`}
             className='accordion-collapse collapse'
@@ -150,10 +176,10 @@ const Analytics = () => {
     <div>
       <div className='container d-flex flex-column gap-2 mt-3'>
         <div className='d-flex justify-content-between'>
-          <h1 className='text-light'>Manage my Sites</h1>
+          <h1 className='text-light'>{translate('analytics.title')}</h1>
 
           <button className='btn btn-secondary' onClick={() => setIsModalOpen(true)} type='button'>
-            Create a New Site
+            {translate('analytics.create-site')}
           </button>
           <SiteModal
             handleClose={handleModalClose}
@@ -174,20 +200,21 @@ const Analytics = () => {
           ))}
         </div>
 
-        <div className='mt-4 bg-white rounded p-3'>
-          <h5>Average Annual Success Rate Per Site</h5>
+        <div className='mt-4 bg-cream rounded p-3'>
+          <h5>{translate('analytics.success-rate-chart.title')}</h5>
           <SiteSuccessRatesChart siteSummaries={siteSummaries} />
         </div>
 
         <div className='mt-4'>
-          <div className='bg-white rounded p-3 px-4'>
+          <div className='bg-cream rounded p-3 px-4'>
             <div className='d-flex justify-content-between'>
-              <div className='fs-5'>Batch Tracking</div>
+              <div className='fs-5'>{translate('analytics.batches.batch-tracking')}</div>
               <div>
                 <span>Filters Go Here</span>
               </div>
             </div>
           </div>
+
           <div className='accordion mt-4' id='accordion-batches'>
             {renderBatches()}
           </div>

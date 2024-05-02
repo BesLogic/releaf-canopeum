@@ -1,4 +1,4 @@
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions -- is required for the custom input label */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions -- custom input label */
 import UploadIcon from '@assets/icons/upload.svg'
 import type { ChangeEvent, DragEvent } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -13,7 +13,7 @@ const supportedFileTypes = [
   'image/jpeg',
 ]
 
-const SiteImageUpload = ({onChange, siteImageURL}: Props) => {
+const SiteImageUpload = ({ onChange, siteImageURL }: Props) => {
   const { t } = useTranslation()
 
   const handleFileChange = (
@@ -45,7 +45,7 @@ const SiteImageUpload = ({onChange, siteImageURL}: Props) => {
           backgroundImage: `url(${siteImageURL})`,
           backgroundSize: 'contain',
           backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'center'
+          backgroundPosition: 'center',
         }}
       >
         <img alt='' src={UploadIcon} />

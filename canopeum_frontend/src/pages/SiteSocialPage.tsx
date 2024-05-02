@@ -1,35 +1,52 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import SiteSocialHeader from '@components/social/SiteSocialHeader'
-import type { PageViewMode } from '@models/types/PageViewMode'
+import useApiClient from '@hooks/ApiClientHook'
+import type { PageViewMode } from '@models/types/PageViewMode.Type'
+import { CircularProgress } from '@mui/material'
 import type { Post, SiteSocial } from '@services/api'
-import getApiClient from '@services/apiInterface'
 import { ensureError } from '@services/errors'
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import AnnouncementCard from '../components/AnnouncementCard'
 import ContactCard from '../components/ContactCard'
 import CreatePostWidget from '../components/CreatePostWidget'
 import PostWidget from '../components/social/PostWidget'
+import usePostsInfiniteScrolling from '../hooks/PostsInfiniteScrollingHook'
+import usePostsStore from '../store/postsStore'
+import LoadingPage from './LoadingPage'
 
 const SiteSocialPage = () => {
-  const { siteId } = useParams()
+  const { siteId: siteIdParam } = useParams()
   const { currentUser } = useContext(AuthenticationContext)
+  const { posts, addPost } = usePostsStore()
+  const { getApiClient } = useApiClient()
+  const scrollableContainerRef = useRef<HTMLDivElement>(null)
+
+  const {
+    onScroll,
+    setSiteIds,
+    isLoadingMore,
+    isLoadingFirstPage,
+    loadingError,
+  } = usePostsInfiniteScrolling()
+
   const [isLoadingSite, setIsLoadingSite] = useState(true)
   const [error, setError] = useState<Error | undefined>(undefined)
   const [site, setSite] = useState<SiteSocial>()
+  const [sitePosts, setSitePosts] = useState<Post[]>([])
 
-  const [isLoadingPosts, setIsLoadingPosts] = useState(true)
-  const [errorPosts, setErrorPosts] = useState<Error | undefined>(undefined)
-  const [posts, setPosts] = useState<Post[]>([])
+  const siteId = siteIdParam
+    ? Number.parseInt(siteIdParam, 10) || 0
+    : 0
 
   const viewMode: PageViewMode = currentUser
-    ? currentUser.role === 'User'
-      ? 'user'
-      : 'admin'
+    ? (currentUser.role === 'MegaAdmin' || currentUser.adminSiteIds.includes(siteId))
+      ? 'admin'
+      : 'user'
     : 'visitor'
 
-  const fetchSiteData = async (parsedSiteId: number) => {
+  const fetchSiteData = useCallback(async (parsedSiteId: number) => {
     setIsLoadingSite(true)
     try {
       const fetchedSite = await getApiClient().siteClient.social(parsedSiteId)
@@ -39,89 +56,78 @@ const SiteSocialPage = () => {
     } finally {
       setIsLoadingSite(false)
     }
-  }
+  }, [getApiClient])
 
-  const fetchPosts = async (parsedSiteId: number) => {
-    setIsLoadingPosts(true)
-    try {
-      const fetchedPosts = await getApiClient().postClient.all(parsedSiteId)
-      setPosts(fetchedPosts)
-    } catch (error_: unknown) {
-      setErrorPosts(ensureError(error_))
-    } finally {
-      setIsLoadingPosts(false)
-    }
-  }
-
-  const addNewPost = (newPost: Post) => {
-    setPosts([newPost, ...posts || []])
-  }
-
-  const likePost = async (postId: number) => {
-    const post = posts.find(post => post.id === postId)
-    if (!post) return
-    const newPost = { ...post, hasLiked: !post.hasLiked }
-    newPost.likeCount = post.hasLiked
-      ? post.likeCount! - 1
-      : post.likeCount! + 1
-    posts.splice(posts.indexOf(post), 1)
-    setPosts([newPost as Post, ...posts || []])
-  }
+  const addNewPost = (newPost: Post) => addPost(newPost)
 
   useEffect((): void => {
-    void fetchSiteData(Number(siteId) || 1)
-    void fetchPosts(Number(siteId) || 1)
-  }, [siteId])
+    void fetchSiteData(siteId)
+    setSiteIds([siteId])
+  }, [siteId, fetchSiteData, setSiteIds])
+
+  useEffect(
+    () => setSitePosts(posts.filter(post => post.site.id === siteId)),
+    [posts, siteId],
+  )
+
+  if (isLoadingSite) {
+    return <LoadingPage />
+  }
+
+  if (error) {
+    return (
+      <div className='bg-cream rounded-2 2 py-2'>
+        <p>{error.message}</p>
+      </div>
+    )
+  }
+
+  if (!site) return <div />
 
   return (
-    <div className='container mt-2 d-flex flex-column gap-4' style={{ padding: '1rem 10rem' }}>
-      {isLoadingSite
-        ? (
-          <div className='bg-white rounded-2 2 py-2'>
-            <p>Loading...</p>
+    <div
+      className='page-container h-100 overflow-y-auto d-flex flex-column gap-4'
+      onScroll={() => onScroll(scrollableContainerRef)}
+      ref={scrollableContainerRef}
+    >
+      <SiteSocialHeader site={site} viewMode={viewMode} />
+
+      <div className='row row-gap-3 m-0'>
+        <div className='col-12 col-md-6 col-lg-5 col-xl-4'>
+          <div className='d-flex flex-column gap-4'>
+            <AnnouncementCard announcement={site.announcement} viewMode={viewMode} />
+            <ContactCard contact={site.contact} viewMode={viewMode} />
           </div>
-        )
-        : error
-        ? (
-          <div className='bg-white rounded-2 2 py-2'>
-            <p>{error.message}</p>
-          </div>
-        )
-        : (site && <SiteSocialHeader site={site} viewMode={viewMode} />)}
-      <div className='container px-0'>
-        <div className='row'>
-          <div className='col-4'>
+        </div>
+
+        <div className='col-12 col-md-6 col-lg-7 col-xl-8'>
+          <div className='rounded-2 d-flex flex-column gap-4'>
+            {viewMode === 'admin' && <CreatePostWidget addNewPost={addNewPost} siteId={siteId} />}
             <div className='d-flex flex-column gap-4'>
-              {site?.announcement && <AnnouncementCard announcement={site.announcement} viewMode={viewMode} />}
-              {site?.contact && <ContactCard contact={site.contact} viewMode={viewMode} />}
-            </div>
-          </div>
-          <div className='col-8'>
-            <div className='rounded-2 d-flex flex-column gap-4'>
-              {site && (
-                <>
-                  {viewMode == 'admin' && <CreatePostWidget addNewPost={addNewPost} />}
-                  <div className='d-flex flex-column gap-4'>
-                    {isLoadingPosts
-                      ? (
-                        <div className='bg-white rounded-2 2 py-2'>
-                          <p>Loading...</p>
-                        </div>
-                      )
-                      : errorPosts
-                      ? (
-                        <div className='bg-white rounded-2 2 py-2'>
-                          <p>{errorPosts.message}</p>
-                        </div>
-                      )
-                      : posts &&
-                        posts.sort((a: Post, b: Post) =>
-                          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-                        ).map((post: Post) => <PostWidget likePostEvent={likePost} post={post} viewMode={viewMode} />)}
+              {isLoadingFirstPage
+                ? (
+                  <div className='card'>
+                    <div className='card-body'>
+                      <LoadingPage />
+                    </div>
                   </div>
-                </>
-              )}
+                )
+                : loadingError
+                ? (
+                  <div className='card'>
+                    <div className='card-body'>
+                      <span>{loadingError}</span>
+                    </div>
+                  </div>
+                )
+                : sitePosts.map(post => <PostWidget key={post.id} post={post} />)}
             </div>
+
+            {isLoadingMore && (
+              <div className='w-100 d-flex justify-content-center align-items-center py-2'>
+                <CircularProgress color='secondary' size={50} thickness={5} />
+              </div>
+            )}
           </div>
         </div>
       </div>

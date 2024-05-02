@@ -6,15 +6,17 @@ import { createRef, useContext } from 'react'
 type Props = {
   readonly comment: Comment,
   readonly onDelete: (comment: Comment) => void,
+  readonly siteId: number,
 }
 
-const PostComment = ({ comment, onDelete }: Props) => {
+const PostComment = ({ comment, onDelete, siteId }: Props) => {
   const { formatDate } = useContext(LanguageContext)
   const { currentUser } = useContext(AuthenticationContext)
   const ref = createRef<HTMLDivElement>()
 
   const canDeleteComment = currentUser && (
-    ['Admin', 'MegaAdmin'].includes(currentUser.role) ||
+    currentUser.role === 'MegaAdmin' ||
+    (currentUser.role === 'SiteManager' && currentUser.adminSiteIds.includes(siteId)) ||
     comment.authorId === currentUser.id
   )
 
@@ -26,12 +28,18 @@ const PostComment = ({ comment, onDelete }: Props) => {
 
           <div className='d-flex flex-column'>
             <span className='fw-bold'>{comment.authorUsername}</span>
-            <span className='text-muted text-small'>{formatDate(comment.createdAt, { dateStyle: 'short' })}</span>
+            <span className='text-muted text-small'>
+              {formatDate(comment.createdAt, { dateStyle: 'short' })}
+            </span>
           </div>
         </div>
 
         {canDeleteComment && (
-          <button className='unstyled-button' onClick={() => onDelete(comment)} type='button'>
+          <button
+            className='unstyled-button'
+            onClick={() => onDelete(comment)}
+            type='button'
+          >
             <span className='material-symbols-outlined text-primary'>cancel</span>
           </button>
         )}

@@ -2,8 +2,8 @@ import AuthPageLayout from '@components/auth/AuthPageLayout'
 import Checkbox from '@components/Checkbox'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { appRoutes } from '@constants/routes.constant'
+import useApiClient from '@hooks/ApiClientHook'
 import { LoginUser } from '@services/api'
-import getApiClient from '@services/apiInterface'
 import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -13,6 +13,8 @@ import type { InputValidationError } from '../utils/validators'
 const Login = () => {
   const { authenticate, storeToken } = useContext(AuthenticationContext)
   const { t: translate } = useTranslation()
+  const { getApiClient } = useApiClient()
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [rememberMe, setRememberMe] = useState(false)
@@ -47,7 +49,8 @@ const Login = () => {
   }
 
   const validateForm = () => {
-    // Do not return directly the method calls; we need each of them to be called before returning the result
+    // Do not return directly the method calls;
+    // we need each of them to be called before returning the result
     const emailValid = validateEmail()
     const passwordValid = validatePassword()
 
@@ -80,7 +83,7 @@ const Login = () => {
         <h1 style={{ textAlign: 'center' }}>{translate('auth.log-in-header-text')}</h1>
       </div>
 
-      <div className='d-flex flex-column gap-4' style={{ width: '60%' }}>
+      <div className='col-10 col-sm-6 col-md-8 col-xl-6 d-flex flex-column gap-4'>
         <div className='w-100'>
           <label htmlFor='email-input'>{translate('auth.email-label')}</label>
           <input

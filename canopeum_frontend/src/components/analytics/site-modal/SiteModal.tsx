@@ -2,16 +2,19 @@ import SiteCoordinates from '@components/analytics/site-modal/SiteCoordinates'
 import SiteImageUpload from '@components/analytics/site-modal/SiteImageUpload'
 import { LanguageContext } from '@components/context/LanguageContext'
 import TreeSpeciesSelector from '@components/TreeSpeciesSelector'
+import useApiClient from '@hooks/ApiClientHook'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import type { Sitetreespecies, SiteType, TreeType } from '@services/api'
-import api from '@services/apiInterface'
 import { getApiBaseUrl } from '@services/apiSettings'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 type Props = {
   readonly open: boolean,
-  readonly handleClose: (reason?: 'backdropClick' | 'escapeKeyDown' | 'save', data?: SiteDto) => void,
+  readonly handleClose: (
+    reason?: 'backdropClick' | 'escapeKeyDown' | 'save',
+    data?: SiteDto,
+  ) => void,
   readonly siteId: number | undefined,
 }
 
@@ -42,10 +45,10 @@ export type SiteDto = {
 
 const defaultSiteDto: SiteDto = {
   dmsLatitude: {
-    cardinal: 'N'
+    cardinal: 'N',
   },
   dmsLongitude: {
-    cardinal: 'W'
+    cardinal: 'W',
   },
   species: [],
   researchPartner: true,
@@ -56,11 +59,11 @@ const extractCoordinate = (coordinates?: string) => {
   if (!coordinates) return {}
 
   const char1 = coordinates.indexOf('°')
-  const char2 = coordinates.indexOf('\'')
+  const char2 = coordinates.indexOf("'")
   const char3 = coordinates.indexOf('.')
   const char4 = coordinates.indexOf('"')
 
-return {
+  return {
     degrees: Number(coordinates.slice(0, char1)),
     minutes: Number(coordinates.slice(char1 + 1, char2)),
     seconds: Number(coordinates.slice(char2 + 1, char3)),
@@ -71,6 +74,7 @@ return {
 
 const SiteModal = ({ open, handleClose, siteId }: Props) => {
   const { t } = useTranslation()
+  const { getApiClient } = useApiClient()
   const { translateValue } = useContext(LanguageContext)
   const [site, setSite] = useState<SiteDto>(defaultSiteDto)
   const [availableSpecies, setAvailableSpecies] = useState<TreeType[]>([])
@@ -80,7 +84,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
   const fetchSite = async () => {
     if (!siteId) return
 
-    const siteDetail = await api().siteClient.detail(siteId)
+    const siteDetail = await getApiClient().siteClient.detail(siteId)
     const dmsLat = siteDetail.coordinate.dmsLatitude
     const dmsLong = siteDetail.coordinate.dmsLongitude
 
@@ -90,7 +94,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
     setSite({
       siteName: siteDetail.name,
       siteType: siteDetail.siteType.id,
-      siteImage: new File([blob], 'temp', {type: blob.type}),
+      siteImage: new File([blob], 'temp', { type: blob.type }),
       dmsLatitude: extractCoordinate(dmsLat),
       dmsLongitude: extractCoordinate(dmsLong),
       presentation: siteDetail.description,
@@ -103,12 +107,9 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
   }
 
   const fetchTreeSpecies = async () =>
-    setAvailableSpecies(await api().treeClient.species())
+    setAvailableSpecies(await getApiClient().treeClient.species())
 
-
-  const fetchSiteTypes = async () =>
-    setAvailableSiteTypes(await api().siteClient.types())
-
+  const fetchSiteTypes = async () => setAvailableSiteTypes(await getApiClient().siteClient.types())
 
   const onImageUpload = (file: File) => {
     setSite(value => ({ ...value, siteImage: file }))
@@ -127,7 +128,9 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
   return (
     <Dialog fullWidth maxWidth='sm' onClose={(_, reason) => handleClose(reason)} open={open}>
       <DialogTitle>
-        <div className='fs-5 text-capitalize m-auto text-center'>{t('analytics.site-modal.create-site')}</div>
+        <div className='fs-5 text-capitalize m-auto text-center'>
+          {t('analytics.site-modal.create-site')}
+        </div>
       </DialogTitle>
       <DialogContent className='pb-5'>
         <form>
@@ -150,12 +153,15 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
             <select
               className='form-select'
               id='site-type'
-              onChange={event => setSite(current => ({ ...current, siteType: Number(event.target.value) }))}
+              onChange={event =>
+                setSite(current => ({ ...current, siteType: Number(event.target.value) }))}
               value={site.siteType}
             >
-              {availableSiteTypes.map(value =>
-                <option key={`available-specie-${value.id}`} value={value.id}>{translateValue(value)}</option>
-              )}
+              {availableSiteTypes.map(value => (
+                <option key={`available-specie-${value.id}`} value={value.id}>
+                  {translateValue(value)}
+                </option>
+              ))}
             </select>
           </div>
           <div className='mb-3'>
@@ -169,7 +175,11 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
               latitude={site.dmsLatitude}
               longitude={site.dmsLongitude}
               onChange={(latitude, longitude) =>
-                setSite(current => ({ ...current, dmsLatitude: latitude, dmsLongitude: longitude }))}
+                setSite(current => ({
+                  ...current,
+                  dmsLatitude: latitude,
+                  dmsLongitude: longitude,
+                }))}
             />
           </div>
           <div className='mb-3'>
@@ -191,7 +201,8 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
               <input
                 className='form-control'
                 id='site-size'
-                onChange={event => setSite(value => ({ ...value, size: Number(event.target.value) }))}
+                onChange={event =>
+                  setSite(value => ({ ...value, size: Number(event.target.value) }))}
                 type='number'
                 value={site.size}
               />

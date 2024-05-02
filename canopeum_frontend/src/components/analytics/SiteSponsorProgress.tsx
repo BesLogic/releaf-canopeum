@@ -10,7 +10,8 @@ const SiteSponsorProgress = ({ progress }: Props) => {
   return (
     <div className='d-flex align-items-center'>
       <div className='flex-grow-1 progress'>
-        {/* eslint-disable-next-line jsx-a11y/prefer-tag-over-role -- this is how the bootstrap component is built */}
+        {/* this is how the bootstrap component is built */}
+        {/* eslint-disable-next-line jsx-a11y/prefer-tag-over-role -- See above */}
         <div
           aria-valuemax={100}
           aria-valuemin={0}

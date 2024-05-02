@@ -28,8 +28,13 @@ from .models import (
     Sitetype,
     Treetype,
     User,
+    UserInvitation,
     Widget,
 )
+
+
+class IntegerListFieldSerializer(serializers.ListField):
+    child = serializers.IntegerField()
 
 
 class LoginUserSerializer(serializers.ModelSerializer):
@@ -38,10 +43,21 @@ class LoginUserSerializer(serializers.ModelSerializer):
         fields = ("email", "password")
 
 
+class ChangePasswordSerializer(serializers.Serializer):
+    current_password = serializers.CharField(write_only=True, required=True)
+    new_password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    new_password_confirmation = serializers.CharField(write_only=True, required=True)
+
+    class Meta:
+        fields = ("current_password", "new_password", "new_password_confirmation")
+
+
 class UpdateUserSerializer(serializers.ModelSerializer):
+    change_password = ChangePasswordSerializer(required=False)
+
     class Meta:
         model = User
-        fields = ("username", "email")
+        fields = ("username", "email", "change_password")
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
@@ -50,11 +66,12 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password_confirmation = serializers.CharField(write_only=True, required=True)
-    role = serializers.CharField(required=False, default="User")
+
+    code = serializers.CharField(required=False)
 
     class Meta:
         model = User
-        fields = ("username", "email", "password", "password_confirmation", "role")
+        fields = ("username", "email", "password", "password_confirmation", "code")
 
     def validate(self, attrs):
         if attrs["password"] != attrs["password_confirmation"]:
@@ -63,12 +80,24 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         return attrs
 
     def create_user(self):
-        if self.validated_data is not dict:
-            raise serializers.ValidationError("RegisterUser validated data is invalid")
-        role_name = self.validated_data.get("role", "User")
-        role = Role.objects.get(name=role_name)
-        if role is None:
+        if not isinstance(self.validated_data, dict):
+            raise serializers.ValidationError("VALIDATED_DATA_INVALID") from None
+
+        user_invitation: UserInvitation | None = None
+        invitation_code = self.validated_data.get("code")
+
+        if invitation_code is not None:
+            try:
+                user_invitation = UserInvitation.objects.get(code=invitation_code)
+                if user_invitation.is_expired():
+                    raise serializers.ValidationError("INVITATION_EXPIRED") from None
+
+                role = Role.objects.get(name="SiteManager")
+            except UserInvitation.DoesNotExist:
+                raise serializers.ValidationError("INVITATION_CODE_INVALID") from None
+        else:
             role = Role.objects.get(name="User")
+
         user = User.objects.create(
             username=self.validated_data["username"],
             email=self.validated_data["email"],
@@ -78,18 +107,33 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         user.set_password(self.validated_data["password"])
         user.save()
 
+        if user_invitation is not None:
+            assigned_to_sites = user_invitation.assigned_to_sites.all()
+            for site in assigned_to_sites:
+                Siteadmin.objects.create(site=site, user=user)
+            user_invitation.delete()
+
         return user
 
 
 class UserSerializer(serializers.ModelSerializer):
     role = serializers.SerializerMethodField()
+    admin_site_ids = serializers.SerializerMethodField()
+    followed_site_ids = serializers.SerializerMethodField()
 
     class Meta:
         model = User
         exclude = ("password",)
 
-    def get_role(self, obj) -> RoleName:
-        return obj.role.name
+    def get_role(self, obj: User) -> RoleName:
+        role_name = obj.role.name
+        return RoleName.from_string(RoleName.USER, role_name)
+
+    def get_admin_site_ids(self, obj: User) -> list[int]:
+        return [siteadmin.site.id for siteadmin in Siteadmin.objects.filter(user=obj)]
+
+    def get_followed_site_ids(self, obj: User) -> list[int]:
+        return [site_follower.site.id for site_follower in SiteFollower.objects.filter(user=obj)]
 
 
 class UserTokenSerializer(serializers.Serializer):
@@ -180,7 +224,7 @@ class AssetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Asset
-        fields = ("asset",)
+        fields = ("id", "asset")
 
     def to_internal_value(self, data):
         # Map 'image' field to 'asset' field in incoming data
@@ -218,6 +262,13 @@ class SitePatchSerializer(serializers.Serializer):
     class Meta:
         fields = ("site_type",)
 
+class UpdateSitePublicStatusSerializer(serializers.Serializer):
+    is_public = serializers.BooleanField(required=True)
+
+    class Meta:
+        fields = ("is_public",)
+
+
 class SiteNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Site
@@ -247,7 +298,18 @@ class SiteSocialSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Site
-        fields = ("id", "name", "site_type", "image", "description", "contact", "announcement", "sponsors", "widget")
+        fields = (
+            "id",
+            "name",
+            "is_public",
+            "site_type",
+            "image",
+            "description",
+            "contact",
+            "announcement",
+            "sponsors",
+            "widget",
+        )
 
     # Bug in the extend_schema_field type annotation, they should allow
     # base python types supported by open api specs
@@ -418,6 +480,22 @@ class SiteAdminSerializer(serializers.ModelSerializer):
         fields = ("user",)
 
 
+class CreateUserInvitationSerializer(serializers.Serializer):
+    site_ids = IntegerListFieldSerializer()
+    email = serializers.EmailField()
+
+    class Meta:
+        fields = ("site_ids", "email")
+
+
+class UserInvitationSerializer(serializers.ModelSerializer):
+    expires_at = serializers.DateTimeField()
+
+    class Meta:
+        model = UserInvitation
+        fields = ("id", "code", "email", "expires_at")
+
+
 class SiteFollowerSerializer(serializers.ModelSerializer):
     user = UserSerializer()
     site = SiteSerializer()
@@ -425,10 +503,6 @@ class SiteFollowerSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteFollower
         fields = ("user", "site")
-
-
-class IntegerListFieldSerializer(serializers.ListField):
-    child = serializers.IntegerField()
 
 
 class SiteAdminUpdateRequestSerializer(serializers.Serializer):
@@ -559,17 +633,24 @@ class PostSerializer(serializers.ModelSerializer):
         return obj.comment_set.count()
 
     @extend_schema_field(serializers.IntegerField())
-    def get_like_count(self, obj):
+    def get_like_count(self, obj: Post):
         return Like.objects.filter(post=obj).count()
 
-    @extend_schema_field(bool)  # pyright: ignore[reportArgumentType]
-    def get_has_liked(self, obj):
+    def get_has_liked(self, obj: Post) -> bool:
         user = self.context["request"].user
         if user.is_anonymous:
             return False
-        if not hasattr(obj, "like"):
-            return False
-        return Like.objects.filter(user=user).exists()
+        return Like.objects.filter(user=user, post=obj).exists()
+
+
+class PostPaginationSerializer(serializers.Serializer):
+    count = serializers.IntegerField()
+    next = serializers.CharField(required=False)
+    previous = serializers.CharField(required=False)
+    results = PostSerializer(many=True)
+
+    class Meta:
+        fields = ("count", "next", "previous", "results")
 
 
 class CreateCommentSerializer(serializers.ModelSerializer):

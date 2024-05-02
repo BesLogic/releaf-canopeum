@@ -10,7 +10,9 @@ type Props<TValue> = {
   readonly children?: ReactNode,
 }
 
-const Checkbox = <TValue extends CheckboxValueType>({ checked, id, value, onChange, children }: Props<TValue>) => {
+const Checkbox = <TValue extends CheckboxValueType>(
+  { checked, id, value, onChange, children }: Props<TValue>,
+) => {
   const [isChecked, setIsChecked] = useState(checked)
 
   useEffect(

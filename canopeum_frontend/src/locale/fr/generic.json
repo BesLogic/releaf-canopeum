@@ -2,5 +2,7 @@
   "cancel": "Annuler",
   "delete": "Supprimer",
   "ok": "Ok",
-  "save": "Sauvegarder"
+  "save": "Sauvegarder",
+  "copied-clipboard": "Copié dans le presse-papier",
+  "error-default": "Oooops! Une erreur est survenue lors du chargement des données."
 }

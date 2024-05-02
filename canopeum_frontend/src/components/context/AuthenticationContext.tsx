@@ -1,7 +1,7 @@
+import useApiClient from '@hooks/ApiClientHook'
 import type { TokenRefresh, User } from '@services/api'
-import getApiClient from '@services/apiInterface'
 import type { FunctionComponent, ReactNode } from 'react'
-import { createContext, memo, useCallback, useMemo, useState } from 'react'
+import { createContext, memo, useCallback, useMemo, useRef, useState } from 'react'
 
 export const STORAGE_ACCESS_TOKEN_KEY = 'token'
 export const STORAGE_REFRESH_TOKEN_KEY = 'refreshToken'
@@ -40,67 +40,81 @@ const storeToken = (token: TokenRefresh, remember = false) => {
   }
 }
 
-const AuthenticationContextProvider: FunctionComponent<{ readonly children?: ReactNode }> = memo(props => {
-  const [user, setUser] = useState<User>()
-  const [isSessionLoaded, setIsSessionLoaded] = useState(false)
+const AuthenticationContextProvider: FunctionComponent<{ readonly children?: ReactNode }> = memo(
+  props => {
+    const [user, setUser] = useState<User>()
+    const [isSessionLoaded, setIsSessionLoaded] = useState(false)
+    const [isInitiated, setIsInitiated] = useState<boolean>(false)
+    const isInitiatedRef = useRef(isInitiated)
 
-  const loadSession = useCallback(() => setIsSessionLoaded(true), [setIsSessionLoaded])
+    const { getApiClient } = useApiClient()
 
-  const authenticate = useCallback((newUser: User) => {
-    setUser(newUser)
-    loadSession()
-  }, [setUser, loadSession])
+    const loadSession = useCallback(() => setIsSessionLoaded(true), [setIsSessionLoaded])
 
-  const updateUser = useCallback((updatedUser: User) => setUser(updatedUser), [setUser])
-
-  const initAuth = useCallback(async () => {
-    const accessToken = sessionStorage.getItem(STORAGE_ACCESS_TOKEN_KEY) ??
-      localStorage.getItem(STORAGE_ACCESS_TOKEN_KEY)
-    if (!accessToken) {
+    const authenticate = useCallback((newUser: User) => {
+      setUser(newUser)
       loadSession()
+    }, [setUser, loadSession])
 
-      return
-    }
+    const updateUser = useCallback((updatedUser: User) => setUser(updatedUser), [setUser])
 
-    try {
-      const currentUser = await getApiClient().userClient.current()
-      authenticate(currentUser)
-    } catch { /* empty */ }
+    const initAuth = useCallback(async () => {
+      if (isInitiatedRef.current) return
 
-    loadSession()
-  }, [authenticate, loadSession])
+      try {
+        const accessToken = sessionStorage.getItem(STORAGE_ACCESS_TOKEN_KEY) ??
+          localStorage.getItem(STORAGE_ACCESS_TOKEN_KEY)
 
-  const logout = useCallback(() => {
-    sessionStorage.removeItem(STORAGE_ACCESS_TOKEN_KEY)
-    sessionStorage.removeItem(STORAGE_REFRESH_TOKEN_KEY)
-    localStorage.removeItem(STORAGE_ACCESS_TOKEN_KEY)
-    localStorage.removeItem(STORAGE_REFRESH_TOKEN_KEY)
+        if (!accessToken) {
+          loadSession()
 
-    setUser(undefined)
-  }, [setUser])
+          isInitiatedRef.current = true
 
-  const context = useMemo<IAuthenticationContext>(() => (
-    {
-      currentUser: user,
-      isAuthenticated: user !== undefined,
-      isSessionLoaded,
-      initAuth,
-      authenticate,
-      updateUser,
-      storeToken,
-      loadSession,
-      logout,
-    }
-  ), [initAuth, authenticate, updateUser, loadSession, user, logout, isSessionLoaded])
+          return
+        }
 
-  return (
-    <AuthenticationContext.Provider
-      value={context}
-    >
-      {props.children}
-    </AuthenticationContext.Provider>
-  )
-})
+        const currentUser = await getApiClient().userClient.current()
+        authenticate(currentUser)
+      } catch {
+        /* empty */
+      } finally {
+        loadSession()
+        setIsInitiated(true)
+      }
+    }, [authenticate, loadSession, getApiClient])
+
+    const logout = useCallback(() => {
+      sessionStorage.removeItem(STORAGE_ACCESS_TOKEN_KEY)
+      sessionStorage.removeItem(STORAGE_REFRESH_TOKEN_KEY)
+      localStorage.removeItem(STORAGE_ACCESS_TOKEN_KEY)
+      localStorage.removeItem(STORAGE_REFRESH_TOKEN_KEY)
+
+      setUser(undefined)
+    }, [setUser])
+
+    const context = useMemo<IAuthenticationContext>(() => (
+      {
+        currentUser: user,
+        isAuthenticated: user !== undefined,
+        isSessionLoaded,
+        initAuth,
+        authenticate,
+        updateUser,
+        storeToken,
+        loadSession,
+        logout,
+      }
+    ), [initAuth, authenticate, updateUser, loadSession, user, logout, isSessionLoaded])
+
+    return (
+      <AuthenticationContext.Provider
+        value={context}
+      >
+        {props.children}
+      </AuthenticationContext.Provider>
+    )
+  },
+)
 
 AuthenticationContextProvider.displayName = 'AuthenticationContextProvider'
 export default AuthenticationContextProvider

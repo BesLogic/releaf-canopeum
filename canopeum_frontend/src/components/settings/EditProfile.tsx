@@ -1,7 +1,7 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { SnackbarContext } from '@components/context/SnackbarContext'
+import useApiClient from '@hooks/ApiClientHook'
 import { PatchedUpdateUser } from '@services/api'
-import getApiClient from '@services/apiInterface'
 import { type InputValidationError, isValidEmail } from '@utils/validators'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -10,6 +10,7 @@ const EditProfile = () => {
   const { t: translate } = useTranslation()
   const { currentUser, updateUser } = useContext(AuthenticationContext)
   const { openAlertSnackbar } = useContext(SnackbarContext)
+  const { getApiClient } = useApiClient()
 
   const [username, setUsername] = useState(currentUser?.username ?? '')
   const [email, setEmail] = useState(currentUser?.email ?? '')
@@ -63,7 +64,8 @@ const EditProfile = () => {
   }
 
   const validateForm = () => {
-    // Do not return directly the method calls; we need each of them to be called before returning the result
+    // Do not return directly the method calls;
+    // we need each of them to be called before returning the result
     const usernameValid = validateUsername()
     const emailValid = validateEmail()
 
@@ -95,11 +97,23 @@ const EditProfile = () => {
     <div className='d-flex flex-column h-100'>
       <h2 className='text-light'>{translate('settings.edit-profile.title')}</h2>
 
-      <div className='bg-white rounded-2 mt-4 px-4 py-3 flex-grow-1 d-flex justify-content-center'>
-        <div className='h-100 d-flex flex-column justify-content-between w-50 py-3'>
+      <div className='bg-white rounded-2 mt-4 px-4 py-3 flex-grow-1 row m-0 justify-content-center'>
+        <div className='
+          h-100
+          col-12
+          col-lg-8
+          col-xl-6
+          m-0
+          d-flex
+          flex-column
+          justify-content-between
+          py-3
+        '>
           <form className='form'>
             <div className='mb-4'>
-              <label className='form-label' htmlFor='username'>{translate('auth.username-label')}</label>
+              <label className='form-label' htmlFor='username'>
+                {translate('auth.username-label')}
+              </label>
               <input
                 className='form-control'
                 id='username'

@@ -26,76 +26,81 @@ export const SnackbarContext = createContext<ISnackbarContext>({
   openAlertSnackbar: (_message: string, _options?: SnackbarAlertOptions) => {/* empty */},
 })
 
-const SnackbarContextProvider: FunctionComponent<{ readonly children?: ReactNode }> = memo(props => {
-  const [snackbarAlertOptions, setSnackbarAlertOptions] = useState<SnackbarAlertOptions | undefined>()
+const SnackbarContextProvider: FunctionComponent<{ readonly children?: ReactNode }> = memo(
+  props => {
+    const [snackbarAlertOptions, setSnackbarAlertOptions] = useState<
+      SnackbarAlertOptions | undefined
+    >()
 
-  const [snackPack, setSnackPack] = useState<readonly SnackbarMessage[]>([])
-  const [open, setOpen] = useState(false)
-  const [messageInfo, setMessageInfo] = useState<SnackbarMessage | undefined>(
-    undefined,
-  )
+    const [snackPack, setSnackPack] = useState<readonly SnackbarMessage[]>([])
+    const [open, setOpen] = useState(false)
+    const [messageInfo, setMessageInfo] = useState<SnackbarMessage | undefined>(
+      undefined,
+    )
 
-  useEffect(() => {
-    if (snackPack.length > 0 && !messageInfo) {
-      // Set a new snack when we don't have an active one
-      setMessageInfo({ ...snackPack[0] })
-      setSnackPack(previous => previous.slice(1))
-      setOpen(true)
-    } else if (snackPack.length > 0 && messageInfo && open) {
-      // Close an active snack when a new one is added
+    useEffect(() => {
+      if (snackPack.length > 0 && !messageInfo) {
+        // Set a new snack when we don't have an active one
+        setMessageInfo({ ...snackPack[0] })
+        setSnackPack(previous => previous.slice(1))
+        setOpen(true)
+      } else if (snackPack.length > 0 && messageInfo && open) {
+        // Close an active snack when a new one is added
+        setOpen(false)
+      }
+    }, [snackPack, messageInfo, open])
+
+    const handleClose = (_event: Event | SyntheticEvent, reason?: string) => {
+      if (reason === 'clickaway') {
+        return
+      }
       setOpen(false)
     }
-  }, [snackPack, messageInfo, open])
 
-  const handleClose = (_event: Event | SyntheticEvent, reason?: string) => {
-    if (reason === 'clickaway') {
-      return
+    const handleExited = () => {
+      setSnackbarAlertOptions(undefined)
+      setMessageInfo(undefined)
     }
-    setOpen(false)
-  }
 
-  const handleExited = () => {
-    setSnackbarAlertOptions(undefined)
-    setMessageInfo(undefined)
-  }
+    const openAlertSnackbar = useCallback((message: string, options?: SnackbarAlertOptions) => {
+      setSnackbarAlertOptions(options)
+      setSnackPack(previous => [...previous, { message, key: Date.now() }])
+    }, [setSnackPack, setSnackbarAlertOptions])
 
-  const openAlertSnackbar = useCallback((message: string, options?: SnackbarAlertOptions) => {
-    setSnackbarAlertOptions(options)
-    setSnackPack(previous => [...previous, { message, key: Date.now() }])
-  }, [setSnackPack, setSnackbarAlertOptions])
+    const context = useMemo<ISnackbarContext>(() => (
+      {
+        openAlertSnackbar,
+      }
+    ), [openAlertSnackbar])
 
-  const context = useMemo<ISnackbarContext>(() => (
-    {
-      openAlertSnackbar,
-    }
-  ), [openAlertSnackbar])
+    return (
+      <SnackbarContext.Provider value={context}>
+        {props.children}
 
-  return (
-    <SnackbarContext.Provider
-      value={context}
-    >
-      {props.children}
-      <Snackbar
-        TransitionProps={{ onExited: handleExited }}
-        autoHideDuration={snackbarAlertOptions?.autohideDuration ?? DEFAULT_SNACKBAR_ALERT_OPTIONS.autohideDuration}
-        key={messageInfo
-          ? messageInfo.key
-          : undefined}
-        onClose={handleClose}
-        open={open}
-      >
-        <Alert
+        <Snackbar
+          TransitionProps={{ onExited: handleExited }}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          autoHideDuration={snackbarAlertOptions?.autohideDuration ??
+            DEFAULT_SNACKBAR_ALERT_OPTIONS.autohideDuration}
+          key={messageInfo
+            ? messageInfo.key
+            : undefined}
           onClose={handleClose}
-          severity={snackbarAlertOptions?.severity ?? DEFAULT_SNACKBAR_ALERT_OPTIONS.severity}
-          sx={{ width: '100%', boxShadow: 3 }}
-          variant='filled'
+          open={open}
         >
-          {messageInfo?.message}
-        </Alert>
-      </Snackbar>
-    </SnackbarContext.Provider>
-  )
-})
+          <Alert
+            onClose={handleClose}
+            severity={snackbarAlertOptions?.severity ?? DEFAULT_SNACKBAR_ALERT_OPTIONS.severity}
+            sx={{ width: '100%', boxShadow: 3 }}
+            variant='filled'
+          >
+            {messageInfo?.message}
+          </Alert>
+        </Snackbar>
+      </SnackbarContext.Provider>
+    )
+  },
+)
 
 SnackbarContextProvider.displayName = 'SnackbarContextProvider'
 export default SnackbarContextProvider
