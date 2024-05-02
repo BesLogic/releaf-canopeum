@@ -66,6 +66,8 @@ body {
 
 .page-container {
   padding: 1rem 1rem;
+  max-width: 90em;
+  margin: 0 auto;
 }
 
 @media screen and (min-width: $medium-width) {
