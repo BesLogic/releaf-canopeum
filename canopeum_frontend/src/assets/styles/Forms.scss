@@ -1,3 +1,7 @@
+@import "../node_modules/bootstrap/scss/variables";
+
+$default-text-color: #433A2E;
+
 .form-control::placeholder {
   color: map-get($theme-colors, light-gray);
 }

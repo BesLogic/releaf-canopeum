@@ -42,7 +42,7 @@ const PostWidget = ({ post }: Props) => {
   return (
     <div className='card'>
       <div className='card-body rounded-2 d-flex flex-column gap-3'>
-        <div className='d-flex justify-content-start gap-2'>
+        <div className='d-flex justify-content-start align-items-center gap-2'>
           <img
             alt='site'
             className='rounded-circle'

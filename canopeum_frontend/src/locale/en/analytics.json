@@ -20,24 +20,43 @@
   "table-row-12": "amount of seeds collected in area",
   "table-row-13": "types of seeds collected",
   "last-update": "Last Update",
-  "site-summary": {
-    "planted": "Planted",
-    "survived": "Survived",
-    "propagation": "Propagation",
-    "visitors": "Visitors",
-    "sponsored": "Sponsored",
-    "no-admins": "No Admins",
-    "unknown": "Unknown",
-    "admins-saved": "Admins saved successfully for {{siteName}}!",
-    "site-deleted": "Site {{siteName}} was successfully deleted.",
-    "site-deleted-error": "There was a problem while trying to delete the site {{siteName}}...",
-    "delete-site-confirmation-title": "Delete Site",
-    "delete-site-confirmation-message": "Are you sure you want to delete {{siteName}}? Doing so will permanently delete this site; this action is irreversible."
-  },
+  "visitors": "Visitors",
+  "sponsored": "Sponsored",
+  "unnamed-site": "Unnamed site",
+  "admins-saved": "Admins saved successfully for {{siteName}}!",
+  "site-deleted": "Site {{siteName}} was successfully deleted.",
+  "site-deleted-error": "There was a problem while trying to delete the site {{siteName}}...",
   "success-rate-chart": {
     "title": "Average Annual Success Rate Per Site"
   },
   "batches": {
     "batch-tracking": "Batch Tracking"
+  },
+  "site-summary": {
+    "planted": "Planted",
+    "survived": "Survived",
+    "propagation": "Propagation",
+    "sponsored": "Sponsored",
+    "no-admins": "No Admins",
+    "unknown": "Unknown"
+  },
+  "site-modal": {
+    "create-site": "create site",
+    "site-name": "site name",
+    "site-type": "site type",
+    "site-image": "project image or enterprise logo",
+    "site-image-upload": "or drop an image to upload",
+    "site-gps-coordinates": "GPS coordinates",
+    "site-dms-latitude": "DMS latitude",
+    "site-dms-longitude": "DMS longitude",
+    "site-presentation": "brief presentation",
+    "site-size": "size of the land",
+    "site-tree-species": "number of trees per species",
+    "site-research-partner": "research partnership?",
+    "site-map-visibility": "visibility on the map",
+    "yes": "yes",
+    "no": "no",
+    "visible": "visible",
+    "invisible": "invisible"
   }
 }

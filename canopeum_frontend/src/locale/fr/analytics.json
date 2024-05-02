@@ -20,24 +20,27 @@
   "table-row-12": "quantité de graines collectées dans la zone",
   "table-row-13": "types de graines collectées",
   "last-update": "Dernière Mise à Jour",
-  "site-summary": {
-    "planted": "Planté",
-    "survived": "Survécu",
-    "propagation": "Propagation",
-    "visitors": "Visiteurs",
-    "sponsored": "Sponsorisé",
-    "no-admins": "Pas d'administrateurs",
-    "unknown": "Inconnu",
-    "admins-saved": "Administrateurs sauvegardés avec succès pour {{siteName}}!",
-    "site-deleted": "Le site {{siteName}} a été supprimé avec succès.",
-    "site-deleted-error": "Un problème est survenu lors de la tentative de suppression du site {{siteName}}...",
-    "delete-site-confirmation-title": "Supprimer le Site",
-    "delete-site-confirmation-message": "Êtes-vous sûr de vouloir supprimer {{siteName}}? Cela supprimera définitivement le site; cette action est irréversible."
-  },
   "success-rate-chart": {
     "title": "Taux De Réussite Annuel Moyen Par Site"
   },
   "batches": {
     "batch-tracking": "Batch Tracking"
-  }
+  },
+  "site-summary": {
+    "planted": "Planté",
+    "survived": "Survécu",
+    "propagation": "Propagation",
+    "sponsored": "Sponsorisé"
+  },
+  "site-modal": {
+    "create-site": "créer un site"
+  },
+  "visitors": "Visiteurs",
+  "sponsored": "Sponsorisé",
+  "no-admins": "Pas d'administrateurs",
+  "unknown": "Inconnu",
+  "unnamed-site": "Site sans nom",
+  "admins-saved": "Administrateurs sauvegardés avec succès pour {{siteName}}!",
+  "site-deleted": "Le site {{siteName}} a été supprimé avec succès.",
+  "site-deleted-error": "Un problème est survenu lors de la tentative de suppression du site {{siteName}}..."
 }

@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material'
 
-import variables from './theme-variables.module.scss'
+import variables from './export.module.scss'
 
 const muiCustomTheme = createTheme({
   palette: {

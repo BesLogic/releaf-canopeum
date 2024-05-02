@@ -6,6 +6,14 @@
 @import "./Navbar.scss";
 @import "./Transitions.scss";
 
+$cream: #FFFAF5;
+
+$small-width: 540px;
+$medium-width: 720px;
+$large-width: 960px;
+$xlarge-width: 1200px;
+$xxlarge-width: 1600px;
+
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -58,6 +66,8 @@ body {
 
 .page-container {
   padding: 1rem 1rem;
+  max-width: 90em;
+  margin: 0 auto;
 }
 
 @media screen and (min-width: $medium-width) {

@@ -14,9 +14,10 @@ type Props = {
   readonly site: SiteSummary,
   readonly admins: User[],
   readonly onSiteChange: Dispatch<SetStateAction<SiteSummary[]>>,
+  readonly onSiteEdit: (siteId: number) => void,
 }
 
-const SiteSummaryCard = ({ site, admins, onSiteChange }: Props) => {
+const SiteSummaryCard = ({ site, admins, onSiteChange, onSiteEdit }: Props) => {
   const { t: translate } = useTranslation()
   const { currentUser } = useContext(AuthenticationContext)
 
@@ -40,7 +41,14 @@ const SiteSummaryCard = ({ site, admins, onSiteChange }: Props) => {
             </Link>
 
             {currentUser?.role === 'MegaAdmin' &&
-              <SiteSummaryActions admins={admins} onSiteChange={onSiteChange} siteSummary={site} />}
+              (
+                <SiteSummaryActions
+                  admins={admins}
+                  onSiteChange={onSiteChange}
+                  onSiteEdit={onSiteEdit}
+                  siteSummary={site}
+                />
+              )}
           </div>
 
           <div className='card-subtitle my-1'>
