@@ -86,48 +86,50 @@ const SiteSocialPage = () => {
 
   return (
     <div
-      className='page-container h-100 d-flex flex-column gap-4'
+      className='h-100 overflow-y-auto'
       onScroll={() => onScroll(scrollableContainerRef)}
       ref={scrollableContainerRef}
     >
-      <SiteSocialHeader site={site} viewMode={viewMode} />
+      <div className='page-container d-flex flex-column gap-4'>
+        <SiteSocialHeader site={site} viewMode={viewMode} />
 
-      <div className='row row-gap-3 m-0'>
-        <div className='col-12 col-md-6 col-lg-5 col-xl-4'>
-          <div className='d-flex flex-column gap-4'>
-            <AnnouncementCard announcement={site.announcement} viewMode={viewMode} />
-            <ContactCard contact={site.contact} viewMode={viewMode} />
-          </div>
-        </div>
-
-        <div className='col-12 col-md-6 col-lg-7 col-xl-8'>
-          <div className='rounded-2 d-flex flex-column gap-4'>
-            {viewMode === 'admin' && <CreatePostWidget addNewPost={addNewPost} siteId={siteId} />}
+        <div className='row row-gap-3 m-0'>
+          <div className='col-12 col-md-6 col-lg-5 col-xl-4'>
             <div className='d-flex flex-column gap-4'>
-              {isLoadingFirstPage
-                ? (
-                  <div className='card'>
-                    <div className='card-body'>
-                      <LoadingPage />
-                    </div>
-                  </div>
-                )
-                : loadingError
-                ? (
-                  <div className='card'>
-                    <div className='card-body'>
-                      <span>{loadingError}</span>
-                    </div>
-                  </div>
-                )
-                : sitePosts.map(post => <PostWidget key={post.id} post={post} />)}
+              <AnnouncementCard announcement={site.announcement} viewMode={viewMode} />
+              <ContactCard contact={site.contact} viewMode={viewMode} />
             </div>
+          </div>
 
-            {isLoadingMore && (
-              <div className='w-100 d-flex justify-content-center align-items-center py-2'>
-                <CircularProgress color='secondary' size={50} thickness={5} />
+          <div className='col-12 col-md-6 col-lg-7 col-xl-8'>
+            <div className='rounded-2 d-flex flex-column gap-4'>
+              {viewMode === 'admin' && <CreatePostWidget addNewPost={addNewPost} siteId={siteId} />}
+              <div className='d-flex flex-column gap-4'>
+                {isLoadingFirstPage
+                  ? (
+                    <div className='card'>
+                      <div className='card-body'>
+                        <LoadingPage />
+                      </div>
+                    </div>
+                  )
+                  : loadingError
+                  ? (
+                    <div className='card'>
+                      <div className='card-body'>
+                        <span>{loadingError}</span>
+                      </div>
+                    </div>
+                  )
+                  : sitePosts.map(post => <PostWidget key={post.id} post={post} />)}
               </div>
-            )}
+
+              {isLoadingMore && (
+                <div className='w-100 d-flex justify-content-center align-items-center py-2'>
+                  <CircularProgress color='secondary' size={50} thickness={5} />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

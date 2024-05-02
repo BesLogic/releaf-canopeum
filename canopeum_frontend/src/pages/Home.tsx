@@ -58,25 +58,27 @@ const Home = () => {
 
   return (
     <div
-      className='page-container h-100'
+      className='h-100 overflow-y-auto'
       onScroll={() => onScroll(listInnerRef)}
       ref={listInnerRef}
     >
-      <div className='mb-4'>
-        <h1 className='text-light'>
-          {translate('home.title', { username: currentUser.username })}
-        </h1>
+      <div className='page-container h-100'>
+        <div className='mb-4'>
+          <h1 className='text-light'>
+            {translate('home.title', { username: currentUser.username })}
+          </h1>
 
-        <h6 className='text-light'>{translate('home.subtitle')}</h6>
-      </div>
-
-      {renderPosts()}
-
-      {isLoadingMore && (
-        <div className='w-100 d-flex justify-content-center align-items-center pt-4 pb-2'>
-          <CircularProgress color='secondary' size={50} thickness={5} />
+          <h6 className='text-light'>{translate('home.subtitle')}</h6>
         </div>
-      )}
+
+        {renderPosts()}
+
+        {isLoadingMore && (
+          <div className='w-100 d-flex justify-content-center align-items-center pt-4 pb-2'>
+            <CircularProgress color='secondary' size={50} thickness={5} />
+          </div>
+        )}
+      </div>
     </div>
   )
 }
