@@ -135,6 +135,17 @@ const EditProfile = () => {
     return true
   }
 
+  const resetChangePassword = () => {
+    // Reset the change password section
+    setCurrentPassword('')
+    setNewPassword('')
+    setNewPasswordConfirmation('')
+    setCurrentPasswordError(undefined)
+    setNewPasswordError(undefined)
+    setNewPasswordConfirmationError(undefined)
+    setDoChangePassword(false)
+  }
+
   const validateForm = () => {
     // Do not return directly the method calls;
     // we need each of them to be called before returning the result
@@ -163,12 +174,7 @@ const EditProfile = () => {
     setUsernameError(undefined)
     setEmailError(undefined)
 
-    setCurrentPassword('')
-    setNewPassword('')
-    setNewPasswordConfirmation('')
-    setCurrentPasswordError(undefined)
-    setNewPasswordError(undefined)
-    setNewPasswordConfirmationError(undefined)
+    resetChangePassword()
   }
 
   const handleSaveProfile = async () => {
@@ -190,6 +196,9 @@ const EditProfile = () => {
       const updatedUser = await getApiClient().userClient.update(currentUser.id, updatedInfo)
       updateUser(updatedUser)
       openAlertSnackbar(translate('settings.edit-profile.profile-saved'), { severity: 'success' })
+
+      setSaveProfileError(undefined)
+      resetChangePassword()
     } catch (error: unknown) {
       setSaveProfileError(
         getErrorMessage(error, translate('settings.edit-profile.save-profile-error')),
