@@ -170,16 +170,72 @@ def create_batch_species_for_batch(batch):
         )
 
 
+batch_names = [
+    "First Batch",
+    "Second Batch",
+    "Third Batch",
+    "Fourth Batch",
+    "Fifth Batch",
+    "Sixth Batch",
+    "Seventh Batch",
+    "Eight Batch",
+]
+
+sponsors = [
+    "GreenGrow Solutions",
+    "ArborWorks",
+    "Evergreen Eco",
+    "Rooted Reforestation",
+    "TreeTech Innovations",
+    "Forest Guardians",
+    "LeafyLife Planting",
+    "EcoArbor",
+    "Sapling Services",
+    "Birch & Pine Planters",
+    "Foliage Force",
+    "Canopy Creations",
+    "GrowGreen Reforestation",
+    "Woodland Warriors",
+    "BranchOut Planting",
+    "EcoTree Partners",
+    "Grove Guardians",
+    "Sustainable Sowers",
+    "TimberTech Planting",
+    "Nature's Nurseries",
+    "GreenThumb Reforestation",
+    "Forest Frontiers",
+    "Arbor Alliance",
+    "TreeTrek Planters",
+    "RootRise Reforestation",
+    "LeafLegacy Planting",
+    "EcoRoot Reforestation",
+    "TrunkTrack Planters",
+    "WoodWise Reforestation",
+    "Boreal Bloom Planters",
+]
+
+
+def get_sponsors():
+    number_of_sponsors = random.randint(1, 5)
+    random.shuffle(sponsors)
+    return sponsors[:number_of_sponsors]
+
+
+def get_sponsor():
+    index = random.randint(0, len(sponsors) - 1)
+    return sponsors[index]
+
+
 def create_batches_for_site(site):
-    num_batches = random.randint(4, 8)
-    for _ in range(num_batches):
+    num_batches = random.randint(3, 8)
+    for i in range(num_batches):
         number_of_seed = random.randint(50, 200)
         batch = Batch.objects.create(
-            name="First Batch",
+            name=batch_names[i - 1],
             site=site,
             created_at=timezone.now(),
             size=random.randint(20, 150),
-            sponsor="Beslogic Inc.",
+            sponsor=get_sponsor(),
             soil_condition="Good",
             total_number_seed=number_of_seed,
             total_propagation=random.randint(0, number_of_seed),
@@ -279,8 +335,8 @@ class Command(BaseCommand):
             "site_img2.jpg",
             "site_img3.jpg",
             "site_img4.jpg",
-            "canopeum_post_img1.jpeg",
-            "canopeum_post_img2.jpeg",
+            "canopeum_post_img1.jpg",
+            "canopeum_post_img2.jpg",
         )
         for file_name in image_file_names:
             with Path.open(seeding_images_path / file_name, "rb") as img_file:
@@ -366,19 +422,19 @@ class Command(BaseCommand):
         create_batches_for_site(site)
         post = Post.objects.create(
             site=site,
-            body="Canopeum was just hit with important forest fires today.",
+            body="The season is officially started; new plants are starting to grow and our volunteers are very dedicated!",
             share_count=5,
             created_at=timezone.now(),
         )
         post.media.add(*Asset.objects.filter(asset__contains="canopeum_post_img"))
         create_posts_for_site(site)
         Comment.objects.create(
-            body="Wow, I didn't know the fires had reached the location of this site!",
+            body="Wow, I'm very excited to join the team!",
             user=User.objects.get(email="tyrion@lannister.com"),
             post=post,
         )
         Comment.objects.create(
-            body="Did the fires burn the whole area of this site, or only part of it?",
+            body="Thanks for helping our planet!",
             user=User.objects.get(email="normal@user.com"),
             post=post,
         )

@@ -221,19 +221,9 @@ class SiteSummaryListAPIView(APIView):
     @extend_schema(responses=SiteSummarySerializer(many=True), operation_id="site_summary_all")
     def get(self, request):
         sites = get_public_sites_unless_admin(request.user)
-        plant_count = 0
-        survived_count = 0
-        propagation_count = 0
-        progress = 0
         serializer = SiteSummarySerializer(
             sites,
             many=True,
-            context={
-                "plant_count": plant_count,
-                "survived_count": survived_count,
-                "progress": progress,
-                "propagation_count": propagation_count,
-            },
         )
         return Response(serializer.data)
 
