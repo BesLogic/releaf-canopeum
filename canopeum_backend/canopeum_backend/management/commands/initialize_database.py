@@ -301,6 +301,7 @@ class Command(BaseCommand):
     def create_canopeum_site(self):
         site = Site.objects.create(
             name="Canopeum",
+            is_public=True,
             site_type=Sitetype.objects.get(name=SitetypeInternationalization.objects.get(en="Parks")),
             coordinate=Coordinate.objects.create(
                 dms_latitude="45°30'06.1\"N",
@@ -363,6 +364,7 @@ class Command(BaseCommand):
     def create_other_sites(self):
         site_2 = Site.objects.create(
             name="Maple Grove Retreat",
+            is_public=True,
             site_type=Sitetype.objects.get(name=SitetypeInternationalization.objects.get(en="Parks")),
             coordinate=Coordinate.objects.create(
                 dms_latitude="46°48'33.6\"N",
@@ -396,6 +398,7 @@ class Command(BaseCommand):
 
         site_3 = Site.objects.create(
             name="Lakeside Oasis",
+            is_public=True,
             site_type=Sitetype.objects.get(name=SitetypeInternationalization.objects.get(en="Parks")),
             coordinate=Coordinate.objects.create(
                 dms_latitude="48°36'05.0\"N",
@@ -426,6 +429,7 @@ class Command(BaseCommand):
 
         site_4 = Site.objects.create(
             name="Evergreen Trail",
+            is_public=False,
             site_type=Sitetype.objects.get(name=SitetypeInternationalization.objects.get(en="Parks")),
             coordinate=Coordinate.objects.create(
                 dms_latitude="46°12'30.0\"N",
