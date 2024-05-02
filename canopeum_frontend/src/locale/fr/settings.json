@@ -22,5 +22,8 @@
     "assign-to-label": "Assigner à",
     "generate-link-error": "Une erreur est survenue en essayant de générer le lien.",
     "copy-link-message": "Veuillez copier et partager ce lien avec le propriétaire de l'adresse courriel suivante:"
+  },
+  "terms-and-policies": {
+    "title": "Conditions & Politiques"
   }
 }
