@@ -1,16 +1,13 @@
 import useApiClient from '@hooks/ApiClientHook'
-import type { TokenRefresh, User } from '@services/api'
+import type { User } from '@services/api'
+import { STORAGE_ACCESS_TOKEN_KEY, STORAGE_REFRESH_TOKEN_KEY } from '@utils/auth.utils'
 import type { FunctionComponent, ReactNode } from 'react'
 import { createContext, memo, useCallback, useMemo, useRef, useState } from 'react'
-
-export const STORAGE_ACCESS_TOKEN_KEY = 'token'
-export const STORAGE_REFRESH_TOKEN_KEY = 'refreshToken'
 
 type IAuthenticationContext = {
   initAuth: () => Promise<void>,
   authenticate: (user: User) => void,
   updateUser: (user: User) => void,
-  storeToken: (token: TokenRefresh, remember: boolean) => void,
   logout: () => void,
   loadSession: () => void,
   isAuthenticated: boolean,
@@ -22,23 +19,12 @@ export const AuthenticationContext = createContext<IAuthenticationContext>({
   initAuth: () => new Promise(() => {/* empty */}),
   authenticate: (_: User) => {/* empty */},
   updateUser: (_: User) => {/* empty */},
-  storeToken: (_: TokenRefresh, __: boolean) => {/* empty */},
   logout: () => {/* empty */},
   loadSession: () => {/* empty */},
   isAuthenticated: false,
   isSessionLoaded: false,
   currentUser: undefined,
 })
-
-const storeToken = (token: TokenRefresh, remember = false) => {
-  if (remember) {
-    localStorage.setItem(STORAGE_ACCESS_TOKEN_KEY, token.access)
-    localStorage.setItem(STORAGE_REFRESH_TOKEN_KEY, token.refresh)
-  } else {
-    sessionStorage.setItem(STORAGE_ACCESS_TOKEN_KEY, token.access)
-    sessionStorage.setItem(STORAGE_REFRESH_TOKEN_KEY, token.refresh)
-  }
-}
 
 const AuthenticationContextProvider: FunctionComponent<{ readonly children?: ReactNode }> = memo(
   props => {
@@ -100,7 +86,6 @@ const AuthenticationContextProvider: FunctionComponent<{ readonly children?: Rea
         initAuth,
         authenticate,
         updateUser,
-        storeToken,
         loadSession,
         logout,
       }
