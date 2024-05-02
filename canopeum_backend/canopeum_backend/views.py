@@ -1,6 +1,7 @@
+import json
 import secrets
 from typing import cast
-import json
+
 from django.contrib.auth import authenticate
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -42,9 +43,8 @@ from .models import (
     Treetype,
     User,
     UserInvitation,
-    Widget
+    Widget,
 )
-
 from .serializers import (
     AdminUserSitesSerializer,
     AnnouncementSerializer,
@@ -145,6 +145,7 @@ class LogoutAPIView(APIView):
         request.user.auth_token.delete()
         return Response(status=status.HTTP_200_OK)
 
+
 class TreeSpeciesAPIView(APIView):
     @extend_schema(responses=TreeTypeSerializer(many=True), operation_id="tree_species")
     def get(self, request):
@@ -152,12 +153,14 @@ class TreeSpeciesAPIView(APIView):
         serializer = TreeTypeSerializer(tree_species, many=True)
         return Response(serializer.data)
 
+
 class SiteTypesAPIView(APIView):
     @extend_schema(responses=SiteTypeSerializer(many=True), operation_id="site_types")
     def get(self, request):
         tree_species = Sitetype.objects.all()
         serializer = SiteTypeSerializer(tree_species, many=True)
         return Response(serializer.data)
+
 
 class SiteListAPIView(APIView):
     @extend_schema(responses=SiteSerializer(many=True), operation_id="site_all")
@@ -181,13 +184,13 @@ class SiteListAPIView(APIView):
                     "longitude": {"type": "string"},
                     "description": {"type": "string"},
                     "size": {"type": "number"},
-                    "species": {"type": "array", "items": {
-                        "type": "object",
-                        "properties": {
-                            "id": {"type": "number"},
-                            "quantity": {"type": "number"}
-                        }
-                    }},
+                    "species": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {"id": {"type": "number"}, "quantity": {"type": "number"}},
+                        },
+                    },
                     "researchPartnership": {"type": "boolean"},
                     "visibleMap": {"type": "boolean"},
                 },
@@ -202,9 +205,11 @@ class SiteListAPIView(APIView):
             return Response(data=asset.errors, status=status.HTTP_400_BAD_REQUEST)
         asset = asset.save()
 
-        site_type = Sitetype.objects.get(pk=request.data['siteType'])
+        site_type = Sitetype.objects.get(pk=request.data["siteType"])
         # (TODO) For the coordinates, we need to calculate the ddLat and ddLong and also use the Google API for the address
-        coordinate = Coordinate.objects.create(dms_latitude=request.data['latitude'], dms_longitude=request.data['longitude'])
+        coordinate = Coordinate.objects.create(
+            dms_latitude=request.data["latitude"], dms_longitude=request.data["longitude"]
+        )
         announcement = Announcement.objects.create()
         contact = Contact.objects.create()
 
@@ -217,13 +222,14 @@ class SiteListAPIView(APIView):
                 announcement=announcement,
                 contact=contact,
                 visitor_count=0,
-                research_partnership=json.loads(request.data['researchPartnership']),
-                visible_map=json.loads(request.data['visibleMap']))
+                research_partnership=json.loads(request.data["researchPartnership"]),
+                visible_map=json.loads(request.data["visibleMap"]),
+            )
 
-            for tree_type_json in request.data.getlist('species'):
+            for tree_type_json in request.data.getlist("species"):
                 tree_type_obj = json.loads(tree_type_json)
-                tree_type = Treetype.objects.get(pk=tree_type_obj['id'])
-                Sitetreespecies.objects.create(site=site, tree_type=tree_type, quantity=tree_type_obj['quantity'])
+                tree_type = Treetype.objects.get(pk=tree_type_obj["id"])
+                Sitetreespecies.objects.create(site=site, tree_type=tree_type, quantity=tree_type_obj["quantity"])
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -256,20 +262,20 @@ class SiteDetailAPIView(APIView):
                     "longitude": {"type": "string"},
                     "description": {"type": "string"},
                     "size": {"type": "number"},
-                    "species": {"type": "array", "items": {
-                        "type": "object",
-                        "properties": {
-                            "id": {"type": "number"},
-                            "quantity": {"type": "number"}
-                        }
-                    }},
+                    "species": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {"id": {"type": "number"}, "quantity": {"type": "number"}},
+                        },
+                    },
                     "researchPartnership": {"type": "boolean"},
                     "visibleMap": {"type": "boolean"},
                 },
             },
         },
         responses=SiteSerializer,
-        operation_id="site_update"
+        operation_id="site_update",
     )
     def patch(self, request, siteId):
         try:
@@ -282,9 +288,11 @@ class SiteDetailAPIView(APIView):
             return Response(data=asset.errors, status=status.HTTP_400_BAD_REQUEST)
         asset = asset.save()
 
-        site_type = Sitetype.objects.get(pk=request.data['siteType'])
+        site_type = Sitetype.objects.get(pk=request.data["siteType"])
         # (TODO) For the coordinates, we need to calculate the ddLat and ddLong and also use the Google API for the address
-        coordinate = Coordinate.objects.create(dms_latitude=request.data['latitude'], dms_longitude=request.data['longitude'])
+        coordinate = Coordinate.objects.create(
+            dms_latitude=request.data["latitude"], dms_longitude=request.data["longitude"]
+        )
         announcement = Announcement.objects.create()
         contact = Contact.objects.create()
 
@@ -297,13 +305,14 @@ class SiteDetailAPIView(APIView):
                 announcement=announcement,
                 contact=contact,
                 visitor_count=0,
-                research_partnership=json.loads(request.data['researchPartnership']),
-                visible_map=json.loads(request.data['visibleMap']))
+                research_partnership=json.loads(request.data["researchPartnership"]),
+                visible_map=json.loads(request.data["visibleMap"]),
+            )
 
-            for tree_type_json in request.data.getlist('species'):
+            for tree_type_json in request.data.getlist("species"):
                 tree_type_obj = json.loads(tree_type_json)
-                tree_type = Treetype.objects.get(pk=tree_type_obj['id'])
-                Sitetreespecies.objects.create(site=site, tree_type=tree_type, quantity=tree_type_obj['quantity'])
+                tree_type = Treetype.objects.get(pk=tree_type_obj["id"])
+                Sitetreespecies.objects.create(site=site, tree_type=tree_type, quantity=tree_type_obj["quantity"])
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

@@ -256,11 +256,13 @@ class SiteSerializer(serializers.ModelSerializer):
     def get_site_tree_species(self, obj):
         return SitetreespeciesSerializer(obj.sitetreespecies_set.all(), many=True).data
 
+
 class SitePatchSerializer(serializers.Serializer):
     site_type = serializers.IntegerField()
 
     class Meta:
         fields = ("site_type",)
+
 
 class UpdateSitePublicStatusSerializer(serializers.Serializer):
     is_public = serializers.BooleanField(required=True)
@@ -570,11 +572,11 @@ class CoordinatesMapSerializer(serializers.ModelSerializer):
         model = Coordinate
         fields = ("latitude", "longitude", "address")
 
-    @extend_schema_field(float) # pyright: ignore[reportArgumentType]
+    @extend_schema_field(float)  # pyright: ignore[reportArgumentType]
     def get_latitude(self, obj):
         return obj.dd_latitude
 
-    @extend_schema_field(float) # pyright: ignore[reportArgumentType]
+    @extend_schema_field(float)  # pyright: ignore[reportArgumentType]
     def get_longitude(self, obj):
         return obj.dd_longitude
 
