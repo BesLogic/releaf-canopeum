@@ -22,11 +22,8 @@ const Analytics = () => {
   const [adminList, setAdminList] = useState<User[]>([])
   const [siteId, setSiteId] = useState<number>()
 
-  // HEAD
-  //
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  // 3a67abb7855c65569d8387b4d610a99d85449ed8
   const fetchSites = useCallback(
     async () => setSiteSummaries(await getApiClient().summaryClient.all()),
     [getApiClient],
@@ -36,8 +33,7 @@ const Analytics = () => {
     async () => setAdminList(await getApiClient().userClient.allSiteManagers()),
     [getApiClient],
   )
-  // HEAD
-  //
+
   const handleModalClose = async (
     reason?: 'backdropClick' | 'escapeKeyDown' | 'save',
     data?: SiteDto,
@@ -111,7 +107,7 @@ const Analytics = () => {
     setSiteId(_siteId)
     setIsModalOpen(true)
   }
-  // 3a67abb7855c65569d8387b4d610a99d85449ed8
+
   useEffect((): void => {
     if (currentUser?.role !== 'MegaAdmin') return
 
