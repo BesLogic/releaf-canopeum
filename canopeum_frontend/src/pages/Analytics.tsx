@@ -46,6 +46,7 @@ const Analytics = () => {
     }
 
     if (reason === 'save' && data) {
+      console.log('data:', data)
       const image = data.siteImage
         ? await assetFormatter(data.siteImage)
         : undefined

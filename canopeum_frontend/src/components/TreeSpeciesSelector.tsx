@@ -1,33 +1,41 @@
 import './TreeSpeciesSelector.scss'
 
-import OptionQuantitySelector, { type SelectorOptionQuantity } from '@components/analytics/OptionQuantitySelector'
+import OptionQuantitySelector, { type SelectorOption, type SelectorOptionQuantity } from '@components/analytics/OptionQuantitySelector'
 import { LanguageContext } from '@components/context/LanguageContext'
-import type { Sitetreespecies, TreeType } from '@services/api'
-import { useContext, useEffect, useState } from 'react'
+import useApiClient from '@hooks/ApiClientHook'
+import type { TreeType } from '@services/api'
+import { Sitetreespecies } from '@services/api'
+import { notEmpty } from '@utils/arrayUtils'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 type Props = {
   readonly species: Sitetreespecies[],
-  readonly speciesOptions: TreeType[],
   readonly onChange: (selectedSpecies: Sitetreespecies[]) => void,
 }
 
-const TreeSpeciesSelector = ({ onChange, speciesOptions, species }: Props) => {
+const TreeSpeciesSelector = ({ onChange, species }: Props) => {
   const { t: translate } = useTranslation()
   const { translateValue } = useContext(LanguageContext)
-  // const [displaySearch, setDisplaySearch] = useState(false)
-  // const [availableSpecies, setAvailableSpecies] = useState(speciesOptions)
-  // const [filteredSpecies, setFilteredSpecies] = useState(speciesOptions)
-  // const [selectedSpecies, setSelectedSpecies] = useState<Sitetreespecies[]>(species)
-  const [options, setOptions] = useState(speciesOptions.map(speciesOption => ({
-    value: speciesOption.id,
-    displayText: translateValue(speciesOption),
-  })))
+  const { getApiClient } = useApiClient()
+
+  const [availableSpecies, setAvailableSpecies] = useState<TreeType[]>([])
+  const [options, setOptions] = useState<SelectorOption<number>[]>([])
   const [selected, setSelected] = useState<SelectorOptionQuantity<number>[]>([])
 
-  // useEffect(() => setFilteredSpecies(availableSpecies), [availableSpecies, displaySearch])
-  // useEffect(() => onChange(selectedSpecies), [selectedSpecies, onChange])
-  // useEffect(() => setSelectedSpecies(species), [species])
+  const fetchTreeSpecies = useCallback(
+    async () => {
+      const speciesResponse = await getApiClient().treeClient.species()
+      setAvailableSpecies(speciesResponse)
+      setOptions(speciesResponse.map(treeType => ({
+        value: treeType.id,
+        displayText: translateValue(treeType),
+      })))
+    },
+    [getApiClient, translateValue],
+  )
+
+  useEffect(() => void fetchTreeSpecies(), [fetchTreeSpecies])
 
   useEffect(() =>
     setSelected(species.map(specie => ({
@@ -38,7 +46,23 @@ const TreeSpeciesSelector = ({ onChange, speciesOptions, species }: Props) => {
       quantity: specie.quantity,
     }))), [species, translateValue])
 
-  const handleChange = (event: unknown) => console.log('ON CHANGEevent:', event)
+  const handleChange = useCallback((selectedOptions: SelectorOptionQuantity<number>[]) => {
+    const selectedSpecies = selectedOptions
+      .map(optionQuantity => {
+        const matchingSpecie = availableSpecies.find(specieOption =>
+          specieOption.id === optionQuantity.option.value
+        )
+        if (!matchingSpecie) return null
+
+        return new Sitetreespecies({
+          ...matchingSpecie,
+          quantity: optionQuantity.quantity ?? 0,
+        })
+      })
+      .filter(notEmpty)
+
+    onChange(selectedSpecies)
+  }, [availableSpecies, onChange])
 
   return (
     <OptionQuantitySelector

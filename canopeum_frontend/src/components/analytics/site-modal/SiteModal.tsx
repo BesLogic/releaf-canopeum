@@ -1,11 +1,10 @@
-/* eslint-disable max-lines -- TODO: Split into components */
 import SiteCoordinates from '@components/analytics/site-modal/SiteCoordinates'
 import SiteImageUpload from '@components/analytics/site-modal/SiteImageUpload'
 import { LanguageContext } from '@components/context/LanguageContext'
 import TreeSpeciesSelector from '@components/TreeSpeciesSelector'
 import useApiClient from '@hooks/ApiClientHook'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
-import type { Sitetreespecies, SiteType, TreeType } from '@services/api'
+import type { Sitetreespecies, SiteType } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -77,8 +76,8 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
   const { t } = useTranslation()
   const { getApiClient } = useApiClient()
   const { translateValue } = useContext(LanguageContext)
+
   const [site, setSite] = useState<SiteDto>(defaultSiteDto)
-  const [availableSpecies, setAvailableSpecies] = useState<TreeType[]>([])
   const [availableSiteTypes, setAvailableSiteTypes] = useState<SiteType[]>([])
   const [siteImageURL, setSiteImageURL] = useState<string>()
 
@@ -107,11 +106,6 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
     setSiteImageURL(URL.createObjectURL(blob))
   }, [siteId, getApiClient])
 
-  const fetchTreeSpecies = useCallback(
-    async () => setAvailableSpecies(await getApiClient().treeClient.species()),
-    [getApiClient],
-  )
-
   const fetchSiteTypes = useCallback(
     async () => setAvailableSiteTypes(await getApiClient().siteClient.types()),
     [getApiClient],
@@ -122,10 +116,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
     setSiteImageURL(URL.createObjectURL(file))
   }
 
-  useEffect(() => {
-    void fetchTreeSpecies()
-    void fetchSiteTypes()
-  }, [fetchTreeSpecies, fetchSiteTypes])
+  useEffect(() => void fetchSiteTypes(), [fetchSiteTypes])
 
   useEffect(() => {
     if (!open) return
@@ -227,14 +218,10 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
           </div>
 
           <div className='mb-3'>
-            {availableSpecies.length > 0 &&
-              (
-                <TreeSpeciesSelector
-                  onChange={species => setSite(current => ({ ...current, species }))}
-                  species={[]}
-                  speciesOptions={availableSpecies}
-                />
-              )}
+            <TreeSpeciesSelector
+              onChange={useCallback(species => setSite(current => ({ ...current, species })), [])}
+              species={site.species}
+            />
           </div>
 
           <div className='mb-3'>
