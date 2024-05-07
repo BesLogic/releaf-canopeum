@@ -3,6 +3,7 @@
   "delete": "Supprimer",
   "ok": "Ok",
   "save": "Sauvegarder",
+  "submit": "Soumettre",
   "copied-clipboard": "Copié dans le presse-papier",
   "error-default": "Oooops! Une erreur est survenue lors du chargement des données."
 }

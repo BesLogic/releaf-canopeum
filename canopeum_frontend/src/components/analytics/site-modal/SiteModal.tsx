@@ -142,6 +142,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
           {t('analytics.site-modal.create-site')}
         </div>
       </DialogTitle>
+
       <DialogContent className='pb-5'>
         <form>
           <div className='mb-3'>
@@ -156,6 +157,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
               value={site.siteName}
             />
           </div>
+
           <div className='mb-3'>
             <label className='form-label text-capitalize' htmlFor='site-type'>
               {t('analytics.site-modal.site-type')}
@@ -174,12 +176,14 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
               ))}
             </select>
           </div>
+
           <div className='mb-3'>
             <label className='form-label text-capitalize' htmlFor='site-image'>
               {t('analytics.site-modal.site-type')}
             </label>
             <SiteImageUpload onChange={onImageUpload} siteImageURL={siteImageURL} />
           </div>
+
           <div className='mb-3'>
             <SiteCoordinates
               latitude={site.dmsLatitude}
@@ -192,6 +196,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
                 }))}
             />
           </div>
+
           <div className='mb-3'>
             <label className='form-label text-capitalize' htmlFor='site-presentation'>
               {t('analytics.site-modal.site-presentation')}
@@ -203,6 +208,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
               value={site.presentation}
             />
           </div>
+
           <div className='mb-3'>
             <label className='form-label text-capitalize' htmlFor='site-size'>
               {t('analytics.site-modal.site-size')}
@@ -219,6 +225,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
               <span className='input-group-text'>ft²</span>
             </div>
           </div>
+
           <div className='mb-3'>
             {availableSpecies.length > 0 &&
               (
@@ -230,6 +237,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
                 />
               )}
           </div>
+
           <div className='mb-3'>
             <label className='form-label text-capitalize' htmlFor='site-research-partner'>
               {t('analytics.site-modal.site-research-partner')}
@@ -252,6 +260,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
                   {t('analytics.site-modal.yes')}
                 </label>
               </div>
+
               <div className='form-check form-check-inline'>
                 <input
                   checked={!site.researchPartner}
@@ -268,6 +277,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
               </div>
             </div>
           </div>
+
           <div className='mb-3'>
             <label className='form-label text-capitalize' htmlFor='site-map-visibility'>
               {t('analytics.site-modal.site-map-visibility')}
@@ -290,6 +300,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
                   {t('analytics.site-modal.visible')}
                 </label>
               </div>
+
               <div className='form-check form-check-inline'>
                 <input
                   checked={!site.visibleOnMap}
@@ -308,12 +319,14 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
           </div>
         </form>
       </DialogContent>
+
       <DialogActions>
         <button
           className='btn btn-outline-primary'
           onClick={() => handleClose()}
           type='button'
         >
+          {/* TODO: Translations */}
           Cancel
         </button>
         <button className='btn btn-primary' onClick={() => handleClose('save', site)} type='button'>

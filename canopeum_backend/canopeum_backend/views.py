@@ -50,7 +50,6 @@ from .serializers import (
     AdminUserSitesSerializer,
     AnnouncementSerializer,
     AssetSerializer,
-    BatchAnalyticsSerializer,
     BatchSerializer,
     ChangePasswordSerializer,
     CommentSerializer,
@@ -751,10 +750,10 @@ class LikeListAPIView(APIView):
 
 
 class BatchListAPIView(APIView):
-    @extend_schema(responses=BatchAnalyticsSerializer(many=True), operation_id="batch_all")
+    @extend_schema(responses=BatchSerializer(many=True), operation_id="batch_all")
     def get(self, request):
         batches = Batch.objects.all()
-        serializer = BatchAnalyticsSerializer(batches, many=True)
+        serializer = BatchSerializer(batches, many=True)
         return Response(serializer.data)
 
     @extend_schema(request=BatchSerializer, responses={201: BatchSerializer}, operation_id="batch_create")

@@ -410,12 +410,6 @@ class BatchSpeciesSerializer(serializers.ModelSerializer):
 
 
 class BatchSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Batch
-        fields = "__all__"
-
-
-class BatchAnalyticsSerializer(serializers.ModelSerializer):
     fertilizers = serializers.SerializerMethodField()
     mulch_layers = serializers.SerializerMethodField()
     supported_species = serializers.SerializerMethodField()
@@ -533,7 +527,7 @@ class SiteSummarySerializer(serializers.ModelSerializer):
     progress = serializers.SerializerMethodField()
     sponsors = serializers.SerializerMethodField()
     admins = SiteAdminSerializer(source="siteadmin_set", many=True)
-    batches = BatchAnalyticsSerializer(source="batch_set", read_only=True, many=True)
+    batches = BatchSerializer(source="batch_set", read_only=True, many=True)
 
     class Meta:
         model = Site

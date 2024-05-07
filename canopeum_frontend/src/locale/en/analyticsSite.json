@@ -2,5 +2,10 @@
   "location": "Location",
   "batch-tracking": "Batch Tracking",
   "social-page": "Social Page",
-  "sponsors": "Sponsors"
+  "sponsors": "Sponsors",
+  "add-new-batch": "Add a New Batch",
+  "batch-modal": {
+    "title": "Create a New Batch",
+    "batch-name": "Batch Name"
+  }
 }

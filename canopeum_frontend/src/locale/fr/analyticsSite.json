@@ -2,5 +2,10 @@
   "location": "Localisation",
   "batch-tracking": "Suivi des lots",
   "social-page": "Page Sociale",
-  "sponsors": "Sponsors"
+  "sponsors": "Sponsors",
+  "add-new-batch": "Ajouter un Nouveau Lot",
+  "batch-modal": {
+    "title": "Créer un Nouveau Lot",
+    "batch-name": "Nom du Lot"
+  }
 }

@@ -1,3 +1,4 @@
+import CreateBatch from '@components/analytics/add-batch-modal/CreateBatchModal'
 import AnalyticsSiteHeader from '@components/analytics/AnalyticsSiteHeader'
 import BatchTable from '@components/analytics/BatchTable'
 import { LanguageContext } from '@components/context/LanguageContext'
@@ -17,6 +18,8 @@ const AnalyticsSite = () => {
 
   const [siteSummary, setSiteSummary] = useState<SiteSummary | undefined>()
   const [lastModifiedBatchDate, setLastModifiedBatchDate] = useState<Date | undefined>()
+
+  const [isCreateBatchOpen, setIsCreateBatchOpen] = useState(false)
 
   const fetchSite = useCallback(
     async (siteId: number) => setSiteSummary(await getApiClient().siteClient.summary(siteId)),
@@ -73,14 +76,24 @@ const AnalyticsSite = () => {
             </span>
           </div>
 
-          <div className='text-primary d-flex align-items-center'>
+          <button
+            className='unstyled-button text-primary d-flex align-items-center'
+            onClick={() => setIsCreateBatchOpen(true)}
+            type='button'
+          >
             <span className='material-symbols-outlined fill-icon me-2'>add</span>
-            <span>Add a New Batch</span>
-          </div>
+            <span>{translate('analyticsSite.add-new-batch')}</span>
+          </button>
         </div>
 
         <BatchTable batches={siteSummary.batches} />
       </div>
+
+      <CreateBatch
+        handleClose={() => setIsCreateBatchOpen(false)}
+        open={isCreateBatchOpen}
+        site={siteSummary}
+      />
     </div>
   )
 }
