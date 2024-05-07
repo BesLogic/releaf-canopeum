@@ -6,6 +6,21 @@
   "add-new-batch": "Ajouter un Nouveau Lot",
   "batch-modal": {
     "title": "Créer un Nouveau Lot",
-    "batch-name": "Nom du Lot"
+    "batch-name": "Nom / ID du Lot",
+    "sponsor-label": "Sponsor",
+    "size-label": "Taille du terrain",
+    "feet-squared": "pi²",
+    "number-of-trees-label": "Nombre d'arbres par espèce",
+    "soil-condition-label": "État du sol",
+    "fertilizers-label": "Engrais",
+    "mulch-layers-label": "Couches de paillis",
+    "support-species-label": "Espèces de support",
+    "total-number-of-plants-label": "Nombre total de plantes",
+    "survived-label": "Combien ont survécu",
+    "replaced-label": "Combien ont été remplacés",
+    "seeds-per-species-label": "Nombre de graines collectées par espèce",
+    "total-seeds-label": "Nombre total de graines collectées",
+    "propagation-label": "Propagation totale",
+    "images-label": "Images"
   }
 }

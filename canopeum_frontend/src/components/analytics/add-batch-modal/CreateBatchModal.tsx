@@ -12,7 +12,7 @@ type Props = {
 const defaultBatch: IBatch = {
   id: 0,
   name: '',
-  size: '',
+  size: 0,
   soilCondition: '',
   sponsor: '',
   fertilizers: [],
@@ -46,17 +46,74 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
 
       <DialogContent className='pb-5'>
         <form>
-          <div className='mb-3'>
-            <label className='form-label text-capitalize' htmlFor='batch-name'>
-              {translate('analyticsSite.batch-modal.batch-name')}
-            </label>
-            <input
-              className='form-control'
-              id='batch-name'
-              onChange={event => setBatch(value => ({ ...value, name: event.target.value }))}
-              type='text'
-              value={batch.name}
-            />
+          <div className='d-flex flex-column gap-3'>
+            <div>
+              <label className='form-label' htmlFor='batch-name'>
+                {translate('analyticsSite.batch-modal.name-label')}
+              </label>
+              <input
+                className='form-control'
+                id='batch-name'
+                onChange={event => setBatch(value => ({ ...value, name: event.target.value }))}
+                type='text'
+                value={batch.name}
+              />
+            </div>
+
+            <div>
+              <label className='form-label text-capitalize' htmlFor='sponsor'>
+                {translate('analyticsSite.batch-modal.sponsor-label')}
+              </label>
+              <input
+                className='form-control'
+                id='sponsor'
+                onChange={event => setBatch(value => ({ ...value, sponsor: event.target.value }))}
+                type='text'
+                value={batch.sponsor}
+              />
+            </div>
+
+            <div>
+              <label className='form-label text-capitalize' htmlFor='size'>
+                {translate('analyticsSite.batch-modal.size-label')}
+              </label>
+              <input
+                className='form-control'
+                id='size'
+                onChange={event =>
+                  setBatch(value => ({
+                    ...value,
+                    size: Number.parseInt(event.target.value, 10) || 0,
+                  }))}
+                type='number'
+                value={batch.size}
+              />
+            </div>
+
+            <div>
+              <label className='form-label' htmlFor='soil-condition'>
+                {translate('analyticsSite.batch-modal.soil-condition-label')}
+              </label>
+              <input
+                className='form-control'
+                id='soil-condition'
+                onChange={event =>
+                  setBatch(value => ({ ...value, soilCondition: event.target.value }))}
+                type='text'
+                value={batch.soilCondition}
+              />
+            </div>
+
+            <div>
+              {
+                /* <TreeSpeciesSelector
+                onChange={species => setBatch(current => ({ ...current, species }))}
+                searchBarLabel='analytics.site-modal.site-tree-species'
+                species={site.species}
+                speciesOptions={availableSpecies}
+              /> */
+              }
+            </div>
           </div>
         </form>
       </DialogContent>
@@ -69,7 +126,8 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
         >
           {translate('generic.cancel')}
         </button>
-        <button className='btn btn-primary' onClick={() => handleClose()} type='button'>
+
+        <button className='btn btn-primary' onClick={() => handleSubmitBatch()} type='button'>
           {translate('generic.submit')}
         </button>
       </DialogActions>

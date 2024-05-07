@@ -43,13 +43,64 @@ class Announcement(models.Model):
     link = models.TextField(blank=True, null=True)
 
 
+class Coordinate(models.Model):
+    dms_latitude = models.TextField(blank=True, null=True)
+    dms_longitude = models.TextField(blank=True, null=True)
+    dd_latitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
+    dd_longitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
+
+
+class Contact(models.Model):
+    address = models.TextField(blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    facebook_link = models.URLField(blank=True, null=True)
+    x_link = models.URLField(blank=True, null=True)
+    instagram_link = models.URLField(blank=True, null=True)
+    linkedin_link = models.URLField(blank=True, null=True)
+
+
+def upload_to(_, filename):
+    now = datetime.now(pytz.utc).strftime("%Y%m%d%H%M%S%f")
+    return f"{now}{filename}"
+
+
+class Asset(models.Model):
+    asset = models.FileField(upload_to=upload_to, null=False)
+
+
+class SitetypeInternationalization(models.Model):
+    en = models.TextField(db_column="EN", blank=True, null=True)
+    fr = models.TextField(db_column="FR", blank=True, null=True)
+
+
+class Sitetype(models.Model):
+    name = models.ForeignKey(SitetypeInternationalization, models.DO_NOTHING, blank=True, null=True)
+
+
+class Site(models.Model):
+    name = models.TextField()
+    is_public = models.BooleanField(blank=False, null=False, default=False)
+    site_type = models.ForeignKey(Sitetype, models.DO_NOTHING, blank=True, null=True)
+    coordinate = models.ForeignKey(Coordinate, models.DO_NOTHING, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    size = models.TextField(blank=True, null=True)
+    research_partnership = models.BooleanField(blank=True, null=True)
+    visible_map = models.BooleanField(blank=True, null=True)
+    visitor_count = models.IntegerField(blank=True, null=True)
+    contact = models.ForeignKey(Contact, models.DO_NOTHING, blank=True, null=True)
+    announcement = models.ForeignKey(Announcement, models.DO_NOTHING, blank=True, null=True)
+    image = models.ForeignKey(Asset, models.DO_NOTHING, blank=True, null=True)
+
+
 class Batch(models.Model):
-    site = models.ForeignKey("Site", models.DO_NOTHING, blank=True, null=True)
+    site = models.ForeignKey(Site, models.DO_NOTHING, blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
     name = models.TextField(blank=True, null=True)
     sponsor = models.TextField(blank=True, null=True)
-    size = models.TextField(blank=True, null=True)
+    size = models.IntegerField(blank=True, null=True)
     soil_condition = models.TextField(blank=True, null=True)
     total_number_seed = models.IntegerField(blank=True, null=True)
     total_propagation = models.IntegerField(blank=True, null=True)
@@ -100,24 +151,6 @@ class BatchSupportedSpecies(models.Model):
     tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
 
 
-class Contact(models.Model):
-    address = models.TextField(blank=True, null=True)
-    email = models.EmailField(blank=True, null=True)
-    phone = models.CharField(max_length=20, blank=True, null=True)
-    facebook_link = models.URLField(blank=True, null=True)
-    x_link = models.URLField(blank=True, null=True)
-    instagram_link = models.URLField(blank=True, null=True)
-    linkedin_link = models.URLField(blank=True, null=True)
-
-
-class Coordinate(models.Model):
-    dms_latitude = models.TextField(blank=True, null=True)
-    dms_longitude = models.TextField(blank=True, null=True)
-    dd_latitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
-    dd_longitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
-    address = models.TextField(blank=True, null=True)
-
-
 class Mulchlayertype(models.Model):
     name = models.ForeignKey("MulchlayertypeInternationalization", models.DO_NOTHING, blank=True, null=True)
 
@@ -125,30 +158,6 @@ class Mulchlayertype(models.Model):
 class MulchlayertypeInternationalization(models.Model):
     en = models.TextField(db_column="EN", blank=True, null=True)
     fr = models.TextField(db_column="FR", blank=True, null=True)
-
-
-def upload_to(_, filename):
-    now = datetime.now(pytz.utc).strftime("%Y%m%d%H%M%S%f")
-    return f"{now}{filename}"
-
-
-class Asset(models.Model):
-    asset = models.FileField(upload_to=upload_to, null=False)
-
-
-class Site(models.Model):
-    name = models.TextField()
-    is_public = models.BooleanField(blank=False, null=False, default=False)
-    site_type = models.ForeignKey("Sitetype", models.DO_NOTHING, blank=True, null=True)
-    coordinate = models.ForeignKey(Coordinate, models.DO_NOTHING, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-    size = models.TextField(blank=True, null=True)
-    research_partnership = models.BooleanField(blank=True, null=True)
-    visible_map = models.BooleanField(blank=True, null=True)
-    visitor_count = models.IntegerField(blank=True, null=True)
-    contact = models.ForeignKey(Contact, models.DO_NOTHING, blank=True, null=True)
-    announcement = models.ForeignKey(Announcement, models.DO_NOTHING, blank=True, null=True)
-    image = models.ForeignKey(Asset, models.DO_NOTHING, blank=True, null=True)
 
 
 class Post(models.Model):
@@ -201,15 +210,6 @@ class Sitetreespecies(models.Model):
     site = models.ForeignKey(Site, models.DO_NOTHING, blank=True, null=True)
     tree_type = models.ForeignKey("Treetype", models.DO_NOTHING, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
-
-
-class Sitetype(models.Model):
-    name = models.ForeignKey("SitetypeInternationalization", models.DO_NOTHING, blank=True, null=True)
-
-
-class SitetypeInternationalization(models.Model):
-    en = models.TextField(db_column="EN", blank=True, null=True)
-    fr = models.TextField(db_column="FR", blank=True, null=True)
 
 
 class Widget(models.Model):

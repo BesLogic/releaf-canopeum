@@ -2353,7 +2353,7 @@ export interface IAsset {
 export class Batch implements IBatch {
   readonly id!: number;
   name?: string | undefined;
-  size?: string | undefined;
+  size?: number | undefined;
   soilCondition?: string | undefined;
   sponsor?: string | undefined;
   readonly fertilizers!: Batchfertilizer[];
@@ -2484,7 +2484,7 @@ export class Batch implements IBatch {
 export interface IBatch {
   id: number;
   name?: string | undefined;
-  size?: string | undefined;
+  size?: number | undefined;
   soilCondition?: string | undefined;
   sponsor?: string | undefined;
   fertilizers: Batchfertilizer[];
@@ -3375,7 +3375,7 @@ export interface IPatchedAnnouncement {
 export class PatchedBatch implements IPatchedBatch {
   readonly id?: number;
   name?: string | undefined;
-  size?: string | undefined;
+  size?: number | undefined;
   soilCondition?: string | undefined;
   sponsor?: string | undefined;
   readonly fertilizers?: Batchfertilizer[];
@@ -3499,7 +3499,7 @@ export class PatchedBatch implements IPatchedBatch {
 export interface IPatchedBatch {
   id?: number;
   name?: string | undefined;
-  size?: string | undefined;
+  size?: number | undefined;
   soilCondition?: string | undefined;
   sponsor?: string | undefined;
   fertilizers?: Batchfertilizer[];

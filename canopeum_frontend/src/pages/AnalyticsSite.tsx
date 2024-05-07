@@ -20,6 +20,7 @@ const AnalyticsSite = () => {
   const [lastModifiedBatchDate, setLastModifiedBatchDate] = useState<Date | undefined>()
 
   const [isCreateBatchOpen, setIsCreateBatchOpen] = useState(false)
+  const [wasCreateBatchOpened, setWasCreateBatchOpened] = useState(false)
 
   const fetchSite = useCallback(
     async (siteId: number) => setSiteSummary(await getApiClient().siteClient.summary(siteId)),
@@ -55,6 +56,12 @@ const AnalyticsSite = () => {
     }
   }, [siteSummary])
 
+  useEffect(() => {
+    if (!isCreateBatchOpen) return
+
+    setWasCreateBatchOpened(true)
+  }, [isCreateBatchOpen])
+
   if (!siteSummary) {
     return <LoadingPage />
   }
@@ -89,11 +96,13 @@ const AnalyticsSite = () => {
         <BatchTable batches={siteSummary.batches} />
       </div>
 
-      <CreateBatch
-        handleClose={() => setIsCreateBatchOpen(false)}
-        open={isCreateBatchOpen}
-        site={siteSummary}
-      />
+      {wasCreateBatchOpened && (
+        <CreateBatch
+          handleClose={() => setIsCreateBatchOpen(false)}
+          open={isCreateBatchOpen}
+          site={siteSummary}
+        />
+      )}
     </div>
   )
 }

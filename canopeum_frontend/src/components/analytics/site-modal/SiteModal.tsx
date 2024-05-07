@@ -231,8 +231,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
               (
                 <TreeSpeciesSelector
                   onChange={species => setSite(current => ({ ...current, species }))}
-                  searchBarLabel='analytics.site-modal.site-tree-species'
-                  species={site.species}
+                  species={[]}
                   speciesOptions={availableSpecies}
                 />
               )}
