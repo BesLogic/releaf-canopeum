@@ -2,18 +2,18 @@ import OptionQuantitySelector, { type SelectorOption, type SelectorOptionQuantit
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
 import type { TreeType } from '@services/api'
-import { Sitetreespecies } from '@services/api'
+import { BatchSupportedSpecies } from '@services/api'
 import { notEmpty } from '@utils/arrayUtils'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 type Props = {
-  readonly species?: Sitetreespecies[],
+  readonly species?: BatchSupportedSpecies[],
   // Make sure that onChange is included in a useCallback if part of a component
-  readonly onChange: (selectedSpecies: Sitetreespecies[]) => void,
+  readonly onChange: (selectedSpecies: BatchSupportedSpecies[]) => void,
 }
 
-const TreeSpeciesSelector = ({ onChange, species }: Props) => {
+const SupportSpeciesSelector = ({ onChange, species }: Props) => {
   const { t: translate } = useTranslation()
   const { translateValue } = useContext(LanguageContext)
   const { getApiClient } = useApiClient()
@@ -44,7 +44,6 @@ const TreeSpeciesSelector = ({ onChange, species }: Props) => {
         displayText: translateValue(specie),
         value: specie.id,
       },
-      quantity: specie.quantity,
     })))
   }, [species, translateValue])
 
@@ -56,9 +55,8 @@ const TreeSpeciesSelector = ({ onChange, species }: Props) => {
         )
         if (!matchingSpecie) return null
 
-        return new Sitetreespecies({
+        return new BatchSupportedSpecies({
           ...matchingSpecie,
-          quantity: optionQuantity.quantity ?? 0,
         })
       })
       .filter(notEmpty)
@@ -68,14 +66,13 @@ const TreeSpeciesSelector = ({ onChange, species }: Props) => {
 
   return (
     <OptionQuantitySelector
-      id='tree-type-quantity-selector'
-      label={translate('analytics.site-modal.site-tree-species')}
+      id='support-species-selector'
+      label={translate('analyticsSite.batch-modal.support-species-label')}
       onChange={handleChange}
       options={options}
       selected={selected}
-      withQuantity
     />
   )
 }
 
-export default TreeSpeciesSelector
+export default SupportSpeciesSelector

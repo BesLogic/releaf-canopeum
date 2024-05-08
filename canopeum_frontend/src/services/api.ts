@@ -279,6 +279,58 @@ export class FertilizerClient {
   }
 }
 
+export class MulchLayerClient {
+  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+      this.http = http ? http : window as any;
+      this.baseUrl = baseUrl ?? "";
+  }
+
+  allTypes(): Promise<MulchLayerType[]> {
+      let url_ = this.baseUrl + "/analytics/mulch-layers";
+      url_ = url_.replace(/[?&]$/, "");
+
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processAllTypes(_response);
+      });
+  }
+
+  protected processAllTypes(response: Response): Promise<MulchLayerType[]> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          if (Array.isArray(resultData200)) {
+              result200 = [] as any;
+              for (let item of resultData200)
+                  result200!.push(MulchLayerType.fromJS(item));
+          }
+          else {
+              result200 = <any>null;
+          }
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<MulchLayerType[]>(null as any);
+  }
+}
+
 export class SiteClient {
   private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
   private baseUrl: string;
@@ -2778,6 +2830,7 @@ export interface IBatchSpecies {
 }
 
 export class BatchSupportedSpecies implements IBatchSupportedSpecies {
+  readonly id!: number;
   readonly en!: string;
   readonly fr!: string;
 
@@ -2798,6 +2851,7 @@ export class BatchSupportedSpecies implements IBatchSupportedSpecies {
               if (_data.hasOwnProperty(property))
                   this[property] = _data[property];
           }
+          (<any>this).id = _data["id"];
           (<any>this).en = _data["en"];
           (<any>this).fr = _data["fr"];
       }
@@ -2816,6 +2870,7 @@ export class BatchSupportedSpecies implements IBatchSupportedSpecies {
           if (this.hasOwnProperty(property))
               data[property] = this[property];
       }
+      data["id"] = this.id;
       data["en"] = this.en;
       data["fr"] = this.fr;
       return data;
@@ -2823,6 +2878,7 @@ export class BatchSupportedSpecies implements IBatchSupportedSpecies {
 }
 
 export interface IBatchSupportedSpecies {
+  id: number;
   en: string;
   fr: string;
 
@@ -3420,6 +3476,62 @@ export class LoginUser implements ILoginUser {
 export interface ILoginUser {
   email: string;
   password: string;
+
+  [key: string]: any;
+}
+
+export class MulchLayerType implements IMulchLayerType {
+  readonly id!: number;
+  readonly en!: string;
+  readonly fr!: string;
+
+  [key: string]: any;
+
+  constructor(data?: IMulchLayerType) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          (<any>this).en = _data["en"];
+          (<any>this).fr = _data["fr"];
+      }
+  }
+
+  static fromJS(data: any): MulchLayerType {
+      data = typeof data === 'object' ? data : {};
+      let result = new MulchLayerType();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["en"] = this.en;
+      data["fr"] = this.fr;
+      return data;
+  }
+}
+
+export interface IMulchLayerType {
+  id: number;
+  en: string;
+  fr: string;
 
   [key: string]: any;
 }

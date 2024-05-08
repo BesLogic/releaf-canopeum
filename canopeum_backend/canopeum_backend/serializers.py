@@ -210,6 +210,21 @@ class FertilizerTypeSerializer(serializers.ModelSerializer):
         return InternationalizationSerializer(obj.name).data.get("fr", None)
 
 
+class MulchLayerTypeSerializer(serializers.ModelSerializer):
+    en = serializers.SerializerMethodField()
+    fr = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Mulchlayertype
+        fields = ("id", "en", "fr")
+
+    def get_en(self, obj: Mulchlayertype):
+        return InternationalizationSerializer(obj.name).data.get("en", None)
+
+    def get_fr(self, obj: Mulchlayertype):
+        return InternationalizationSerializer(obj.name).data.get("fr", None)
+
+
 class AnnouncementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Announcement
@@ -351,13 +366,9 @@ class BatchFertilizerSerializer(serializers.ModelSerializer):
         fields = ("id", "en", "fr")
 
     def get_en(self, obj: Batchfertilizer):
-        if obj.fertilizer_type is None:
-            return None
         return InternationalizationSerializer(obj.fertilizer_type.name).data.get("en", None)
 
     def get_fr(self, obj: Batchfertilizer):
-        if obj.fertilizer_type is None:
-            return None
         return InternationalizationSerializer(obj.fertilizer_type.name).data.get("fr", None)
 
 
@@ -382,12 +393,15 @@ class BatchSupportedSpeciesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BatchSupportedSpecies
-        fields = ("en", "fr")
+        fields = ("id", "en", "fr")
 
-    def get_en(self, obj):
+    def get_id(self, obj: BatchSupportedSpecies):
+        return obj.tree_type.pk
+
+    def get_en(self, obj: BatchSupportedSpecies):
         return InternationalizationSerializer(obj.tree_type).data.get("en", None)
 
-    def get_fr(self, obj):
+    def get_fr(self, obj: BatchSupportedSpecies):
         return InternationalizationSerializer(obj.tree_type).data.get("fr", None)
 
 
@@ -415,13 +429,9 @@ class BatchSpeciesSerializer(serializers.ModelSerializer):
         fields = ("quantity", "en", "fr")
 
     def get_en(self, obj: BatchSpecies):
-        if obj.tree_type is None:
-            return None
         return InternationalizationSerializer(obj.tree_type.name).data.get("en", None)
 
     def get_fr(self, obj: BatchSpecies):
-        if obj.tree_type is None:
-            return None
         return InternationalizationSerializer(obj.tree_type.name).data.get("fr", None)
 
 

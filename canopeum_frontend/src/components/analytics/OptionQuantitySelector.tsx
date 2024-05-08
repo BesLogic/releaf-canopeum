@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 type Props<TValue> = {
   readonly id: string,
   readonly label: string,
+  readonly withQuantity?: boolean,
   readonly selected: SelectorOptionQuantity<TValue>[],
   readonly options: SelectorOption<TValue>[],
   readonly onChange: (selectedOptions: SelectorOptionQuantity<TValue>[]) => void,
@@ -25,7 +26,7 @@ export type SelectorOptionQuantity<TValue> = {
 }
 
 const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
-  { id, label, options, selected, onChange }: Props<TValue>,
+  { id, label, options, selected, withQuantity, onChange }: Props<TValue>,
 ) => {
   const [availableOptions, setAvailableOptions] = useState(options)
   const [filteredOptions, setFilteredOptions] = useState(options)
@@ -151,36 +152,38 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
       <ul className='list-group list-group-flush overflow-hidden mt-1'>
         {selectedOptions.map(optionQuantity => (
           <li
-            className='list-group-item row d-flex'
+            className='list-group-item row d-flex justify-content-between'
             key={`selected-specie-${optionQuantity.option.value}`}
           >
             <div className='col-6'>{optionQuantity.option.displayText}</div>
 
-            <div className='col-4'>
-              <div className='d-flex justify-content-center align-items-center'>
-                <button
-                  className='btn btn-outline-dark btn-sm icon-button p-1'
-                  onClick={() => subQuantity(optionQuantity.option)}
-                  type='button'
-                >
-                  <span className='material-symbols-outlined fill-icon icon-xs'>remove</span>
-                </button>
+            {withQuantity && (
+              <div className='col-4'>
+                <div className='d-flex justify-content-center align-items-center'>
+                  <button
+                    className='btn btn-outline-dark btn-sm icon-button p-1'
+                    onClick={() => subQuantity(optionQuantity.option)}
+                    type='button'
+                  >
+                    <span className='material-symbols-outlined fill-icon icon-xs'>remove</span>
+                  </button>
 
-                <div className='text-center mx-3'>{optionQuantity.quantity}</div>
+                  <div className='text-center mx-3'>{optionQuantity.quantity}</div>
 
-                <button
-                  className='btn btn-outline-dark btn-sm icon-button p-1'
-                  onClick={() => addQuantity(optionQuantity.option)}
-                  type='button'
-                >
-                  <span className='material-symbols-outlined fill-icon icon-xs'>add</span>
-                </button>
+                  <button
+                    className='btn btn-outline-dark btn-sm icon-button p-1'
+                    onClick={() => addQuantity(optionQuantity.option)}
+                    type='button'
+                  >
+                    <span className='material-symbols-outlined fill-icon icon-xs'>add</span>
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
 
             <div className='col-2 d-flex justify-content-end'>
               <button
-                className='unstyled-button icon-button'
+                className='unstyled-button icon-button p-0'
                 onClick={() => removeType(optionQuantity.option)}
                 type='button'
               >

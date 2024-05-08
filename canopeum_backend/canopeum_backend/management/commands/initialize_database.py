@@ -296,7 +296,26 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("Data Generated"))
 
     def create_fertilizer_types(self):
-        fertilizer_types = [["Synthetic", "Synthetique"], ["Innoculant", "Innoculant"]]
+        fertilizer_types = [
+            ["Synthetic", "Synthétique"],
+            ["Inoculant", "Inoculant"],
+            ["Organic compost", "Compost organique"],
+            ["Manure", "Fumier"],
+            ["Bone meal", "Farine d'os"],
+            ["Fish emulsion", "Émulsion de poisson"],
+            ["Blood meal", "Farine de sang"],
+            ["Seaweed fertilizer", "Engrais d'algues"],
+            ["Bat guano", "Guano de chauve-souris"],
+            ["Worm castings", "Moulée de vers"],
+            ["Compost tea", "Thé de compost"],
+            ["Wood ash", "Cendre de bois"],
+            ["Rock phosphate", "Phosphate de roche"],
+            ["Greensand", "Sable vert"],
+            ["Alfalfa meal", "Farine d'alfalfa"],
+            ["Cottonseed meal", "Farine de tourteau de coton"],
+            ["Feather meal", "Farine de plumes"],
+            ["Humic acid", "Acide humique"],
+        ]
         for _ in fertilizer_types:
             Fertilizertype.objects.create(name=FertilizertypeInternationalization.objects.create(en=_[0], fr=_[1]))
 

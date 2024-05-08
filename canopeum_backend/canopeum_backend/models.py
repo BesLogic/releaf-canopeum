@@ -112,17 +112,26 @@ class FertilizertypeInternationalization(models.Model):
 
 
 class Fertilizertype(models.Model):
-    name = models.ForeignKey(FertilizertypeInternationalization, models.DO_NOTHING, blank=True, null=True)
+    name = models.ForeignKey(FertilizertypeInternationalization, models.DO_NOTHING)
 
 
 class Batchfertilizer(models.Model):
-    batch = models.ForeignKey(Batch, models.DO_NOTHING, blank=True, null=True)
-    fertilizer_type = models.ForeignKey(Fertilizertype, models.DO_NOTHING, blank=True, null=True)
+    batch = models.ForeignKey(Batch, models.DO_NOTHING)
+    fertilizer_type = models.ForeignKey(Fertilizertype, models.DO_NOTHING)
+
+
+class MulchlayertypeInternationalization(models.Model):
+    en = models.TextField(db_column="EN", blank=True, null=True)
+    fr = models.TextField(db_column="FR", blank=True, null=True)
+
+
+class Mulchlayertype(models.Model):
+    name = models.ForeignKey(MulchlayertypeInternationalization, models.DO_NOTHING)
 
 
 class Batchmulchlayer(models.Model):
-    batch = models.ForeignKey(Batch, models.DO_NOTHING, blank=True, null=True)
-    mulch_layer_type = models.ForeignKey("Mulchlayertype", models.DO_NOTHING, blank=True, null=True)
+    batch = models.ForeignKey(Batch, models.DO_NOTHING)
+    mulch_layer_type = models.ForeignKey(Mulchlayertype, models.DO_NOTHING)
 
 
 class TreespeciestypeInternationalization(models.Model):
@@ -131,12 +140,12 @@ class TreespeciestypeInternationalization(models.Model):
 
 
 class Treetype(models.Model):
-    name = models.ForeignKey(TreespeciestypeInternationalization, models.DO_NOTHING, blank=True, null=True)
+    name = models.ForeignKey(TreespeciestypeInternationalization, models.DO_NOTHING)
 
 
 class BatchSpecies(models.Model):
-    batch = models.ForeignKey(Batch, models.DO_NOTHING, blank=True, null=True)
-    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
+    batch = models.ForeignKey(Batch, models.DO_NOTHING)
+    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING)
     quantity = models.IntegerField(blank=True, null=True)
 
 
@@ -147,17 +156,8 @@ class BatchSeed(models.Model):
 
 
 class BatchSupportedSpecies(models.Model):
-    batch = models.ForeignKey(Batch, models.DO_NOTHING, blank=True, null=True)
-    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
-
-
-class Mulchlayertype(models.Model):
-    name = models.ForeignKey("MulchlayertypeInternationalization", models.DO_NOTHING, blank=True, null=True)
-
-
-class MulchlayertypeInternationalization(models.Model):
-    en = models.TextField(db_column="EN", blank=True, null=True)
-    fr = models.TextField(db_column="FR", blank=True, null=True)
+    batch = models.ForeignKey(Batch, models.DO_NOTHING, blank=False, null=False)
+    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=False, null=False)
 
 
 class Post(models.Model):

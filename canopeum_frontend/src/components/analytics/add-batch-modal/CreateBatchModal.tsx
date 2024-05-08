@@ -1,4 +1,6 @@
 import FertilizersSelector from '@components/analytics/FertilizersSelector'
+import MulchLayersSelector from '@components/analytics/MulchLayersSelector'
+import SupportSpeciesSelector from '@components/analytics/SupportSpeciesSelector'
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import type { IBatch, SiteSummary } from '@services/api'
@@ -125,6 +127,24 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
               <FertilizersSelector
                 onChange={useCallback(
                   fertilizers => setBatch(current => ({ ...current, fertilizers })),
+                  [],
+                )}
+              />
+            </div>
+
+            <div>
+              <MulchLayersSelector
+                onChange={useCallback(
+                  mulchLayers => setBatch(current => ({ ...current, mulchLayers })),
+                  [],
+                )}
+              />
+            </div>
+
+            <div>
+              <SupportSpeciesSelector
+                onChange={useCallback(
+                  supportedSpecies => setBatch(current => ({ ...current, supportedSpecies })),
                   [],
                 )}
               />

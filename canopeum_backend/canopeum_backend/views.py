@@ -35,6 +35,7 @@ from .models import (
     Coordinate,
     Fertilizertype,
     Like,
+    Mulchlayertype,
     Post,
     RoleName,
     Site,
@@ -60,6 +61,7 @@ from .serializers import (
     FertilizerTypeSerializer,
     LikeSerializer,
     LoginUserSerializer,
+    MulchLayerTypeSerializer,
     PostPaginationSerializer,
     PostPostSerializer,
     PostSerializer,
@@ -183,6 +185,16 @@ class FertilizerListAPIView(APIView):
     def get(self, request):
         fertilizer_types = Fertilizertype.objects.all()
         serializer = FertilizerTypeSerializer(fertilizer_types, many=True)
+        return Response(serializer.data)
+
+
+class MulchLayerListAPIView(APIView):
+    permission_classes = (MegaAdminOrSiteManagerPermission,)
+
+    @extend_schema(responses=MulchLayerTypeSerializer(many=True), operation_id="mulchLayer_allTypes")
+    def get(self, request):
+        mulch_layer_types = Mulchlayertype.objects.all()
+        serializer = MulchLayerTypeSerializer(mulch_layer_types, many=True)
         return Response(serializer.data)
 
 
