@@ -8,7 +8,7 @@ from django.core.management.base import BaseCommand
 from django.db import connection
 from django.utils import timezone
 
-from canopeum_backend import settings
+import canopeum_backend.settings
 from canopeum_backend.models import (
     Announcement,
     Asset,
@@ -42,8 +42,8 @@ def create_posts_for_site(site):
         # Create a post for the site
         post = Post.objects.create(
             site=site,
-            body=f"""{site.name} has planted {random.randint(100, 1000)} new trees today.
-                Let's continue to grow our forest!""",  # noqa: S311
+            body=f"{site.name} has planted {random.randint(100, 1000)} new trees today."  # noqa: S311
+            + "Let's continue to grow our forest!",
             share_count=share_count,
         )
         # Change created_at date since it is auto-generated on create
@@ -72,7 +72,12 @@ class Command(BaseCommand):
                 self.stdout.write("Erasing existing data...")
                 assets_to_delete = Asset.objects.all().exclude(asset="site_img.png")
                 for asset in assets_to_delete:
-                    path = Path(settings.BASE_DIR) / "canopeum_backend" / "media" / asset.asset.name
+                    path = (
+                        Path(canopeum_backend.settings.BASE_DIR)
+                        / "canopeum_backend"
+                        / "media"
+                        / asset.asset.name
+                    )
                     path.unlink(missing_ok=True)
                 call_command("flush", "--noinput")
                 cursor.execute("SET FOREIGN_KEY_CHECKS = 0;")
@@ -106,7 +111,9 @@ class Command(BaseCommand):
     def create_fertilizer_types(self):
         fertilizer_types = [["Synthetic", "Synthetique"], ["Innoculant", "Innoculant"]]
         for _ in fertilizer_types:
-            Fertilizertype.objects.create(name=FertilizertypeInternationalization.objects.create(en=_[0], fr=_[1]))
+            Fertilizertype.objects.create(
+                name=FertilizertypeInternationalization.objects.create(en=_[0], fr=_[1])
+            )
 
     def create_mulch_layer_types(self):
         mulch_layer_types = [
@@ -118,7 +125,9 @@ class Command(BaseCommand):
             ["Corn husk", "Feuille de maïs"],
         ]
         for _ in mulch_layer_types:
-            Mulchlayertype.objects.create(name=MulchlayertypeInternationalization.objects.create(en=_[0], fr=_[1]))
+            Mulchlayertype.objects.create(
+                name=MulchlayertypeInternationalization.objects.create(en=_[0], fr=_[1])
+            )
 
     def create_tree_types(self):
         tree_types = [
@@ -222,7 +231,9 @@ class Command(BaseCommand):
         ]
 
         for _ in tree_types:
-            Treetype.objects.create(name=TreespeciestypeInternationalization.objects.create(en=_[0], fr=_[1]))
+            Treetype.objects.create(
+                name=TreespeciestypeInternationalization.objects.create(en=_[0], fr=_[1])
+            )
 
     def create_site_types(self):
         site_types = [
@@ -234,10 +245,14 @@ class Command(BaseCommand):
         ]
 
         for _ in site_types:
-            Sitetype.objects.create(name=SitetypeInternationalization.objects.create(en=_[0], fr=_[1]))
+            Sitetype.objects.create(
+                name=SitetypeInternationalization.objects.create(en=_[0], fr=_[1])
+            )
 
     def create_assets(self):
-        seeding_images_path = Path(settings.BASE_DIR) / "canopeum_backend" / "seeding" / "images"
+        seeding_images_path = (
+            Path(canopeum_backend.settings.BASE_DIR) / "canopeum_backend" / "seeding" / "images"
+        )
         image_file_names = (
             "site_img1.png",
             "site_img2.jpg",
@@ -262,7 +277,7 @@ class Command(BaseCommand):
         User.objects.create_user(
             username="admin",
             email="admin@beslogic.com",
-            password="Adminbeslogic!",  # noqa: S106 MOCK_PASSWORD
+            password="Adminbeslogic!",  # noqa: S106 # MOCK_PASSWORD
             is_staff=True,
             is_superuser=True,
             role=Role.objects.get(name="MegaAdmin"),
@@ -270,31 +285,31 @@ class Command(BaseCommand):
         User.objects.create_user(
             username="TyrionLannister",
             email="tyrion@lannister.com",
-            password="tyrion123",  # noqa: S106 MOCK_PASSWORD
+            password="tyrion123",  # noqa: S106 # MOCK_PASSWORD
             role=Role.objects.get(name="SiteManager"),
         )
         User.objects.create_user(
             username="DaenerysTargaryen",
             email="daenerys@targaryen.com",
-            password="daenerys123",  # noqa: S106 MOCK_PASSWORD
+            password="daenerys123",  # noqa: S106 # MOCK_PASSWORD
             role=Role.objects.get(name="SiteManager"),
         )
         User.objects.create_user(
             username="JonSnow",
             email="jon@snow.com",
-            password="jon123",  # noqa: S106 MOCK_PASSWORD
+            password="jon123",  # noqa: S106 # MOCK_PASSWORD
             role=Role.objects.get(name="SiteManager"),
         )
         User.objects.create_user(
             username="OberynMartell",
             email="oberyn@martell.com",
-            password="oberyn123",  # noqa: S106 MOCK_PASSWORD
+            password="oberyn123",  # noqa: S106 # MOCK_PASSWORD
             role=Role.objects.get(name="SiteManager"),
         )
         User.objects.create_user(
             username="NormalUser",
             email="normal@user.com",
-            password="normal123",  # noqa: S106 MOCK_PASSWORD
+            password="normal123",  # noqa: S106 # MOCK_PASSWORD
             role=Role.objects.get(name="User"),
         )
 
@@ -302,7 +317,9 @@ class Command(BaseCommand):
         site = Site.objects.create(
             name="Canopeum",
             is_public=True,
-            site_type=Sitetype.objects.get(name=SitetypeInternationalization.objects.get(en="Parks")),
+            site_type=Sitetype.objects.get(
+                name=SitetypeInternationalization.objects.get(en="Parks")
+            ),
             coordinate=Coordinate.objects.create(
                 dms_latitude="45°30'06.1\"N",
                 dms_longitude="73°34'02.3\"W",
@@ -322,8 +339,9 @@ class Command(BaseCommand):
             ),
             image=Asset.objects.first(),
             announcement=Announcement.objects.create(
-                body="We currently have 20000 healthy seedlings of different species, ready to be planted at any time!"
-                + "Please click the link below to book your favorite seedlings on our website",
+                body="We currently have 20000 healthy seedlings of different species, ready to "
+                + "be planted at any time! Please click the link below to book your favorite "
+                + "seedlings on our website",
                 link="https://www.canopeum-pos.com",
             ),
         )
@@ -349,7 +367,7 @@ class Command(BaseCommand):
             name="First Batch",
             site=site,
             created_at=timezone.now(),
-            size=100,
+            size="100",
             sponsor="Beslogic Inc.",
             soil_condition="Good",
             total_number_seed=100,
@@ -365,7 +383,9 @@ class Command(BaseCommand):
         site_2 = Site.objects.create(
             name="Maple Grove Retreat",
             is_public=True,
-            site_type=Sitetype.objects.get(name=SitetypeInternationalization.objects.get(en="Parks")),
+            site_type=Sitetype.objects.get(
+                name=SitetypeInternationalization.objects.get(en="Parks")
+            ),
             coordinate=Coordinate.objects.create(
                 dms_latitude="46°48'33.6\"N",
                 dms_longitude="71°18'40.0\"W",
@@ -373,8 +393,8 @@ class Command(BaseCommand):
                 dd_longitude=-71.3111,
                 address="123 Forest Trail, Quebec City, QC G1P 3X4",
             ),
-            description="""Maple Grove Retreat is a serene escape nestled in the outskirts of Quebec City,
-                offering a lush forested area with scenic maple groves.""",
+            description="Maple Grove Retreat is a serene escape nestled in the outskirts of "
+            + "Quebec City, offering a lush forested area with scenic maple groves.",
             size="1500",
             research_partnership=True,
             visible_map=True,
@@ -386,11 +406,9 @@ class Command(BaseCommand):
             ),
             image=Asset.objects.get(asset__contains="site_img2"),
             announcement=Announcement.objects.create(
-                body="""
-                    Maple Grove Retreat is excited to announce our upcoming Maple Syrup Festival!
-                    Join us on March 15th for a day of maple syrup tastings, nature hikes,
-                    and family fun. Learn more on our website.
-                """,
+                body="Maple Grove Retreat is excited to announce our upcoming Maple Syrup "
+                + "Festival! Join us on March 15th for a day of maple syrup tastings, "
+                + "nature hikes, and family fun. Learn more on our website.",
                 link="https://www.maplegroveretreat.com/events/maple-syrup-festival",
             ),
         )
@@ -399,7 +417,9 @@ class Command(BaseCommand):
         site_3 = Site.objects.create(
             name="Lakeside Oasis",
             is_public=True,
-            site_type=Sitetype.objects.get(name=SitetypeInternationalization.objects.get(en="Parks")),
+            site_type=Sitetype.objects.get(
+                name=SitetypeInternationalization.objects.get(en="Parks")
+            ),
             coordinate=Coordinate.objects.create(
                 dms_latitude="48°36'05.0\"N",
                 dms_longitude="71°18'27.0\"W",
@@ -407,8 +427,8 @@ class Command(BaseCommand):
                 dd_longitude=-71.3075,
                 address="456 Lakeview Road, Lac-Saint-Jean, QC G8M 1R9",
             ),
-            description="""Lakeside Oasis offers a tranquil retreat by the shores of Lac-Saint-Jean,
-                with pristine waters and breathtaking sunsets.""",
+            description="Lakeside Oasis offers a tranquil retreat by the shores of "
+            + "Lac-Saint-Jean, with pristine waters and breathtaking sunsets.",
             size="800",
             research_partnership=False,
             visible_map=True,
@@ -420,8 +440,10 @@ class Command(BaseCommand):
             ),
             image=Asset.objects.get(asset__contains="site_img3"),
             announcement=Announcement.objects.create(
-                body="""Escape to Lakeside Oasis! Our cozy cabins are now open for winter bookings. Enjoy ice fishing,
-                    snowshoeing, and warm campfires by the lake. Book your stay today!""",
+                body="Escape to Lakeside Oasis! "
+                + "Our cozy cabins are now open for winter bookings. "
+                + "Enjoy ice fishing, snowshoeing, and warm campfires by the lake. "
+                + "Book your stay today!",
                 link="https://www.lakesideoasis.com/winter-getaway",
             ),
         )
@@ -430,7 +452,9 @@ class Command(BaseCommand):
         site_4 = Site.objects.create(
             name="Evergreen Trail",
             is_public=False,
-            site_type=Sitetype.objects.get(name=SitetypeInternationalization.objects.get(en="Parks")),
+            site_type=Sitetype.objects.get(
+                name=SitetypeInternationalization.objects.get(en="Parks")
+            ),
             coordinate=Coordinate.objects.create(
                 dms_latitude="46°12'30.0\"N",
                 dms_longitude="74°35'30.0\"W",
@@ -438,8 +462,8 @@ class Command(BaseCommand):
                 dd_longitude=-74.5917,
                 address="789 Trailhead Way, Mont-Tremblant, QC J8E 1T7",
             ),
-            description="""Evergreen Trail invites you to explore the rugged beauty of Mont-Tremblant's wilderness,
-                with winding trails and majestic evergreen forests.""",
+            description="Evergreen Trail invites you to explore the rugged beauty of "
+            + "Mont-Tremblant's wilderness, with winding trails and majestic evergreen forests.",
             size="1200",
             research_partnership=True,
             visible_map=True,
@@ -451,10 +475,10 @@ class Command(BaseCommand):
             ),
             image=Asset.objects.get(asset__contains="site_img4"),
             announcement=Announcement.objects.create(
-                body="""Discover the wonders of Evergreen Trail!
-                    Our guided nature walks are now available every weekend.
-                    Immerse yourself in nature and learn about the diverse
-                    flora and fauna of Mont-Tremblant.""",
+                body="Discover the wonders of Evergreen Trail!"
+                + "Our guided nature walks are now available every weekend."
+                + "Immerse yourself in nature and learn about the diverse"
+                + "flora and fauna of Mont-Tremblant.",
                 link="https://www.evergreentrail.com/guided-walks",
             ),
         )

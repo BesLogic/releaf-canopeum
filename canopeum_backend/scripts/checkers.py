@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
 from pathlib import Path
-from subprocess import run  # noqa: S404 -- Do not pass user input as arguments
+from subprocess import run  # noqa: S404 # Do not pass user input as arguments
 
-path = (Path(__file__).parent.parent / "canopeum_backend").absolute()
+path = (Path(__file__).parent.parent).absolute()
+print(path)
 
 
 def main():
@@ -11,7 +12,7 @@ def main():
     run(("ruff", "format", path), check=False)
     run(("ruff", "check", "--fix", path), check=False)
     print("\nRunning mypy...")
-    run(("mypy", path), check=False)
+    run(("mypy", path, "--config-file", path / "pyproject.toml"), check=False)
     print("\nRunning pyright...")
     run(("pyright", path), check=False)
 

@@ -1,9 +1,15 @@
 from datetime import datetime, timedelta
-from typing import ClassVar
+from typing import TYPE_CHECKING, Any, ClassVar
 
 import pytz
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from rest_framework.request import Request as drf_Request
+
+# Pyright won't be able to infer all types here, see:
+# https://github.com/typeddjango/django-stubs/issues/579
+# https://github.com/typeddjango/django-stubs/issues/1264
+# For now we have to rely on the mypy plugin
 
 
 class RoleName(models.TextChoices):
@@ -11,12 +17,12 @@ class RoleName(models.TextChoices):
     SITEMANAGER = "SiteManager"
     MEGAADMIN = "MegaAdmin"
 
-    def from_string(self, value):
-        if value == self.MEGAADMIN:
-            return self.MEGAADMIN
-        if value == self.SITEMANAGER:
-            return self.SITEMANAGER
-        return self.USER
+    @classmethod
+    def from_string(cls, value: str):
+        try:
+            return cls(value)
+        except ValueError:
+            return cls.USER
 
 
 class Role(models.Model):
@@ -34,8 +40,14 @@ class User(AbstractUser):
         unique=True,
     )
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS: ClassVar[list[str]] = []  # type: ignore
-    role = models.ForeignKey(Role, models.RESTRICT, null=False, default=1)  # type: ignore
+    REQUIRED_FIELDS: ClassVar[list[str]] = []
+    role = models.ForeignKey[Role, Role](Role, models.RESTRICT, null=False, default=1)
+    if TYPE_CHECKING:
+        # Missing "id" in "Model" or some base "User" class?
+        id: int
+        # TODO: I don't know what this type is supposed to be, nor if we're using it correctly
+        # and why it's not part of the default User models
+        auth_token: Any
 
 
 class Announcement(models.Model):
@@ -101,7 +113,9 @@ class Coordinate(models.Model):
 
 
 class Fertilizertype(models.Model):
-    name = models.ForeignKey("FertilizertypeInternationalization", models.DO_NOTHING, blank=True, null=True)
+    name = models.ForeignKey(
+        "FertilizertypeInternationalization", models.DO_NOTHING, blank=True, null=True
+    )
 
 
 class FertilizertypeInternationalization(models.Model):
@@ -110,7 +124,9 @@ class FertilizertypeInternationalization(models.Model):
 
 
 class Mulchlayertype(models.Model):
-    name = models.ForeignKey("MulchlayertypeInternationalization", models.DO_NOTHING, blank=True, null=True)
+    name = models.ForeignKey(
+        "MulchlayertypeInternationalization", models.DO_NOTHING, blank=True, null=True
+    )
 
 
 class MulchlayertypeInternationalization(models.Model):
@@ -142,18 +158,21 @@ class Site(models.Model):
     image = models.ForeignKey(Asset, models.DO_NOTHING, blank=True, null=True)
 
 
+# Note: PostAsset must be defined before Post because of a limitation with ManyToManyField type
+# inference using string annotations: https://github.com/typeddjango/django-stubs/issues/1802
+# Can't manually annotate because of: https://github.com/typeddjango/django-stubs/issues/760
+class PostAsset(models.Model):
+    post = models.ForeignKey("Post", models.DO_NOTHING, null=False)
+    asset = models.ForeignKey(Asset, models.DO_NOTHING, null=False)
+
+
 class Post(models.Model):
     site = models.ForeignKey("Site", models.DO_NOTHING, blank=False, null=False)
     body = models.TextField(blank=False, null=False)
     share_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True, blank=False, null=False)
     # created_by = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
-    media = models.ManyToManyField(Asset, through="PostAsset", blank=True)
-
-
-class PostAsset(models.Model):
-    post = models.ForeignKey(Post, models.DO_NOTHING, null=False)
-    asset = models.ForeignKey(Asset, models.DO_NOTHING, null=False)
+    media = models.ManyToManyField(Asset, through=PostAsset, blank=True)
 
 
 class Comment(models.Model):
@@ -195,7 +214,9 @@ class Sitetreespecies(models.Model):
 
 
 class Sitetype(models.Model):
-    name = models.ForeignKey("SitetypeInternationalization", models.DO_NOTHING, blank=True, null=True)
+    name = models.ForeignKey(
+        "SitetypeInternationalization", models.DO_NOTHING, blank=True, null=True
+    )
 
 
 class SitetypeInternationalization(models.Model):
@@ -209,7 +230,9 @@ class TreespeciestypeInternationalization(models.Model):
 
 
 class Treetype(models.Model):
-    name = models.ForeignKey(TreespeciestypeInternationalization, models.DO_NOTHING, blank=True, null=True)
+    name = models.ForeignKey(
+        TreespeciestypeInternationalization, models.DO_NOTHING, blank=True, null=True
+    )
 
 
 class Widget(models.Model):
@@ -226,3 +249,10 @@ class Like(models.Model):
 class Internationalization(models.Model):
     en = models.TextField(db_column="EN", blank=True, null=True)
     fr = models.TextField(db_column="FR", blank=True, null=True)
+
+
+class Request(drf_Request):
+    """A custom Request type to use for parameter annotations."""
+
+    # Override with our own User model
+    user: User  # pyright: ignore[reportIncompatibleMethodOverride]
