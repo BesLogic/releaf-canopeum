@@ -1,5 +1,3 @@
-import './TreeSpeciesSelector.scss'
-
 import OptionQuantitySelector, { type SelectorOption, type SelectorOptionQuantity } from '@components/analytics/OptionQuantitySelector'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
@@ -10,7 +8,8 @@ import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 type Props = {
-  readonly species: Sitetreespecies[],
+  readonly species?: Sitetreespecies[],
+  // Make sure that onChange is included in a useCallback if part of a component
   readonly onChange: (selectedSpecies: Sitetreespecies[]) => void,
 }
 
@@ -37,14 +36,17 @@ const TreeSpeciesSelector = ({ onChange, species }: Props) => {
 
   useEffect(() => void fetchTreeSpecies(), [fetchTreeSpecies])
 
-  useEffect(() =>
+  useEffect(() => {
+    if (!species) return
+
     setSelected(species.map(specie => ({
       option: {
         displayText: translateValue(specie),
         value: specie.id,
       },
       quantity: specie.quantity,
-    }))), [species, translateValue])
+    })))
+  }, [species, translateValue])
 
   const handleChange = useCallback((selectedOptions: SelectorOptionQuantity<number>[]) => {
     const selectedSpecies = selectedOptions

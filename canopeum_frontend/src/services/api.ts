@@ -227,6 +227,58 @@ export class BatchClient {
   }
 }
 
+export class FertilizerClient {
+  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+      this.http = http ? http : window as any;
+      this.baseUrl = baseUrl ?? "";
+  }
+
+  allTypes(): Promise<FertilizerType[]> {
+      let url_ = this.baseUrl + "/analytics/fertilizers";
+      url_ = url_.replace(/[?&]$/, "");
+
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processAllTypes(_response);
+      });
+  }
+
+  protected processAllTypes(response: Response): Promise<FertilizerType[]> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          if (Array.isArray(resultData200)) {
+              result200 = [] as any;
+              for (let item of resultData200)
+                  result200!.push(FertilizerType.fromJS(item));
+          }
+          else {
+              result200 = <any>null;
+          }
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<FertilizerType[]>(null as any);
+  }
+}
+
 export class SiteClient {
   private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
   private baseUrl: string;
@@ -2356,7 +2408,7 @@ export class Batch implements IBatch {
   size?: number | undefined;
   soilCondition?: string | undefined;
   sponsor?: string | undefined;
-  readonly fertilizers!: Batchfertilizer[];
+  readonly fertilizers!: BatchFertilizer[];
   readonly mulchLayers!: BatchMulchLayer[];
   readonly supportedSpecies!: BatchSupportedSpecies[];
   readonly plantCount!: number;
@@ -2399,7 +2451,7 @@ export class Batch implements IBatch {
           if (Array.isArray(_data["fertilizers"])) {
               (<any>this).fertilizers = [] as any;
               for (let item of _data["fertilizers"])
-                  (<any>this).fertilizers!.push(Batchfertilizer.fromJS(item));
+                  (<any>this).fertilizers!.push(BatchFertilizer.fromJS(item));
           }
           if (Array.isArray(_data["mulchLayers"])) {
               (<any>this).mulchLayers = [] as any;
@@ -2487,7 +2539,7 @@ export interface IBatch {
   size?: number | undefined;
   soilCondition?: string | undefined;
   sponsor?: string | undefined;
-  fertilizers: Batchfertilizer[];
+  fertilizers: BatchFertilizer[];
   mulchLayers: BatchMulchLayer[];
   supportedSpecies: BatchSupportedSpecies[];
   plantCount: number;
@@ -2497,6 +2549,62 @@ export interface IBatch {
   seeds: BatchSeed[];
   species: BatchSpecies[];
   updatedAt: Date;
+
+  [key: string]: any;
+}
+
+export class BatchFertilizer implements IBatchFertilizer {
+  readonly id!: number;
+  readonly en!: string;
+  readonly fr!: string;
+
+  [key: string]: any;
+
+  constructor(data?: IBatchFertilizer) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          (<any>this).en = _data["en"];
+          (<any>this).fr = _data["fr"];
+      }
+  }
+
+  static fromJS(data: any): BatchFertilizer {
+      data = typeof data === 'object' ? data : {};
+      let result = new BatchFertilizer();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["en"] = this.en;
+      data["fr"] = this.fr;
+      return data;
+  }
+}
+
+export interface IBatchFertilizer {
+  id: number;
+  en: string;
+  fr: string;
 
   [key: string]: any;
 }
@@ -2715,62 +2823,6 @@ export class BatchSupportedSpecies implements IBatchSupportedSpecies {
 }
 
 export interface IBatchSupportedSpecies {
-  en: string;
-  fr: string;
-
-  [key: string]: any;
-}
-
-export class Batchfertilizer implements IBatchfertilizer {
-  readonly id!: number;
-  readonly en!: string;
-  readonly fr!: string;
-
-  [key: string]: any;
-
-  constructor(data?: IBatchfertilizer) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-  }
-
-  init(_data?: any) {
-      if (_data) {
-          for (var property in _data) {
-              if (_data.hasOwnProperty(property))
-                  this[property] = _data[property];
-          }
-          (<any>this).id = _data["id"];
-          (<any>this).en = _data["en"];
-          (<any>this).fr = _data["fr"];
-      }
-  }
-
-  static fromJS(data: any): Batchfertilizer {
-      data = typeof data === 'object' ? data : {};
-      let result = new Batchfertilizer();
-      result.init(data);
-      return result;
-  }
-
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      for (var property in this) {
-          if (this.hasOwnProperty(property))
-              data[property] = this[property];
-      }
-      data["id"] = this.id;
-      data["en"] = this.en;
-      data["fr"] = this.fr;
-      return data;
-  }
-}
-
-export interface IBatchfertilizer {
-  id: number;
   en: string;
   fr: string;
 
@@ -3208,6 +3260,62 @@ export interface ICreateUserInvitation {
   [key: string]: any;
 }
 
+export class FertilizerType implements IFertilizerType {
+  readonly id!: number;
+  readonly en!: string;
+  readonly fr!: string;
+
+  [key: string]: any;
+
+  constructor(data?: IFertilizerType) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          (<any>this).en = _data["en"];
+          (<any>this).fr = _data["fr"];
+      }
+  }
+
+  static fromJS(data: any): FertilizerType {
+      data = typeof data === 'object' ? data : {};
+      let result = new FertilizerType();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["en"] = this.en;
+      data["fr"] = this.fr;
+      return data;
+  }
+}
+
+export interface IFertilizerType {
+  id: number;
+  en: string;
+  fr: string;
+
+  [key: string]: any;
+}
+
 export class Like implements ILike {
   readonly id!: number;
   user!: number;
@@ -3378,7 +3486,7 @@ export class PatchedBatch implements IPatchedBatch {
   size?: number | undefined;
   soilCondition?: string | undefined;
   sponsor?: string | undefined;
-  readonly fertilizers?: Batchfertilizer[];
+  readonly fertilizers?: BatchFertilizer[];
   readonly mulchLayers?: BatchMulchLayer[];
   readonly supportedSpecies?: BatchSupportedSpecies[];
   readonly plantCount?: number;
@@ -3414,7 +3522,7 @@ export class PatchedBatch implements IPatchedBatch {
           if (Array.isArray(_data["fertilizers"])) {
               (<any>this).fertilizers = [] as any;
               for (let item of _data["fertilizers"])
-                  (<any>this).fertilizers!.push(Batchfertilizer.fromJS(item));
+                  (<any>this).fertilizers!.push(BatchFertilizer.fromJS(item));
           }
           if (Array.isArray(_data["mulchLayers"])) {
               (<any>this).mulchLayers = [] as any;
@@ -3502,7 +3610,7 @@ export interface IPatchedBatch {
   size?: number | undefined;
   soilCondition?: string | undefined;
   sponsor?: string | undefined;
-  fertilizers?: Batchfertilizer[];
+  fertilizers?: BatchFertilizer[];
   mulchLayers?: BatchMulchLayer[];
   supportedSpecies?: BatchSupportedSpecies[];
   plantCount?: number;

@@ -112,9 +112,6 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
           return option.displayText
         }}
         id={id}
-        // Override this property; since we remove an option after selecting it,
-        // It will never be found in the list
-        isOptionEqualToValue={(option, value) => option.value === value.value || false}
         onChange={(_event, option) => {
           if (option === null || typeof (option) === 'string') return
 
@@ -160,38 +157,34 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
             <div className='col-6'>{optionQuantity.option.displayText}</div>
 
             <div className='col-4'>
-              <div className='row align-items-center'>
-                <div className='col'>
-                  <button
-                    className='btn btn-outline-dark btn-sm icon-button'
-                    onClick={() => subQuantity(optionQuantity.option)}
-                    type='button'
-                  >
-                    <span className='material-symbols-outlined fill-icon icon-sm'>remove</span>
-                  </button>
-                </div>
+              <div className='d-flex justify-content-center align-items-center'>
+                <button
+                  className='btn btn-outline-dark btn-sm icon-button p-1'
+                  onClick={() => subQuantity(optionQuantity.option)}
+                  type='button'
+                >
+                  <span className='material-symbols-outlined fill-icon icon-xs'>remove</span>
+                </button>
 
-                <div className='col text-center'>{optionQuantity.quantity}</div>
+                <div className='text-center mx-3'>{optionQuantity.quantity}</div>
 
-                <div className='col'>
-                  <button
-                    className='btn btn-outline-dark btn-sm icon-button'
-                    onClick={() => addQuantity(optionQuantity.option)}
-                    type='button'
-                  >
-                    <span className='material-symbols-outlined fill-icon icon-sm'>add</span>
-                  </button>
-                </div>
+                <button
+                  className='btn btn-outline-dark btn-sm icon-button p-1'
+                  onClick={() => addQuantity(optionQuantity.option)}
+                  type='button'
+                >
+                  <span className='material-symbols-outlined fill-icon icon-xs'>add</span>
+                </button>
               </div>
             </div>
 
             <div className='col-2 d-flex justify-content-end'>
               <button
-                className='btn btn-outline-dark btn-sm icon-button'
+                className='unstyled-button icon-button'
                 onClick={() => removeType(optionQuantity.option)}
                 type='button'
               >
-                <span className='material-symbols-outlined fill-icon icon-sm'>clear</span>
+                <span className='material-symbols-outlined'>cancel</span>
               </button>
             </div>
           </li>

@@ -1,6 +1,8 @@
+import FertilizersSelector from '@components/analytics/FertilizersSelector'
+import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import type { IBatch, SiteSummary } from '@services/api'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 type Props = {
@@ -77,16 +79,31 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
               <label className='form-label text-capitalize' htmlFor='size'>
                 {translate('analyticsSite.batch-modal.size-label')}
               </label>
-              <input
-                className='form-control'
-                id='size'
-                onChange={event =>
-                  setBatch(value => ({
-                    ...value,
-                    size: Number.parseInt(event.target.value, 10) || 0,
-                  }))}
-                type='number'
-                value={batch.size}
+              <div className='input-group'>
+                <input
+                  className='form-control'
+                  id='size'
+                  min={0}
+                  onChange={event =>
+                    setBatch(value => ({
+                      ...value,
+                      size: Number.parseInt(event.target.value, 10) || undefined,
+                    }))}
+                  type='number'
+                  value={batch.size}
+                />
+                <span className='input-group-text'>
+                  {translate('analyticsSite.batch-modal.feet-squared')}
+                </span>
+              </div>
+            </div>
+
+            <div>
+              <TreeSpeciesSelector
+                onChange={useCallback(
+                  species => setBatch(current => ({ ...current, species })),
+                  [],
+                )}
               />
             </div>
 
@@ -105,14 +122,12 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
             </div>
 
             <div>
-              {
-                /* <TreeSpeciesSelector
-                onChange={species => setBatch(current => ({ ...current, species }))}
-                searchBarLabel='analytics.site-modal.site-tree-species'
-                species={site.species}
-                speciesOptions={availableSpecies}
-              /> */
-              }
+              <FertilizersSelector
+                onChange={useCallback(
+                  fertilizers => setBatch(current => ({ ...current, fertilizers })),
+                  [],
+                )}
+              />
             </div>
           </div>
         </form>

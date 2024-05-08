@@ -17,6 +17,7 @@ from .models import (
     Comment,
     Contact,
     Coordinate,
+    Fertilizertype,
     Internationalization,
     Like,
     Mulchlayertype,
@@ -194,6 +195,21 @@ class TreeTypeSerializer(serializers.ModelSerializer):
         return InternationalizationSerializer(obj.name).data.get("fr", None)
 
 
+class FertilizerTypeSerializer(serializers.ModelSerializer):
+    en = serializers.SerializerMethodField()
+    fr = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Fertilizertype
+        fields = ("id", "en", "fr")
+
+    def get_en(self, obj: Fertilizertype):
+        return InternationalizationSerializer(obj.name).data.get("en", None)
+
+    def get_fr(self, obj: Fertilizertype):
+        return InternationalizationSerializer(obj.name).data.get("fr", None)
+
+
 class AnnouncementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Announcement
@@ -326,7 +342,7 @@ class SiteSocialSerializer(serializers.ModelSerializer):
         return WidgetSerializer(obj.widget_set.all(), many=True).data
 
 
-class BatchfertilizerSerializer(serializers.ModelSerializer):
+class BatchFertilizerSerializer(serializers.ModelSerializer):
     en = serializers.SerializerMethodField()
     fr = serializers.SerializerMethodField()
 
@@ -457,9 +473,9 @@ class BatchSerializer(serializers.ModelSerializer):
     def get_seed_collected_count(self, obj):
         return random.randint(50, 300)  # noqa: S311
 
-    @extend_schema_field(BatchfertilizerSerializer(many=True))
+    @extend_schema_field(BatchFertilizerSerializer(many=True))
     def get_fertilizers(self, obj):
-        return BatchfertilizerSerializer(obj.batchfertilizer_set.all(), many=True).data
+        return BatchFertilizerSerializer(obj.batchfertilizer_set.all(), many=True).data
 
     @extend_schema_field(BatchMulchLayerSerializer(many=True))
     def get_mulch_layers(self, obj):

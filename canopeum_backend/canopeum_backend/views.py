@@ -33,6 +33,7 @@ from .models import (
     Comment,
     Contact,
     Coordinate,
+    Fertilizertype,
     Like,
     Post,
     RoleName,
@@ -56,6 +57,7 @@ from .serializers import (
     ContactSerializer,
     CreateCommentSerializer,
     CreateUserInvitationSerializer,
+    FertilizerTypeSerializer,
     LikeSerializer,
     LoginUserSerializer,
     PostPaginationSerializer,
@@ -157,6 +159,8 @@ class LogoutAPIView(APIView):
 
 
 class TreeSpeciesAPIView(APIView):
+    permission_classes = (MegaAdminOrSiteManagerPermission,)
+
     @extend_schema(responses=TreeTypeSerializer(many=True), operation_id="tree_species")
     def get(self, request):
         tree_species = Treetype.objects.all()
@@ -169,6 +173,16 @@ class SiteTypesAPIView(APIView):
     def get(self, request):
         tree_species = Sitetype.objects.all()
         serializer = SiteTypeSerializer(tree_species, many=True)
+        return Response(serializer.data)
+
+
+class FertilizerListAPIView(APIView):
+    permission_classes = (MegaAdminOrSiteManagerPermission,)
+
+    @extend_schema(responses=FertilizerTypeSerializer(many=True), operation_id="fertilizer_allTypes")
+    def get(self, request):
+        fertilizer_types = Fertilizertype.objects.all()
+        serializer = FertilizerTypeSerializer(fertilizer_types, many=True)
         return Response(serializer.data)
 
 

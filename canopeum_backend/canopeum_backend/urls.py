@@ -50,9 +50,9 @@ urlpatterns = [
         "social/sites/<int:siteId>/widgets/<int:widgetId>/", views.WidgetDetailAPIView.as_view(), name="widget-detail"
     ),
     # Analytics
-    # Tree Species
     path("analytics/tree-species", views.TreeSpeciesAPIView.as_view(), name="tree-species"),
     path("analytics/site-types", views.SiteTypesAPIView.as_view(), name="site-types"),
+    path("analytics/fertilizers", views.FertilizerListAPIView.as_view(), name="fertilizer-list"),
     # Site
     path("analytics/sites/", views.SiteListAPIView.as_view(), name="site-list"),
     path("analytics/sites/<int:siteId>/", views.SiteDetailAPIView.as_view(), name="site-detail"),

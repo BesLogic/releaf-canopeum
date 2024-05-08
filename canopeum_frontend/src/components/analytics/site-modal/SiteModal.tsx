@@ -1,7 +1,7 @@
 import SiteCoordinates from '@components/analytics/site-modal/SiteCoordinates'
 import SiteImageUpload from '@components/analytics/site-modal/SiteImageUpload'
+import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { LanguageContext } from '@components/context/LanguageContext'
-import TreeSpeciesSelector from '@components/TreeSpeciesSelector'
 import useApiClient from '@hooks/ApiClientHook'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import type { Sitetreespecies, SiteType } from '@services/api'
