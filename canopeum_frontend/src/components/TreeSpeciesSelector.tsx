@@ -66,6 +66,7 @@ const TreeSpeciesSelector = ({ onChange, species }: Props) => {
 
   return (
     <OptionQuantitySelector
+      id='tree-type-quantity-selector'
       label={translate('analytics.site-modal.site-tree-species')}
       onChange={handleChange}
       options={options}

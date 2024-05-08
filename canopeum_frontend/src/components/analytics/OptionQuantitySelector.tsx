@@ -1,12 +1,14 @@
+/* eslint-disable react/jsx-props-no-spreading -- Needed for MUI custom input */
 import './OptionQuantitySelector.scss'
 
 import { Autocomplete } from '@mui/material'
 import { useEffect, useState } from 'react'
 
 type Props<TValue> = {
+  readonly id: string,
+  readonly label: string,
   readonly selected: SelectorOptionQuantity<TValue>[],
   readonly options: SelectorOption<TValue>[],
-  readonly label: string,
   readonly onChange: (selectedOptions: SelectorOptionQuantity<TValue>[]) => void,
 }
 
@@ -23,17 +25,18 @@ export type SelectorOptionQuantity<TValue> = {
 }
 
 const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
-  { label, options, selected, onChange }: Props<TValue>,
+  { id, label, options, selected, onChange }: Props<TValue>,
 ) => {
-  const [displaySearch, setDisplaySearch] = useState(false)
   const [availableOptions, setAvailableOptions] = useState(options)
   const [filteredOptions, setFilteredOptions] = useState(options)
   const [selectedOptions, setSelectedOptions] = useState(selected)
 
+  const [isAutocompleteOpen, setIsAutocompleteOpen] = useState(false)
+
   const [searchValue, setSearchValue] = useState('')
 
   useEffect(() => setAvailableOptions(options), [options])
-  useEffect(() => setFilteredOptions(availableOptions), [availableOptions, displaySearch])
+  useEffect(() => setFilteredOptions(availableOptions), [availableOptions])
   useEffect(() => onChange(selectedOptions), [selectedOptions, onChange])
 
   useEffect(() =>
@@ -44,12 +47,11 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
     ), [searchValue, availableOptions])
 
   const onSelect = (option: SelectorOption<TValue>) => {
+    setSearchValue('')
     setSelectedOptions(current => [...current, { option, quantity: 0 }])
     setAvailableOptions(current =>
       current.filter(currentOption => currentOption.value !== option.value)
     )
-    setDisplaySearch(false)
-    setSearchValue('')
   }
 
   const addQuantity = (option: SelectorOption<TValue>) => {
@@ -91,28 +93,60 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
 
   return (
     <div className='position-relative'>
-      <label className='form-label text-capitalize' htmlFor='tree-type-search'>
+      <label className='form-label text-capitalize' htmlFor={id}>
         {label}
       </label>
+
       <Autocomplete
-        getOptionKey={option => option.value}
-        getOptionLabel={option => option.displayText}
-        id='tree-type-search'
-        onChange={(_event, value) => {
-          if (value === null) return
-          onSelect(value)
+        autoSelect
+        clearOnBlur
+        freeSolo
+        getOptionKey={option => {
+          if (typeof (option) === 'string') return option
+
+          return option.value
         }}
+        getOptionLabel={option => {
+          if (typeof (option) === 'string') return option
+
+          return option.displayText
+        }}
+        id={id}
+        // Override this property; since we remove an option after selecting it,
+        // It will never be found in the list
+        isOptionEqualToValue={(option, value) => option.value === value.value || false}
+        onChange={(_event, option) => {
+          if (option === null || typeof (option) === 'string') return
+
+          onSelect(option)
+        }}
+        onClose={_event => setIsAutocompleteOpen(false)}
+        onOpen={_event => setIsAutocompleteOpen(true)}
+        open={isAutocompleteOpen}
         options={filteredOptions}
         renderInput={params => (
-          <div ref={params.InputProps.ref}>
+          <div
+            className='option-quantity-selector-input-group'
+            ref={params.InputProps.ref}
+          >
             <input
               {...params.inputProps}
-              className='form-control'
+              className='form-control option-quantity-selector-input'
               onChange={event => setSearchValue(event.target.value)}
-              onFocus={() => setDisplaySearch(true)}
               type='text'
               value={searchValue}
             />
+            <button
+              className='unstyled-button h-100 d-flex justify-content-center align-items-center'
+              onClick={() => setIsAutocompleteOpen(previous => !previous)}
+              type='button'
+            >
+              <span className='material-symbols-outlined fill-icon icon-md'>
+                {isAutocompleteOpen
+                  ? 'expand_less'
+                  : 'expand_more'}
+              </span>
+            </button>
           </div>
         )}
       />
