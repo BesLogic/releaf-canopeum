@@ -225,7 +225,7 @@ class SiteListAPIView(APIView):
         image = asset.save()
 
         site_type = Sitetype.objects.get(pk=request.data["siteType"])
-        # (TODO) For the coordinates, we need to calculate the ddLat and ddLong
+        # TODO: For the coordinates, we need to calculate the ddLat and ddLong
         # and also use the Google API for the address
         coordinate = Coordinate.objects.create(
             dms_latitude=request.data["latitude"], dms_longitude=request.data["longitude"]
@@ -315,7 +315,7 @@ class SiteDetailAPIView(APIView):
         image = asset.save()
 
         site_type = Sitetype.objects.get(pk=request.data["siteType"])
-        # (TODO) For the coordinates, we need to calculate the ddLat and ddLong
+        # TODO: For the coordinates, we need to calculate the ddLat and ddLong
         # and also use the Google API for the address
         coordinate = Coordinate.objects.create(
             dms_latitude=request.data["latitude"], dms_longitude=request.data["longitude"]
