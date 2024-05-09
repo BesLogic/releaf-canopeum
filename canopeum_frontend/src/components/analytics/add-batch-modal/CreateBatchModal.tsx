@@ -37,6 +37,7 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
   const [batch, setBatch] = useState<IBatch>(defaultBatch)
 
   const handleSubmitBatch = () => {
+    // TODO: Complete this behavior
     console.log('batch:', batch)
   }
 
