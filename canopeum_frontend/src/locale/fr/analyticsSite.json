@@ -6,7 +6,7 @@
   "add-new-batch": "Ajouter un Nouveau Lot",
   "batch-modal": {
     "title": "Créer un Nouveau Lot",
-    "batch-name": "Nom / ID du Lot",
+    "name-label": "Nom / ID du Lot",
     "sponsor-label": "Sponsor",
     "size-label": "Taille du terrain",
     "feet-squared": "pi²",

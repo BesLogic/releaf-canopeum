@@ -34,7 +34,23 @@
     "visitors": "Visiteurs"
   },
   "site-modal": {
-    "create-site": "créer un site"
+    "create-site": "créer un site",
+    "site-name": "nom du site",
+    "site-type": "type de site",
+    "site-image": "image du projet ou logo de l'entreprise",
+    "site-image-upload": "ou déposez une image à téléverser",
+    "site-gps-coordinates": "coordonnées GPS",
+    "site-dms-latitude": "latitude DMS",
+    "site-dms-longitude": "longitude DMS",
+    "site-presentation": "présentation brève",
+    "site-size": "taille du terrain",
+    "site-tree-species": "Nombre d'arbres par espèce",
+    "site-research-partner": "partenariat de recherche?",
+    "site-map-visibility": "visibilité sur la carte",
+    "yes": "oui",
+    "no": "non",
+    "visible": "visible",
+    "invisible": "invisible"
   },
   "visitors": "Visiteurs",
   "sponsored": "Sponsorisé",

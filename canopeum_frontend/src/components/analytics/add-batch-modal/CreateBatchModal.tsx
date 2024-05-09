@@ -123,30 +123,62 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
               />
             </div>
 
+            <FertilizersSelector
+              onChange={useCallback(
+                fertilizers => setBatch(current => ({ ...current, fertilizers })),
+                [],
+              )}
+            />
+
+            <MulchLayersSelector
+              onChange={useCallback(
+                mulchLayers => setBatch(current => ({ ...current, mulchLayers })),
+                [],
+              )}
+            />
+
+            <SupportSpeciesSelector
+              onChange={useCallback(
+                supportedSpecies => setBatch(current => ({ ...current, supportedSpecies })),
+                [],
+              )}
+            />
+
             <div>
-              <FertilizersSelector
-                onChange={useCallback(
-                  fertilizers => setBatch(current => ({ ...current, fertilizers })),
-                  [],
-                )}
+              <label className='form-label text-capitalize' htmlFor='total-number-of-plants'>
+                {translate('analyticsSite.batch-modal.total-number-of-plants-label')}
+              </label>
+              <input
+                className='form-control'
+                id='total-number-of-plants'
+                onChange={event =>
+                  setBatch(value => ({
+                    ...value,
+                    plantCount: Number.parseInt(event.target.value, 10) || -1,
+                  }))}
+                type='text'
+                value={batch.plantCount === -1
+                  ? ''
+                  : batch.plantCount}
               />
             </div>
 
             <div>
-              <MulchLayersSelector
-                onChange={useCallback(
-                  mulchLayers => setBatch(current => ({ ...current, mulchLayers })),
-                  [],
-                )}
-              />
-            </div>
-
-            <div>
-              <SupportSpeciesSelector
-                onChange={useCallback(
-                  supportedSpecies => setBatch(current => ({ ...current, supportedSpecies })),
-                  [],
-                )}
+              <label className='form-label text-capitalize' htmlFor='survived'>
+                {translate('analyticsSite.batch-modal.survived-label')}
+              </label>
+              <input
+                className='form-control'
+                id='survived'
+                onChange={event =>
+                  setBatch(value => ({
+                    ...value,
+                    survivedCount: Number.parseInt(event.target.value, 10) || -1,
+                  }))}
+                type='text'
+                value={batch.survivedCount === -1
+                  ? ''
+                  : batch.survivedCount}
               />
             </div>
           </div>
