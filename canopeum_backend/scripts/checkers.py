@@ -4,7 +4,6 @@ from pathlib import Path
 from subprocess import run  # noqa: S404 # Do not pass user input as arguments
 
 path = (Path(__file__).parent.parent).absolute()
-print(path)
 
 
 def main():
