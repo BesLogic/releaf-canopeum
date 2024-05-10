@@ -1,3 +1,5 @@
+import random
+
 from django.contrib.auth.password_validation import validate_password
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
@@ -332,11 +334,15 @@ class BatchfertilizerSerializer(serializers.ModelSerializer):
         model = Batchfertilizer
         fields = ("id", "en", "fr")
 
-    def get_en(self, obj):
-        return InternationalizationSerializer(obj.fertilizer_type).data.get("en", None)
+    def get_en(self, obj: Batchfertilizer):
+        if obj.fertilizer_type is None:
+            return None
+        return InternationalizationSerializer(obj.fertilizer_type.name).data.get("en", None)
 
-    def get_fr(self, obj):
-        return InternationalizationSerializer(obj.fertilizer_type).data.get("fr", None)
+    def get_fr(self, obj: Batchfertilizer):
+        if obj.fertilizer_type is None:
+            return None
+        return InternationalizationSerializer(obj.fertilizer_type.name).data.get("fr", None)
 
 
 class BatchMulchLayerSerializer(serializers.ModelSerializer):
@@ -392,11 +398,15 @@ class BatchSpeciesSerializer(serializers.ModelSerializer):
         model = BatchSpecies
         fields = ("quantity", "en", "fr")
 
-    def get_en(self, obj):
-        return InternationalizationSerializer(obj.tree_type).data.get("en", None)
+    def get_en(self, obj: BatchSpecies):
+        if obj.tree_type is None:
+            return None
+        return InternationalizationSerializer(obj.tree_type.name).data.get("en", None)
 
-    def get_fr(self, obj):
-        return InternationalizationSerializer(obj.tree_type).data.get("fr", None)
+    def get_fr(self, obj: BatchSpecies):
+        if obj.tree_type is None:
+            return None
+        return InternationalizationSerializer(obj.tree_type.name).data.get("fr", None)
 
 
 class BatchSerializer(serializers.ModelSerializer):
@@ -439,19 +449,19 @@ class BatchAnalyticsSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_plant_count(self, obj):
-        return self.context.get("plant_count")
+        return random.randint(100, 200)  # noqa: S311
 
     @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_survived_count(self, obj):
-        return self.context.get("survived_count")
+        return random.randint(50, 100)  # noqa: S311
 
     @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_replace_count(self, obj):
-        return self.context.get("replace_count")
+        return random.randint(25, 50)  # noqa: S311
 
     @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_seed_collected_count(self, obj):
-        return self.context.get("seed_collected_count")
+        return random.randint(50, 300)  # noqa: S311
 
     @extend_schema_field(BatchfertilizerSerializer(many=True))
     def get_fertilizers(self, obj):
@@ -544,19 +554,19 @@ class SiteSummarySerializer(serializers.ModelSerializer):
 
     @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_plant_count(self, obj):
-        return self.context.get("plant_count")
+        return random.randint(100, 200)  # noqa: S311
 
     @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_survived_count(self, obj):
-        return self.context.get("survived_count")
+        return random.randint(50, 100)  # noqa: S311
 
     @extend_schema_field(int)  # pyright: ignore[reportArgumentType]
     def get_propagation_count(self, obj):
-        return self.context.get("propagation_count")
+        return random.randint(5, 50)  # noqa: S311
 
     @extend_schema_field(float)  # pyright: ignore[reportArgumentType]
     def get_progress(self, obj):
-        return self.context.get("progress")
+        return random.randint(0, 100)  # noqa: S311
 
     @extend_schema_field(list[str])  # pyright: ignore[reportArgumentType]
     def get_sponsors(self, obj):

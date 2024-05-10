@@ -38,6 +38,15 @@ class SiteAdminPermission(permissions.BasePermission):
         return Siteadmin.objects.filter(user__id__exact=request.user.id).filter(site=obj.pk).exists()
 
 
+class MegaAdminOrSiteManagerPermission(permissions.BasePermission):
+    """Global permission for actions only allowed to MegaAdmin or SiteManager users."""
+
+    # About the type ignore: Base permission return type is Literal True but should be bool
+    def has_permission(self, request, view):  # type: ignore
+        current_user_role = request.user.role.name
+        return current_user_role in {"MegaAdmin", "SiteManager"}
+
+
 class MegaAdminPermission(permissions.BasePermission):
     """Global permission for actions only allowed to MegaAdmin users."""
 

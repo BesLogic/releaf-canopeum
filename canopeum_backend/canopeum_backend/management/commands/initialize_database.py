@@ -1,3 +1,5 @@
+# flake8: noqa: S311 -- Accept random int generation for database seeding
+
 import random
 from datetime import timedelta
 from pathlib import Path
@@ -5,7 +7,7 @@ from pathlib import Path
 from django.core.files import File
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
-from django.db import connection
+from django.db import ProgrammingError, connection
 from django.utils import timezone
 
 from canopeum_backend import settings
@@ -14,6 +16,7 @@ from canopeum_backend.models import (
     Asset,
     Batch,
     Batchfertilizer,
+    BatchSpecies,
     Comment,
     Contact,
     Coordinate,
@@ -32,28 +35,217 @@ from canopeum_backend.models import (
     User,
 )
 
+tree_types = [
+    ["Balsam Fir", "Sapin baumier"],
+    ["Black Maple", "Érable noir"],
+    ["Red Maple", "Érable rouge"],
+    ["Silver Maple", "Érable argenté"],
+    ["Sugar Maple", "Érable à sucre"],
+    ["Ohio Buckeye", "Marronnier d'Ohio"],
+    ["Speckled Alder", "Aulne tacheté"],
+    ["Green Alder", "Aulne vert"],
+    ["Serviceberries", "Amélanchier"],
+    ["Black Chokeberry", "Aronie noire"],
+    ["Yellow Birch", "Bouleau jaune"],
+    ["White Birch", "Bouleau blanc"],
+    ["Gray Birch", "Bouleau gris"],
+    ["Blue Beech", "Hêtre bleu"],
+    ["Bitternut Hickory", "Noyer amer"],
+    ["Pignut Hickory", "Noyer des montagnes"],
+    ["Big Shellbark Hickory", "Noyer à gros fruits"],
+    ["Shagbark Hickory", "Noyer à écorce shaggy"],
+    ["American Bittersweet", "Morelle d'Amérique"],
+    ["Northern Hackberry", "Micocoulier occidental"],
+    ["Buttonbush", "Céphalanthère occidentale"],
+    ["Redbud", "Gainier de Virginie"],
+    ["Alternate-leaf Dogwood", "Cornouiller à feuilles alternes"],
+    ["Silky Dogwood", "Cornouiller soyeux"],
+    ["Flowering Dogwood", "Cornouiller à fleurs"],
+    ["Gray Dogwood", "Cornouiller gris"],
+    ["Redosier Dogwood", "Cornouiller stolonifère"],
+    ["American Hazelnut", "Noisetier d'Amérique"],
+    ["Beaked Hazel", "Coudrier à bec"],
+    ["Hawthorns", "Aubépines"],
+    ["Bush Honeysuckle", "Chèvrefeuille arbustif"],
+    ["American Beech", "Hêtre d'Amérique"],
+    ["White Ash", "Frêne blanc"],
+    ["Black Ash", "Frêne noir"],
+    ["Green/ Red Ash", "Frêne vert/rouge"],
+    ["Pumpkin Ash", "Frêne citrouille"],
+    ["Blue Ash", "Frêne bleu"],
+    ["Honey Locust", "Faux-acacia"],
+    ["Kentucky Coffeetree", "Gymnocladus de Kentucky"],
+    ["Witch-Hazel", "Hamamélis de Virginie"],
+    ["Winterberry", "Houx d'hiver"],
+    ["Butternut", "Noyer cendré"],
+    ["Black Walnut", "Noyer noir"],
+    ["Common Juniper", "Genévrier commun"],
+    ["Eastern Red Cedar", "Genévrier rouge de l'Est"],
+    ["Tamarac", "Mélèze laricin"],
+    ["Spicebush", "Lindera à feuilles opposées"],
+    ["Tulip-Tree", "Tulipier de Virginie"],
+    ["Cucumber-Tree", "Magnolia concombre"],
+    ["Sweetgale", "Myrica gale"],
+    ["Black Gum", "Nyssa sylvatica"],
+    ["Ironwood", "Ostryer de Virginie"],
+    ["Virginia Creeper", "Vigne vierge"],
+    ["Ninebark", "Physocarpe"],
+    ["White Spruce", "Épinette blanche"],
+    ["Black Spruce", "Épinette noire"],
+    ["Red Spruce", "Épinette rouge"],
+    ["Jack Pine", "Pin gris"],
+    ["Red Pine", "Pin rouge"],
+    ["Pitch Pine", "Pin rigide"],
+    ["Eastern White Pine", "Pin blanc de l'Est"],
+    ["Sycamore", "Platanus occidentalis"],
+    ["Eastern Cottonwood", "Peuplier baumier"],
+    ["Trembling Aspen", "Peuplier faux-tremble"],
+    ["American Plum", "Prunier d'Amérique"],
+    ["Pin Cherry", "Cerisier de Pennsylvanie"],
+    ["Black Cherry", "Cerisier noir"],
+    ["Eastern Choke Cherry", "Cerisier de Virginie"],
+    ["Hoptree", "Ptelea trifoliata"],
+    ["White Oak", "Chêne blanc"],
+    ["Swamp White Oak", "Chêne blanc des marais"],
+    ["Bur Oak", "Chêne bur"],
+    ["Chinquapin Oak", "Chêne chinkapin"],
+    ["Pin Oak", "Chêne à pin"],
+    ["Red Oak", "Chêne rouge"],
+    ["Shumard Oak", "Chêne de Shumard"],
+    ["Black Oak", "Chêne noir"],
+    ["Fragrant Sumac", "Sumac aromatique"],
+    ["Shining Sumac", "Sumac brillant"],
+    ["Staghorn Sumac", "Sumac vinaigrier"],
+    ["Purple-flowering Raspberry", "Ronce pourpre"],
+    ["Roses", "Roses"],
+    ["Willows", "Saules"],
+    ["Black Elderberry", "Sureau noir"],
+    ["Red Elderberry", "Sureau rouge"],
+    ["Sassafras", "Sassafras"],
+    ["American Mountain Ash", "Sorbier d'Amérique"],
+    ["Showy Mountain Ash", "Sorbier remarquable"],
+    ["Narrow-leaved Meadowsweet", "Reine-des-prés à feuilles étroites"],
+    ["Snowberry", "Symphorine"],
+    ["White Cedar", "Thuya occidental"],
+    ["Basswood", "Tilleul d'Amérique"],
+    ["Eastern Hemlock", "Pruche de l'Est"],
+    ["American Elm", "Orme d'Amérique"],
+    ["Slippery Elm", "Orme glissant"],
+    ["Nannyberry", "Viorne à feuilles de viorne"],
+    ["American Highbush Cranberry", "Viorne trilobée"],
+]
+
 
 def create_posts_for_site(site):
-    num_posts = random.randint(4, 8)  # noqa: S311
+    num_posts = random.randint(4, 8)
     for _ in range(num_posts):
         # Generate a random share_count between 0 and 10
-        share_count = random.randint(0, 10)  # noqa: S311
+        share_count = random.randint(0, 10)
 
         # Create a post for the site
         post = Post.objects.create(
             site=site,
             body=f"""{site.name} has planted {random.randint(100, 1000)} new trees today.
-                Let's continue to grow our forest!""",  # noqa: S311
+                Let's continue to grow our forest!""",
             share_count=share_count,
         )
         # Change created_at date since it is auto-generated on create
         # Generate a random created_at time within the last 2 months
         post.created_at = timezone.now() - timedelta(
-            days=random.randint(0, 60),  # noqa: S311
-            hours=random.randint(0, 12),  # noqa: S311
-            minutes=random.randint(0, 55),  # noqa: S311
+            days=random.randint(0, 60),
+            hours=random.randint(0, 12),
+            minutes=random.randint(0, 55),
         )
         post.save()
+
+
+def create_batch_species_for_batch(batch):
+    num_species = random.randint(4, 8)
+    for _ in range(num_species):
+        tree_type_id = random.randint(1, len(tree_types))
+        BatchSpecies.objects.create(
+            batch=batch,
+            tree_type=Treetype.objects.get(pk=tree_type_id),
+            quantity=random.randint(1, 100),
+        )
+
+
+batch_names = [
+    "First Batch",
+    "Second Batch",
+    "Third Batch",
+    "Fourth Batch",
+    "Fifth Batch",
+    "Sixth Batch",
+    "Seventh Batch",
+    "Eight Batch",
+]
+
+sponsors = [
+    "GreenGrow Solutions",
+    "ArborWorks",
+    "Evergreen Eco",
+    "Rooted Reforestation",
+    "TreeTech Innovations",
+    "Forest Guardians",
+    "LeafyLife Planting",
+    "EcoArbor",
+    "Sapling Services",
+    "Birch & Pine Planters",
+    "Foliage Force",
+    "Canopy Creations",
+    "GrowGreen Reforestation",
+    "Woodland Warriors",
+    "BranchOut Planting",
+    "EcoTree Partners",
+    "Grove Guardians",
+    "Sustainable Sowers",
+    "TimberTech Planting",
+    "Nature's Nurseries",
+    "GreenThumb Reforestation",
+    "Forest Frontiers",
+    "Arbor Alliance",
+    "TreeTrek Planters",
+    "RootRise Reforestation",
+    "LeafLegacy Planting",
+    "EcoRoot Reforestation",
+    "TrunkTrack Planters",
+    "WoodWise Reforestation",
+    "Boreal Bloom Planters",
+]
+
+
+def get_sponsors():
+    number_of_sponsors = random.randint(1, 5)
+    random.shuffle(sponsors)
+    return sponsors[:number_of_sponsors]
+
+
+def get_sponsor():
+    index = random.randint(0, len(sponsors) - 1)
+    return sponsors[index]
+
+
+def create_batches_for_site(site):
+    num_batches = random.randint(3, 8)
+    for i in range(num_batches):
+        number_of_seed = random.randint(50, 200)
+        batch = Batch.objects.create(
+            name=batch_names[i - 1],
+            site=site,
+            created_at=timezone.now(),
+            size=random.randint(20, 150),
+            sponsor=get_sponsor(),
+            soil_condition="Good",
+            total_number_seed=number_of_seed,
+            total_propagation=random.randint(0, number_of_seed),
+            updated_at=timezone.now(),
+        )
+        create_batch_species_for_batch(batch)
+        Batchfertilizer.objects.create(
+            batch=batch,
+            fertilizer_type=Fertilizertype.objects.first(),
+        )
 
 
 class Command(BaseCommand):
@@ -71,9 +263,16 @@ class Command(BaseCommand):
             if cursor.execute("SHOW TABLES;") != 0:
                 self.stdout.write("Erasing existing data...")
                 assets_to_delete = Asset.objects.all().exclude(asset="site_img.png")
-                for asset in assets_to_delete:
-                    path = Path(settings.BASE_DIR) / "canopeum_backend" / "media" / asset.asset.name
-                    path.unlink(missing_ok=True)
+                try:
+                    for asset in assets_to_delete:
+                        path = Path(settings.BASE_DIR) / "canopeum_backend" / "media" / asset.asset.name
+                        path.unlink(missing_ok=True)
+                except ProgrammingError:
+                    # Catch old leftover tables that can't be deleted because they don't exist
+                    # This can happen if this script got interrupted in a previous run (CTRL+C)
+                    # It'd be better if the query was lazy fetched so we could iter.next() every
+                    # element and only skip the problematic ones. But this works too.
+                    pass
                 call_command("flush", "--noinput")
                 cursor.execute("SET FOREIGN_KEY_CHECKS = 0;")
                 cursor.execute("SHOW TABLES;")
@@ -121,106 +320,6 @@ class Command(BaseCommand):
             Mulchlayertype.objects.create(name=MulchlayertypeInternationalization.objects.create(en=_[0], fr=_[1]))
 
     def create_tree_types(self):
-        tree_types = [
-            ["Balsam Fir", "Sapin baumier"],
-            ["Black Maple", "Érable noir"],
-            ["Red Maple", "Érable rouge"],
-            ["Silver Maple", "Érable argenté"],
-            ["Sugar Maple", "Érable à sucre"],
-            ["Ohio Buckeye", "Marronnier d'Ohio"],
-            ["Speckled Alder", "Aulne tacheté"],
-            ["Green Alder", "Aulne vert"],
-            ["Serviceberries", "Amélanchier"],
-            ["Black Chokeberry", "Aronie noire"],
-            ["Yellow Birch", "Bouleau jaune"],
-            ["White Birch", "Bouleau blanc"],
-            ["Gray Birch", "Bouleau gris"],
-            ["Blue Beech", "Hêtre bleu"],
-            ["Bitternut Hickory", "Noyer amer"],
-            ["Pignut Hickory", "Noyer des montagnes"],
-            ["Big Shellbark Hickory", "Noyer à gros fruits"],
-            ["Shagbark Hickory", "Noyer à écorce shaggy"],
-            ["American Bittersweet", "Morelle d'Amérique"],
-            ["Northern Hackberry", "Micocoulier occidental"],
-            ["Buttonbush", "Céphalanthère occidentale"],
-            ["Redbud", "Gainier de Virginie"],
-            ["Alternate-leaf Dogwood", "Cornouiller à feuilles alternes"],
-            ["Silky Dogwood", "Cornouiller soyeux"],
-            ["Flowering Dogwood", "Cornouiller à fleurs"],
-            ["Gray Dogwood", "Cornouiller gris"],
-            ["Redosier Dogwood", "Cornouiller stolonifère"],
-            ["American Hazelnut", "Noisetier d'Amérique"],
-            ["Beaked Hazel", "Coudrier à bec"],
-            ["Hawthorns", "Aubépines"],
-            ["Bush Honeysuckle", "Chèvrefeuille arbustif"],
-            ["American Beech", "Hêtre d'Amérique"],
-            ["White Ash", "Frêne blanc"],
-            ["Black Ash", "Frêne noir"],
-            ["Green/ Red Ash", "Frêne vert/rouge"],
-            ["Pumpkin Ash", "Frêne citrouille"],
-            ["Blue Ash", "Frêne bleu"],
-            ["Honey Locust", "Faux-acacia"],
-            ["Kentucky Coffeetree", "Gymnocladus de Kentucky"],
-            ["Witch-Hazel", "Hamamélis de Virginie"],
-            ["Winterberry", "Houx d'hiver"],
-            ["Butternut", "Noyer cendré"],
-            ["Black Walnut", "Noyer noir"],
-            ["Common Juniper", "Genévrier commun"],
-            ["Eastern Red Cedar", "Genévrier rouge de l'Est"],
-            ["Tamarac", "Mélèze laricin"],
-            ["Spicebush", "Lindera à feuilles opposées"],
-            ["Tulip-Tree", "Tulipier de Virginie"],
-            ["Cucumber-Tree", "Magnolia concombre"],
-            ["Sweetgale", "Myrica gale"],
-            ["Black Gum", "Nyssa sylvatica"],
-            ["Ironwood", "Ostryer de Virginie"],
-            ["Virginia Creeper", "Vigne vierge"],
-            ["Ninebark", "Physocarpe"],
-            ["White Spruce", "Épinette blanche"],
-            ["Black Spruce", "Épinette noire"],
-            ["Red Spruce", "Épinette rouge"],
-            ["Jack Pine", "Pin gris"],
-            ["Red Pine", "Pin rouge"],
-            ["Pitch Pine", "Pin rigide"],
-            ["Eastern White Pine", "Pin blanc de l'Est"],
-            ["Sycamore", "Platanus occidentalis"],
-            ["Eastern Cottonwood", "Peuplier baumier"],
-            ["Trembling Aspen", "Peuplier faux-tremble"],
-            ["American Plum", "Prunier d'Amérique"],
-            ["Pin Cherry", "Cerisier de Pennsylvanie"],
-            ["Black Cherry", "Cerisier noir"],
-            ["Eastern Choke Cherry", "Cerisier de Virginie"],
-            ["Hoptree", "Ptelea trifoliata"],
-            ["White Oak", "Chêne blanc"],
-            ["Swamp White Oak", "Chêne blanc des marais"],
-            ["Bur Oak", "Chêne bur"],
-            ["Chinquapin Oak", "Chêne chinkapin"],
-            ["Pin Oak", "Chêne à pin"],
-            ["Red Oak", "Chêne rouge"],
-            ["Shumard Oak", "Chêne de Shumard"],
-            ["Black Oak", "Chêne noir"],
-            ["Fragrant Sumac", "Sumac aromatique"],
-            ["Shining Sumac", "Sumac brillant"],
-            ["Staghorn Sumac", "Sumac vinaigrier"],
-            ["Purple-flowering Raspberry", "Ronce pourpre"],
-            ["Roses", "Roses"],
-            ["Willows", "Saules"],
-            ["Black Elderberry", "Sureau noir"],
-            ["Red Elderberry", "Sureau rouge"],
-            ["Sassafras", "Sassafras"],
-            ["American Mountain Ash", "Sorbier d'Amérique"],
-            ["Showy Mountain Ash", "Sorbier remarquable"],
-            ["Narrow-leaved Meadowsweet", "Reine-des-prés à feuilles étroites"],
-            ["Snowberry", "Symphorine"],
-            ["White Cedar", "Thuya occidental"],
-            ["Basswood", "Tilleul d'Amérique"],
-            ["Eastern Hemlock", "Pruche de l'Est"],
-            ["American Elm", "Orme d'Amérique"],
-            ["Slippery Elm", "Orme glissant"],
-            ["Nannyberry", "Viorne à feuilles de viorne"],
-            ["American Highbush Cranberry", "Viorne trilobée"],
-        ]
-
         for _ in tree_types:
             Treetype.objects.create(name=TreespeciestypeInternationalization.objects.create(en=_[0], fr=_[1]))
 
@@ -243,8 +342,8 @@ class Command(BaseCommand):
             "site_img2.jpg",
             "site_img3.jpg",
             "site_img4.jpg",
-            "canopeum_post_img1.jpeg",
-            "canopeum_post_img2.jpeg",
+            "canopeum_post_img1.jpg",
+            "canopeum_post_img2.jpg",
         )
         for file_name in image_file_names:
             with Path.open(seeding_images_path / file_name, "rb") as img_file:
@@ -327,38 +426,26 @@ class Command(BaseCommand):
                 link="https://www.canopeum-pos.com",
             ),
         )
+        create_batches_for_site(site)
         post = Post.objects.create(
             site=site,
-            body="Canopeum was just hit with important forest fires today.",
+            body="""
+            The season is officially started; new plants are starting to grow and our volunteers are very dedicated!
+            """,
             share_count=5,
             created_at=timezone.now(),
         )
         post.media.add(*Asset.objects.filter(asset__contains="canopeum_post_img"))
         create_posts_for_site(site)
         Comment.objects.create(
-            body="Wow, I didn't know the fires had reached the location of this site!",
+            body="Wow, I'm very excited to join the team!",
             user=User.objects.get(email="tyrion@lannister.com"),
             post=post,
         )
         Comment.objects.create(
-            body="Did the fires burn the whole area of this site, or only part of it?",
+            body="Thanks for helping our planet!",
             user=User.objects.get(email="normal@user.com"),
             post=post,
-        )
-        batch = Batch.objects.create(
-            name="First Batch",
-            site=site,
-            created_at=timezone.now(),
-            size=100,
-            sponsor="Beslogic Inc.",
-            soil_condition="Good",
-            total_number_seed=100,
-            total_propagation=100,
-            updated_at=timezone.now(),
-        )
-        Batchfertilizer.objects.create(
-            batch=batch,
-            fertilizer_type=Fertilizertype.objects.first(),
         )
 
     def create_other_sites(self):
@@ -394,6 +481,7 @@ class Command(BaseCommand):
                 link="https://www.maplegroveretreat.com/events/maple-syrup-festival",
             ),
         )
+        create_batches_for_site(site_2)
         create_posts_for_site(site_2)
 
         site_3 = Site.objects.create(
@@ -425,6 +513,7 @@ class Command(BaseCommand):
                 link="https://www.lakesideoasis.com/winter-getaway",
             ),
         )
+        create_batches_for_site(site_3)
         create_posts_for_site(site_3)
 
         site_4 = Site.objects.create(
@@ -458,6 +547,7 @@ class Command(BaseCommand):
                 link="https://www.evergreentrail.com/guided-walks",
             ),
         )
+        create_batches_for_site(site_4)
         create_posts_for_site(site_4)
 
     def create_siteadmins(self):

@@ -1,3 +1,4 @@
+/* eslint-disable max-lines -- TODO: Split into components */
 import SiteCoordinates from '@components/analytics/site-modal/SiteCoordinates'
 import SiteImageUpload from '@components/analytics/site-modal/SiteImageUpload'
 import { LanguageContext } from '@components/context/LanguageContext'
@@ -6,7 +7,7 @@ import useApiClient from '@hooks/ApiClientHook'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import type { Sitetreespecies, SiteType, TreeType } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 type Props = {
@@ -81,7 +82,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
   const [availableSiteTypes, setAvailableSiteTypes] = useState<SiteType[]>([])
   const [siteImageURL, setSiteImageURL] = useState<string>()
 
-  const fetchSite = async () => {
+  const fetchSite = useCallback(async () => {
     if (!siteId) return
 
     const siteDetail = await getApiClient().siteClient.detail(siteId)
@@ -104,12 +105,17 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
       visibleOnMap: siteDetail.visibleMap,
     })
     setSiteImageURL(URL.createObjectURL(blob))
-  }
+  }, [siteId, getApiClient])
 
-  const fetchTreeSpecies = async () =>
-    setAvailableSpecies(await getApiClient().treeClient.species())
+  const fetchTreeSpecies = useCallback(
+    async () => setAvailableSpecies(await getApiClient().treeClient.species()),
+    [getApiClient],
+  )
 
-  const fetchSiteTypes = async () => setAvailableSiteTypes(await getApiClient().siteClient.types())
+  const fetchSiteTypes = useCallback(
+    async () => setAvailableSiteTypes(await getApiClient().siteClient.types()),
+    [getApiClient],
+  )
 
   const onImageUpload = (file: File) => {
     setSite(value => ({ ...value, siteImage: file }))
@@ -119,9 +125,13 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
   useEffect(() => {
     void fetchTreeSpecies()
     void fetchSiteTypes()
-  }, [])
+  }, [fetchTreeSpecies, fetchSiteTypes])
 
-  useEffect(() => void fetchSite(), [open])
+  useEffect(() => {
+    if (!open) return
+
+    void fetchSite()
+  }, [open, fetchSite])
 
   useEffect(() => setSite(defaultSiteDto), [siteId])
 
