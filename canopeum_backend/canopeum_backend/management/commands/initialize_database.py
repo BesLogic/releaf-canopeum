@@ -7,7 +7,7 @@ from pathlib import Path
 from django.core.files import File
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
-from django.db import connection
+from django.db import ProgrammingError, connection
 from django.utils import timezone
 
 from canopeum_backend import settings
@@ -263,9 +263,16 @@ class Command(BaseCommand):
             if cursor.execute("SHOW TABLES;") != 0:
                 self.stdout.write("Erasing existing data...")
                 assets_to_delete = Asset.objects.all().exclude(asset="site_img.png")
-                for asset in assets_to_delete:
-                    path = Path(settings.BASE_DIR) / "canopeum_backend" / "media" / asset.asset.name
-                    path.unlink(missing_ok=True)
+                try:
+                    for asset in assets_to_delete:
+                        path = Path(settings.BASE_DIR) / "canopeum_backend" / "media" / asset.asset.name
+                        path.unlink(missing_ok=True)
+                except ProgrammingError:
+                    # Catch old leftover tables that can't be deleted because they don't exist
+                    # This can happen if this script got interrupted in a previous run (CTRL+C)
+                    # It'd be better if the query was lazy fetched so we could iter.next() every
+                    # element and only skip the problematic ones. But this works too.
+                    pass
                 call_command("flush", "--noinput")
                 cursor.execute("SET FOREIGN_KEY_CHECKS = 0;")
                 cursor.execute("SHOW TABLES;")
