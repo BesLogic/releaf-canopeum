@@ -1,20 +1,26 @@
 #!/usr/bin/env python3
 
+from collections.abc import Sequence
 from pathlib import Path
 from subprocess import run  # noqa: S404 # Do not pass user input as arguments
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from _typeshed import StrOrBytesPath
 
 path = (Path(__file__).parent.parent).absolute()
-print(path)
+
+
+def run_command(command: Sequence["StrOrBytesPath"]):
+    print(f"\nRunning: {" ".join(str(arg) for arg in command)}")
+    run(command, check=False)
 
 
 def main():
-    print("\nRunning Ruff...")
-    run(("ruff", "format", path), check=False)
-    run(("ruff", "check", "--fix", path), check=False)
-    print("\nRunning mypy...")
-    run(("mypy", path, "--config-file", path / "pyproject.toml"), check=False)
-    print("\nRunning pyright...")
-    run(("pyright", path), check=False)
+    run_command(("ruff", "check", path, "--fix"))
+    run_command(("ruff", "format", path))
+    run_command(("mypy", path, "--config-file", path / "pyproject.toml"))
+    run_command(("pyright", path))
 
 
 if __name__ == "__main__":

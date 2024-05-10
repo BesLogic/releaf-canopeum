@@ -4,6 +4,7 @@ import { AuthenticationContext } from '@components/context/AuthenticationContext
 import { appRoutes } from '@constants/routes.constant'
 import useApiClient from '@hooks/ApiClientHook'
 import { LoginUser } from '@services/api'
+import { storeToken } from '@utils/auth.utils'
 import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -11,7 +12,7 @@ import { Link } from 'react-router-dom'
 import type { InputValidationError } from '../utils/validators'
 
 const Login = () => {
-  const { authenticate, storeToken } = useContext(AuthenticationContext)
+  const { authenticate } = useContext(AuthenticationContext)
   const { t: translate } = useTranslation()
   const { getApiClient } = useApiClient()
 
@@ -70,8 +71,8 @@ const Login = () => {
         }),
       )
 
-      authenticate(response.user)
       storeToken(response.token, rememberMe)
+      authenticate(response.user)
     } catch {
       setLoginError(translate('auth.log-in-error'))
     }

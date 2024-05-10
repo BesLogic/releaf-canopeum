@@ -67,9 +67,20 @@ class Batch(models.Model):
     total_propagation = models.IntegerField(blank=True, null=True)
 
 
+class FertilizertypeInternationalization(models.Model):
+    en = models.TextField(db_column="EN", blank=True, null=True)
+    fr = models.TextField(db_column="FR", blank=True, null=True)
+
+
+class Fertilizertype(models.Model):
+    name = models.ForeignKey(
+        FertilizertypeInternationalization, models.DO_NOTHING, blank=True, null=True
+    )
+
+
 class Batchfertilizer(models.Model):
     batch = models.ForeignKey(Batch, models.DO_NOTHING, blank=True, null=True)
-    fertilizer_type = models.ForeignKey("Fertilizertype", models.DO_NOTHING, blank=True, null=True)
+    fertilizer_type = models.ForeignKey(Fertilizertype, models.DO_NOTHING, blank=True, null=True)
 
 
 class Batchmulchlayer(models.Model):
@@ -77,21 +88,32 @@ class Batchmulchlayer(models.Model):
     mulch_layer_type = models.ForeignKey("Mulchlayertype", models.DO_NOTHING, blank=True, null=True)
 
 
+class TreespeciestypeInternationalization(models.Model):
+    en = models.TextField(db_column="EN", blank=True, null=True)
+    fr = models.TextField(db_column="FR", blank=True, null=True)
+
+
+class Treetype(models.Model):
+    name = models.ForeignKey(
+        TreespeciestypeInternationalization, models.DO_NOTHING, blank=True, null=True
+    )
+
+
 class BatchSpecies(models.Model):
     batch = models.ForeignKey(Batch, models.DO_NOTHING, blank=True, null=True)
-    tree_type = models.ForeignKey("Treetype", models.DO_NOTHING, blank=True, null=True)
+    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
 
 
 class BatchSeed(models.Model):
     batch = models.ForeignKey(Batch, models.DO_NOTHING, blank=True, null=True)
-    tree_type = models.ForeignKey("Treetype", models.DO_NOTHING, blank=True, null=True)
+    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
 
 
 class BatchSupportedSpecies(models.Model):
     batch = models.ForeignKey(Batch, models.DO_NOTHING, blank=True, null=True)
-    tree_type = models.ForeignKey("Treetype", models.DO_NOTHING, blank=True, null=True)
+    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
 
 
 class Contact(models.Model):
@@ -110,17 +132,6 @@ class Coordinate(models.Model):
     dd_latitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
     dd_longitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
-
-
-class Fertilizertype(models.Model):
-    name = models.ForeignKey(
-        "FertilizertypeInternationalization", models.DO_NOTHING, blank=True, null=True
-    )
-
-
-class FertilizertypeInternationalization(models.Model):
-    en = models.TextField(db_column="EN", blank=True, null=True)
-    fr = models.TextField(db_column="FR", blank=True, null=True)
 
 
 class Mulchlayertype(models.Model):
@@ -222,17 +233,6 @@ class Sitetype(models.Model):
 class SitetypeInternationalization(models.Model):
     en = models.TextField(db_column="EN", blank=True, null=True)
     fr = models.TextField(db_column="FR", blank=True, null=True)
-
-
-class TreespeciestypeInternationalization(models.Model):
-    en = models.TextField(db_column="EN", blank=True, null=True)
-    fr = models.TextField(db_column="FR", blank=True, null=True)
-
-
-class Treetype(models.Model):
-    name = models.ForeignKey(
-        TreespeciestypeInternationalization, models.DO_NOTHING, blank=True, null=True
-    )
 
 
 class Widget(models.Model):

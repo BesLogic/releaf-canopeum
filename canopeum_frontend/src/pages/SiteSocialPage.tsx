@@ -91,7 +91,11 @@ const SiteSocialPage = () => {
       ref={scrollableContainerRef}
     >
       <div className='page-container d-flex flex-column gap-4'>
-        <SiteSocialHeader site={site} viewMode={viewMode} />
+        <div className='row m-0'>
+          <div className='col-12'>
+            <SiteSocialHeader site={site} viewMode={viewMode} />
+          </div>
+        </div>
 
         <div className='row row-gap-3 m-0'>
           <div className='col-12 col-md-6 col-lg-5 col-xl-4'>

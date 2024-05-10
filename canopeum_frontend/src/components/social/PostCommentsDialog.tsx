@@ -47,7 +47,7 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose }: Props) => {
 
     void fetchComments()
     setCommentsLoaded(true)
-  }, [postId, open, commentsLoaded])
+  }, [postId, open, commentsLoaded, getApiClient])
 
   useEffect(() => {
     if (!confirmCommentDeleteOpen) {

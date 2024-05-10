@@ -48,6 +48,14 @@ class SiteAdminPermission(permissions.BasePermission):
         )
 
 
+class MegaAdminOrSiteManagerPermission(permissions.BasePermission):
+    """Global permission for actions only allowed to MegaAdmin or SiteManager users."""
+
+    def has_permission(self, request: Request, view):
+        current_user_role = request.user.role.name
+        return current_user_role in {"MegaAdmin", "SiteManager"}
+
+
 class MegaAdminPermission(permissions.BasePermission):
     """Global permission for actions only allowed to MegaAdmin users."""
 
