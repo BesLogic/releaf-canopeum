@@ -10,7 +10,9 @@ class DeleteCommentPermission(permissions.BasePermission):
         current_user_role = request.user.role.name
         if current_user_role == "MegaAdmin":
             return True
-        is_admin_for_this_post = obj.post.site.siteadmin_set.filter(user__id__exact=request.user.id).exists()
+        is_admin_for_this_post = obj.post.site.siteadmin_set.filter(
+            user__id__exact=request.user.id
+        ).exists()
         return is_admin_for_this_post or obj.user == request.user
 
 
@@ -19,12 +21,16 @@ class PublicSiteReadPermission(permissions.BasePermission):
 
     # About the type ignore: Base permission return type is Literal True but should be bool
     def has_object_permission(self, request, view, obj: Site) -> bool:  # type: ignore
-        if obj.is_public or (isinstance(request.user, User) and request.user.role.name == "MegaAdmin"):
+        if obj.is_public or (
+            isinstance(request.user, User) and request.user.role.name == "MegaAdmin"
+        ):
             return True
         if not isinstance(request.user, User) or request.user.role.name != "SiteManager":
             return False
 
-        return Siteadmin.objects.filter(user__id__exact=request.user.pk).filter(site=obj.pk).exists()
+        return (
+            Siteadmin.objects.filter(user__id__exact=request.user.pk).filter(site=obj.pk).exists()
+        )
 
 
 class SiteAdminPermission(permissions.BasePermission):
@@ -35,7 +41,9 @@ class SiteAdminPermission(permissions.BasePermission):
         current_user_role = request.user.role.name
         if current_user_role == "MegaAdmin":
             return True
-        return Siteadmin.objects.filter(user__id__exact=request.user.id).filter(site=obj.pk).exists()
+        return (
+            Siteadmin.objects.filter(user__id__exact=request.user.id).filter(site=obj.pk).exists()
+        )
 
 
 class MegaAdminOrSiteManagerPermission(permissions.BasePermission):

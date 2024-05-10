@@ -105,7 +105,11 @@ def get_admin_sites(user: User):
 class LoginAPIView(APIView):
     permission_classes = (AllowAny,)
 
-    @extend_schema(request=LoginUserSerializer, responses=UserTokenSerializer, operation_id="authentication_login")
+    @extend_schema(
+        request=LoginUserSerializer,
+        responses=UserTokenSerializer,
+        operation_id="authentication_login",
+    )
     def post(self, request):
         email = request.data.get("email")
         password = request.data.get("password")
@@ -114,9 +118,14 @@ class LoginAPIView(APIView):
         if user is not None:
             refresh = cast(RefreshToken, RefreshToken.for_user(user))
 
-            refresh_serializer = TokenRefreshSerializer({"refresh": str(refresh), "access": str(refresh.access_token)})
+            refresh_serializer = TokenRefreshSerializer({
+                "refresh": str(refresh),
+                "access": str(refresh.access_token),
+            })
             user_serializer = UserSerializer(user)
-            serializer = UserTokenSerializer(data={"token": refresh_serializer.data, "user": user_serializer.data})
+            serializer = UserTokenSerializer(
+                data={"token": refresh_serializer.data, "user": user_serializer.data}
+            )
             serializer.is_valid()
 
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -127,10 +136,13 @@ class RegisterAPIView(APIView):
     permission_classes = (AllowAny,)
 
     @extend_schema(
-        request=RegisterUserSerializer, responses={201: UserTokenSerializer}, operation_id="authentication_register"
+        request=RegisterUserSerializer,
+        responses={201: UserTokenSerializer},
+        operation_id="authentication_register",
     )
     def post(self, request):
-        # TODO(NicolasDontigny): Find out how to convert request body properties from camel case to lower snake case
+        # TODO(NicolasDontigny): Find out how to convert request body properties
+        # from camel case to lower snake case
         request.data["password_confirmation"] = request.data.get("passwordConfirmation")
         serializer = RegisterUserSerializer(data=request.data)
 
@@ -144,7 +156,9 @@ class RegisterAPIView(APIView):
                     "access": str(refresh.access_token),
                 })
                 user_serializer = UserSerializer(user)
-                serializer = UserTokenSerializer(data={"token": refresh_serializer.data, "user": user_serializer.data})
+                serializer = UserTokenSerializer(
+                    data={"token": refresh_serializer.data, "user": user_serializer.data}
+                )
                 serializer.is_valid()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -185,7 +199,8 @@ class SiteListAPIView(APIView):
     parser_classes = (MultiPartParser, FormParser)
 
     @extend_schema(
-        # request={"multipart/form-data": SiteSerializer}, TODO: Add serializer for multipart/form-data
+        # TODO: Add serializer for multipart/form-data
+        # request={"multipart/form-data": SiteSerializer}
         request={
             "multipart/form-data": {
                 "type": "object",
@@ -201,7 +216,10 @@ class SiteListAPIView(APIView):
                         "type": "array",
                         "items": {
                             "type": "object",
-                            "properties": {"id": {"type": "number"}, "quantity": {"type": "number"}},
+                            "properties": {
+                                "id": {"type": "number"},
+                                "quantity": {"type": "number"},
+                            },
                         },
                     },
                     "researchPartnership": {"type": "boolean"},
@@ -243,7 +261,9 @@ class SiteListAPIView(APIView):
             for tree_type_json in request.data.getlist("species"):
                 tree_type_obj = json.loads(tree_type_json)
                 tree_type = Treetype.objects.get(pk=tree_type_obj["id"])
-                Sitetreespecies.objects.create(site=site, tree_type=tree_type, quantity=tree_type_obj["quantity"])
+                Sitetreespecies.objects.create(
+                    site=site, tree_type=tree_type, quantity=tree_type_obj["quantity"]
+                )
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -280,7 +300,10 @@ class SiteDetailAPIView(APIView):
                         "type": "array",
                         "items": {
                             "type": "object",
-                            "properties": {"id": {"type": "number"}, "quantity": {"type": "number"}},
+                            "properties": {
+                                "id": {"type": "number"},
+                                "quantity": {"type": "number"},
+                            },
                         },
                     },
                     "researchPartnership": {"type": "boolean"},
@@ -327,7 +350,9 @@ class SiteDetailAPIView(APIView):
             for tree_type_json in request.data.getlist("species"):
                 tree_type_obj = json.loads(tree_type_json)
                 tree_type = Treetype.objects.get(pk=tree_type_obj["id"])
-                Sitetreespecies.objects.create(site=site, tree_type=tree_type, quantity=tree_type_obj["quantity"])
+                Sitetreespecies.objects.create(
+                    site=site, tree_type=tree_type, quantity=tree_type_obj["quantity"]
+                )
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -464,7 +489,9 @@ class SiteFollowersAPIView(APIView):
 
             return Response(None, status=status.HTTP_201_CREATED)
 
-        return Response("Current user is already following this site", status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            "Current user is already following this site", status=status.HTTP_400_BAD_REQUEST
+        )
 
     @extend_schema(operation_id="site_unfollow")
     def delete(self, request, siteId):
@@ -498,7 +525,9 @@ class AdminUserSitesAPIView(APIView):
         operation_id="admin-user-sites_all",
     )
     def get(self, request):
-        site_manager_users = User.objects.filter(role__name__iexact=RoleName.SITEMANAGER).order_by("username")
+        site_manager_users = User.objects.filter(role__name__iexact=RoleName.SITEMANAGER).order_by(
+            "username"
+        )
         serializer = AdminUserSitesSerializer(site_manager_users, many=True)
         return Response(serializer.data)
 
@@ -506,7 +535,9 @@ class AdminUserSitesAPIView(APIView):
 class SiteSocialDetailAPIView(APIView):
     permission_classes = (PublicSiteReadPermission,)
 
-    @extend_schema(request=SiteSocialSerializer, responses=SiteSocialSerializer, operation_id="site_social")
+    @extend_schema(
+        request=SiteSocialSerializer, responses=SiteSocialSerializer, operation_id="site_social"
+    )
     def get(self, request, siteId):
         try:
             site = Site.objects.get(pk=siteId)
@@ -539,9 +570,15 @@ class PostListAPIView(APIView, PageNumberPagination):
         responses=PostPaginationSerializer,
         operation_id="post_all",
         parameters=[
-            OpenApiParameter(name="siteId", type=OpenApiTypes.INT, many=True, location=OpenApiParameter.QUERY),
-            OpenApiParameter(name="page", type=OpenApiTypes.INT, required=True, location=OpenApiParameter.QUERY),
-            OpenApiParameter(name="size", type=OpenApiTypes.INT, required=True, location=OpenApiParameter.QUERY),
+            OpenApiParameter(
+                name="siteId", type=OpenApiTypes.INT, many=True, location=OpenApiParameter.QUERY
+            ),
+            OpenApiParameter(
+                name="page", type=OpenApiTypes.INT, required=True, location=OpenApiParameter.QUERY
+            ),
+            OpenApiParameter(
+                name="size", type=OpenApiTypes.INT, required=True, location=OpenApiParameter.QUERY
+            ),
         ],
     )
     def get(self, request):
@@ -552,8 +589,15 @@ class PostListAPIView(APIView, PageNumberPagination):
         page = request.GET.get("page")
         size = request.GET.get("size")
 
-        if not isinstance(page, str) or not page.isnumeric() or not isinstance(size, str) or not size.isnumeric():
-            return Response("Page and size are missing or invalid", status=status.HTTP_400_BAD_REQUEST)
+        if (
+            not isinstance(page, str)
+            or not page.isnumeric()
+            or not isinstance(size, str)
+            or not size.isnumeric()
+        ):
+            return Response(
+                "Page and size are missing or invalid", status=status.HTTP_400_BAD_REQUEST
+            )
 
         posts_paginator = Paginator(object_list=sorted_posts, per_page=int(size))
         page_posts = posts_paginator.page(int(page))
@@ -567,7 +611,8 @@ class PostListAPIView(APIView, PageNumberPagination):
     parser_classes = (MultiPartParser, FormParser)
 
     @extend_schema(
-        # request={"multipart/form-data": PostPostSerializer}, TODO: Add serializer for multipart/form-data
+        # TODO: Add serializer for multipart/form-data
+        # request={"multipart/form-data": PostPostSerializer}
         request={
             "multipart/form-data": {
                 "type": "object",
@@ -625,7 +670,11 @@ class CommentListAPIView(APIView):
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data)
 
-    @extend_schema(request=CreateCommentSerializer, responses={201: CommentSerializer}, operation_id="comment_create")
+    @extend_schema(
+        request=CreateCommentSerializer,
+        responses={201: CommentSerializer},
+        operation_id="comment_create",
+    )
     def post(self, request, postId):
         try:
             post = Post.objects.get(pk=postId)
@@ -657,7 +706,11 @@ class CommentDetailAPIView(APIView):
 
 
 class AnnouncementDetailAPIView(APIView):
-    @extend_schema(request=AnnouncementSerializer, responses=AnnouncementSerializer, operation_id="announcement_update")
+    @extend_schema(
+        request=AnnouncementSerializer,
+        responses=AnnouncementSerializer,
+        operation_id="announcement_update",
+    )
     def patch(self, request, siteId):
         try:
             announcement = Announcement.objects.get(site=siteId)
@@ -672,7 +725,9 @@ class AnnouncementDetailAPIView(APIView):
 
 
 class ContactDetailAPIView(APIView):
-    @extend_schema(request=ContactSerializer, responses=ContactSerializer, operation_id="contact_update")
+    @extend_schema(
+        request=ContactSerializer, responses=ContactSerializer, operation_id="contact_update"
+    )
     def patch(self, request, pk):
         try:
             contact = Contact.objects.get(pk=pk)
@@ -687,7 +742,9 @@ class ContactDetailAPIView(APIView):
 
 
 class WidgetListAPIView(APIView):
-    @extend_schema(request=WidgetSerializer, responses={201: WidgetSerializer}, operation_id="widget_create")
+    @extend_schema(
+        request=WidgetSerializer, responses={201: WidgetSerializer}, operation_id="widget_create"
+    )
     def post(self, request):
         serializer = WidgetSerializer(data=request.data)
         if serializer.is_valid():
@@ -697,7 +754,9 @@ class WidgetListAPIView(APIView):
 
 
 class WidgetDetailAPIView(APIView):
-    @extend_schema(request=WidgetSerializer, responses=WidgetSerializer, operation_id="widget_update")
+    @extend_schema(
+        request=WidgetSerializer, responses=WidgetSerializer, operation_id="widget_update"
+    )
     def patch(self, request, pk):
         try:
             widget = Widget.objects.get(pk=pk)
@@ -757,7 +816,9 @@ class BatchListAPIView(APIView):
         serializer = BatchAnalyticsSerializer(batches, many=True)
         return Response(serializer.data)
 
-    @extend_schema(request=BatchSerializer, responses={201: BatchSerializer}, operation_id="batch_create")
+    @extend_schema(
+        request=BatchSerializer, responses={201: BatchSerializer}, operation_id="batch_create"
+    )
     def post(self, request):
         serializer = BatchSerializer(data=request.data)
         if serializer.is_valid():
@@ -823,7 +884,9 @@ class UserDetailAPIView(APIView):
         serializer = UserSerializer(user)
         return Response(serializer.data)
 
-    @extend_schema(request=UpdateUserSerializer, responses=UserSerializer, operation_id="user_update")
+    @extend_schema(
+        request=UpdateUserSerializer, responses=UserSerializer, operation_id="user_update"
+    )
     def patch(self, request, userId):
         try:
             user = User.objects.get(pk=userId)
@@ -843,9 +906,13 @@ class UserDetailAPIView(APIView):
                 if is_valid is not True:
                     return Response("CURRENT_PASSWORD_INVALID", status=status.HTTP_400_BAD_REQUEST)
                 new_password = change_password_request["newPassword"]
-                new_password_confirmation = current_password = change_password_request["newPasswordConfirmation"]
+                new_password_confirmation = current_password = change_password_request[
+                    "newPasswordConfirmation"
+                ]
                 if new_password != new_password_confirmation:
-                    return Response("NEW_PASSWORDS_DO_NOT_MATCH", status=status.HTTP_400_BAD_REQUEST)
+                    return Response(
+                        "NEW_PASSWORDS_DO_NOT_MATCH", status=status.HTTP_400_BAD_REQUEST
+                    )
                 user.set_password(new_password)
                 user.save()
 
@@ -914,16 +981,27 @@ class TokenRefreshAPIView(APIView):
         refresh = RefreshToken(request.data.get("refresh"))
         user = User.objects.get(pk=refresh["user_id"])
         refresh["role"] = user.role.name
-        return Response({"refresh": str(refresh), "access": str(refresh.access_token)}, status=status.HTTP_200_OK)
+        return Response(
+            {"refresh": str(refresh), "access": str(refresh.access_token)},
+            status=status.HTTP_200_OK,
+        )
 
 
 class TokenObtainPairAPIView(APIView):
     @extend_schema(responses=UserSerializer, operation_id="token_obtain_pair")
     def post(self, request):
-        user = cast(User, authenticate(username=request.data.get("username"), password=request.data.get("password")))
+        user = cast(
+            User,
+            authenticate(
+                username=request.data.get("username"), password=request.data.get("password")
+            ),
+        )
         if user is not None:
             refresh = cast(RefreshToken, RefreshToken.for_user(user))
             if user.role is not None:
                 refresh["role"] = user.role.name
-            return Response({"refresh": str(refresh), "access": str(refresh.access_token)}, status=status.HTTP_200_OK)
+            return Response(
+                {"refresh": str(refresh), "access": str(refresh.access_token)},
+                status=status.HTTP_200_OK,
+            )
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
