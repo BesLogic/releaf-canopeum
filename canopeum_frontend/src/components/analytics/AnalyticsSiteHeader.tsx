@@ -96,7 +96,10 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
         </div>
 
         <div className='mt-4'>
-          <div className='d-flex align-items-flex-end fw-bold'>
+          <div
+            className='d-flex align-items-flex-end fw-bold overflow-x-auto'
+            style={{ maxWidth: '800px' }}
+          >
             <span className='material-symbols-outlined'>group</span>
             <span className='ms-1 me-2'>{translate('analyticsSite.sponsors')}:</span>
             {siteSummary.sponsors.map(sponsor => (

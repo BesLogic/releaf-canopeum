@@ -1,6 +1,7 @@
-import { AuthenticationContext, STORAGE_ACCESS_TOKEN_KEY, STORAGE_REFRESH_TOKEN_KEY } from '@components/context/AuthenticationContext'
+import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { RefreshClient, TokenRefresh } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
+import { STORAGE_ACCESS_TOKEN_KEY, STORAGE_REFRESH_TOKEN_KEY } from '@utils/auth.utils'
 import { jwtDecode } from 'jwt-decode'
 import { useCallback, useContext } from 'react'
 
@@ -16,9 +17,11 @@ const useHttp = () => {
     let accessToken = sessionStorage.getItem(STORAGE_ACCESS_TOKEN_KEY) ??
       localStorage.getItem(STORAGE_ACCESS_TOKEN_KEY)
 
+    const headers = new Headers(options.headers)
     if (!accessToken) {
-      logout()
-      throw new Error('No access token')
+      return fetch(url, { ...options, headers })
+      // TODO(NicolasDontigny): Instead of logging out when there is no access token,
+      // Handle a 401 or 403 response here
     }
 
     const decodedAccessToken = jwtDecode(accessToken)
@@ -60,7 +63,6 @@ const useHttp = () => {
       accessToken = newTokenRefresh.access
     }
 
-    const headers = new Headers(options.headers)
     headers.set('Authorization', `Bearer ${accessToken}`)
 
     return fetch(url, { ...options, headers })

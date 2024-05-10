@@ -5305,10 +5305,6 @@ export class Species implements ISpecies {
       data["quantity"] = this.quantity;
       return data;
   }
-
-  toString() {
-    return JSON.stringify(this)
-  }
 }
 
 export interface ISpecies {
@@ -5360,10 +5356,6 @@ export class Species2 implements ISpecies2 {
       data["id"] = this.id;
       data["quantity"] = this.quantity;
       return data;
-  }
-
-  toString() {
-    return JSON.stringify(this)
   }
 }
 

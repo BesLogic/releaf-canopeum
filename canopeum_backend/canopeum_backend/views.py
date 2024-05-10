@@ -20,6 +20,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from canopeum_backend.permissions import (
     CurrentUserPermission,
     DeleteCommentPermission,
+    MegaAdminOrSiteManagerPermission,
     MegaAdminPermission,
     MegaAdminPermissionReadOnly,
     PublicSiteReadPermission,
@@ -91,6 +92,16 @@ def get_public_sites_unless_admin(user: User | None):
     return sites
 
 
+def get_admin_sites(user: User):
+    if user.role.name == "MegaAdmin":
+        return Site.objects.all()
+    if isinstance(user, User) and user.role.name == "SiteManager":
+        admin_site_ids = [siteadmin.site.pk for siteadmin in Siteadmin.objects.filter(user=user)]
+        return Site.objects.filter(Q(id__in=admin_site_ids))
+
+    return None
+
+
 class LoginAPIView(APIView):
     permission_classes = (AllowAny,)
 
@@ -156,6 +167,8 @@ class SiteTypesAPIView(APIView):
 
 
 class SiteListAPIView(APIView):
+    permission_classes = (MegaAdminPermission,)
+
     @extend_schema(responses=SiteSerializer(many=True), operation_id="site_all")
     def get(self, request):
         sites = get_public_sites_unless_admin(request.user)
@@ -230,7 +243,7 @@ class SiteListAPIView(APIView):
 
 
 class SiteDetailAPIView(APIView):
-    permission_classes = (MegaAdminPermissionReadOnly,)
+    permission_classes = (MegaAdminPermissionReadOnly, SiteAdminPermission)
 
     parser_classes = (MultiPartParser, FormParser)
 
@@ -352,28 +365,23 @@ class SiteSocialDetailPublicStatusAPIView(APIView):
 
 
 class SiteSummaryListAPIView(APIView):
+    permission_classes = (MegaAdminOrSiteManagerPermission,)
+
     @extend_schema(responses=SiteSummarySerializer(many=True), operation_id="site_summary_all")
     def get(self, request):
-        sites = get_public_sites_unless_admin(request.user)
-        plant_count = 0
-        survived_count = 0
-        propagation_count = 0
-        progress = 0
+        # TODO(NicolasDontigny): Only get
+        sites = get_admin_sites(request.user)
+        if sites is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         serializer = SiteSummarySerializer(
             sites,
             many=True,
-            context={
-                "plant_count": plant_count,
-                "survived_count": survived_count,
-                "progress": progress,
-                "propagation_count": propagation_count,
-            },
         )
         return Response(serializer.data)
 
 
 class SiteSummaryDetailAPIView(APIView):
-    permission_classes = (PublicSiteReadPermission,)
+    permission_classes = (SiteAdminPermission,)
 
     @extend_schema(responses=SiteSummarySerializer, operation_id="site_summary")
     def get(self, request, siteId):
