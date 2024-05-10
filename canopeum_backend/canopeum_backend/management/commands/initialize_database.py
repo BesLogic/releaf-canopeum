@@ -266,7 +266,7 @@ class Command(BaseCommand):
                 try:
                     for asset in assets_to_delete:
                         path = (
-                            Path(settings.BASE_DIR)
+                            Path(canopeum_backend.settings.BASE_DIR)
                             / "canopeum_backend"
                             / "media"
                             / asset.asset.name
