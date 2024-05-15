@@ -61,7 +61,9 @@ class FertilizertypeInternationalization(models.Model):
 
 
 class Fertilizertype(models.Model):
-    name = models.ForeignKey(FertilizertypeInternationalization, models.DO_NOTHING, blank=True, null=True)
+    name = models.ForeignKey(
+        FertilizertypeInternationalization, models.DO_NOTHING, blank=True, null=True
+    )
 
 
 class Batchfertilizer(models.Model):
@@ -80,7 +82,9 @@ class TreespeciestypeInternationalization(models.Model):
 
 
 class Treetype(models.Model):
-    name = models.ForeignKey(TreespeciestypeInternationalization, models.DO_NOTHING, blank=True, null=True)
+    name = models.ForeignKey(
+        TreespeciestypeInternationalization, models.DO_NOTHING, blank=True, null=True
+    )
 
 
 class BatchSpecies(models.Model):
@@ -119,7 +123,9 @@ class Coordinate(models.Model):
 
 
 class Mulchlayertype(models.Model):
-    name = models.ForeignKey("MulchlayertypeInternationalization", models.DO_NOTHING, blank=True, null=True)
+    name = models.ForeignKey(
+        "MulchlayertypeInternationalization", models.DO_NOTHING, blank=True, null=True
+    )
 
 
 class MulchlayertypeInternationalization(models.Model):
@@ -204,7 +210,9 @@ class Sitetreespecies(models.Model):
 
 
 class Sitetype(models.Model):
-    name = models.ForeignKey("SitetypeInternationalization", models.DO_NOTHING, blank=True, null=True)
+    name = models.ForeignKey(
+        "SitetypeInternationalization", models.DO_NOTHING, blank=True, null=True
+    )
 
 
 class SitetypeInternationalization(models.Model):
