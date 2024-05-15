@@ -109,7 +109,7 @@ python_version = "3.12"
 exclude = [".venv/"]
 # https://github.com/typeddjango/django-stubs/issues/579
 # https://github.com/typeddjango/django-stubs/issues/1264
-plugins = ["mypy_django_plugin.main"]
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
 
 strict = true
 # Implicit return types !
