@@ -145,7 +145,7 @@ def create_posts_for_site(site):
         # Create a post for the site
         post = Post.objects.create(
             site=site,
-            body=f"{site.name} has planted {random.randint(100, 1000)} new trees today."
+            body=f"{site.name} has planted {random.randint(100, 1000)} new trees today. "
             + "Let's continue to grow our forest!",
             share_count=share_count,
         )
@@ -439,7 +439,7 @@ class Command(BaseCommand):
             image=Asset.objects.first(),
             announcement=Announcement.objects.create(
                 body="We currently have 20000 healthy seedlings of different species, "
-                + "ready to be planted at any time!"
+                + "ready to be planted at any time! "
                 + "Please click the link below to book your favorite seedlings on our website",
                 link="https://www.canopeum-pos.com",
             ),
@@ -563,9 +563,9 @@ class Command(BaseCommand):
             ),
             image=Asset.objects.get(asset__contains="site_img4"),
             announcement=Announcement.objects.create(
-                body="Discover the wonders of Evergreen Trail!"
-                + "Our guided nature walks are now available every weekend."
-                + "Immerse yourself in nature and learn about the diverse"
+                body="Discover the wonders of Evergreen Trail! "
+                + "Our guided nature walks are now available every weekend. "
+                + "Immerse yourself in nature and learn about the diverse "
                 + "flora and fauna of Mont-Tremblant.",
                 link="https://www.evergreentrail.com/guided-walks",
             ),
