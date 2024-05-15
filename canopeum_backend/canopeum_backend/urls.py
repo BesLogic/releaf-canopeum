@@ -11,7 +11,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     # Auth
     path("auth/login/", views.LoginAPIView.as_view(), name="login"),
-    path("auth/logout/", views.LogoutAPIView.as_view(), name="logout"),
     path("auth/register/", views.RegisterAPIView.as_view(), name="register"),
     # Post
     path("social/posts/", views.PostListAPIView.as_view(), name="post-list"),

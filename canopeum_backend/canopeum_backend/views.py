@@ -164,13 +164,6 @@ class RegisterAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class LogoutAPIView(APIView):
-    @extend_schema(responses=status.HTTP_200_OK, operation_id="authentication_logout")
-    def post(self, request):
-        request.user.auth_token.delete()
-        return Response(status=status.HTTP_200_OK)
-
-
 class TreeSpeciesAPIView(APIView):
     @extend_schema(responses=TreeTypeSerializer(many=True), operation_id="tree_species")
     def get(self, request):
