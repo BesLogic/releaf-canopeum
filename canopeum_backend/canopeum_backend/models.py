@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import TYPE_CHECKING, Any, ClassVar
+from typing import TYPE_CHECKING, ClassVar
 
 import pytz
 from django.contrib.auth.models import AbstractUser
@@ -45,9 +45,6 @@ class User(AbstractUser):
     if TYPE_CHECKING:
         # Missing "id" in "Model" or some base "User" class?
         id: int
-        # TODO: I don't know what this type is supposed to be, nor if we're using it correctly
-        # and why it's not part of the default User models
-        auth_token: Any
 
 
 class Announcement(models.Model):
