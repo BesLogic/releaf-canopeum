@@ -61,7 +61,7 @@ class Batch(models.Model):
     updated_at = models.DateTimeField(blank=True, null=True)
     name = models.TextField(blank=True, null=True)
     sponsor = models.TextField(blank=True, null=True)
-    size = models.TextField(blank=True, null=True)
+    size = models.IntegerField(blank=True, null=True)
     soil_condition = models.TextField(blank=True, null=True)
     total_number_seed = models.IntegerField(blank=True, null=True)
     total_propagation = models.IntegerField(blank=True, null=True)

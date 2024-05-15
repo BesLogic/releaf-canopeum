@@ -270,40 +270,6 @@
       "responseMode": null
     },
     {
-      "uuid": "6ad66afe-e470-4c14-b22b-c782220e851d",
-      "type": "http",
-      "documentation": "",
-      "method": "post",
-      "endpoint": "auth/logout",
-      "responses": [
-        {
-          "uuid": "30951aaa-f289-4555-abcf-728fac4895e1",
-          "body": "{}",
-          "latency": 0,
-          "statusCode": 200,
-          "label": "",
-          "headers": [
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "bodyType": "INLINE",
-          "filePath": "",
-          "databucketID": "",
-          "sendFileAsBody": false,
-          "rules": [],
-          "rulesOperator": "OR",
-          "disableTemplating": false,
-          "fallbackTo404": false,
-          "default": true,
-          "crudKey": "id",
-          "callbacks": []
-        }
-      ],
-      "responseMode": null
-    },
-    {
       "uuid": "c2e02ae6-7616-4de1-9ea2-358651b10223",
       "type": "http",
       "documentation": "",

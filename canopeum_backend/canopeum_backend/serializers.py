@@ -170,7 +170,8 @@ class WidgetSerializer(serializers.ModelSerializer[Widget]):
         fields = "__all__"
 
 
-class InternationalizationSerializer(serializers.ModelSerializer[Internationalization]):
+# Any: Accepts any model with "en" and "fr" fields. Unfortunately can't use protocols here
+class InternationalizationSerializer(serializers.ModelSerializer[Any]):
     class Meta:
         model = Internationalization
         fields = ("en", "fr")
