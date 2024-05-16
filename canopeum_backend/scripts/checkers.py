@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 from collections.abc import Sequence
 from pathlib import Path
 from subprocess import run  # noqa: S404 # Do not pass user input as arguments
@@ -8,7 +9,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from _typeshed import StrOrBytesPath
 
-path = (Path(__file__).parent.parent).absolute()
+backend_root = (Path(__file__).parent.parent).absolute()
+os.chdir(backend_root)
 
 
 def run_command(command: Sequence["StrOrBytesPath"]):
@@ -17,10 +19,10 @@ def run_command(command: Sequence["StrOrBytesPath"]):
 
 
 def main():
-    run_command(("ruff", "check", path, "--fix"))
-    run_command(("ruff", "format", path))
-    run_command(("mypy", path, "--config-file", path / "pyproject.toml"))
-    run_command(("pyright", path))
+    run_command(("ruff", "check", "--fix"))
+    run_command(("ruff", "format"))
+    run_command(("mypy", backend_root))
+    run_command(("pyright",))
 
 
 if __name__ == "__main__":

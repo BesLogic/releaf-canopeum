@@ -1,6 +1,7 @@
 /** @type {import("eslint").Linter.Config} */
 module.exports = {
   root: true,
+  plugins: ['react-refresh'],
   extends: [
     'beslogic/react',
     'beslogic/typescript',
@@ -16,7 +17,6 @@ module.exports = {
     // Auto-generated
     'src/services/api.ts',
   ],
-  plugins: ['react-refresh'],
   rules: {
     'react-refresh/only-export-components': [
       'warn',

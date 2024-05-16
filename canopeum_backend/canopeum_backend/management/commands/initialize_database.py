@@ -10,7 +10,7 @@ from django.core.management.base import BaseCommand
 from django.db import ProgrammingError, connection
 from django.utils import timezone
 
-from canopeum_backend import settings
+import canopeum_backend.settings
 from canopeum_backend.models import (
     Announcement,
     Asset,
@@ -145,8 +145,8 @@ def create_posts_for_site(site):
         # Create a post for the site
         post = Post.objects.create(
             site=site,
-            body=f"""{site.name} has planted {random.randint(100, 1000)} new trees today.
-                Let's continue to grow our forest!""",
+            body=f"{site.name} has planted {random.randint(100, 1000)} new trees today. "
+            + "Let's continue to grow our forest!",
             share_count=share_count,
         )
         # Change created_at date since it is auto-generated on create
@@ -266,7 +266,7 @@ class Command(BaseCommand):
                 try:
                     for asset in assets_to_delete:
                         path = (
-                            Path(settings.BASE_DIR)
+                            Path(canopeum_backend.settings.BASE_DIR)
                             / "canopeum_backend"
                             / "media"
                             / asset.asset.name
@@ -349,7 +349,9 @@ class Command(BaseCommand):
             )
 
     def create_assets(self):
-        seeding_images_path = Path(settings.BASE_DIR) / "canopeum_backend" / "seeding" / "images"
+        seeding_images_path = (
+            Path(canopeum_backend.settings.BASE_DIR) / "canopeum_backend" / "seeding" / "images"
+        )
         image_file_names = (
             "site_img1.png",
             "site_img2.jpg",
@@ -374,7 +376,7 @@ class Command(BaseCommand):
         User.objects.create_user(
             username="admin",
             email="admin@beslogic.com",
-            password="Adminbeslogic!",  # noqa: S106 MOCK_PASSWORD
+            password="Adminbeslogic!",  # noqa: S106 # MOCK_PASSWORD
             is_staff=True,
             is_superuser=True,
             role=Role.objects.get(name="MegaAdmin"),
@@ -382,31 +384,31 @@ class Command(BaseCommand):
         User.objects.create_user(
             username="TyrionLannister",
             email="tyrion@lannister.com",
-            password="tyrion123",  # noqa: S106 MOCK_PASSWORD
+            password="tyrion123",  # noqa: S106 # MOCK_PASSWORD
             role=Role.objects.get(name="SiteManager"),
         )
         User.objects.create_user(
             username="DaenerysTargaryen",
             email="daenerys@targaryen.com",
-            password="daenerys123",  # noqa: S106 MOCK_PASSWORD
+            password="daenerys123",  # noqa: S106 # MOCK_PASSWORD
             role=Role.objects.get(name="SiteManager"),
         )
         User.objects.create_user(
             username="JonSnow",
             email="jon@snow.com",
-            password="jon123",  # noqa: S106 MOCK_PASSWORD
+            password="jon123",  # noqa: S106 # MOCK_PASSWORD
             role=Role.objects.get(name="SiteManager"),
         )
         User.objects.create_user(
             username="OberynMartell",
             email="oberyn@martell.com",
-            password="oberyn123",  # noqa: S106 MOCK_PASSWORD
+            password="oberyn123",  # noqa: S106 # MOCK_PASSWORD
             role=Role.objects.get(name="SiteManager"),
         )
         User.objects.create_user(
             username="NormalUser",
             email="normal@user.com",
-            password="normal123",  # noqa: S106 MOCK_PASSWORD
+            password="normal123",  # noqa: S106 # MOCK_PASSWORD
             role=Role.objects.get(name="User"),
         )
 
@@ -437,7 +439,7 @@ class Command(BaseCommand):
             image=Asset.objects.first(),
             announcement=Announcement.objects.create(
                 body="We currently have 20000 healthy seedlings of different species, "
-                + "ready to be planted at any time!"
+                + "ready to be planted at any time! "
                 + "Please click the link below to book your favorite seedlings on our website",
                 link="https://www.canopeum-pos.com",
             ),
@@ -490,11 +492,9 @@ class Command(BaseCommand):
             ),
             image=Asset.objects.get(asset__contains="site_img2"),
             announcement=Announcement.objects.create(
-                body="""
-                    Maple Grove Retreat is excited to announce our upcoming Maple Syrup Festival!
-                    Join us on March 15th for a day of maple syrup tastings, nature hikes,
-                    and family fun. Learn more on our website.
-                """,
+                body="Maple Grove Retreat is excited to announce our upcoming Maple Syrup "
+                + "Festival! Join us on March 15th for a day of maple syrup tastings, "
+                + "nature hikes, and family fun. Learn more on our website.",
                 link="https://www.maplegroveretreat.com/events/maple-syrup-festival",
             ),
         )
@@ -514,8 +514,8 @@ class Command(BaseCommand):
                 dd_longitude=-71.3075,
                 address="456 Lakeview Road, Lac-Saint-Jean, QC G8M 1R9",
             ),
-            description="""Lakeside Oasis offers a tranquil retreat by the shores of Lac-Saint-Jean,
-                with pristine waters and breathtaking sunsets.""",
+            description="Lakeside Oasis offers a tranquil retreat by the shores of "
+            + "Lac-Saint-Jean, with pristine waters and breathtaking sunsets.",
             size="800",
             research_partnership=False,
             visible_map=True,
@@ -563,10 +563,10 @@ class Command(BaseCommand):
             ),
             image=Asset.objects.get(asset__contains="site_img4"),
             announcement=Announcement.objects.create(
-                body="""Discover the wonders of Evergreen Trail!
-                    Our guided nature walks are now available every weekend.
-                    Immerse yourself in nature and learn about the diverse
-                    flora and fauna of Mont-Tremblant.""",
+                body="Discover the wonders of Evergreen Trail! "
+                + "Our guided nature walks are now available every weekend. "
+                + "Immerse yourself in nature and learn about the diverse "
+                + "flora and fauna of Mont-Tremblant.",
                 link="https://www.evergreentrail.com/guided-walks",
             ),
         )
