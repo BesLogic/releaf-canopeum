@@ -33,7 +33,7 @@ jobs:
         id: push
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
         with:
-          context: ./canopeum_backend/
+          context: ./canopeum_backend
           file: ./Dockerfile
           push: true
           tags: releaf-canopeum/canopeum_backend
