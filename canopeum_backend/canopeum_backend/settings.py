@@ -61,6 +61,7 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:3000",
+    "http://199.188.220.99:5173",
 ]
 
 ROOT_URLCONF = "canopeum_backend.urls"
