@@ -35,7 +35,7 @@ jobs:
         with:
           file: ./canopeum_backend/Dockerfile
           push: true
-          tags: beslogic/canopeum_backend
+          tags: ghcr.io/beslogic/canopeum_backend:latest
           labels: latest
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
