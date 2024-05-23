@@ -36,7 +36,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ github.repository }}/canopeum_backend
+          tags: releaf-canopeum/canopeum_backend
           labels: latest
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
