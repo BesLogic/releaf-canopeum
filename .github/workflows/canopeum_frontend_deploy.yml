@@ -28,9 +28,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/checkout@v4
-      - run: npm run build
       - uses: actions/setup-node@v4
       - run: npm ci
+      - run: npm run build
       - run: docker build -t canopeum_frontend .
       - name: Publish Docker image
         id: push
