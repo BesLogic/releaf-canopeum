@@ -1,4 +1,4 @@
-name: canopeum_frontend
+name: canopeum_frontend_deploy
 
 on:
   push:
