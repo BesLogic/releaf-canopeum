@@ -35,7 +35,7 @@ jobs:
         with:
           file: ./canopeum_backend/Dockerfile
           push: true
-          tags: releaf-canopeum/canopeum_backend
+          tags: beslogic/canopeum_backend
           labels: latest
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
