@@ -7,7 +7,7 @@ services:
       MYSQL_DATABASE: canopeum_db
       MYSQL_ROOT_PASSWORD: canopeum
     ports:
-      - 3306:3306
+      - 4002:4002
     volumes:
       - mysql8-data:/var/lib/mysql
       - mysql8-conf:/etc/mysql/conf.d
@@ -17,7 +17,7 @@ services:
       context: ./canopeum_backend
       dockerfile: Dockerfile
     ports:
-      - 5000:5000
+      - 4001:4001
     depends_on:
       - mysql
     environment:
