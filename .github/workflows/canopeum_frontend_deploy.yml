@@ -38,7 +38,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./canopeum_frontend
-          file: ./Dockerfile
+          file: canopeum_frontend/Dockerfile
           push: true
           tags: ghcr.io/beslogic/canopeum_frontend:latest
           labels: latest
