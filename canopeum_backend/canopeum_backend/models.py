@@ -1,14 +1,14 @@
+import re
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, ClassVar
 
 import googlemaps
 import pytz
-import re
-import os
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from .settings import GOOGLE_API_KEY
 from rest_framework.request import Request as drf_Request
+
+from .settings import GOOGLE_API_KEY
 
 # Pyright won't be able to infer all types here, see:
 # https://github.com/typeddjango/django-stubs/issues/579
@@ -16,6 +16,7 @@ from rest_framework.request import Request as drf_Request
 # For now we have to rely on the mypy plugin
 
 gmaps = googlemaps.Client(key=GOOGLE_API_KEY)
+
 
 class RoleName(models.TextChoices):
     USER = "User"
@@ -137,25 +138,37 @@ class Coordinate(models.Model):
 
     @staticmethod
     def from_dms_lat_long(dms_latitude: str, dms_longitude: str):
-        dms_latitude_split = re.split(r'°|\'|\.|\"', dms_latitude)
-        dd_latitude = float(dms_latitude_split[0]) + (float(dms_latitude_split[1]) / 60) + (float(dms_latitude_split[2] + '.' + dms_latitude_split[3]) / 3600)
-        if dms_latitude_split[4] == 'S':
+        dms_latitude_split = re.split(r"°|\'|\.|\"", dms_latitude)
+        dd_latitude = (
+            float(dms_latitude_split[0])
+            + (float(dms_latitude_split[1]) / 60)
+            + (float(dms_latitude_split[2] + "." + dms_latitude_split[3]) / 3600)
+        )
+        if dms_latitude_split[4] == "S":
             dd_latitude *= -1
 
-        dms_longitude_split = re.split(r'°|\'|\.|\"', dms_longitude)
-        dd_longitude = float(dms_longitude_split[0]) + (float(dms_longitude_split[1]) / 60) + (float(dms_longitude_split[2] + '.' + dms_longitude_split[3]) / 3600)
-        if dms_longitude_split[4] == 'W':
+        dms_longitude_split = re.split(r"°|\'|\.|\"", dms_longitude)
+        dd_longitude = (
+            float(dms_longitude_split[0])
+            + (float(dms_longitude_split[1]) / 60)
+            + (float(dms_longitude_split[2] + "." + dms_longitude_split[3]) / 3600)
+        )
+        if dms_longitude_split[4] == "W":
             dd_longitude *= -1
 
-        reverse_geocode_result = gmaps.reverse_geocode((dd_latitude, dd_longitude), result_type='street_address')[0]
-        formatted_address = reverse_geocode_result['formatted_address']
+        reverse_geocode_result = gmaps.reverse_geocode(
+            (dd_latitude, dd_longitude), result_type="street_address"
+        )[0]
+        formatted_address = reverse_geocode_result["formatted_address"]
 
         return Coordinate.objects.create(
             dms_latitude=dms_latitude,
             dms_longitude=dms_longitude,
             dd_latitude=dd_latitude,
             dd_longitude=dd_longitude,
-            address=formatted_address)
+            address=formatted_address,
+        )
+
 
 class Mulchlayertype(models.Model):
     name = models.ForeignKey(
@@ -172,12 +185,14 @@ def upload_to(_, filename):
     now = datetime.now(pytz.utc).strftime("%Y%m%d%H%M%S%f")
     return f"{now}{filename}"
 
+
 class Asset(models.Model):
     asset = models.FileField(upload_to=upload_to, null=False)
 
     def delete(self, using=None, keep_parents=False):
         self.asset.delete()
         return super().delete()
+
 
 class Site(models.Model):
     name = models.TextField()
@@ -212,6 +227,7 @@ class Site(models.Model):
 
         return super().delete()
 
+
 # Note: PostAsset must be defined before Post because of a limitation with ManyToManyField type
 # inference using string annotations: https://github.com/typeddjango/django-stubs/issues/1802
 # Can't manually annotate because of: https://github.com/typeddjango/django-stubs/issues/760
@@ -231,6 +247,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=False, null=False)
     # created_by = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
     media = models.ManyToManyField(Asset, through=PostAsset, blank=True)
+
 
 class Comment(models.Model):
     body = models.TextField()
