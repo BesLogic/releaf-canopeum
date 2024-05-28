@@ -7,11 +7,33 @@ services:
       MYSQL_DATABASE: canopeum_db
       MYSQL_ROOT_PASSWORD: canopeum
     ports:
-      # Map the port to a non-default SQL port
-      - 3308:3306
+      - 4002:4002
     volumes:
       - mysql8-data:/var/lib/mysql
       - mysql8-conf:/etc/mysql/conf.d
+
+  backend:
+    build:
+      context: ./canopeum_backend
+      dockerfile: Dockerfile
+    ports:
+      - 4001:4001
+    depends_on:
+      - mysql
+    environment:
+      MYSQL_DATABASE: canopeum_db
+      MYSQL_ROOT_PASSWORD: canopeum
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: canopeum
+
+  frontend:
+    build:
+      context: ./canopeum_frontend
+      dockerfile: Dockerfile
+    ports:
+      - 4000:80
+
 volumes:
   mysql8-data:
     driver: local

@@ -64,7 +64,7 @@ For backend
    py -3.12 -m venv .venv
    ```
 
-   Then activate the environemnt (you need to do this everytime if your editor isn't configured to do so):
+   Then activate the environment (you need to do this everytime if your editor isn't configured to do so):
 
    ```shell
    source .venv/scripts/activate
@@ -83,8 +83,8 @@ For backend
 5. Set up Django backend and Database: (Skip this section for Frontend only)
 
    ```shell
-   docker compose up
    cd canopeum_backend
+   docker compose up
    python -m pip install -r requirements-dev.txt
    python manage.py initialize_database
    python manage.py runserver

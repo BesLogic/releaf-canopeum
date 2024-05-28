@@ -1,10 +1,10 @@
 -r requirements.txt
 pre-commit==3.6.2
-ruff==0.3.4 # must match .pre-commit-config.yaml
-mypy==1.9.0
-pyright==1.1.355
-# Stubs not yet available for 5.0: https://github.com/typeddjango/django-stubs/issues/2020
-django-stubs>=4.2.7
+ruff==0.4.4 # must match .pre-commit-config.yaml
+mypy==1.10.0
+pyright==1.1.363
+django-stubs[compatible-mypy]>=5.0.0
+djangorestframework-stubs[compatible-mypy]>=3.14.0
 # Not necessarily used directly, just taken from requirements.txt
 # that are also found in https://github.com/python/typeshed/tree/main/stubs
 types-colorama>=0.4.6

@@ -1037,49 +1037,6 @@ export class AuthenticationClient {
       return Promise.resolve<UserToken>(null as any);
   }
 
-  logout(): Promise<{ [key: string]: any; }> {
-      let url_ = this.baseUrl + "/auth/logout/";
-      url_ = url_.replace(/[?&]$/, "");
-
-      let options_: RequestInit = {
-          method: "POST",
-          headers: {
-              "Accept": "application/json"
-          }
-      };
-
-      return this.http.fetch(url_, options_).then((_response: Response) => {
-          return this.processLogout(_response);
-      });
-  }
-
-  protected processLogout(response: Response): Promise<{ [key: string]: any; }> {
-      const status = response.status;
-      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
-          return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          if (resultData200) {
-              result200 = {} as any;
-              for (let key in resultData200) {
-                  if (resultData200.hasOwnProperty(key))
-                      (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
-              }
-          }
-          else {
-              result200 = <any>null;
-          }
-          return result200;
-          });
-      } else if (status !== 200 && status !== 204) {
-          return response.text().then((_responseText) => {
-          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-          });
-      }
-      return Promise.resolve<{ [key: string]: any; }>(null as any);
-  }
-
   register(body: RegisterUser): Promise<UserToken> {
       let url_ = this.baseUrl + "/auth/register/";
       url_ = url_.replace(/[?&]$/, "");
@@ -5348,10 +5305,6 @@ export class Species implements ISpecies {
       data["quantity"] = this.quantity;
       return data;
   }
-
-  toString() {
-    return JSON.stringify(this)
-  }
 }
 
 export interface ISpecies {
@@ -5403,10 +5356,6 @@ export class Species2 implements ISpecies2 {
       data["id"] = this.id;
       data["quantity"] = this.quantity;
       return data;
-  }
-
-  toString() {
-    return JSON.stringify(this)
   }
 }
 

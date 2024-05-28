@@ -21,8 +21,8 @@ const TreeSpeciesSelector = ({ onChange, searchBarLabel, speciesOptions, species
   const [filteredSpecies, setFilteredSpecies] = useState(speciesOptions)
   const [selectedSpecies, setSelectedSpecies] = useState<Sitetreespecies[]>(species)
 
-  useEffect(() => setFilteredSpecies(availableSpecies), [displaySearch])
-  useEffect(() => onChange(selectedSpecies), [selectedSpecies])
+  useEffect(() => setFilteredSpecies(availableSpecies), [availableSpecies, displaySearch])
+  useEffect(() => onChange(selectedSpecies), [selectedSpecies, onChange])
   useEffect(() => setSelectedSpecies(species), [species])
 
   const onSearchChange = (searchValue: string): void => {
@@ -121,6 +121,7 @@ const TreeSpeciesSelector = ({ onChange, searchBarLabel, speciesOptions, species
         {selectedSpecies.map(value => (
           <li className='list-group-item row d-flex' key={`selected-specie-${value.id}`}>
             <div className='col-7'>{translateValue(value)}</div>
+
             <div className='col-4'>
               <div className='row'>
                 <div className='col'>
@@ -133,7 +134,9 @@ const TreeSpeciesSelector = ({ onChange, searchBarLabel, speciesOptions, species
                     -
                   </button>
                 </div>
+
                 <div className='col text-center'>{value.quantity}</div>
+
                 <div className='col'>
                   <button
                     className='btn btn-outline-dark btn-sm'
@@ -146,6 +149,7 @@ const TreeSpeciesSelector = ({ onChange, searchBarLabel, speciesOptions, species
                 </div>
               </div>
             </div>
+
             <div className='col-1'>
               <button
                 className='btn btn-outline-dark btn-sm'

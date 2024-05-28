@@ -1,0 +1,44 @@
+name: canopeum_frontend_deploy
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "canopeum_frontend/**"
+      - ".github/workflows/canopeum_frontend_deploy.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "canopeum_frontend/**"
+      - ".github/workflows/canopeum_frontend_deploy.yml"
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: canopeum_frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - name: Install dependencies
+        run: npm ci
+      - name: Build project
+        run: npm run build
+      - name: 'login'
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish Docker image
+        id: push
+        uses: docker/build-push-action@v3
+        with:
+          context: ./canopeum_frontend
+          file: canopeum_frontend/Dockerfile
+          push: true
+          tags: ghcr.io/beslogic/canopeum_frontend:latest
+          labels: latest

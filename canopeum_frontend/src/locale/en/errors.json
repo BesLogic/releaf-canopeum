@@ -1,3 +1,5 @@
 {
-  "email-taken": "There is already a user using this email."
+  "email-taken": "There is already a user using this email.",
+  "current-password-invalid": "The entered current password is invalid.",
+  "password-error-must-match": "Passwords do not match"
 }

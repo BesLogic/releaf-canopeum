@@ -11,13 +11,16 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     # Auth
     path("auth/login/", views.LoginAPIView.as_view(), name="login"),
-    path("auth/logout/", views.LogoutAPIView.as_view(), name="logout"),
     path("auth/register/", views.RegisterAPIView.as_view(), name="register"),
     # Post
     path("social/posts/", views.PostListAPIView.as_view(), name="post-list"),
     path("social/posts/<int:postId>/", views.PostDetailAPIView.as_view(), name="post-detail"),
     # Comment
-    path("social/posts/<int:postId>/comments/", views.CommentListAPIView.as_view(), name="comment-list"),
+    path(
+        "social/posts/<int:postId>/comments/",
+        views.CommentListAPIView.as_view(),
+        name="comment-list",
+    ),
     path(
         "social/posts/<int:postId>/comments/<int:commentId>/",
         views.CommentDetailAPIView.as_view(),
@@ -45,9 +48,13 @@ urlpatterns = [
         name="contact-detail",
     ),
     # Widget
-    path("social/sites/<int:siteId>/widgets/", views.WidgetListAPIView.as_view(), name="widget-list"),
     path(
-        "social/sites/<int:siteId>/widgets/<int:widgetId>/", views.WidgetDetailAPIView.as_view(), name="widget-detail"
+        "social/sites/<int:siteId>/widgets/", views.WidgetListAPIView.as_view(), name="widget-list"
+    ),
+    path(
+        "social/sites/<int:siteId>/widgets/<int:widgetId>/",
+        views.WidgetDetailAPIView.as_view(),
+        name="widget-detail",
     ),
     # Analytics
     # Tree Species
@@ -56,8 +63,14 @@ urlpatterns = [
     # Site
     path("analytics/sites/", views.SiteListAPIView.as_view(), name="site-list"),
     path("analytics/sites/<int:siteId>/", views.SiteDetailAPIView.as_view(), name="site-detail"),
-    path("analytics/sites/summary", views.SiteSummaryListAPIView.as_view(), name="site-summary-list"),
-    path("analytics/sites/<int:siteId>/summary", views.SiteSummaryDetailAPIView.as_view(), name="site-summary-detail"),
+    path(
+        "analytics/sites/summary", views.SiteSummaryListAPIView.as_view(), name="site-summary-list"
+    ),
+    path(
+        "analytics/sites/<int:siteId>/summary",
+        views.SiteSummaryDetailAPIView.as_view(),
+        name="site-summary-detail",
+    ),
     path(
         "analytics/sites/<int:siteId>/admins",
         views.SiteDetailAdminsAPIView.as_view(),
@@ -75,7 +88,9 @@ urlpatterns = [
     ),
     # Batches
     path("analytics/batches/", views.BatchListAPIView.as_view(), name="batch-list"),
-    path("analytics/batches/<int:batchId>/", views.BatchDetailAPIView.as_view(), name="batch-detail"),
+    path(
+        "analytics/batches/<int:batchId>/", views.BatchDetailAPIView.as_view(), name="batch-detail"
+    ),
     # Map
     # Coordinate
     path("map/sites/", views.SiteMapListAPIView.as_view(), name="coordinate-list-sites"),
@@ -84,8 +99,14 @@ urlpatterns = [
     path("users/site-managers", views.SiteManagersListAPIView.as_view(), name="site-managers-list"),
     path("users/<int:userId>/", views.UserDetailAPIView.as_view(), name="user-detail"),
     path("users/current_user/", views.UserCurrentUserAPIView.as_view(), name="current-user"),
-    path("user-invitations/", views.UserInvitationListAPIView.as_view(), name="user-invitation-list"),
-    path("user-invitations/<str:code>", views.UserInvitationDetailAPIView.as_view(), name="user-invitation-list"),
+    path(
+        "user-invitations/", views.UserInvitationListAPIView.as_view(), name="user-invitation-list"
+    ),
+    path(
+        "user-invitations/<str:code>",
+        views.UserInvitationDetailAPIView.as_view(),
+        name="user-invitation-list",
+    ),
     # Site admins
     path(
         "admin-user-sites/",
@@ -94,7 +115,11 @@ urlpatterns = [
     ),
     # SWAGGER
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
-    path("api/schema/swagger-ui/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
+    path(
+        "api/schema/swagger-ui/",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="swagger-ui",
+    ),
     path("api/schema/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
     # JWT
     path("auth/token/", TokenObtainPairView.as_view(), name="authentication_token_obtain_pair"),
