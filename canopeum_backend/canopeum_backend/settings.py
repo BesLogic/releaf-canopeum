@@ -193,3 +193,6 @@ MEDIA_ROOT = BASE_DIR / "canopeum_backend/media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 APPEND_SLASH = False
+
+# TODO: Find the way to handle the API Key properly
+GOOGLE_API_KEY = ""

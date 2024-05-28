@@ -1,22 +1,26 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import SiteSocialHeader from '@components/social/SiteSocialHeader'
+import WidgetCard from '@components/social/WidgetCard'
+import WidgetDialog from '@components/social/WidgetDialog'
 import useApiClient from '@hooks/ApiClientHook'
 import type { PageViewMode } from '@models/types/PageViewMode.Type'
 import { CircularProgress } from '@mui/material'
-import type { Post, SiteSocial } from '@services/api'
+import { type IWidget, PatchedWidget, type Post, type SiteSocial, Widget } from '@services/api'
 import { ensureError } from '@services/errors'
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 
 import AnnouncementCard from '../components/AnnouncementCard'
 import ContactCard from '../components/ContactCard'
 import CreatePostWidget from '../components/CreatePostWidget'
-import PostWidget from '../components/social/PostWidget'
+import PostCard from '../components/social/PostCard'
 import usePostsInfiniteScrolling from '../hooks/PostsInfiniteScrollingHook'
 import usePostsStore from '../store/postsStore'
 import LoadingPage from './LoadingPage'
 
 const SiteSocialPage = () => {
+  const { t } = useTranslation()
   const { siteId: siteIdParam } = useParams()
   const { currentUser } = useContext(AuthenticationContext)
   const { posts, addPost } = usePostsStore()
@@ -35,6 +39,10 @@ const SiteSocialPage = () => {
   const [error, setError] = useState<Error | undefined>(undefined)
   const [site, setSite] = useState<SiteSocial>()
   const [sitePosts, setSitePosts] = useState<Post[]>([])
+  const [isWidgetModalOpen, setIsWidgetModalOpen] = useState<[boolean, Widget | undefined]>([
+    false,
+    undefined,
+  ])
 
   const siteId = siteIdParam
     ? Number.parseInt(siteIdParam, 10) || 0
@@ -57,6 +65,35 @@ const SiteSocialPage = () => {
       setIsLoadingSite(false)
     }
   }, [getApiClient])
+
+  const handleModalClose = (
+    reason?: 'backdropClick' | 'delete' | 'escapeKeyDown' | 'save',
+    data?: IWidget,
+  ) => {
+    if (reason && (reason === 'backdropClick' || reason === 'escapeKeyDown')) {
+      setIsWidgetModalOpen([false, undefined])
+
+      return
+    }
+
+    if (reason === 'delete' && data) {
+      getApiClient().widgetClient.delete(siteId, data.id)
+        .then(() => void fetchSiteData(siteId))
+        .catch(() => {/* empty */})
+    }
+
+    if (reason === 'save' && data) {
+      const response = data.id === 0
+        ? getApiClient().widgetClient.create(siteId, new Widget(data))
+        : getApiClient().widgetClient.update(siteId, data.id, new PatchedWidget(data))
+
+      response
+        .then(() => void fetchSiteData(siteId))
+        .catch(() => {/* empty */})
+    }
+
+    setIsWidgetModalOpen([false, undefined])
+  }
 
   const addNewPost = (newPost: Post) => addPost(newPost)
 
@@ -93,11 +130,33 @@ const SiteSocialPage = () => {
       <div className='page-container d-flex flex-column gap-4'>
         <SiteSocialHeader site={site} viewMode={viewMode} />
 
-        <div className='row row-gap-3 m-0'>
+        <div className='row row-gap-1 m-0'>
           <div className='col-12 col-md-6 col-lg-5 col-xl-4'>
             <div className='d-flex flex-column gap-4'>
               <AnnouncementCard announcement={site.announcement} viewMode={viewMode} />
               <ContactCard contact={site.contact} viewMode={viewMode} />
+              {site.widget.map(widget => (
+                <WidgetCard
+                  handleEditClick={() => setIsWidgetModalOpen([true, widget])}
+                  key={`widget-${widget.id}`}
+                  widget={widget}
+                />
+              ))}
+              {currentUser?.role !== 'User' &&
+                (
+                  <>
+                    <button
+                      className={'btn btn-light text-primary text-capitalize d-flex ' +
+                        'justify-content-center p-3'}
+                      onClick={() => setIsWidgetModalOpen([true, undefined])}
+                      type='button'
+                    >
+                      <span className='material-symbols-outlined'>add</span>{' '}
+                      <span>{t('social.widgets.create')}</span>
+                    </button>
+                    <WidgetDialog handleClose={handleModalClose} open={isWidgetModalOpen} />
+                  </>
+                )}
             </div>
           </div>
 
@@ -121,7 +180,7 @@ const SiteSocialPage = () => {
                       </div>
                     </div>
                   )
-                  : sitePosts.map(post => <PostWidget key={post.id} post={post} />)}
+                  : sitePosts.map(post => <PostCard key={post.id} post={post} />)}
               </div>
 
               {isLoadingMore && (

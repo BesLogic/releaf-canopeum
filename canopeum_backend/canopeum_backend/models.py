@@ -1,10 +1,15 @@
 from datetime import datetime, timedelta
 from typing import ClassVar
 
+import googlemaps
 import pytz
+import re
+import os
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from .settings import GOOGLE_API_KEY
 
+gmaps = googlemaps.Client(key=GOOGLE_API_KEY)
 
 class RoleName(models.TextChoices):
     USER = "User"
@@ -44,7 +49,7 @@ class Announcement(models.Model):
 
 
 class Batch(models.Model):
-    site = models.ForeignKey("Site", models.DO_NOTHING, blank=True, null=True)
+    site = models.ForeignKey("Site", models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
     name = models.TextField(blank=True, null=True)
@@ -56,29 +61,29 @@ class Batch(models.Model):
 
 
 class Batchfertilizer(models.Model):
-    batch = models.ForeignKey(Batch, models.DO_NOTHING, blank=True, null=True)
+    batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
     fertilizer_type = models.ForeignKey("Fertilizertype", models.DO_NOTHING, blank=True, null=True)
 
 
 class Batchmulchlayer(models.Model):
-    batch = models.ForeignKey(Batch, models.DO_NOTHING, blank=True, null=True)
+    batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
     mulch_layer_type = models.ForeignKey("Mulchlayertype", models.DO_NOTHING, blank=True, null=True)
 
 
 class BatchSpecies(models.Model):
-    batch = models.ForeignKey(Batch, models.DO_NOTHING, blank=True, null=True)
+    batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
     tree_type = models.ForeignKey("Treetype", models.DO_NOTHING, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
 
 
 class BatchSeed(models.Model):
-    batch = models.ForeignKey(Batch, models.DO_NOTHING, blank=True, null=True)
+    batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
     tree_type = models.ForeignKey("Treetype", models.DO_NOTHING, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
 
 
 class BatchSupportedSpecies(models.Model):
-    batch = models.ForeignKey(Batch, models.DO_NOTHING, blank=True, null=True)
+    batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
     tree_type = models.ForeignKey("Treetype", models.DO_NOTHING, blank=True, null=True)
 
 
@@ -99,6 +104,27 @@ class Coordinate(models.Model):
     dd_longitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
 
+    @staticmethod
+    def from_dms_lat_long(dms_latitude: str, dms_longitude: str):
+        dms_latitude_split = re.split(r'°|\'|\.|\"', dms_latitude)
+        dd_latitude = float(dms_latitude_split[0]) + (float(dms_latitude_split[1]) / 60) + (float(dms_latitude_split[2] + '.' + dms_latitude_split[3]) / 3600)
+        if dms_latitude_split[4] == 'S':
+            dd_latitude *= -1
+
+        dms_longitude_split = re.split(r'°|\'|\.|\"', dms_longitude)
+        dd_longitude = float(dms_longitude_split[0]) + (float(dms_longitude_split[1]) / 60) + (float(dms_longitude_split[2] + '.' + dms_longitude_split[3]) / 3600)
+        if dms_longitude_split[4] == 'W':
+            dd_longitude *= -1
+
+        reverse_geocode_result = gmaps.reverse_geocode((dd_latitude, dd_longitude), result_type='street_address')[0]
+        formatted_address = reverse_geocode_result['formatted_address']
+
+        return Coordinate.objects.create(
+            dms_latitude=dms_latitude,
+            dms_longitude=dms_longitude,
+            dd_latitude=dd_latitude,
+            dd_longitude=dd_longitude,
+            address=formatted_address)
 
 class Fertilizertype(models.Model):
     name = models.ForeignKey("FertilizertypeInternationalization", models.DO_NOTHING, blank=True, null=True)
@@ -122,28 +148,48 @@ def upload_to(_, filename):
     now = datetime.now(pytz.utc).strftime("%Y%m%d%H%M%S%f")
     return f"{now}{filename}"
 
-
 class Asset(models.Model):
     asset = models.FileField(upload_to=upload_to, null=False)
 
+    def delete(self, using=None, keep_parents=False):
+        self.asset.delete()
+        return super().delete()
 
 class Site(models.Model):
     name = models.TextField()
     is_public = models.BooleanField(blank=False, null=False, default=False)
     site_type = models.ForeignKey("Sitetype", models.DO_NOTHING, blank=True, null=True)
-    coordinate = models.ForeignKey(Coordinate, models.DO_NOTHING, blank=True, null=True)
+    coordinate = models.ForeignKey(Coordinate, models.SET_NULL, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     size = models.TextField(blank=True, null=True)
     research_partnership = models.BooleanField(blank=True, null=True)
     visible_map = models.BooleanField(blank=True, null=True)
     visitor_count = models.IntegerField(blank=True, null=True)
-    contact = models.ForeignKey(Contact, models.DO_NOTHING, blank=True, null=True)
-    announcement = models.ForeignKey(Announcement, models.DO_NOTHING, blank=True, null=True)
-    image = models.ForeignKey(Asset, models.DO_NOTHING, blank=True, null=True)
+    contact = models.ForeignKey(Contact, models.SET_NULL, blank=True, null=True)
+    announcement = models.ForeignKey(Announcement, models.SET_NULL, blank=True, null=True)
+    image = models.ForeignKey(Asset, models.SET_NULL, blank=True, null=True)
 
+    def delete(self, using=None, keep_parents=False):
+        # Coordinate
+        if self.coordinate:
+            self.coordinate.delete()
+
+        # Contact
+        if self.contact:
+            self.contact.delete()
+
+        # Announcement
+        if self.announcement:
+            self.announcement.delete()
+
+        # Image
+        if self.image:
+            self.image.delete()
+
+        return super().delete()
 
 class Post(models.Model):
-    site = models.ForeignKey("Site", models.DO_NOTHING, blank=False, null=False)
+    site = models.ForeignKey("Site", models.CASCADE, blank=False, null=False)
     body = models.TextField(blank=False, null=False)
     share_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True, blank=False, null=False)
@@ -152,9 +198,12 @@ class Post(models.Model):
 
 
 class PostAsset(models.Model):
-    post = models.ForeignKey(Post, models.DO_NOTHING, null=False)
+    post = models.ForeignKey(Post, models.CASCADE, null=False)
     asset = models.ForeignKey(Asset, models.DO_NOTHING, null=False)
 
+    def delete(self, using=None, keep_parents=False):
+        self.asset.delete()
+        return super().delete()
 
 class Comment(models.Model):
     body = models.TextField()
@@ -189,7 +238,7 @@ class SiteFollower(models.Model):
 
 
 class Sitetreespecies(models.Model):
-    site = models.ForeignKey(Site, models.DO_NOTHING, blank=True, null=True)
+    site = models.ForeignKey(Site, models.CASCADE, blank=True, null=True)
     tree_type = models.ForeignKey("Treetype", models.DO_NOTHING, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
 
@@ -213,14 +262,14 @@ class Treetype(models.Model):
 
 
 class Widget(models.Model):
-    site = models.ForeignKey(Site, models.DO_NOTHING, blank=True, null=True)
+    site = models.ForeignKey(Site, models.CASCADE, blank=True, null=True)
     title = models.TextField(blank=True, null=True)
     body = models.TextField(blank=True, null=True)
 
 
 class Like(models.Model):
-    user = models.ForeignKey(User, models.DO_NOTHING)
-    post = models.ForeignKey(Post, models.DO_NOTHING)
+    user = models.ForeignKey(User, models.CASCADE)
+    post = models.ForeignKey(Post, models.CASCADE)
 
 
 class Internationalization(models.Model):

@@ -13,7 +13,7 @@ type Props = {
   readonly post: Post,
 }
 
-const PostWidget = ({ post }: Props) => {
+const PostCard = ({ post }: Props) => {
   const { formatDate } = useContext(LanguageContext)
   const { toggleLike } = usePostsStore()
   const { getApiClient } = useApiClient()
@@ -114,4 +114,4 @@ const PostWidget = ({ post }: Props) => {
   )
 }
 
-export default PostWidget
+export default PostCard

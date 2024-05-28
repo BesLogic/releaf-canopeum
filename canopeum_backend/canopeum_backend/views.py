@@ -1,7 +1,8 @@
 import json
 import secrets
 from typing import cast
-
+import json
+import re
 from django.contrib.auth import authenticate
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -78,7 +79,6 @@ from .serializers import (
     UserTokenSerializer,
     WidgetSerializer,
 )
-
 
 def get_public_sites_unless_admin(user: User | None):
     if isinstance(user, User) and user.role.name == "MegaAdmin":
@@ -205,11 +205,10 @@ class SiteListAPIView(APIView):
             return Response(data=asset.errors, status=status.HTTP_400_BAD_REQUEST)
         asset = asset.save()
 
-        site_type = Sitetype.objects.get(pk=request.data["siteType"])
-        # (TODO) For the coordinates, we need to calculate the ddLat and ddLong and also use the Google API for the address
-        coordinate = Coordinate.objects.create(
-            dms_latitude=request.data["latitude"], dms_longitude=request.data["longitude"]
-        )
+        site_type = Sitetype.objects.get(pk=request.data['siteType'])
+
+        coordinate = Coordinate.from_dms_lat_long(request.data['latitude'], request.data['longitude'])
+
         announcement = Announcement.objects.create()
         contact = Contact.objects.create()
 
@@ -289,10 +288,9 @@ class SiteDetailAPIView(APIView):
         asset = asset.save()
 
         site_type = Sitetype.objects.get(pk=request.data["siteType"])
-        # (TODO) For the coordinates, we need to calculate the ddLat and ddLong and also use the Google API for the address
-        coordinate = Coordinate.objects.create(
-            dms_latitude=request.data["latitude"], dms_longitude=request.data["longitude"]
-        )
+
+        coordinate = Coordinate.from_dms_lat_long(request.data['latitude'], request.data['longitude'])
+
         announcement = Announcement.objects.create()
         contact = Contact.objects.create()
 
@@ -678,19 +676,19 @@ class ContactDetailAPIView(APIView):
 
 class WidgetListAPIView(APIView):
     @extend_schema(request=WidgetSerializer, responses={201: WidgetSerializer}, operation_id="widget_create")
-    def post(self, request):
+    def post(self, request, siteId):
         serializer = WidgetSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(site_id=siteId)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class WidgetDetailAPIView(APIView):
     @extend_schema(request=WidgetSerializer, responses=WidgetSerializer, operation_id="widget_update")
-    def patch(self, request, pk):
+    def patch(self, request, siteId, widgetId):
         try:
-            widget = Widget.objects.get(pk=pk)
+            widget = Widget.objects.get(pk=widgetId)
         except Widget.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -701,9 +699,9 @@ class WidgetDetailAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @extend_schema(operation_id="widget_delete")
-    def delete(self, request, pk):
+    def delete(self, request, siteId, widgetId):
         try:
-            widget = Widget.objects.get(pk=pk)
+            widget = Widget.objects.get(pk=widgetId)
         except Widget.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 

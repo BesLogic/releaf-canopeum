@@ -1,4 +1,4 @@
-import PostWidget from '@components/social/PostWidget'
+import PostCard from '@components/social/PostCard'
 import { appRoutes } from '@constants/routes.constant'
 import useApiClient from '@hooks/ApiClientHook'
 import type { Post } from '@services/api'
@@ -82,7 +82,7 @@ const PostDetailsPage = () => {
         <span className=' ms-1 text-light'>{translate('posts.back-to-social')}</span>
       </Link>
 
-      <PostWidget post={postDetail} />
+      <PostCard post={postDetail} />
     </div>
   )
 }
