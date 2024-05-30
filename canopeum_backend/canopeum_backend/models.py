@@ -2,7 +2,8 @@ import re
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, ClassVar, override
 
-import googlemaps  # type: ignore[import-untyped] -- No type stub currently exists
+# No type stub currently exists for googlemaps
+import googlemaps  # type: ignore[import-untyped]
 import pytz
 from django.contrib.auth.models import AbstractUser
 from django.db import models
