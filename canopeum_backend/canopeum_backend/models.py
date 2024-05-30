@@ -2,8 +2,7 @@ import re
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, ClassVar, override
 
-
-import googlemaps # type: ignore[import-untyped] -- No type stub currently exists
+import googlemaps  # type: ignore[import-untyped] -- No type stub currently exists
 import pytz
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -160,7 +159,7 @@ class Coordinate(models.Model):
             dd_longitude *= -1
 
         formatted_address = (
-            gmaps.reverse_geocode((dd_latitude, dd_longitude), result_type="street_address")[0] # pyright: ignore[reportAttributeAccessIssue] -- No type stub currently exists
+            gmaps.reverse_geocode((dd_latitude, dd_longitude), result_type="street_address")[0]  # pyright: ignore[reportAttributeAccessIssue] -- No type stub currently exists
             if gmaps is not None
             else ""
         )
