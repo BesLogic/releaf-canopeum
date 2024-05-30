@@ -19,6 +19,7 @@ LAT_LONG_SEP = re.compile(r"°|\'|\"")
 
 gmaps = googlemaps.Client(key=GOOGLE_API_KEY) if GOOGLE_API_KEY else None
 
+
 class RoleName(models.TextChoices):
     USER = "User"
     SITEMANAGER = "SiteManager"
@@ -158,10 +159,10 @@ class Coordinate(models.Model):
             dd_longitude *= -1
 
         formatted_address = (
-            gmaps.reverse_geocode(
-	            (dd_latitude, dd_longitude), result_type="street_address"
-	        )[0] if gmaps is not None else ""
-	    )
+            gmaps.reverse_geocode((dd_latitude, dd_longitude), result_type="street_address")[0]
+            if gmaps is not None
+            else ""
+        )
 
         return cls.objects.create(
             dms_latitude=dms_latitude,
