@@ -1,6 +1,6 @@
 import re
 from datetime import datetime, timedelta
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING, ClassVar, override
 
 import googlemaps
 import pytz
@@ -14,6 +14,8 @@ from .settings import GOOGLE_API_KEY
 # https://github.com/typeddjango/django-stubs/issues/579
 # https://github.com/typeddjango/django-stubs/issues/1264
 # For now we have to rely on the mypy plugin
+
+LAT_LONG_SEP = re.compile(r"°|\'|\"")
 
 gmaps = googlemaps.Client(key=GOOGLE_API_KEY) if GOOGLE_API_KEY != None else None
 
@@ -135,32 +137,33 @@ class Coordinate(models.Model):
     dd_longitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
 
-    @staticmethod
-    def from_dms_lat_long(dms_latitude: str, dms_longitude: str):
-        dms_latitude_split = re.split(r"°|\'|\.|\"", dms_latitude)
+    @classmethod
+    def from_dms_lat_long(cls, dms_latitude: str, dms_longitude: str):
+        dms_latitude_split = re.split(LAT_LONG_SEP, dms_latitude)
         dd_latitude = (
             float(dms_latitude_split[0])
-            + (float(dms_latitude_split[1]) / 60)
-            + (float(dms_latitude_split[2] + "." + dms_latitude_split[3]) / 3600)
+            + float(dms_latitude_split[1]) / 60
+            + float(dms_latitude_split[2]) / 3600
         )
         if dms_latitude_split[4] == "S":
             dd_latitude *= -1
 
-        dms_longitude_split = re.split(r"°|\'|\.|\"", dms_longitude)
+        dms_longitude_split = re.split(LAT_LONG_SEP, dms_longitude)
         dd_longitude = (
             float(dms_longitude_split[0])
-            + (float(dms_longitude_split[1]) / 60)
-            + (float(dms_longitude_split[2] + "." + dms_longitude_split[3]) / 3600)
+            + float(dms_longitude_split[1]) / 60
+            + float(dms_longitude_split[2]) / 3600
         )
         if dms_longitude_split[4] == "W":
             dd_longitude *= -1
 
-        reverse_geocode_result = gmaps.reverse_geocode(
-            (dd_latitude, dd_longitude), result_type="street_address"
-        )[0]
-        formatted_address = reverse_geocode_result["formatted_address"] if gmaps != None else ""
+        formatted_address = (
+            gmaps.reverse_geocode(
+	            (dd_latitude, dd_longitude), result_type="street_address"
+	        )[0] if gmaps is not None else ""
+	    )
 
-        return Coordinate.objects.create(
+        return cls.objects.create(
             dms_latitude=dms_latitude,
             dms_longitude=dms_longitude,
             dd_latitude=dd_latitude,
@@ -188,9 +191,10 @@ def upload_to(_, filename):
 class Asset(models.Model):
     asset = models.FileField(upload_to=upload_to, null=False)
 
+    @override
     def delete(self, using=None, keep_parents=False):
         self.asset.delete()
-        return super().delete()
+        return super().delete(using, keep_parents)
 
 
 class Site(models.Model):
@@ -207,6 +211,7 @@ class Site(models.Model):
     announcement = models.ForeignKey(Announcement, models.SET_NULL, blank=True, null=True)
     image = models.ForeignKey(Asset, models.SET_NULL, blank=True, null=True)
 
+    @override
     def delete(self, using=None, keep_parents=False):
         # Coordinate
         if self.coordinate:
@@ -224,7 +229,7 @@ class Site(models.Model):
         if self.image:
             self.image.delete()
 
-        return super().delete()
+        return super().delete(using, keep_parents)
 
 
 # Note: PostAsset must be defined before Post because of a limitation with ManyToManyField type
@@ -234,9 +239,10 @@ class PostAsset(models.Model):
     post = models.ForeignKey("Post", models.CASCADE, null=False)
     asset = models.ForeignKey(Asset, models.DO_NOTHING, null=False)
 
+    @override
     def delete(self, using=None, keep_parents=False):
         self.asset.delete()
-        return super().delete()
+        return super().delete(using, keep_parents)
 
 
 class Post(models.Model):
