@@ -1,3 +1,5 @@
 {
-  "email-taken": "Il y a déjà un utilisateur qui utilise cette adresse courriel."
+  "email-taken": "Il y a déjà un utilisateur qui utilise cette adresse courriel.",
+  "current-password-invalid": "Le mot de passe actuel saisi est invalide.",
+  "password-error-must-match": "Les mots de passe ne correspondent pas."
 }
