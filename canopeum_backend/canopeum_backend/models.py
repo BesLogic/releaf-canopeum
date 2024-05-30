@@ -15,8 +15,7 @@ from .settings import GOOGLE_API_KEY
 # https://github.com/typeddjango/django-stubs/issues/1264
 # For now we have to rely on the mypy plugin
 
-gmaps = googlemaps.Client(key=GOOGLE_API_KEY)
-
+gmaps = googlemaps.Client(key=GOOGLE_API_KEY) if GOOGLE_API_KEY != None else None
 
 class RoleName(models.TextChoices):
     USER = "User"
@@ -159,7 +158,7 @@ class Coordinate(models.Model):
         reverse_geocode_result = gmaps.reverse_geocode(
             (dd_latitude, dd_longitude), result_type="street_address"
         )[0]
-        formatted_address = reverse_geocode_result["formatted_address"]
+        formatted_address = reverse_geocode_result["formatted_address"] if gmaps != None else ""
 
         return Coordinate.objects.create(
             dms_latitude=dms_latitude,
