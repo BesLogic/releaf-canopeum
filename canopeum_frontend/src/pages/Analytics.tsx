@@ -173,7 +173,7 @@ const Analytics = () => {
     })
 
   return (
-    <div>
+    <div className='h-100 overflow-y-auto'>
       <div className='page-container d-flex flex-column gap-2 mt-3'>
         <div className='d-flex justify-content-between'>
           <h1 className='text-light'>{translate('analytics.title')}</h1>

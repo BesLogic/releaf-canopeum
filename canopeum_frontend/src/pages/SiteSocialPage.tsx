@@ -146,21 +146,20 @@ const SiteSocialPage = () => {
                   widget={widget}
                 />
               ))}
-              {currentUser?.role !== 'User' &&
-                (
-                  <>
-                    <button
-                      className={'btn btn-light text-primary text-capitalize d-flex ' +
-                        'justify-content-center p-3'}
-                      onClick={() => setIsWidgetModalOpen([true, undefined])}
-                      type='button'
-                    >
-                      <span className='material-symbols-outlined'>add</span>{' '}
-                      <span>{t('social.widgets.create')}</span>
-                    </button>
-                    <WidgetDialog handleClose={handleModalClose} open={isWidgetModalOpen} />
-                  </>
-                )}
+              {currentUser && currentUser.role !== 'User' && (
+                <>
+                  <button
+                    className={'btn btn-light text-primary text-capitalize d-flex ' +
+                      'justify-content-center p-3'}
+                    onClick={() => setIsWidgetModalOpen([true, undefined])}
+                    type='button'
+                  >
+                    <span className='material-symbols-outlined'>add</span>{' '}
+                    <span>{t('social.widgets.create')}</span>
+                  </button>
+                  <WidgetDialog handleClose={handleModalClose} open={isWidgetModalOpen} />
+                </>
+              )}
             </div>
           </div>
 

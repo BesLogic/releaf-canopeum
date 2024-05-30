@@ -1,4 +1,5 @@
 import { appRoutes } from '@constants/routes.constant'
+import type { RoleEnum } from '@services/api'
 import type { MaterialIcon } from 'material-icons'
 import { useCallback, useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -10,6 +11,7 @@ type NavbarItem = {
   icon: MaterialIcon,
   linkTo: string,
   label: string,
+  roles: (RoleEnum | undefined)[],
 }
 
 const NAVBAR_ITEMS: NavbarItem[] = [
@@ -17,27 +19,32 @@ const NAVBAR_ITEMS: NavbarItem[] = [
     icon: 'home',
     linkTo: appRoutes.home,
     label: 'home',
+    roles: ['User', 'SiteManager', 'MegaAdmin'],
   },
   {
     icon: 'donut_small',
     linkTo: appRoutes.sites,
     label: 'sites',
+    roles: ['SiteManager', 'MegaAdmin'],
   },
   {
     icon: 'pin_drop',
     linkTo: appRoutes.map,
     label: 'map',
+    roles: ['User', 'SiteManager', 'MegaAdmin'],
   },
   {
     icon: 'style',
     linkTo: appRoutes.utilities,
     label: 'utilities',
+    roles: ['SiteManager', 'MegaAdmin'],
   },
 ]
 
 const Navbar = () => {
   const { i18n: { changeLanguage, language }, t: translate } = useTranslation()
   const [currentLanguage, setCurrentLanguage] = useState(language)
+  const { currentUser } = useContext(AuthenticationContext)
 
   const location = useLocation()
 
@@ -95,6 +102,10 @@ const Navbar = () => {
                   location.pathname === item.linkTo
                     ? 'active'
                     : ''
+                } ${
+                  item.roles.includes(currentUser?.role)
+                    ? 'd-inline'
+                    : 'd-none'
                 }`}
                 key={item.icon}
               >
