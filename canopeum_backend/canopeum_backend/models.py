@@ -17,6 +17,7 @@ from .settings import GOOGLE_API_KEY
 
 gmaps = googlemaps.Client(key=GOOGLE_API_KEY) if GOOGLE_API_KEY != None else None
 
+
 class RoleName(models.TextChoices):
     USER = "User"
     SITEMANAGER = "SiteManager"
