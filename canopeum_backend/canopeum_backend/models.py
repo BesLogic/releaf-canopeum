@@ -15,7 +15,7 @@ from .settings import GOOGLE_API_KEY
 # https://github.com/typeddjango/django-stubs/issues/1264
 # For now we have to rely on the mypy plugin
 
-gmaps = googlemaps.Client(key=GOOGLE_API_KEY) if GOOGLE_API_KEY != None else None
+gmaps = googlemaps.Client(key=GOOGLE_API_KEY) if GOOGLE_API_KEY else None
 
 
 class RoleName(models.TextChoices):
