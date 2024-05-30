@@ -17,7 +17,7 @@ from .settings import GOOGLE_API_KEY
 
 LAT_LONG_SEP = re.compile(r"°|\'|\"")
 
-gmaps = googlemaps.Client(key=GOOGLE_API_KEY) if GOOGLE_API_KEY != None else None
+gmaps = googlemaps.Client(key=GOOGLE_API_KEY) if GOOGLE_API_KEY else None
 
 class RoleName(models.TextChoices):
     USER = "User"
