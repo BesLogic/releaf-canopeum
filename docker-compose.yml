@@ -11,12 +11,11 @@ services:
     volumes:
       - mysql8-data:/var/lib/mysql
       - mysql8-conf:/etc/mysql/conf.d
+    networks:
+      - nginx-canopeum
 
   backend:
     image: ghcr.io/beslogic/canopeum_backend:latest
-    # build:
-    #   context: ./canopeum_backend
-    #   dockerfile: Dockerfile
     ports:
       - 4001:4001
     depends_on:
@@ -27,14 +26,23 @@ services:
       MYSQL_HOST: mysql
       MYSQL_USER: root
       MYSQL_PASSWORD: canopeum
+      VIRTUAL_HOST: api.canopeum.releaftrees.life
+    networks:
+      - nginx-canopeum
 
   frontend:
     image: ghcr.io/beslogic/canopeum_frontend:latest
     ports:
       - 4000:80
+    networks:
+      - nginx-canopeum
 
 volumes:
   mysql8-data:
     driver: local
   mysql8-conf:
     driver: local
+
+networks:
+  nginx-canopeum:
+    external: true
