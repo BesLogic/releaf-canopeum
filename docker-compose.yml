@@ -13,9 +13,10 @@ services:
       - mysql8-conf:/etc/mysql/conf.d
 
   backend:
-    build:
-      context: ./canopeum_backend
-      dockerfile: Dockerfile
+    image: ghcr.io/beslogic/canopeum_backend:latest
+    # build:
+    #   context: ./canopeum_backend
+    #   dockerfile: Dockerfile
     ports:
       - 4001:4001
     depends_on:
