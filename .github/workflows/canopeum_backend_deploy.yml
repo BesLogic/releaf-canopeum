@@ -30,6 +30,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - run: cd canopeum_backend
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
