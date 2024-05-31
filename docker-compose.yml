@@ -2,10 +2,10 @@ version: '3.3'
 services:
   mysql:
     image: mysql:8
-    command: --mysql-native-password=ON
+    command: --authentication_policy=mysql_native_password
     environment:
       MYSQL_DATABASE: canopeum_db
-      MYSQL_ROOT_PASSWORD: fakepassword
+      MYSQL_ROOT_PASSWORD: canopeum
     ports:
       - 4002:4002
     volumes:
@@ -13,7 +13,9 @@ services:
       - mysql8-conf:/etc/mysql/conf.d
 
   backend:
-    image: ghcr.io/beslogic/canopeum_backend:latest
+    build:
+      context: ./canopeum_backend
+      dockerfile: Dockerfile
     ports:
       - 4001:4001
     depends_on:
@@ -23,7 +25,7 @@ services:
       MYSQL_ROOT_PASSWORD: canopeum
       MYSQL_HOST: mysql
       MYSQL_USER: root
-      MYSQL_PASSWORD: fakepassword
+      MYSQL_PASSWORD: canopeum
 
   frontend:
     image: ghcr.io/beslogic/canopeum_frontend:latest
