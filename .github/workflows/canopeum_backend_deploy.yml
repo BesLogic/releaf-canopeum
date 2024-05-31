@@ -37,8 +37,10 @@ jobs:
           python-version: "3.12"
           cache: pip
           cache-dependency-path: "**/requirements*.txt"
-      - run: pip install -r requirements.txt
-      - run: ls ..
+      - run: mkdir packages
+      - run: pip install -r requirements.txt --target ./packages
+      - run: ls packages
+      - run: ls
       - name: Publish Docker image
         id: push
         uses: docker/build-push-action@v3
