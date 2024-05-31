@@ -7,7 +7,7 @@ services:
       MYSQL_DATABASE: canopeum_db
       MYSQL_ROOT_PASSWORD: canopeum
     ports:
-      - 4002:4002
+      - 5002:5002
     volumes:
       - mysql8-data:/var/lib/mysql
       - mysql8-conf:/etc/mysql/conf.d
@@ -17,7 +17,7 @@ services:
   backend:
     image: ghcr.io/beslogic/canopeum_backend:latest
     ports:
-      - 4001:4001
+      - 5001:5001
     depends_on:
       - mysql
     environment:
@@ -33,7 +33,7 @@ services:
   frontend:
     image: ghcr.io/beslogic/canopeum_frontend:latest
     ports:
-      - 4000:80
+      - 5000:80
     networks:
       - nginx-canopeum
 
