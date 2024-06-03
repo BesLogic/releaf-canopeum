@@ -190,7 +190,9 @@ class SiteTypesAPIView(APIView):
 class FertilizerListAPIView(APIView):
     permission_classes = (MegaAdminOrSiteManagerPermission,)
 
-    @extend_schema(responses=FertilizerTypeSerializer(many=True), operation_id="fertilizer_allTypes")
+    @extend_schema(
+        responses=FertilizerTypeSerializer(many=True), operation_id="fertilizer_allTypes"
+    )
     def get(self, request):
         fertilizer_types = Fertilizertype.objects.all()
         serializer = FertilizerTypeSerializer(fertilizer_types, many=True)
@@ -200,7 +202,9 @@ class FertilizerListAPIView(APIView):
 class MulchLayerListAPIView(APIView):
     permission_classes = (MegaAdminOrSiteManagerPermission,)
 
-    @extend_schema(responses=MulchLayerTypeSerializer(many=True), operation_id="mulchLayer_allTypes")
+    @extend_schema(
+        responses=MulchLayerTypeSerializer(many=True), operation_id="mulchLayer_allTypes"
+    )
     def get(self, request):
         mulch_layer_types = Mulchlayertype.objects.all()
         serializer = MulchLayerTypeSerializer(mulch_layer_types, many=True)
