@@ -2,8 +2,11 @@
 // https://github.com/microsoft/pyright/blob/main/docs/configuration.md#sample-pyprojecttoml-file
 {
   "pythonVersion": "3.12",
-  "include": ["canopeum_backend/"],
-  "typeCheckingMode" : "standard",
+  "include": ["canopeum_backend/canopeum_backend/"],
+  "typeCheckingMode": "standard",
+  "reportUnnecessaryTypeIgnoreComment": "error",
+  // Leave type: ignore to mypy
+  "enableTypeIgnoreComments": false
   // django-specific mypy plugin does a better job getting serializers data type of dict vs list
-  "reportAttributeAccessIssue" : "none",
+  // "reportAttributeAccessIssue": "none"
 }
