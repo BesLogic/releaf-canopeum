@@ -1,5 +1,5 @@
 import { LanguageContext } from '@components/context/LanguageContext'
-import type { Batch } from '@services/api'
+import type { BatchAnalytics } from '@services/api'
 import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -7,7 +7,7 @@ const BATCH_HEADER_CLASS =
   'text-capitalize position-sticky start-0 table-primary border-1 border-top-0 border-primary'
 
 type Props = {
-  readonly batches: Batch[],
+  readonly batches: BatchAnalytics[],
 }
 
 const cellBorderColor = 'var(--bs-gray-400)'

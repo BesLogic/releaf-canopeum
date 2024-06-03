@@ -70,7 +70,7 @@ export class BatchClient {
       this.baseUrl = baseUrl ?? "";
   }
 
-  all(): Promise<Batch[]> {
+  all(): Promise<BatchAnalytics[]> {
       let url_ = this.baseUrl + "/analytics/batches/";
       url_ = url_.replace(/[?&]$/, "");
 
@@ -86,7 +86,7 @@ export class BatchClient {
       });
   }
 
-  protected processAll(response: Response): Promise<Batch[]> {
+  protected processAll(response: Response): Promise<BatchAnalytics[]> {
       const status = response.status;
       let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
       if (status === 200) {
@@ -96,7 +96,7 @@ export class BatchClient {
           if (Array.isArray(resultData200)) {
               result200 = [] as any;
               for (let item of resultData200)
-                  result200!.push(Batch.fromJS(item));
+                  result200!.push(BatchAnalytics.fromJS(item));
           }
           else {
               result200 = <any>null;
@@ -108,10 +108,10 @@ export class BatchClient {
           return throwException("An unexpected server error occurred.", status, _responseText, _headers);
           });
       }
-      return Promise.resolve<Batch[]>(null as any);
+      return Promise.resolve<BatchAnalytics[]>(null as any);
   }
 
-  create(body: Batch): Promise<Batch> {
+  create(body: Batch | undefined): Promise<Batch> {
       let url_ = this.baseUrl + "/analytics/batches/";
       url_ = url_.replace(/[?&]$/, "");
 
@@ -2413,11 +2413,95 @@ export interface IAsset {
 
 export class Batch implements IBatch {
   readonly id!: number;
+  createdAt?: Date | undefined;
+  updatedAt?: Date | undefined;
+  name?: string | undefined;
+  sponsor?: string | undefined;
+  size?: number | undefined;
+  soilCondition?: string | undefined;
+  totalNumberSeed?: number | undefined;
+  totalPropagation?: number | undefined;
+  site?: number | undefined;
+
+  [key: string]: any;
+
+  constructor(data?: IBatch) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+          this.updatedAt = _data["updatedAt"] ? new Date(_data["updatedAt"].toString()) : <any>undefined;
+          this.name = _data["name"];
+          this.sponsor = _data["sponsor"];
+          this.size = _data["size"];
+          this.soilCondition = _data["soilCondition"];
+          this.totalNumberSeed = _data["totalNumberSeed"];
+          this.totalPropagation = _data["totalPropagation"];
+          this.site = _data["site"];
+      }
+  }
+
+  static fromJS(data: any): Batch {
+      data = typeof data === 'object' ? data : {};
+      let result = new Batch();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+      data["updatedAt"] = this.updatedAt ? this.updatedAt.toISOString() : <any>undefined;
+      data["name"] = this.name;
+      data["sponsor"] = this.sponsor;
+      data["size"] = this.size;
+      data["soilCondition"] = this.soilCondition;
+      data["totalNumberSeed"] = this.totalNumberSeed;
+      data["totalPropagation"] = this.totalPropagation;
+      data["site"] = this.site;
+      return data;
+  }
+}
+
+export interface IBatch {
+  id: number;
+  createdAt?: Date | undefined;
+  updatedAt?: Date | undefined;
+  name?: string | undefined;
+  sponsor?: string | undefined;
+  size?: number | undefined;
+  soilCondition?: string | undefined;
+  totalNumberSeed?: number | undefined;
+  totalPropagation?: number | undefined;
+  site?: number | undefined;
+
+  [key: string]: any;
+}
+
+export class BatchAnalytics implements IBatchAnalytics {
+  readonly id!: number;
   name?: string | undefined;
   size?: number | undefined;
   soilCondition?: string | undefined;
   sponsor?: string | undefined;
-  readonly fertilizers!: BatchFertilizer[];
+  readonly fertilizers!: Batchfertilizer[];
   readonly mulchLayers!: BatchMulchLayer[];
   readonly supportedSpecies!: BatchSupportedSpecies[];
   readonly plantCount!: number;
@@ -2430,7 +2514,7 @@ export class Batch implements IBatch {
 
   [key: string]: any;
 
-  constructor(data?: IBatch) {
+  constructor(data?: IBatchAnalytics) {
       if (data) {
           for (var property in data) {
               if (data.hasOwnProperty(property))
@@ -2460,7 +2544,7 @@ export class Batch implements IBatch {
           if (Array.isArray(_data["fertilizers"])) {
               (<any>this).fertilizers = [] as any;
               for (let item of _data["fertilizers"])
-                  (<any>this).fertilizers!.push(BatchFertilizer.fromJS(item));
+                  (<any>this).fertilizers!.push(Batchfertilizer.fromJS(item));
           }
           if (Array.isArray(_data["mulchLayers"])) {
               (<any>this).mulchLayers = [] as any;
@@ -2490,9 +2574,9 @@ export class Batch implements IBatch {
       }
   }
 
-  static fromJS(data: any): Batch {
+  static fromJS(data: any): BatchAnalytics {
       data = typeof data === 'object' ? data : {};
-      let result = new Batch();
+      let result = new BatchAnalytics();
       result.init(data);
       return result;
   }
@@ -2542,13 +2626,13 @@ export class Batch implements IBatch {
   }
 }
 
-export interface IBatch {
+export interface IBatchAnalytics {
   id: number;
   name?: string | undefined;
   size?: number | undefined;
   soilCondition?: string | undefined;
   sponsor?: string | undefined;
-  fertilizers: BatchFertilizer[];
+  fertilizers: Batchfertilizer[];
   mulchLayers: BatchMulchLayer[];
   supportedSpecies: BatchSupportedSpecies[];
   plantCount: number;
@@ -2558,62 +2642,6 @@ export interface IBatch {
   seeds: BatchSeed[];
   species: BatchSpecies[];
   updatedAt: Date;
-
-  [key: string]: any;
-}
-
-export class BatchFertilizer implements IBatchFertilizer {
-  readonly id!: number;
-  readonly en!: string;
-  readonly fr!: string;
-
-  [key: string]: any;
-
-  constructor(data?: IBatchFertilizer) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-  }
-
-  init(_data?: any) {
-      if (_data) {
-          for (var property in _data) {
-              if (_data.hasOwnProperty(property))
-                  this[property] = _data[property];
-          }
-          (<any>this).id = _data["id"];
-          (<any>this).en = _data["en"];
-          (<any>this).fr = _data["fr"];
-      }
-  }
-
-  static fromJS(data: any): BatchFertilizer {
-      data = typeof data === 'object' ? data : {};
-      let result = new BatchFertilizer();
-      result.init(data);
-      return result;
-  }
-
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      for (var property in this) {
-          if (this.hasOwnProperty(property))
-              data[property] = this[property];
-      }
-      data["id"] = this.id;
-      data["en"] = this.en;
-      data["fr"] = this.fr;
-      return data;
-  }
-}
-
-export interface IBatchFertilizer {
-  id: number;
-  en: string;
-  fr: string;
 
   [key: string]: any;
 }
@@ -2835,6 +2863,62 @@ export class BatchSupportedSpecies implements IBatchSupportedSpecies {
 }
 
 export interface IBatchSupportedSpecies {
+  id: number;
+  en: string;
+  fr: string;
+
+  [key: string]: any;
+}
+
+export class Batchfertilizer implements IBatchfertilizer {
+  readonly id!: number;
+  readonly en!: string;
+  readonly fr!: string;
+
+  [key: string]: any;
+
+  constructor(data?: IBatchfertilizer) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          (<any>this).en = _data["en"];
+          (<any>this).fr = _data["fr"];
+      }
+  }
+
+  static fromJS(data: any): Batchfertilizer {
+      data = typeof data === 'object' ? data : {};
+      let result = new Batchfertilizer();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["en"] = this.en;
+      data["fr"] = this.fr;
+      return data;
+  }
+}
+
+export interface IBatchfertilizer {
   id: number;
   en: string;
   fr: string;
@@ -3551,20 +3635,15 @@ export interface IPatchedAnnouncement {
 
 export class PatchedBatch implements IPatchedBatch {
   readonly id?: number;
+  createdAt?: Date | undefined;
+  updatedAt?: Date | undefined;
   name?: string | undefined;
+  sponsor?: string | undefined;
   size?: number | undefined;
   soilCondition?: string | undefined;
-  sponsor?: string | undefined;
-  readonly fertilizers?: BatchFertilizer[];
-  readonly mulchLayers?: BatchMulchLayer[];
-  readonly supportedSpecies?: BatchSupportedSpecies[];
-  readonly plantCount?: number;
-  readonly survivedCount?: number;
-  readonly replaceCount?: number;
-  readonly seedCollectedCount?: number;
-  readonly seeds?: BatchSeed[];
-  readonly species?: BatchSpecies[];
-  updatedAt?: Date;
+  totalNumberSeed?: number | undefined;
+  totalPropagation?: number | undefined;
+  site?: number | undefined;
 
   [key: string]: any;
 
@@ -3584,40 +3663,15 @@ export class PatchedBatch implements IPatchedBatch {
                   this[property] = _data[property];
           }
           (<any>this).id = _data["id"];
+          this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+          this.updatedAt = _data["updatedAt"] ? new Date(_data["updatedAt"].toString()) : <any>undefined;
           this.name = _data["name"];
+          this.sponsor = _data["sponsor"];
           this.size = _data["size"];
           this.soilCondition = _data["soilCondition"];
-          this.sponsor = _data["sponsor"];
-          if (Array.isArray(_data["fertilizers"])) {
-              (<any>this).fertilizers = [] as any;
-              for (let item of _data["fertilizers"])
-                  (<any>this).fertilizers!.push(BatchFertilizer.fromJS(item));
-          }
-          if (Array.isArray(_data["mulchLayers"])) {
-              (<any>this).mulchLayers = [] as any;
-              for (let item of _data["mulchLayers"])
-                  (<any>this).mulchLayers!.push(BatchMulchLayer.fromJS(item));
-          }
-          if (Array.isArray(_data["supportedSpecies"])) {
-              (<any>this).supportedSpecies = [] as any;
-              for (let item of _data["supportedSpecies"])
-                  (<any>this).supportedSpecies!.push(BatchSupportedSpecies.fromJS(item));
-          }
-          (<any>this).plantCount = _data["plantCount"];
-          (<any>this).survivedCount = _data["survivedCount"];
-          (<any>this).replaceCount = _data["replaceCount"];
-          (<any>this).seedCollectedCount = _data["seedCollectedCount"];
-          if (Array.isArray(_data["seeds"])) {
-              (<any>this).seeds = [] as any;
-              for (let item of _data["seeds"])
-                  (<any>this).seeds!.push(BatchSeed.fromJS(item));
-          }
-          if (Array.isArray(_data["species"])) {
-              (<any>this).species = [] as any;
-              for (let item of _data["species"])
-                  (<any>this).species!.push(BatchSpecies.fromJS(item));
-          }
-          this.updatedAt = _data["updatedAt"] ? new Date(_data["updatedAt"].toString()) : <any>undefined;
+          this.totalNumberSeed = _data["totalNumberSeed"];
+          this.totalPropagation = _data["totalPropagation"];
+          this.site = _data["site"];
       }
   }
 
@@ -3635,60 +3689,30 @@ export class PatchedBatch implements IPatchedBatch {
               data[property] = this[property];
       }
       data["id"] = this.id;
+      data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+      data["updatedAt"] = this.updatedAt ? this.updatedAt.toISOString() : <any>undefined;
       data["name"] = this.name;
+      data["sponsor"] = this.sponsor;
       data["size"] = this.size;
       data["soilCondition"] = this.soilCondition;
-      data["sponsor"] = this.sponsor;
-      if (Array.isArray(this.fertilizers)) {
-          data["fertilizers"] = [];
-          for (let item of this.fertilizers)
-              data["fertilizers"].push(item.toJSON());
-      }
-      if (Array.isArray(this.mulchLayers)) {
-          data["mulchLayers"] = [];
-          for (let item of this.mulchLayers)
-              data["mulchLayers"].push(item.toJSON());
-      }
-      if (Array.isArray(this.supportedSpecies)) {
-          data["supportedSpecies"] = [];
-          for (let item of this.supportedSpecies)
-              data["supportedSpecies"].push(item.toJSON());
-      }
-      data["plantCount"] = this.plantCount;
-      data["survivedCount"] = this.survivedCount;
-      data["replaceCount"] = this.replaceCount;
-      data["seedCollectedCount"] = this.seedCollectedCount;
-      if (Array.isArray(this.seeds)) {
-          data["seeds"] = [];
-          for (let item of this.seeds)
-              data["seeds"].push(item.toJSON());
-      }
-      if (Array.isArray(this.species)) {
-          data["species"] = [];
-          for (let item of this.species)
-              data["species"].push(item.toJSON());
-      }
-      data["updatedAt"] = this.updatedAt ? this.updatedAt.toISOString() : <any>undefined;
+      data["totalNumberSeed"] = this.totalNumberSeed;
+      data["totalPropagation"] = this.totalPropagation;
+      data["site"] = this.site;
       return data;
   }
 }
 
 export interface IPatchedBatch {
   id?: number;
+  createdAt?: Date | undefined;
+  updatedAt?: Date | undefined;
   name?: string | undefined;
+  sponsor?: string | undefined;
   size?: number | undefined;
   soilCondition?: string | undefined;
-  sponsor?: string | undefined;
-  fertilizers?: BatchFertilizer[];
-  mulchLayers?: BatchMulchLayer[];
-  supportedSpecies?: BatchSupportedSpecies[];
-  plantCount?: number;
-  survivedCount?: number;
-  replaceCount?: number;
-  seedCollectedCount?: number;
-  seeds?: BatchSeed[];
-  species?: BatchSpecies[];
-  updatedAt?: Date;
+  totalNumberSeed?: number | undefined;
+  totalPropagation?: number | undefined;
+  site?: number | undefined;
 
   [key: string]: any;
 }
@@ -4687,7 +4711,7 @@ export class SiteSummary implements ISiteSummary {
   readonly sponsors!: string[];
   readonly progress!: number;
   admins!: SiteAdmin[];
-  readonly batches!: Batch[];
+  readonly batches!: BatchAnalytics[];
 
   [key: string]: any;
 
@@ -4735,7 +4759,7 @@ export class SiteSummary implements ISiteSummary {
           if (Array.isArray(_data["batches"])) {
               (<any>this).batches = [] as any;
               for (let item of _data["batches"])
-                  (<any>this).batches!.push(Batch.fromJS(item));
+                  (<any>this).batches!.push(BatchAnalytics.fromJS(item));
           }
       }
   }
@@ -4793,7 +4817,7 @@ export interface ISiteSummary {
   sponsors: string[];
   progress: number;
   admins: SiteAdmin[];
-  batches: Batch[];
+  batches: BatchAnalytics[];
 
   [key: string]: any;
 }
