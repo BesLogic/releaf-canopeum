@@ -4,6 +4,7 @@ services:
     hostname: mysql
     image: mysql:8
     command: --mysql-native-password=ON
+    network_mode: bridge
     environment:
       MYSQL_DATABASE: canopeum_db
       MYSQL_ROOT_PASSWORD: Canopeum12345!@
@@ -18,7 +19,7 @@ services:
       # local-canopeum:
       #   aliases:
       #     - mysql
-      - canopeum-bridge
+      - internal-canopeum
 
 
   backend:
@@ -35,7 +36,7 @@ services:
       MYSQL_PASSWORD: CanopeumUser12345!@
       VIRTUAL_HOST: api.canopeum.releaftrees.life
     networks:
-      - canopeum-bridge
+      - internal-canopeum
       - nginx-canopeum
       # - local-canopeum
 
@@ -58,7 +59,7 @@ volumes:
 networks:
   nginx-canopeum:
     external: true
-  canopeum-bridge:
-    driver: bridge
+  internal-canopeum:
+    external: true
   # local-canopeum:
   #   external: false
