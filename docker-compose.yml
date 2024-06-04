@@ -1,13 +1,11 @@
 version: '3.3'
 services:
   mysql:
-    user: root
     image: mysql:8
     command: --mysql-native-password=ON
     environment:
       MYSQL_DATABASE: canopeum_db
       MYSQL_ROOT_PASSWORD: canopeum
-      MYSQL_USER: mysqluser
     ports:
       - 5002:5002
     volumes:
@@ -24,10 +22,10 @@ services:
       - mysql
     environment:
       MYSQL_DATABASE: canopeum_db
-      MYSQL_ROOT_PASSWORD: canopeum
+      MYSQL_ROOT_PASSWORD: Canopeum12345!@
       MYSQL_HOST: mysql
-      MYSQL_USER: mysqluser
-      MYSQL_PASSWORD: canopeum
+      MYSQL_USER: canopeum_user
+      MYSQL_PASSWORD: CanopeumUser12345!@
       VIRTUAL_HOST: api.canopeum.releaftrees.life
     networks:
       - nginx-canopeum
