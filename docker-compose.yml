@@ -1,6 +1,7 @@
 version: '3.3'
 services:
   mysql:
+    user: root
     image: mysql:8
     command: --mysql-native-password=ON
     environment:
