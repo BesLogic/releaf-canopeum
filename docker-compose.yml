@@ -7,7 +7,6 @@ services:
     environment:
       MYSQL_DATABASE: canopeum_db
       MYSQL_ROOT_PASSWORD: canopeum
-      MYSQL_USER: mysqluser
     ports:
       - 5002:5002
     volumes:
