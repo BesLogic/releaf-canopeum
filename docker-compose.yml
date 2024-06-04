@@ -18,7 +18,8 @@ services:
       # local-canopeum:
       #   aliases:
       #     - mysql
-      - nginx-canopeum
+      - canopeum-bridge
+
 
   backend:
     image: ghcr.io/beslogic/canopeum_backend:latest
@@ -34,6 +35,7 @@ services:
       MYSQL_PASSWORD: CanopeumUser12345!@
       VIRTUAL_HOST: api.canopeum.releaftrees.life
     networks:
+      - canopeum-bridge
       - nginx-canopeum
       # - local-canopeum
 
@@ -56,5 +58,7 @@ volumes:
 networks:
   nginx-canopeum:
     external: true
+  canopeum-bridge:
+    driver: bridge
   # local-canopeum:
   #   external: false
