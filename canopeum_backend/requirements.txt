@@ -56,7 +56,7 @@ html-void-elements==0.1.0
 
 identify==2.5.36
 
-idna==3.6
+idna==3.7
 
 imagesize==1.4.1
 
@@ -112,7 +112,7 @@ referencing==0.34.0
 
 regex==2023.12.25
 
-requests==2.31.0
+requests==2.32.2
 
 rpds-py==0.18.0
 
@@ -142,9 +142,9 @@ sphinxcontrib-qthelp==1.0.7
 
 sphinxcontrib-serializinghtml==1.1.10
 
-sqlparse==0.4.4
+sqlparse==0.5.0
 
-tqdm==4.66.2
+tqdm==4.66.3
 
 types-colorama==0.4.15.20240311
 
