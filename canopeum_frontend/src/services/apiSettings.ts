@@ -1,4 +1,4 @@
-let apiBaseUrl = 'http://localhost:3000'
+let apiBaseUrl = import.meta.env.API_BASE_URL
 
 export type ApiSettings = {
   apiBaseUrl: string,
