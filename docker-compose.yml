@@ -14,11 +14,11 @@ services:
     volumes:
       - mysql8-data:/var/lib/mysql
       - mysql8-conf:/etc/mysql/conf.d
-    networks:
+    # networks:
       # local-canopeum:
       #   aliases:
       #     - mysql
-      - internal-canopeum
+      # - internal-canopeum
 
   backend:
     image: ghcr.io/beslogic/canopeum_backend:latest
@@ -33,9 +33,9 @@ services:
       MYSQL_USER: canopeum_user
       MYSQL_PASSWORD: CanopeumUser12345!@
       VIRTUAL_HOST: api.canopeum.releaftrees.life
-    networks:
-      - internal-canopeum
-      - nginx-canopeum
+    # networks:
+    #   - internal-canopeum
+    #   - nginx-canopeum
       # - local-canopeum
 
   frontend:
