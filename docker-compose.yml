@@ -1,6 +1,7 @@
 version: '3.3'
 services:
   mysql:
+    container_name: mysql
     hostname: mysql
     image: mysql:8
     command: --mysql-native-password=ON
@@ -21,6 +22,8 @@ services:
       # - internal-canopeum
 
   backend:
+    container_name: backend
+    hostname: backend
     image: ghcr.io/beslogic/canopeum_backend:latest
     ports:
       - 5001:5001
@@ -39,6 +42,8 @@ services:
       # - local-canopeum
 
   frontend:
+    container_name: frontend
+    hostname: frontend
     image: ghcr.io/beslogic/canopeum_frontend:latest
     ports:
       - 5000:80
