@@ -63,7 +63,7 @@ networks:
   nginx-canopeum:
     external: true
   internal-canopeum:
-    external: false
+    external: true
 
   # local-canopeum:
   #   external: false
