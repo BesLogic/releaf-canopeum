@@ -20,7 +20,6 @@ services:
       #     - mysql
       - internal-canopeum
 
-
   backend:
     image: ghcr.io/beslogic/canopeum_backend:latest
     ports:
@@ -60,5 +59,6 @@ networks:
     external: true
   internal-canopeum:
     external: true
+
   # local-canopeum:
   #   external: false
