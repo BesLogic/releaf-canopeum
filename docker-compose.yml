@@ -10,6 +10,8 @@ services:
       MYSQL_ROOT_PASSWORD: Canopeum12345!@
       MYSQL_USER: canopeum_user
       MYSQL_PASSWORD: CanopeumUser12345!@
+    deploy:
+      endpoint_mode: dnsrr
     ports:
       - 5002:3306
     volumes:
