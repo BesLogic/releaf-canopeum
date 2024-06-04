@@ -16,7 +16,8 @@ services:
       - mysql8-data:/var/lib/mysql
       - mysql8-conf:/etc/mysql/conf.d
     networks:
-      - internal-canopeum
+      - nginx-canopeum
+      # - internal-canopeum
       # local-canopeum:
       #   aliases:
       #     - mysql
@@ -37,7 +38,7 @@ services:
       MYSQL_PASSWORD: CanopeumUser12345!@
       VIRTUAL_HOST: api.canopeum.releaftrees.life
     networks:
-      - internal-canopeum
+      # - internal-canopeum
       - nginx-canopeum
       # - local-canopeum
 
@@ -62,8 +63,8 @@ volumes:
 networks:
   nginx-canopeum:
     external: true
-  internal-canopeum:
-    external: true
+  # internal-canopeum:
+  #   external: true
 
   # local-canopeum:
   #   external: false
