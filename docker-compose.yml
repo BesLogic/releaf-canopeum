@@ -4,7 +4,6 @@ services:
     hostname: mysql
     image: mysql:8
     command: --mysql-native-password=ON
-    network_mode: bridge
     environment:
       MYSQL_DATABASE: canopeum_db
       MYSQL_ROOT_PASSWORD: Canopeum12345!@
