@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 type Props = {
@@ -20,9 +20,9 @@ const SiteCoordinates = ({ latitude, longitude, onChange }: Props) => {
   const [lat, setLat] = useState<Coordinate>(latitude ?? {})
   const [long, setLong] = useState<Coordinate>(longitude ?? {})
 
-  // useEffect(() => onChange(lat, long), [lat, long, onChange])
-  // useEffect(() => latitude && setLat(latitude), [latitude])
-  // useEffect(() => longitude && setLong(longitude), [longitude])
+  useEffect(() => onChange(lat, long), [lat, long, onChange])
+  useEffect(() => latitude && setLat(latitude), [latitude])
+  useEffect(() => longitude && setLong(longitude), [longitude])
 
   return (
     <>
