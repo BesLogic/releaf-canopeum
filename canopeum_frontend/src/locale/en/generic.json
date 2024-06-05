@@ -4,6 +4,8 @@
   "ok": "Ok",
   "save": "Save",
   "submit": "Submit",
+  "subscribe": "Subscribe",
   "copied-clipboard": "Copied to clipboard",
-  "error-default": "Oooops! There was a problem while loading the data."
+  "error-default": "Oooops! There was a problem while loading the data.",
+  "upload": "Upload"
 }

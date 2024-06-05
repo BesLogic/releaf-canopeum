@@ -49,7 +49,6 @@
     "site-name": "nom du site",
     "site-type": "type de site",
     "site-image": "image du projet ou logo de l'entreprise",
-    "site-image-upload": "ou déposez une image à téléverser",
     "site-gps-coordinates": "coordonnées GPS",
     "site-dms-latitude": "latitude DMS",
     "site-dms-longitude": "longitude DMS",
@@ -62,5 +61,6 @@
     "no": "non",
     "visible": "visible",
     "invisible": "invisible"
-  }
+  },
+  "image-upload": "ou déposez une image à téléverser"
 }

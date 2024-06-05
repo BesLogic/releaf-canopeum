@@ -21,6 +21,10 @@
     "seeds-per-species-label": "Nombre de graines collectées par espèce",
     "total-seeds-label": "Nombre total de graines collectées",
     "propagation-label": "Propagation totale",
-    "images-label": "Images"
+    "images-label": "Image",
+    "feedback": {
+      "success": "Lot créé avec succès",
+      "error": "Échec de la création du lot"
+    }
   }
 }

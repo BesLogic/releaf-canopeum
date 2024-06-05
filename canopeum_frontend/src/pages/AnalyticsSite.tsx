@@ -98,7 +98,10 @@ const AnalyticsSite = () => {
 
       {wasCreateBatchOpened && (
         <CreateBatch
-          handleClose={() => setIsCreateBatchOpen(false)}
+          handleClose={reason => {
+            setIsCreateBatchOpen(false)
+            if (reason === 'create') void fetchSite(siteSummary.id)
+          }}
           open={isCreateBatchOpen}
           site={siteSummary}
         />

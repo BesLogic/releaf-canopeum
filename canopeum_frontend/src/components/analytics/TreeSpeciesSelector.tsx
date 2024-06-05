@@ -11,9 +11,12 @@ type Props = {
   readonly species?: Sitetreespecies[],
   // Make sure that onChange is included in a useCallback if part of a component
   readonly onChange: (selectedSpecies: Sitetreespecies[]) => void,
+  readonly label: string,
 }
 
-const TreeSpeciesSelector = ({ onChange, species }: Props) => {
+const TreeSpeciesSelector = (
+  { onChange, species, label }: Props,
+) => {
   const { t: translate } = useTranslation()
   const { translateValue } = useContext(LanguageContext)
   const { getApiClient } = useApiClient()
@@ -69,7 +72,7 @@ const TreeSpeciesSelector = ({ onChange, species }: Props) => {
   return (
     <OptionQuantitySelector
       id='tree-type-quantity-selector'
-      label={translate('analytics.site-modal.site-tree-species')}
+      label={translate(label)}
       onChange={handleChange}
       options={options}
       selected={selected}

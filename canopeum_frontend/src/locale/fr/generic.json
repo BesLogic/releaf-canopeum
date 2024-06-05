@@ -4,6 +4,8 @@
   "ok": "Ok",
   "save": "Sauvegarder",
   "submit": "Soumettre",
+  "subscribe": "S'abonner",
   "copied-clipboard": "Copié dans le presse-papier",
-  "error-default": "Oooops! Une erreur est survenue lors du chargement des données."
+  "error-default": "Oooops! Une erreur est survenue lors du chargement des données.",
+  "upload": "Téléverser"
 }

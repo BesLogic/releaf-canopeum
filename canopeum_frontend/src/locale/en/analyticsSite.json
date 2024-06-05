@@ -21,6 +21,10 @@
     "seeds-per-species-label": "Number of Seeds Collected per Species",
     "total-seeds-label": "Total number of seeds collected",
     "propagation-label": "Total Propagation",
-    "images-label": "Images"
+    "images-label": "Image",
+    "feedback": {
+      "success": "Batch created successfully",
+      "error": "Error creating batch"
+    }
   }
 }

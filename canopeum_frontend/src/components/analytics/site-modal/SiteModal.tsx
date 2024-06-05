@@ -1,5 +1,5 @@
+import ImageUpload from '@components/analytics/ImageUpload'
 import SiteCoordinates from '@components/analytics/site-modal/SiteCoordinates'
-import SiteImageUpload from '@components/analytics/site-modal/SiteImageUpload'
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
@@ -172,7 +172,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
             <label className='form-label text-capitalize' htmlFor='site-image'>
               {t('analytics.site-modal.site-type')}
             </label>
-            <SiteImageUpload onChange={onImageUpload} siteImageURL={siteImageURL} />
+            <ImageUpload imageUrl={siteImageURL} onChange={onImageUpload} />
           </div>
 
           <div className='mb-3'>
@@ -219,6 +219,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
 
           <div className='mb-3'>
             <TreeSpeciesSelector
+              label='analytics.site-modal.site-tree-species'
               onChange={useCallback(species => setSite(current => ({ ...current, species })), [])}
               species={site.species}
             />
@@ -312,11 +313,10 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
           onClick={() => handleClose()}
           type='button'
         >
-          {/* TODO: Translations */}
-          Cancel
+          {t('generic.cancel')}
         </button>
         <button className='btn btn-primary' onClick={() => handleClose('save', site)} type='button'>
-          Subscribe
+          {t('generic.subscribe')}
         </button>
       </DialogActions>
     </Dialog>
