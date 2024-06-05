@@ -30,6 +30,11 @@ from canopeum_backend.permissions import (
 from .models import (
     Announcement,
     Batch,
+    Batchfertilizer,
+    Batchmulchlayer,
+    BatchSeed,
+    BatchSpecies,
+    BatchSupportedSpecies,
     Comment,
     Contact,
     Coordinate,
@@ -837,6 +842,8 @@ class LikeListAPIView(APIView):
 
 
 class BatchListAPIView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
     @extend_schema(responses=BatchAnalyticsSerializer(many=True), operation_id="batch_all")
     def get(self, request: Request):
         batches = Batch.objects.all()
@@ -844,14 +851,130 @@ class BatchListAPIView(APIView):
         return Response(serializer.data)
 
     @extend_schema(
-        request=BatchSerializer, responses={201: BatchSerializer}, operation_id="batch_create"
+        request={
+            "multipart/form-data": {
+                "type": "object",
+                "properties": {
+                    "site": {"type": "number"},
+                    "name": {"type": "string", "nullable": True},
+                    "sponsor": {"type": "string", "nullable": True},
+                    "size": {"type": "number", "nullable": True},
+                    "soilCondition": {"type": "string", "nullable": True},
+                    "plantCount": {"type": "number", "nullable": True},
+                    "survivedCount": {"type": "number", "nullable": True},
+                    "replaceCount": {"type": "number", "nullable": True},
+                    "totalNumberSeed": {"type": "number", "nullable": True},
+                    "totalPropagation": {"type": "number", "nullable": True},
+                    "image": {"type": "string", "format": "binary", "nullable": True},
+                    "fertilizerIds": {"type": "array", "items": {"type": "number"}},
+                    "mulchLayerIds": {"type": "array", "items": {"type": "number"}},
+                    "seeds": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {"type": "number"},
+                                "quantity": {"type": "number"},
+                            },
+                        },
+                    },
+                    "species": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {"type": "number"},
+                                "quantity": {"type": "number"},
+                            },
+                        },
+                    },
+                    "supportedSpecieIds": {"type": "array", "items": {"type": "number"}},
+                },
+            },
+        },
+        responses={201: BatchSerializer},
+        operation_id="batch_create",
     )
     def post(self, request: Request):
-        serializer = BatchSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        errors = []
+
+        try:
+            parsed_fertilizer_ids = request.data.getlist("fertilizerIds", [])  # pyright: ignore[reportAttributeAccessIssue]
+            parsed_mulch_layer_ids = request.data.getlist("mulchLayerIds", [])  # pyright: ignore[reportAttributeAccessIssue]
+            parsed_seeds = [
+                json.loads(seed)
+                for seed in request.data.getlist("seeds", [])  # pyright: ignore[reportAttributeAccessIssue]
+            ]
+            parsed_species = [
+                json.loads(specie)
+                for specie in request.data.getlist("species", [])  # pyright: ignore[reportAttributeAccessIssue]
+            ]
+            parsed_supported_species_ids = request.data.getlist("supportedSpecieIds", [])  # pyright: ignore[reportAttributeAccessIssue]
+        except json.JSONDecodeError as e:
+            return Response(data={"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        image = None
+        if request.data.get("image"):
+            asset_serializer = AssetSerializer(data=request.data)
+            if not asset_serializer.is_valid():
+                errors.append(asset_serializer.errors)
+            else:
+                image = asset_serializer.save()
+
+        batch_data = {
+            "site": request.data.get("site"),
+            "name": request.data.get("name"),
+            "sponsor": request.data.get("sponsor"),
+            "size": request.data.get("size"),
+            "soil_condition": request.data.get("soilCondition"),
+            "plant_count": request.data.get("plantCount"),
+            "survived_count": request.data.get("survivedCount"),
+            "replace_count": request.data.get("replaceCount"),
+            "total_number_seed": request.data.get("totalNumberSeed"),
+            "total_propagation": request.data.get("totalPropagation"),
+        }
+
+        batch_serializer = BatchSerializer(data=batch_data)
+        if not batch_serializer.is_valid():
+            errors.append(batch_serializer.errors)
+        else:
+            site = Site.objects.get(pk=request.data.get("site"))
+            batch_data["site"] = site
+            batch = batch_serializer.save(**batch_data, image=image)
+
+            # Batch fertilizer
+            for fertilizer_id in parsed_fertilizer_ids:
+                fertilizer_type = Fertilizertype.objects.get(pk=fertilizer_id)
+                Batchfertilizer.objects.create(fertilizer_type=fertilizer_type, batch=batch)
+
+            # Mulch layer
+            for mulch_layer_id in parsed_mulch_layer_ids:
+                mulch_layer_type = Mulchlayertype.objects.get(pk=mulch_layer_id)
+                Batchmulchlayer.objects.create(mulch_layer_type=mulch_layer_type, batch=batch)
+
+            # Seeds
+            for seed in parsed_seeds:
+                tree_type = Treetype.objects.get(pk=seed["id"])
+                BatchSeed.objects.create(
+                    tree_type=tree_type, quantity=seed.get("quantity", 0), batch=batch
+                )
+
+            # Species
+            for specie in parsed_species:
+                tree_type = Treetype.objects.get(pk=specie["id"])
+                BatchSpecies.objects.create(
+                    tree_type=tree_type, quantity=specie.get("quantity", 0), batch=batch
+                )
+
+            # Supported species
+            for supported_specie_id in parsed_supported_species_ids:
+                tree_type = Treetype.objects.get(pk=supported_specie_id)
+                BatchSupportedSpecies.objects.create(tree_type=tree_type, batch=batch)
+
+        if errors:
+            return Response(data={"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(batch_serializer.data, status=status.HTTP_201_CREATED)
 
 
 class BatchDetailAPIView(APIView):
