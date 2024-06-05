@@ -14,6 +14,11 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -61,7 +66,9 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:3000",
-    "http://199.188.220.99:5173",
+    "http://api.canopeum.releaftrees.life",
+    "http://releaftree.life",
+    "https://releaftree.life",
 ]
 
 ROOT_URLCONF = "canopeum_backend.urls"
@@ -107,7 +114,7 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "Canopeum API",
     "DESCRIPTION": "API for the Canopeum project",
     "VERSION": "0.0.1",
-    "BASE_URL": "http://localhost:3000",
+    "BASE_URL": os.environ.get("HOST", default="http://localhost:3000/"),
     "SWAGGER_UI_SETTINGS": {
         "deepLinking": True,
         "persistAuthorization": True,
@@ -133,11 +140,11 @@ SPECTACULAR_SETTINGS = {
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "canopeum_db",
-        "USER": "root",
-        "PASSWORD": "canopeum",
+        "NAME": os.getenv("MYSQL_DATABASE"),
+        "USER": os.getenv("MYSQL_USER"),
+        "PASSWORD": os.getenv("MYSQL_PASSWORD"),
         "HOST": os.environ.get("MYSQL_HOST", "localhost"),
-        "PORT": "3308",  # Same as in docker-compose.yaml
+        "PORT": "5002",  # Same as in docker-compose.yaml
     },
 }
 
