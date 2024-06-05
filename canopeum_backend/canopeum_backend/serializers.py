@@ -391,10 +391,10 @@ class BatchMulchLayerSerializer(serializers.ModelSerializer[Mulchlayertype]):
         fields = ("id", "en", "fr")
 
     def get_en(self, obj):
-        return InternationalizationSerializer(obj.mulch_layer_type).data.get("en", None)
+        return InternationalizationSerializer(obj.mulch_layer_type.name).data.get("en", None)
 
     def get_fr(self, obj):
-        return InternationalizationSerializer(obj.mulch_layer_type).data.get("fr", None)
+        return InternationalizationSerializer(obj.mulch_layer_type.name).data.get("fr", None)
 
 
 class BatchSupportedSpeciesSerializer(serializers.ModelSerializer[BatchSupportedSpecies]):
@@ -413,12 +413,12 @@ class BatchSupportedSpeciesSerializer(serializers.ModelSerializer[BatchSupported
     def get_en(self, obj: BatchSupportedSpecies):
         if obj.tree_type is None:
             return None
-        return InternationalizationSerializer(obj.tree_type).data.get("en", None)
+        return InternationalizationSerializer(obj.tree_type.name).data.get("en", None)
 
     def get_fr(self, obj: BatchSupportedSpecies):
         if obj.tree_type is None:
             return None
-        return InternationalizationSerializer(obj.tree_type).data.get("fr", None)
+        return InternationalizationSerializer(obj.tree_type.name).data.get("fr", None)
 
 
 class BatchSeedSerializer(serializers.ModelSerializer[BatchSeed]):
@@ -432,12 +432,12 @@ class BatchSeedSerializer(serializers.ModelSerializer[BatchSeed]):
     def get_en(self, obj):
         if obj.tree_type is None:
             return None
-        return InternationalizationSerializer(obj.tree_type).data.get("en", None)
+        return InternationalizationSerializer(obj.tree_type.name).data.get("en", None)
 
     def get_fr(self, obj):
         if obj.tree_type is None:
             return None
-        return InternationalizationSerializer(obj.tree_type).data.get("fr", None)
+        return InternationalizationSerializer(obj.tree_type.name).data.get("fr", None)
 
 
 class BatchSpeciesSerializer(serializers.ModelSerializer[BatchSpecies]):
