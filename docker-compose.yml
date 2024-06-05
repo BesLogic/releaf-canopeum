@@ -49,6 +49,8 @@ volumes:
 
 networks:
   external-canopeum:
-    driver: bridge
+    external:
+      name: external-canopeum
   internal-canopeum:
-    driver: bridge
+    external:
+      name: internal-canopeum
