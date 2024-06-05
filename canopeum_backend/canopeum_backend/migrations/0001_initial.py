@@ -48,6 +48,7 @@ class Migration(migrations.Migration):
                 ('replace_count', models.IntegerField(blank=True, null=True)),
                 ('total_number_seed', models.IntegerField(blank=True, null=True)),
                 ('total_propagation', models.IntegerField(blank=True, null=True)),
+                ('image', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='canopeum_backend.asset')),
             ],
         ),
         migrations.CreateModel(
