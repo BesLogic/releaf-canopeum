@@ -1,23 +1,29 @@
 version: '3.3'
 services:
   mysql:
+    # container_name: mysql
     hostname: mysql
     image: mysql:8
     command: --authentication_policy=mysql_native_password
     environment:
       MYSQL_DATABASE: canopeum_db
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: Canopeum12345!@
       MYSQL_USER: canopeum_user
-      MYSQL_PASSWORD: ${MYSQL_USER_PASSWORD}
-    # ports:
-    #   - 5002:3306
+      MYSQL_PASSWORD: CanopeumUser12345!@
+    ports:
+      - 5002:3306
     volumes:
       - mysql8-data:/var/lib/mysql
       - mysql8-conf:/etc/mysql/conf.d
-    networks:
-      - internal-canopeum
+    # networks:
+    #   - nginx-canopeum
+      # - internal-canopeum
+      # local-canopeum:
+      #   aliases:
+      #     - mysql
 
   backend:
+    # container_name: backend
     hostname: backend
     image: ghcr.io/beslogic/canopeum_backend:latest
     ports:
@@ -25,13 +31,19 @@ services:
     depends_on:
       - mysql
     environment:
-      DATABASE_URL: mysql://canopeum_user:${MYSQL_USER_PASSWORD}@mysql:3306/canopeum_db
+      MYSQL_DATABASE: canopeum_db
+      MYSQL_ROOT_PASSWORD: Canopeum12345!@
+      MYSQL_HOST: mysql
+      MYSQL_USER: canopeum_user
+      MYSQL_PASSWORD: CanopeumUser12345!@
       VIRTUAL_HOST: api.canopeum.releaftrees.life
     networks:
-      - internal-canopeum
-      - external-canopeum
+      # - internal-canopeum
+      - nginx-canopeum
+      # - local-canopeum
 
   frontend:
+    # container_name: frontend
     hostname: frontend
     image: ghcr.io/beslogic/canopeum_frontend:latest
     ports:
@@ -39,16 +51,17 @@ services:
     environment:
       VIRTUAL_HOST: releaftrees.life
     networks:
-      - external-canopeum
+      - nginx-canopeum
+      # - local-canopeum
 
 volumes:
   mysql8-data:
-    driver: local
-  mysql8-conf:
-    driver: local
 
 networks:
-  external-canopeum:
+  nginx-canopeum:
     external: true
-  internal-canopeum:
-    external: false
+  # internal-canopeum:
+  #   external: true
+
+  # local-canopeum:
+  #   external: false
