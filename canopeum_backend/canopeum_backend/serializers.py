@@ -208,7 +208,7 @@ class TreeTypeSerializer(serializers.ModelSerializer[Treetype]):
         return InternationalizationSerializer(obj.name).data.get("fr", None)
 
 
-class FertilizerTypeSerializer(serializers.ModelSerializer):
+class FertilizerTypeSerializer(serializers.ModelSerializer[Fertilizertype]):
     en = serializers.SerializerMethodField()
     fr = serializers.SerializerMethodField()
 
@@ -223,7 +223,7 @@ class FertilizerTypeSerializer(serializers.ModelSerializer):
         return InternationalizationSerializer(obj.name).data.get("fr", None)
 
 
-class MulchLayerTypeSerializer(serializers.ModelSerializer):
+class MulchLayerTypeSerializer(serializers.ModelSerializer[Mulchlayertype]):
     en = serializers.SerializerMethodField()
     fr = serializers.SerializerMethodField()
 

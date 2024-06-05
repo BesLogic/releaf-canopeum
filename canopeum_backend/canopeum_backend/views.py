@@ -899,17 +899,17 @@ class BatchListAPIView(APIView):
         errors = []
 
         try:
-            parsed_fertilizer_ids = request.data.getlist("fertilizerIds", [])  # pyright: ignore[reportAttributeAccessIssue]
-            parsed_mulch_layer_ids = request.data.getlist("mulchLayerIds", [])  # pyright: ignore[reportAttributeAccessIssue]
+            parsed_fertilizer_ids = request.data.getlist("fertilizerIds", [])  # type:ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
+            parsed_mulch_layer_ids = request.data.getlist("mulchLayerIds", [])  # type:ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
             parsed_seeds = [
                 json.loads(seed)
-                for seed in request.data.getlist("seeds", [])  # pyright: ignore[reportAttributeAccessIssue]
+                for seed in request.data.getlist("seeds", [])  # type:ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
             ]
             parsed_species = [
                 json.loads(specie)
-                for specie in request.data.getlist("species", [])  # pyright: ignore[reportAttributeAccessIssue]
+                for specie in request.data.getlist("species", [])  # type:ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
             ]
-            parsed_supported_species_ids = request.data.getlist("supportedSpecieIds", [])  # pyright: ignore[reportAttributeAccessIssue]
+            parsed_supported_species_ids = request.data.getlist("supportedSpecieIds", [])  # type:ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
         except json.JSONDecodeError as e:
             return Response(data={"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -938,7 +938,7 @@ class BatchListAPIView(APIView):
         if not batch_serializer.is_valid():
             errors.append(batch_serializer.errors)
         else:
-            site = Site.objects.get(pk=request.data.get("site"))
+            site = Site.objects.get(pk=request.data.get("site", ""))
             batch_data["site"] = site
             batch = batch_serializer.save(**batch_data, image=image)
 

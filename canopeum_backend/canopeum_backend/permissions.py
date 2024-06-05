@@ -51,17 +51,9 @@ class SiteAdminPermission(permissions.BasePermission):
 class MegaAdminOrSiteManagerPermission(permissions.BasePermission):
     """Global permission for actions only allowed to MegaAdmin or SiteManager users."""
 
-    def has_permission(self, request: Request, view):
-        current_user_role = request.user.role.name
-        return current_user_role in {"MegaAdmin", "SiteManager"}
-
-
-class MegaAdminOrSiteManagerPermission(permissions.BasePermission):
-    """Global permission for actions only allowed to MegaAdmin or SiteManager users."""
-
     # About the type ignore: Base permission return type is Literal True but should be bool
-    def has_permission(self, request, view):  # type: ignore
-        current_user_role = request.user.role.name
+    def has_permission(self, request, view):
+        current_user_role = request.user.role.name  # pyright: ignore[reportAttributeAccessIssue]
         return current_user_role in {"MegaAdmin", "SiteManager"}
 
 
