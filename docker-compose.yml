@@ -49,8 +49,6 @@ volumes:
 
 networks:
   external-canopeum:
-    external:
-      name: external-canopeum
+    external: true
   internal-canopeum:
-    external:
-      name: internal-canopeum
+    external: false
