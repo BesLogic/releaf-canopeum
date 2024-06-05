@@ -138,7 +138,7 @@ SPECTACULAR_SETTINGS = {
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    "default": os.getenv("DATABASE_URL")
+    "default": {"ENGINE": "django.db.backends.mysql", "NAME": os.getenv("DATABASE_URL")}
     # {
     #     "ENGINE": "django.db.backends.mysql",
     #     "NAME": os.getenv("MYSQL_DATABASE"),
