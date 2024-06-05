@@ -111,7 +111,7 @@ export class BatchClient {
       return Promise.resolve<BatchAnalytics[]>(null as any);
   }
 
-  create(site: number | undefined, name: string | null | undefined, sponsor: string | null | undefined, size: number | null | undefined, soilCondition: string | null | undefined, plantCount: number | null | undefined, survivedCount: number | null | undefined, replaceCount: number | null | undefined, totalNumberSeed: number | null | undefined, totalPropagation: number | null | undefined, image: FileParameter | null | undefined, fertilizerIds: number[] | undefined, mulchLayerIds: number[] | undefined, seeds: Seeds[] | undefined, species: Species[] | undefined, supportedSpecieIds: number[] | undefined): Promise<BatchAnalytics> {
+  create(site: number | undefined, name: string | null | undefined, sponsor: string | null | undefined, size: number | null | undefined, soilCondition: string | null | undefined, plantCount: number | null | undefined, survivedCount: number | null | undefined, replaceCount: number | null | undefined, totalNumberSeed: number | null | undefined, totalPropagation: number | null | undefined, image: FileParameter | null | undefined, fertilizerIds: number[] | undefined, mulchLayerIds: number[] | undefined, seeds: Seeds[] | undefined, species: Species[] | undefined, supportedSpecieIds: number[] | undefined): Promise<Batch> {
       let url_ = this.baseUrl + "/analytics/batches/";
       url_ = url_.replace(/[?&]$/, "");
 
@@ -174,14 +174,14 @@ export class BatchClient {
       });
   }
 
-  protected processCreate(response: Response): Promise<BatchAnalytics> {
+  protected processCreate(response: Response): Promise<Batch> {
       const status = response.status;
       let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
       if (status === 201) {
           return response.text().then((_responseText) => {
           let result201: any = null;
           let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          result201 = BatchAnalytics.fromJS(resultData201);
+          result201 = Batch.fromJS(resultData201);
           return result201;
           });
       } else if (status !== 200 && status !== 204) {
@@ -189,7 +189,7 @@ export class BatchClient {
           return throwException("An unexpected server error occurred.", status, _responseText, _headers);
           });
       }
-      return Promise.resolve<BatchAnalytics>(null as any);
+      return Promise.resolve<Batch>(null as any);
   }
 
   update(batchId: number, body: PatchedBatch | undefined): Promise<Batch> {
@@ -2456,7 +2456,6 @@ export interface IAsset {
 
 export class Batch implements IBatch {
   readonly id!: number;
-  image!: Asset;
   readonly createdAt!: Date | undefined;
   readonly updatedAt!: Date | undefined;
   name?: string | undefined;
@@ -2469,6 +2468,7 @@ export class Batch implements IBatch {
   totalNumberSeed?: number | undefined;
   totalPropagation?: number | undefined;
   site?: number | undefined;
+  image?: number | undefined;
 
   [key: string]: any;
 
@@ -2479,9 +2479,6 @@ export class Batch implements IBatch {
                   (<any>this)[property] = (<any>data)[property];
           }
       }
-      if (!data) {
-          this.image = new Asset();
-      }
   }
 
   init(_data?: any) {
@@ -2491,7 +2488,6 @@ export class Batch implements IBatch {
                   this[property] = _data[property];
           }
           (<any>this).id = _data["id"];
-          this.image = _data["image"] ? Asset.fromJS(_data["image"]) : new Asset();
           (<any>this).createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
           (<any>this).updatedAt = _data["updatedAt"] ? new Date(_data["updatedAt"].toString()) : <any>undefined;
           this.name = _data["name"];
@@ -2504,6 +2500,7 @@ export class Batch implements IBatch {
           this.totalNumberSeed = _data["totalNumberSeed"];
           this.totalPropagation = _data["totalPropagation"];
           this.site = _data["site"];
+          this.image = _data["image"];
       }
   }
 
@@ -2521,7 +2518,6 @@ export class Batch implements IBatch {
               data[property] = this[property];
       }
       data["id"] = this.id;
-      data["image"] = this.image ? this.image.toJSON() : <any>undefined;
       data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
       data["updatedAt"] = this.updatedAt ? this.updatedAt.toISOString() : <any>undefined;
       data["name"] = this.name;
@@ -2534,13 +2530,13 @@ export class Batch implements IBatch {
       data["totalNumberSeed"] = this.totalNumberSeed;
       data["totalPropagation"] = this.totalPropagation;
       data["site"] = this.site;
+      data["image"] = this.image;
       return data;
   }
 }
 
 export interface IBatch {
   id: number;
-  image: Asset;
   createdAt: Date | undefined;
   updatedAt: Date | undefined;
   name?: string | undefined;
@@ -2553,6 +2549,7 @@ export interface IBatch {
   totalNumberSeed?: number | undefined;
   totalPropagation?: number | undefined;
   site?: number | undefined;
+  image?: number | undefined;
 
   [key: string]: any;
 }
@@ -3710,7 +3707,6 @@ export interface IPatchedAnnouncement {
 
 export class PatchedBatch implements IPatchedBatch {
   readonly id?: number;
-  image?: Asset;
   readonly createdAt?: Date | undefined;
   readonly updatedAt?: Date | undefined;
   name?: string | undefined;
@@ -3723,6 +3719,7 @@ export class PatchedBatch implements IPatchedBatch {
   totalNumberSeed?: number | undefined;
   totalPropagation?: number | undefined;
   site?: number | undefined;
+  image?: number | undefined;
 
   [key: string]: any;
 
@@ -3742,7 +3739,6 @@ export class PatchedBatch implements IPatchedBatch {
                   this[property] = _data[property];
           }
           (<any>this).id = _data["id"];
-          this.image = _data["image"] ? Asset.fromJS(_data["image"]) : <any>undefined;
           (<any>this).createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
           (<any>this).updatedAt = _data["updatedAt"] ? new Date(_data["updatedAt"].toString()) : <any>undefined;
           this.name = _data["name"];
@@ -3755,6 +3751,7 @@ export class PatchedBatch implements IPatchedBatch {
           this.totalNumberSeed = _data["totalNumberSeed"];
           this.totalPropagation = _data["totalPropagation"];
           this.site = _data["site"];
+          this.image = _data["image"];
       }
   }
 
@@ -3772,7 +3769,6 @@ export class PatchedBatch implements IPatchedBatch {
               data[property] = this[property];
       }
       data["id"] = this.id;
-      data["image"] = this.image ? this.image.toJSON() : <any>undefined;
       data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
       data["updatedAt"] = this.updatedAt ? this.updatedAt.toISOString() : <any>undefined;
       data["name"] = this.name;
@@ -3785,13 +3781,13 @@ export class PatchedBatch implements IPatchedBatch {
       data["totalNumberSeed"] = this.totalNumberSeed;
       data["totalPropagation"] = this.totalPropagation;
       data["site"] = this.site;
+      data["image"] = this.image;
       return data;
   }
 }
 
 export interface IPatchedBatch {
   id?: number;
-  image?: Asset;
   createdAt?: Date | undefined;
   updatedAt?: Date | undefined;
   name?: string | undefined;
@@ -3804,6 +3800,7 @@ export interface IPatchedBatch {
   totalNumberSeed?: number | undefined;
   totalPropagation?: number | undefined;
   site?: number | undefined;
+  image?: number | undefined;
 
   [key: string]: any;
 }
@@ -5679,6 +5676,110 @@ export class Species implements ISpecies {
 }
 
 export interface ISpecies {
+  id?: number;
+  quantity?: number;
+
+  [key: string]: any;
+}
+
+export class Species2 implements ISpecies2 {
+  id?: number;
+  quantity?: number;
+
+  [key: string]: any;
+
+  constructor(data?: ISpecies2) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          this.id = _data["id"];
+          this.quantity = _data["quantity"];
+      }
+  }
+
+  static fromJS(data: any): Species2 {
+      data = typeof data === 'object' ? data : {};
+      let result = new Species2();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["quantity"] = this.quantity;
+      return data;
+  }
+}
+
+export interface ISpecies2 {
+  id?: number;
+  quantity?: number;
+
+  [key: string]: any;
+}
+
+export class Species3 implements ISpecies3 {
+  id?: number;
+  quantity?: number;
+
+  [key: string]: any;
+
+  constructor(data?: ISpecies3) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          this.id = _data["id"];
+          this.quantity = _data["quantity"];
+      }
+  }
+
+  static fromJS(data: any): Species3 {
+      data = typeof data === 'object' ? data : {};
+      let result = new Species3();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["quantity"] = this.quantity;
+      return data;
+  }
+}
+
+export interface ISpecies3 {
   id?: number;
   quantity?: number;
 
