@@ -469,13 +469,11 @@ class BatchAnalyticsSerializer(serializers.ModelSerializer[Batch]):
     fertilizers = serializers.SerializerMethodField()
     mulch_layers = serializers.SerializerMethodField()
     supported_species = serializers.SerializerMethodField()
-    plant_count = serializers.SerializerMethodField()
-    survived_count = serializers.SerializerMethodField()
-    replace_count = serializers.SerializerMethodField()
-    seed_collected_count = serializers.SerializerMethodField()
     seeds = serializers.SerializerMethodField()
     species = serializers.SerializerMethodField()
     updated_at = serializers.DateTimeField()
+    created_at = serializers.DateTimeField()
+    image = AssetSerializer()
 
     class Meta:
         model = Batch
@@ -491,27 +489,14 @@ class BatchAnalyticsSerializer(serializers.ModelSerializer[Batch]):
             "plant_count",
             "survived_count",
             "replace_count",
-            "seed_collected_count",
+            "total_number_seed",
+            "total_propagation",
             "seeds",
             "species",
+            "created_at",
             "updated_at",
+            "image",
         )
-
-    @extend_schema_field(int)
-    def get_plant_count(self, obj):
-        return random.randint(100, 200)  # noqa: S311
-
-    @extend_schema_field(int)
-    def get_survived_count(self, obj):
-        return random.randint(50, 100)  # noqa: S311
-
-    @extend_schema_field(int)
-    def get_replace_count(self, obj):
-        return random.randint(25, 50)  # noqa: S311
-
-    @extend_schema_field(int)
-    def get_seed_collected_count(self, obj):
-        return random.randint(50, 300)  # noqa: S311
 
     @extend_schema_field(BatchfertilizerSerializer(many=True))
     def get_fertilizers(self, obj):
