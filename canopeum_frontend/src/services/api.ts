@@ -997,9 +997,12 @@ export class AuthenticationClient {
   constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
       this.http = http ? http : window as any;
       this.baseUrl = baseUrl ?? "";
+      console.log('basurl', this.baseUrl);
+      console.log('http', this.http);
   }
 
   login(body: LoginUser): Promise<UserToken> {
+      console.log('login',  this.baseUrl);
       let url_ = this.baseUrl + "/auth/login/";
       url_ = url_.replace(/[?&]$/, "");
 
