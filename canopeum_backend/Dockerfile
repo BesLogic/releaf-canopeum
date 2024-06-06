@@ -12,3 +12,5 @@ RUN pip install -r requirements.txt
 COPY . /app/
 
 ENTRYPOINT ["/bin/docker-entrypoint"]
+
+CMD ["python", "manage.py", "runserver"]
