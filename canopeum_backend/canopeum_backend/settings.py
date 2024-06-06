@@ -71,6 +71,9 @@ CORS_ALLOWED_ORIGINS = [
     "https://releaftree.life",
 ]
 
+ALLOWED_HOSTS = ["*"]
+CORS_ORIGIN_ALLOW_ALL = True
+
 ROOT_URLCONF = "canopeum_backend.urls"
 
 TEMPLATES = [
