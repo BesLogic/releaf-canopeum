@@ -7,6 +7,5 @@ export type ApiSettings = {
 export const setApiSetting = (apiSettings: ApiSettings) => ({ apiBaseUrl } = apiSettings)
 
 export const getApiBaseUrl = () => {
-  console.log('apiBaseUrl', apiBaseUrl)
-  return apiBaseUrl
+  return 'http://api.canopeum.releaftrees.life'
 }
