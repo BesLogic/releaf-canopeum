@@ -138,13 +138,12 @@ SPECTACULAR_SETTINGS = {
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    # "default": {"ENGINE": "django.db.backends.mysql", "NAME": os.getenv("DATABASE_URL")}
     "default": {
         "ENGINE": "django.db.backends.mysql",
         "NAME": os.getenv("MYSQL_DATABASE"),
         "USER": os.getenv("MYSQL_USER"),
         "PASSWORD": os.getenv("MYSQL_PASSWORD"),
-        "HOST": os.environ.get("MYSQL_HOST", "localhost"),
+        "HOST": os.getenv("MYSQL_HOST", default="mysql"),
         "PORT": "3306",  # Same as in docker-compose.yaml
     },
 }
