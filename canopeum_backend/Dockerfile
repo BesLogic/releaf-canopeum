@@ -11,6 +11,6 @@ RUN pip install -r requirements.txt
 
 COPY . /app/
 
-ENTRYPOINT ["/bin/docker-entrypoint"]
+RUN python manage.py migrate
 
 CMD ["python", "manage.py", "runserver"]
