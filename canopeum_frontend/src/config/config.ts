@@ -1,4 +1,4 @@
 // Set the base url dynamically once new environments are created (QA, PROD)
 export const APP_CONFIG = {
-  appBaseUrl: import.meta.env.API_BASE_URL,
+  appBaseUrl: window.location.origin,
 }
