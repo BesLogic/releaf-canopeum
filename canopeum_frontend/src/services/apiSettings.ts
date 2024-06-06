@@ -1,4 +1,4 @@
-let apiBaseUrl = 'http://api.canopeum.releaftrees.life'
+// let apiBaseUrl = 'http://api.canopeum.releaftrees.life'
 
 export type ApiSettings = {
   apiBaseUrl: string,
