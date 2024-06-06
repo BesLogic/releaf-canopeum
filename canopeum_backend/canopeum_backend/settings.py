@@ -52,11 +52,20 @@ INSTALLED_APPS = [
     "canopeum_backend",
 ]
 
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "http://releaftrees.life",
+    "https://releaftrees.life",
+]
+
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -64,19 +73,6 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-
-CORS_ALLOW_ALL_ORIGINS = True
-# CORS_ALLOW_CREDENTIALS = True
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:5173",
-#     "http://localhost:3000",
-#     "http://releaftrees.life",
-#     "https://releaftrees.life",
-# ]
-
-from corsheaders.defaults import default_headers  # noqa: E402
-
-CORS_ALLOWED_HEADERS = (*default_headers, "access-control-allow-origin")
 
 ROOT_URLCONF = "canopeum_backend.urls"
 
