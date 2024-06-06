@@ -1,4 +1,4 @@
-let apiBaseUrl = import.meta.env.API_BASE_URL
+let apiBaseUrl = 'http://api.canopeum.releaftrees.life'
 
 export type ApiSettings = {
   apiBaseUrl: string,

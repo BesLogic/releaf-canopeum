@@ -1,3 +1,3 @@
 export const APP_CONFIG = {
-  appBaseUrl: import.meta.env.VIRTUAL_HOST,
+  appBaseUrl: import.meta.env.BASE_URL,
 }
