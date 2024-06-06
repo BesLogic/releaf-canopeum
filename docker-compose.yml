@@ -43,6 +43,9 @@ services:
 
 volumes:
   mysql8-data:
+    driver: local
+  mysql8-conf:
+    driver: local
 
 networks:
   internal-canopeum:
