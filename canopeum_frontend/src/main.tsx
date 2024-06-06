@@ -10,7 +10,7 @@ const root = document.getElementById('root')
 if (root == null) {
   throw new Error('Could not find element #root to bootstrap React.')
 } else {
-  setApiSetting({ apiBaseUrl: String(import.meta.env.VITE_API_URL) })
+  setApiSetting({ apiBaseUrl: String(import.meta.env.API_BASE_URL) })
   createRoot(root).render(
     <StrictMode>
       <App />
