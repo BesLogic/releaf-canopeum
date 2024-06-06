@@ -6,4 +6,7 @@ export type ApiSettings = {
 
 export const setApiSetting = (apiSettings: ApiSettings) => ({ apiBaseUrl } = apiSettings)
 
-export const getApiBaseUrl = () => apiBaseUrl
+export const getApiBaseUrl = () => {
+  console.log('apiBaseUrl', apiBaseUrl)
+  return apiBaseUrl
+}
