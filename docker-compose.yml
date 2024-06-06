@@ -37,7 +37,7 @@ services:
     ports:
       - 5000:80
     environment:
-      API_BASE_URL: http://api.canopeum.releaftrees.life:5001
+      VITE_API_BASE_URL: http://api.canopeum.releaftrees.life:5001
       VIRTUAL_HOST: releaftrees.life
     networks:
       - nginx-canopeum
