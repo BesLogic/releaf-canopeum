@@ -50,3 +50,5 @@ volumes:
 networks:
   internal-canopeum:
     external: false
+  nginx-canopeum:
+    external: true
