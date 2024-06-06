@@ -143,7 +143,7 @@ DATABASES = {
         "NAME": os.getenv("MYSQL_DATABASE"),
         "USER": os.getenv("MYSQL_USER"),
         "PASSWORD": os.getenv("MYSQL_PASSWORD"),
-        "HOST": os.getenv("MYSQL_HOST", default="mysql"),
+        "HOST": os.getenv("MYSQL_HOST"),
         "PORT": "3306",  # Same as in docker-compose.yaml
     },
 }
