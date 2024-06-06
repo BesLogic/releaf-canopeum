@@ -32,8 +32,6 @@ SECRET_KEY = "django-insecure-xy@=#v*#0yj@^gsl*0f+ci9+)8@v-x#7+npdvh50fn7^s9ow8g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS: list[str] = []
-
 
 # Application definition
 
@@ -53,6 +51,10 @@ INSTALLED_APPS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = ["localhost:5173", "localhost:3000", "releaftrees.life"]
+
+ALLOWED_HOSTS: list = ["*"]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
