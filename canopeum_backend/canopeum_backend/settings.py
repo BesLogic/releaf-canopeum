@@ -67,12 +67,9 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:3000",
     "http://api.canopeum.releaftrees.life",
-    "http://releaftree.life",
-    "https://releaftree.life",
+    "http://releaftrees.life",
+    "https://releaftrees.life",
 ]
-
-ALLOWED_HOSTS = ["*"]
-CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = "canopeum_backend.urls"
 
