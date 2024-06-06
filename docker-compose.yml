@@ -8,8 +8,6 @@ services:
       MYSQL_ROOT_PASSWORD: Canopeum12345!@
       MYSQL_USER: canopeum_user
       MYSQL_PASSWORD: CanopeumUser12345!@
-    ports:
-      - 5002:3306
     volumes:
       - mysql8-data:/var/lib/mysql
       - mysql8-conf:/etc/mysql/conf.d
