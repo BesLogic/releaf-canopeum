@@ -1,10 +1,8 @@
 version: '3.3'
 services:
   mysql:
-    # container_name: mysql
     hostname: mysql
     image: mysql:8
-    command: --authentication_policy=mysql_native_password
     environment:
       MYSQL_DATABASE: canopeum_db
       MYSQL_ROOT_PASSWORD: Canopeum12345!@
@@ -15,19 +13,14 @@ services:
     volumes:
       - mysql8-data:/var/lib/mysql
       - mysql8-conf:/etc/mysql/conf.d
-    # networks:
-    #   - nginx-canopeum
-      # - internal-canopeum
-      # local-canopeum:
-      #   aliases:
-      #     - mysql
+    networks:
+      - internal-canopeum
 
   backend:
-    # container_name: backend
     hostname: backend
     image: ghcr.io/beslogic/canopeum_backend:latest
     ports:
-      - 5001:5001
+      - 5001:8000
     depends_on:
       - mysql
     environment:
@@ -38,30 +31,19 @@ services:
       MYSQL_PASSWORD: CanopeumUser12345!@
       VIRTUAL_HOST: api.canopeum.releaftrees.life
     networks:
-      # - internal-canopeum
-      - nginx-canopeum
-      # - local-canopeum
+      - internal-canopeum
 
   frontend:
-    # container_name: frontend
     hostname: frontend
     image: ghcr.io/beslogic/canopeum_frontend:latest
     ports:
       - 5000:80
     environment:
       VIRTUAL_HOST: releaftrees.life
-    networks:
-      - nginx-canopeum
-      # - local-canopeum
 
 volumes:
   mysql8-data:
 
 networks:
-  nginx-canopeum:
+  internal-canopeum:
     external: true
-  # internal-canopeum:
-  #   external: true
-
-  # local-canopeum:
-  #   external: false

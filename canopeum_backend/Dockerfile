@@ -11,4 +11,6 @@ RUN pip install -r requirements.txt
 
 COPY . /app/
 
+RUN python manage.py migrate
+
 CMD ["python", "manage.py", "runserver"]
