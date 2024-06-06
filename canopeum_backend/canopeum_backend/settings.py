@@ -74,7 +74,9 @@ CORS_ALLOWED_ORIGINS = [
     "https://releaftrees.life",
 ]
 
-CORS_ALLOWED_HEADERS = ("Access-Control-Allow-Origin",)
+from corsheaders.defaults import default_headers  # noqa: E402, I001
+
+CORS_ALLOWED_HEADERS = (*default_headers, "Access-Control-Allow-Origin")
 
 ROOT_URLCONF = "canopeum_backend.urls"
 
