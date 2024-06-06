@@ -70,10 +70,11 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:3000",
-    "http://api.canopeum.releaftrees.life",
     "http://releaftrees.life",
     "https://releaftrees.life",
 ]
+
+CORS_ALLOWED_HEADERS = ("Access-Control-Allow-Origin",)
 
 ROOT_URLCONF = "canopeum_backend.urls"
 
