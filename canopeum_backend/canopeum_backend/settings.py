@@ -14,6 +14,7 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+from corsheaders.defaults import default_headers
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -63,6 +64,14 @@ CORS_ALLOWED_ORIGINS = [
     "https://releaftrees.life",
 ]
 
+CORS_ALLOW_HEADERS = (default_headers, "Access-Control-Allow-Origin")
+
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "http://releaftrees.life",
+    "https://releaftrees.life",
+]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
