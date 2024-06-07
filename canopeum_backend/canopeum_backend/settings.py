@@ -53,7 +53,7 @@ INSTALLED_APPS = [
 
 CORS_ALLOW_CREDENTIALS = True
 
-CSRF_TRUSTED_ORIGINS = ["localhost:5173", "localhost:3000", "releaftrees.life"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:5173", "http://localhost:3000", "http://releaftrees.life"]
 
 ALLOWED_HOSTS: list = ["*"]
 
@@ -64,7 +64,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://releaftrees.life",
 ]
 
-CORS_ALLOW_HEADERS = (default_headers, "Access-Control-Allow-Origin")
+CORS_ALLOW_HEADERS = (*default_headers, "Access-Control-Allow-Origin")
 
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:5173",
