@@ -8,5 +8,5 @@ export type ApiSettings = {
 
 export const getApiBaseUrl = () => {
   // console.log('apiBaseUrl', apiBaseUrl)
-  return 'http://api.canopeum.releaftrees.life'
+  return 'http://localhost:5001'
 }
