@@ -38,9 +38,9 @@ services:
       - 5000:80
     environment:
       VITE_API_BASE_URL: http://localhost:5001
-      # VIRTUAL_HOST: releaftrees.life
-    # networks:
-    #   - nginx-canopeum
+      VIRTUAL_HOST: releaftrees.life
+    networks:
+      - nginx-canopeum
 
 volumes:
   mysql8-data:
