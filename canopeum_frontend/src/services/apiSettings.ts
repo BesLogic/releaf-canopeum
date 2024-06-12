@@ -1,4 +1,6 @@
-// let apiBaseUrl = 'http://api.canopeum.releaftrees.life'
+const apiBaseUrl = import.meta.env.VITE_API_URL
+
+console.log(apiBaseUrl)
 
 export type ApiSettings = {
   apiBaseUrl: string,
@@ -6,6 +8,4 @@ export type ApiSettings = {
 
 // export const setApiSetting = (apiSettings: ApiSettings) => ({ apiBaseUrl } = apiSettings)
 
-export const getApiBaseUrl = () => {
-  return 'http://localhost:5001'
-}
+export const getApiBaseUrl = () => apiBaseUrl
