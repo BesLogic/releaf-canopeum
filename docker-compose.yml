@@ -30,6 +30,7 @@ services:
       VIRTUAL_HOST: api.canopeum.releaftrees.life
     networks:
       - internal-canopeum
+      - nginx-canopeum
 
   frontend:
     hostname: frontend
