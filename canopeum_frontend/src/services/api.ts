@@ -1002,7 +1002,6 @@ export class AuthenticationClient {
   }
 
   login(body: LoginUser): Promise<UserToken> {
-      console.log('login',  this.baseUrl);
       let url_ = this.baseUrl + "/auth/login/";
       url_ = url_.replace(/[?&]$/, "");
 
