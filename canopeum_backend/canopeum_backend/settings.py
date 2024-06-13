@@ -14,6 +14,7 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+from corsheaders.defaults import default_headers
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -31,8 +32,6 @@ SECRET_KEY = "django-insecure-xy@=#v*#0yj@^gsl*0f+ci9+)8@v-x#7+npdvh50fn7^s9ow8g
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS: list[str] = []
 
 
 # Application definition
@@ -52,24 +51,39 @@ INSTALLED_APPS = [
     "canopeum_backend",
 ]
 
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = ["http://localhost:5173", "http://localhost:3000", "http://releaftrees.life"]
+
+ALLOWED_HOSTS: list = ["*"]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "http://releaftrees.life",
+    "https://releaftrees.life",
+]
+
+CORS_ALLOW_HEADERS = (*default_headers, "Access-Control-Allow-Origin")
+
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "http://releaftrees.life",
+    "https://releaftrees.life",
+]
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://localhost:3000",
-    "http://api.canopeum.releaftrees.life",
-    "http://releaftree.life",
-    "https://releaftree.life",
-]
 
 ROOT_URLCONF = "canopeum_backend.urls"
 
@@ -143,8 +157,8 @@ DATABASES = {
         "NAME": os.getenv("MYSQL_DATABASE"),
         "USER": os.getenv("MYSQL_USER"),
         "PASSWORD": os.getenv("MYSQL_PASSWORD"),
-        "HOST": os.environ.get("MYSQL_HOST", "localhost"),
-        "PORT": "3308",  # Same as in docker-compose.yaml
+        "HOST": os.getenv("MYSQL_HOST"),
+        "PORT": "3306",  # Same as in docker-compose.yaml
     },
 }
 

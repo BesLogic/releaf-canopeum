@@ -18,6 +18,7 @@ export default ({ mode }: { mode: string }) => {
         '@utils': '/src/utils',
       },
     },
+    envDir: './env',
     server: {
       watch: {
         usePolling: true,
