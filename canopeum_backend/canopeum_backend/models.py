@@ -52,16 +52,29 @@ class Announcement(models.Model):
     link = models.TextField(blank=True, null=True)
 
 
+def upload_to(_, filename):
+    now = datetime.now(pytz.utc).strftime("%Y%m%d%H%M%S%f")
+    return f"{now}{filename}"
+
+
+class Asset(models.Model):
+    asset = models.FileField(upload_to=upload_to, null=False)
+
+
 class Batch(models.Model):
     site = models.ForeignKey("Site", models.DO_NOTHING, blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
-    updated_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
     name = models.TextField(blank=True, null=True)
     sponsor = models.TextField(blank=True, null=True)
     size = models.IntegerField(blank=True, null=True)
     soil_condition = models.TextField(blank=True, null=True)
+    plant_count = models.IntegerField(blank=True, null=True)
+    survived_count = models.IntegerField(blank=True, null=True)
+    replace_count = models.IntegerField(blank=True, null=True)
     total_number_seed = models.IntegerField(blank=True, null=True)
     total_propagation = models.IntegerField(blank=True, null=True)
+    image = models.ForeignKey(Asset, models.DO_NOTHING, blank=True, null=True)
 
 
 class FertilizertypeInternationalization(models.Model):
@@ -142,19 +155,19 @@ class MulchlayertypeInternationalization(models.Model):
     fr = models.TextField(db_column="FR", blank=True, null=True)
 
 
-def upload_to(_, filename):
-    now = datetime.now(pytz.utc).strftime("%Y%m%d%H%M%S%f")
-    return f"{now}{filename}"
+class SitetypeInternationalization(models.Model):
+    en = models.TextField(db_column="EN", blank=True, null=True)
+    fr = models.TextField(db_column="FR", blank=True, null=True)
 
 
-class Asset(models.Model):
-    asset = models.FileField(upload_to=upload_to, null=False)
+class Sitetype(models.Model):
+    name = models.ForeignKey(SitetypeInternationalization, models.DO_NOTHING, blank=True, null=True)
 
 
 class Site(models.Model):
     name = models.TextField()
     is_public = models.BooleanField(blank=False, null=False, default=False)
-    site_type = models.ForeignKey("Sitetype", models.DO_NOTHING, blank=True, null=True)
+    site_type = models.ForeignKey(Sitetype, models.DO_NOTHING, blank=True, null=True)
     coordinate = models.ForeignKey(Coordinate, models.DO_NOTHING, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     size = models.TextField(blank=True, null=True)
@@ -219,17 +232,6 @@ class Sitetreespecies(models.Model):
     site = models.ForeignKey(Site, models.DO_NOTHING, blank=True, null=True)
     tree_type = models.ForeignKey("Treetype", models.DO_NOTHING, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
-
-
-class Sitetype(models.Model):
-    name = models.ForeignKey(
-        "SitetypeInternationalization", models.DO_NOTHING, blank=True, null=True
-    )
-
-
-class SitetypeInternationalization(models.Model):
-    en = models.TextField(db_column="EN", blank=True, null=True)
-    fr = models.TextField(db_column="FR", blank=True, null=True)
 
 
 class Widget(models.Model):

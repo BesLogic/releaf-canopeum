@@ -1,6 +1,4 @@
-const apiBaseUrl = import.meta.env.VITE_API_URL
-
-console.log(apiBaseUrl)
+const apiBaseUrl: string | undefined = import.meta.env.VITE_API_URL
 
 export type ApiSettings = {
   apiBaseUrl: string,

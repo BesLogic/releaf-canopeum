@@ -111,17 +111,60 @@ export class BatchClient {
       return Promise.resolve<BatchAnalytics[]>(null as any);
   }
 
-  create(body: Batch | undefined): Promise<Batch> {
+  create(site: number | undefined, name: string | null | undefined, sponsor: string | null | undefined, size: number | null | undefined, soilCondition: string | null | undefined, plantCount: number | null | undefined, survivedCount: number | null | undefined, replaceCount: number | null | undefined, totalNumberSeed: number | null | undefined, totalPropagation: number | null | undefined, image: FileParameter | null | undefined, fertilizerIds: number[] | undefined, mulchLayerIds: number[] | undefined, seeds: Seeds[] | undefined, species: Species[] | undefined, supportedSpecieIds: number[] | undefined): Promise<Batch> {
       let url_ = this.baseUrl + "/analytics/batches/";
       url_ = url_.replace(/[?&]$/, "");
 
-      const content_ = JSON.stringify(body);
+      const content_ = new FormData();
+      if (site === null || site === undefined)
+          throw new Error("The parameter 'site' cannot be null.");
+      else
+          content_.append("site", site.toString());
+      if (name !== null && name !== undefined)
+          content_.append("name", name.toString());
+      if (sponsor !== null && sponsor !== undefined)
+          content_.append("sponsor", sponsor.toString());
+      if (size !== null && size !== undefined)
+          content_.append("size", size.toString());
+      if (soilCondition !== null && soilCondition !== undefined)
+          content_.append("soilCondition", soilCondition.toString());
+      if (plantCount !== null && plantCount !== undefined)
+          content_.append("plantCount", plantCount.toString());
+      if (survivedCount !== null && survivedCount !== undefined)
+          content_.append("survivedCount", survivedCount.toString());
+      if (replaceCount !== null && replaceCount !== undefined)
+          content_.append("replaceCount", replaceCount.toString());
+      if (totalNumberSeed !== null && totalNumberSeed !== undefined)
+          content_.append("totalNumberSeed", totalNumberSeed.toString());
+      if (totalPropagation !== null && totalPropagation !== undefined)
+          content_.append("totalPropagation", totalPropagation.toString());
+      if (image !== null && image !== undefined)
+          content_.append("image", image.data, image.fileName ? image.fileName : "image");
+      if (fertilizerIds === null || fertilizerIds === undefined)
+          throw new Error("The parameter 'fertilizerIds' cannot be null.");
+      else
+          fertilizerIds.forEach(item_ => content_.append("fertilizerIds", item_.toString()));
+      if (mulchLayerIds === null || mulchLayerIds === undefined)
+          throw new Error("The parameter 'mulchLayerIds' cannot be null.");
+      else
+          mulchLayerIds.forEach(item_ => content_.append("mulchLayerIds", item_.toString()));
+      if (seeds === null || seeds === undefined)
+          throw new Error("The parameter 'seeds' cannot be null.");
+      else
+          seeds.forEach(item_ => content_.append("seeds", item_.toString()));
+      if (species === null || species === undefined)
+          throw new Error("The parameter 'species' cannot be null.");
+      else
+          species.forEach(item_ => content_.append("species", item_.toString()));
+      if (supportedSpecieIds === null || supportedSpecieIds === undefined)
+          throw new Error("The parameter 'supportedSpecieIds' cannot be null.");
+      else
+          supportedSpecieIds.forEach(item_ => content_.append("supportedSpecieIds", item_.toString()));
 
       let options_: RequestInit = {
           body: content_,
           method: "POST",
           headers: {
-              "Content-Type": "application/json",
               "Accept": "application/json"
           }
       };
@@ -227,6 +270,110 @@ export class BatchClient {
   }
 }
 
+export class FertilizerClient {
+  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+      this.http = http ? http : window as any;
+      this.baseUrl = baseUrl ?? "";
+  }
+
+  allTypes(): Promise<FertilizerType[]> {
+      let url_ = this.baseUrl + "/analytics/fertilizers";
+      url_ = url_.replace(/[?&]$/, "");
+
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processAllTypes(_response);
+      });
+  }
+
+  protected processAllTypes(response: Response): Promise<FertilizerType[]> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          if (Array.isArray(resultData200)) {
+              result200 = [] as any;
+              for (let item of resultData200)
+                  result200!.push(FertilizerType.fromJS(item));
+          }
+          else {
+              result200 = <any>null;
+          }
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<FertilizerType[]>(null as any);
+  }
+}
+
+export class MulchLayerClient {
+  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+      this.http = http ? http : window as any;
+      this.baseUrl = baseUrl ?? "";
+  }
+
+  allTypes(): Promise<MulchLayerType[]> {
+      let url_ = this.baseUrl + "/analytics/mulch-layers";
+      url_ = url_.replace(/[?&]$/, "");
+
+      let options_: RequestInit = {
+          method: "GET",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
+
+      return this.http.fetch(url_, options_).then((_response: Response) => {
+          return this.processAllTypes(_response);
+      });
+  }
+
+  protected processAllTypes(response: Response): Promise<MulchLayerType[]> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          if (Array.isArray(resultData200)) {
+              result200 = [] as any;
+              for (let item of resultData200)
+                  result200!.push(MulchLayerType.fromJS(item));
+          }
+          else {
+              result200 = <any>null;
+          }
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<MulchLayerType[]>(null as any);
+  }
+}
+
 export class SiteClient {
   private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
   private baseUrl: string;
@@ -319,7 +466,7 @@ export class SiteClient {
       return Promise.resolve<Site[]>(null as any);
   }
 
-  create(name: string | undefined, siteType: number | undefined, image: FileParameter | undefined, latitude: string | undefined, longitude: string | undefined, description: string | undefined, size: number | undefined, species: Species[] | undefined, researchPartnership: boolean | undefined, visibleMap: boolean | undefined): Promise<Site> {
+  create(name: string | undefined, siteType: number | undefined, image: FileParameter | undefined, latitude: string | undefined, longitude: string | undefined, description: string | undefined, size: number | undefined, species: Species2[] | undefined, researchPartnership: boolean | undefined, visibleMap: boolean | undefined): Promise<Site> {
       let url_ = this.baseUrl + "/analytics/sites/";
       url_ = url_.replace(/[?&]$/, "");
 
@@ -433,7 +580,7 @@ export class SiteClient {
       return Promise.resolve<Site>(null as any);
   }
 
-  update(siteId: number, name: string | undefined, siteType: number | undefined, image: FileParameter | undefined, latitude: string | undefined, longitude: string | undefined, description: string | undefined, size: number | undefined, species: Species2[] | undefined, researchPartnership: boolean | undefined, visibleMap: boolean | undefined): Promise<Site> {
+  update(siteId: number, name: string | undefined, siteType: number | undefined, image: FileParameter | undefined, latitude: string | undefined, longitude: string | undefined, description: string | undefined, size: number | undefined, species: Species3[] | undefined, researchPartnership: boolean | undefined, visibleMap: boolean | undefined): Promise<Site> {
       let url_ = this.baseUrl + "/analytics/sites/{siteId}/";
       if (siteId === undefined || siteId === null)
           throw new Error("The parameter 'siteId' must be defined.");
@@ -2311,15 +2458,19 @@ export interface IAsset {
 
 export class Batch implements IBatch {
   readonly id!: number;
-  createdAt?: Date | undefined;
-  updatedAt?: Date | undefined;
+  readonly createdAt!: Date | undefined;
+  readonly updatedAt!: Date | undefined;
   name?: string | undefined;
   sponsor?: string | undefined;
-  size?: string | undefined;
+  size?: number | undefined;
   soilCondition?: string | undefined;
+  plantCount?: number | undefined;
+  survivedCount?: number | undefined;
+  replaceCount?: number | undefined;
   totalNumberSeed?: number | undefined;
   totalPropagation?: number | undefined;
   site?: number | undefined;
+  image?: number | undefined;
 
   [key: string]: any;
 
@@ -2339,15 +2490,19 @@ export class Batch implements IBatch {
                   this[property] = _data[property];
           }
           (<any>this).id = _data["id"];
-          this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
-          this.updatedAt = _data["updatedAt"] ? new Date(_data["updatedAt"].toString()) : <any>undefined;
+          (<any>this).createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+          (<any>this).updatedAt = _data["updatedAt"] ? new Date(_data["updatedAt"].toString()) : <any>undefined;
           this.name = _data["name"];
           this.sponsor = _data["sponsor"];
           this.size = _data["size"];
           this.soilCondition = _data["soilCondition"];
+          this.plantCount = _data["plantCount"];
+          this.survivedCount = _data["survivedCount"];
+          this.replaceCount = _data["replaceCount"];
           this.totalNumberSeed = _data["totalNumberSeed"];
           this.totalPropagation = _data["totalPropagation"];
           this.site = _data["site"];
+          this.image = _data["image"];
       }
   }
 
@@ -2371,24 +2526,32 @@ export class Batch implements IBatch {
       data["sponsor"] = this.sponsor;
       data["size"] = this.size;
       data["soilCondition"] = this.soilCondition;
+      data["plantCount"] = this.plantCount;
+      data["survivedCount"] = this.survivedCount;
+      data["replaceCount"] = this.replaceCount;
       data["totalNumberSeed"] = this.totalNumberSeed;
       data["totalPropagation"] = this.totalPropagation;
       data["site"] = this.site;
+      data["image"] = this.image;
       return data;
   }
 }
 
 export interface IBatch {
   id: number;
-  createdAt?: Date | undefined;
-  updatedAt?: Date | undefined;
+  createdAt: Date | undefined;
+  updatedAt: Date | undefined;
   name?: string | undefined;
   sponsor?: string | undefined;
-  size?: string | undefined;
+  size?: number | undefined;
   soilCondition?: string | undefined;
+  plantCount?: number | undefined;
+  survivedCount?: number | undefined;
+  replaceCount?: number | undefined;
   totalNumberSeed?: number | undefined;
   totalPropagation?: number | undefined;
   site?: number | undefined;
+  image?: number | undefined;
 
   [key: string]: any;
 }
@@ -2396,19 +2559,22 @@ export interface IBatch {
 export class BatchAnalytics implements IBatchAnalytics {
   readonly id!: number;
   name?: string | undefined;
-  size?: string | undefined;
+  size?: number | undefined;
   soilCondition?: string | undefined;
   sponsor?: string | undefined;
   readonly fertilizers!: Batchfertilizer[];
   readonly mulchLayers!: BatchMulchLayer[];
   readonly supportedSpecies!: BatchSupportedSpecies[];
-  readonly plantCount!: number;
-  readonly survivedCount!: number;
-  readonly replaceCount!: number;
-  readonly seedCollectedCount!: number;
+  plantCount?: number | undefined;
+  survivedCount?: number | undefined;
+  replaceCount?: number | undefined;
+  totalNumberSeed?: number | undefined;
+  totalPropagation?: number | undefined;
   readonly seeds!: BatchSeed[];
   readonly species!: BatchSpecies[];
+  createdAt!: Date;
   updatedAt!: Date;
+  image!: Asset;
 
   [key: string]: any;
 
@@ -2425,6 +2591,7 @@ export class BatchAnalytics implements IBatchAnalytics {
           this.supportedSpecies = [];
           this.seeds = [];
           this.species = [];
+          this.image = new Asset();
       }
   }
 
@@ -2454,10 +2621,11 @@ export class BatchAnalytics implements IBatchAnalytics {
               for (let item of _data["supportedSpecies"])
                   (<any>this).supportedSpecies!.push(BatchSupportedSpecies.fromJS(item));
           }
-          (<any>this).plantCount = _data["plantCount"];
-          (<any>this).survivedCount = _data["survivedCount"];
-          (<any>this).replaceCount = _data["replaceCount"];
-          (<any>this).seedCollectedCount = _data["seedCollectedCount"];
+          this.plantCount = _data["plantCount"];
+          this.survivedCount = _data["survivedCount"];
+          this.replaceCount = _data["replaceCount"];
+          this.totalNumberSeed = _data["totalNumberSeed"];
+          this.totalPropagation = _data["totalPropagation"];
           if (Array.isArray(_data["seeds"])) {
               (<any>this).seeds = [] as any;
               for (let item of _data["seeds"])
@@ -2468,7 +2636,9 @@ export class BatchAnalytics implements IBatchAnalytics {
               for (let item of _data["species"])
                   (<any>this).species!.push(BatchSpecies.fromJS(item));
           }
+          this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
           this.updatedAt = _data["updatedAt"] ? new Date(_data["updatedAt"].toString()) : <any>undefined;
+          this.image = _data["image"] ? Asset.fromJS(_data["image"]) : new Asset();
       }
   }
 
@@ -2508,7 +2678,8 @@ export class BatchAnalytics implements IBatchAnalytics {
       data["plantCount"] = this.plantCount;
       data["survivedCount"] = this.survivedCount;
       data["replaceCount"] = this.replaceCount;
-      data["seedCollectedCount"] = this.seedCollectedCount;
+      data["totalNumberSeed"] = this.totalNumberSeed;
+      data["totalPropagation"] = this.totalPropagation;
       if (Array.isArray(this.seeds)) {
           data["seeds"] = [];
           for (let item of this.seeds)
@@ -2519,7 +2690,9 @@ export class BatchAnalytics implements IBatchAnalytics {
           for (let item of this.species)
               data["species"].push(item.toJSON());
       }
+      data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
       data["updatedAt"] = this.updatedAt ? this.updatedAt.toISOString() : <any>undefined;
+      data["image"] = this.image ? this.image.toJSON() : <any>undefined;
       return data;
   }
 }
@@ -2527,19 +2700,22 @@ export class BatchAnalytics implements IBatchAnalytics {
 export interface IBatchAnalytics {
   id: number;
   name?: string | undefined;
-  size?: string | undefined;
+  size?: number | undefined;
   soilCondition?: string | undefined;
   sponsor?: string | undefined;
   fertilizers: Batchfertilizer[];
   mulchLayers: BatchMulchLayer[];
   supportedSpecies: BatchSupportedSpecies[];
-  plantCount: number;
-  survivedCount: number;
-  replaceCount: number;
-  seedCollectedCount: number;
+  plantCount?: number | undefined;
+  survivedCount?: number | undefined;
+  replaceCount?: number | undefined;
+  totalNumberSeed?: number | undefined;
+  totalPropagation?: number | undefined;
   seeds: BatchSeed[];
   species: BatchSpecies[];
+  createdAt: Date;
   updatedAt: Date;
+  image: Asset;
 
   [key: string]: any;
 }
@@ -2713,6 +2889,7 @@ export interface IBatchSpecies {
 }
 
 export class BatchSupportedSpecies implements IBatchSupportedSpecies {
+  readonly id!: number;
   readonly en!: string;
   readonly fr!: string;
 
@@ -2733,6 +2910,7 @@ export class BatchSupportedSpecies implements IBatchSupportedSpecies {
               if (_data.hasOwnProperty(property))
                   this[property] = _data[property];
           }
+          (<any>this).id = _data["id"];
           (<any>this).en = _data["en"];
           (<any>this).fr = _data["fr"];
       }
@@ -2751,6 +2929,7 @@ export class BatchSupportedSpecies implements IBatchSupportedSpecies {
           if (this.hasOwnProperty(property))
               data[property] = this[property];
       }
+      data["id"] = this.id;
       data["en"] = this.en;
       data["fr"] = this.fr;
       return data;
@@ -2758,6 +2937,7 @@ export class BatchSupportedSpecies implements IBatchSupportedSpecies {
 }
 
 export interface IBatchSupportedSpecies {
+  id: number;
   en: string;
   fr: string;
 
@@ -3251,6 +3431,62 @@ export interface ICreateUserInvitation {
   [key: string]: any;
 }
 
+export class FertilizerType implements IFertilizerType {
+  readonly id!: number;
+  readonly en!: string;
+  readonly fr!: string;
+
+  [key: string]: any;
+
+  constructor(data?: IFertilizerType) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          (<any>this).en = _data["en"];
+          (<any>this).fr = _data["fr"];
+      }
+  }
+
+  static fromJS(data: any): FertilizerType {
+      data = typeof data === 'object' ? data : {};
+      let result = new FertilizerType();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["en"] = this.en;
+      data["fr"] = this.fr;
+      return data;
+  }
+}
+
+export interface IFertilizerType {
+  id: number;
+  en: string;
+  fr: string;
+
+  [key: string]: any;
+}
+
 export class Like implements ILike {
   readonly id!: number;
   user!: number;
@@ -3359,6 +3595,62 @@ export interface ILoginUser {
   [key: string]: any;
 }
 
+export class MulchLayerType implements IMulchLayerType {
+  readonly id!: number;
+  readonly en!: string;
+  readonly fr!: string;
+
+  [key: string]: any;
+
+  constructor(data?: IMulchLayerType) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          (<any>this).id = _data["id"];
+          (<any>this).en = _data["en"];
+          (<any>this).fr = _data["fr"];
+      }
+  }
+
+  static fromJS(data: any): MulchLayerType {
+      data = typeof data === 'object' ? data : {};
+      let result = new MulchLayerType();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["en"] = this.en;
+      data["fr"] = this.fr;
+      return data;
+  }
+}
+
+export interface IMulchLayerType {
+  id: number;
+  en: string;
+  fr: string;
+
+  [key: string]: any;
+}
+
 export class PatchedAnnouncement implements IPatchedAnnouncement {
   readonly id?: number;
   body?: string | undefined;
@@ -3417,15 +3709,19 @@ export interface IPatchedAnnouncement {
 
 export class PatchedBatch implements IPatchedBatch {
   readonly id?: number;
-  createdAt?: Date | undefined;
-  updatedAt?: Date | undefined;
+  readonly createdAt?: Date | undefined;
+  readonly updatedAt?: Date | undefined;
   name?: string | undefined;
   sponsor?: string | undefined;
-  size?: string | undefined;
+  size?: number | undefined;
   soilCondition?: string | undefined;
+  plantCount?: number | undefined;
+  survivedCount?: number | undefined;
+  replaceCount?: number | undefined;
   totalNumberSeed?: number | undefined;
   totalPropagation?: number | undefined;
   site?: number | undefined;
+  image?: number | undefined;
 
   [key: string]: any;
 
@@ -3445,15 +3741,19 @@ export class PatchedBatch implements IPatchedBatch {
                   this[property] = _data[property];
           }
           (<any>this).id = _data["id"];
-          this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
-          this.updatedAt = _data["updatedAt"] ? new Date(_data["updatedAt"].toString()) : <any>undefined;
+          (<any>this).createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+          (<any>this).updatedAt = _data["updatedAt"] ? new Date(_data["updatedAt"].toString()) : <any>undefined;
           this.name = _data["name"];
           this.sponsor = _data["sponsor"];
           this.size = _data["size"];
           this.soilCondition = _data["soilCondition"];
+          this.plantCount = _data["plantCount"];
+          this.survivedCount = _data["survivedCount"];
+          this.replaceCount = _data["replaceCount"];
           this.totalNumberSeed = _data["totalNumberSeed"];
           this.totalPropagation = _data["totalPropagation"];
           this.site = _data["site"];
+          this.image = _data["image"];
       }
   }
 
@@ -3477,9 +3777,13 @@ export class PatchedBatch implements IPatchedBatch {
       data["sponsor"] = this.sponsor;
       data["size"] = this.size;
       data["soilCondition"] = this.soilCondition;
+      data["plantCount"] = this.plantCount;
+      data["survivedCount"] = this.survivedCount;
+      data["replaceCount"] = this.replaceCount;
       data["totalNumberSeed"] = this.totalNumberSeed;
       data["totalPropagation"] = this.totalPropagation;
       data["site"] = this.site;
+      data["image"] = this.image;
       return data;
   }
 }
@@ -3490,11 +3794,15 @@ export interface IPatchedBatch {
   updatedAt?: Date | undefined;
   name?: string | undefined;
   sponsor?: string | undefined;
-  size?: string | undefined;
+  size?: number | undefined;
   soilCondition?: string | undefined;
+  plantCount?: number | undefined;
+  survivedCount?: number | undefined;
+  replaceCount?: number | undefined;
   totalNumberSeed?: number | undefined;
   totalPropagation?: number | undefined;
   site?: number | undefined;
+  image?: number | undefined;
 
   [key: string]: any;
 }
@@ -5264,6 +5572,62 @@ export interface IWidget {
   [key: string]: any;
 }
 
+export class Seeds implements ISeeds {
+  id?: number;
+  quantity?: number;
+
+  [key: string]: any;
+
+  constructor(data?: ISeeds) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          this.id = _data["id"];
+          this.quantity = _data["quantity"];
+      }
+  }
+
+  static fromJS(data: any): Seeds {
+      data = typeof data === 'object' ? data : {};
+      let result = new Seeds();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["quantity"] = this.quantity;
+      return data;
+  }
+
+  toString() {
+    return JSON.stringify(this.toJSON());
+  }
+}
+
+export interface ISeeds {
+  id?: number;
+  quantity?: number;
+
+  [key: string]: any;
+}
+
 export class Species implements ISpecies {
   id?: number;
   quantity?: number;
@@ -5306,6 +5670,10 @@ export class Species implements ISpecies {
       data["id"] = this.id;
       data["quantity"] = this.quantity;
       return data;
+  }
+
+  toString() {
+    return JSON.stringify(this.toJSON());
   }
 }
 
@@ -5362,6 +5730,58 @@ export class Species2 implements ISpecies2 {
 }
 
 export interface ISpecies2 {
+  id?: number;
+  quantity?: number;
+
+  [key: string]: any;
+}
+
+export class Species3 implements ISpecies3 {
+  id?: number;
+  quantity?: number;
+
+  [key: string]: any;
+
+  constructor(data?: ISpecies3) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          for (var property in _data) {
+              if (_data.hasOwnProperty(property))
+                  this[property] = _data[property];
+          }
+          this.id = _data["id"];
+          this.quantity = _data["quantity"];
+      }
+  }
+
+  static fromJS(data: any): Species3 {
+      data = typeof data === 'object' ? data : {};
+      let result = new Species3();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      for (var property in this) {
+          if (this.hasOwnProperty(property))
+              data[property] = this[property];
+      }
+      data["id"] = this.id;
+      data["quantity"] = this.quantity;
+      return data;
+  }
+}
+
+export interface ISpecies3 {
   id?: number;
   quantity?: number;
 

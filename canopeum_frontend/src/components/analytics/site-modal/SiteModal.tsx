@@ -1,11 +1,10 @@
-/* eslint-disable max-lines -- TODO: Split into components */
+import ImageUpload from '@components/analytics/ImageUpload'
 import SiteCoordinates from '@components/analytics/site-modal/SiteCoordinates'
-import SiteImageUpload from '@components/analytics/site-modal/SiteImageUpload'
+import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { LanguageContext } from '@components/context/LanguageContext'
-import TreeSpeciesSelector from '@components/TreeSpeciesSelector'
 import useApiClient from '@hooks/ApiClientHook'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
-import type { Sitetreespecies, SiteType, TreeType } from '@services/api'
+import type { Sitetreespecies, SiteType } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -77,8 +76,8 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
   const { t } = useTranslation()
   const { getApiClient } = useApiClient()
   const { translateValue } = useContext(LanguageContext)
+
   const [site, setSite] = useState<SiteDto>(defaultSiteDto)
-  const [availableSpecies, setAvailableSpecies] = useState<TreeType[]>([])
   const [availableSiteTypes, setAvailableSiteTypes] = useState<SiteType[]>([])
   const [siteImageURL, setSiteImageURL] = useState<string>()
 
@@ -107,11 +106,6 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
     setSiteImageURL(URL.createObjectURL(blob))
   }, [siteId, getApiClient])
 
-  const fetchTreeSpecies = useCallback(
-    async () => setAvailableSpecies(await getApiClient().treeClient.species()),
-    [getApiClient],
-  )
-
   const fetchSiteTypes = useCallback(
     async () => setAvailableSiteTypes(await getApiClient().siteClient.types()),
     [getApiClient],
@@ -122,10 +116,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
     setSiteImageURL(URL.createObjectURL(file))
   }
 
-  useEffect(() => {
-    void fetchTreeSpecies()
-    void fetchSiteTypes()
-  }, [fetchTreeSpecies, fetchSiteTypes])
+  useEffect(() => void fetchSiteTypes(), [fetchSiteTypes])
 
   useEffect(() => {
     if (!open) return
@@ -142,6 +133,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
           {t('analytics.site-modal.create-site')}
         </div>
       </DialogTitle>
+
       <DialogContent className='pb-5'>
         <form>
           <div className='mb-3'>
@@ -156,6 +148,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
               value={site.siteName}
             />
           </div>
+
           <div className='mb-3'>
             <label className='form-label text-capitalize' htmlFor='site-type'>
               {t('analytics.site-modal.site-type')}
@@ -174,12 +167,14 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
               ))}
             </select>
           </div>
+
           <div className='mb-3'>
             <label className='form-label text-capitalize' htmlFor='site-image'>
               {t('analytics.site-modal.site-type')}
             </label>
-            <SiteImageUpload onChange={onImageUpload} siteImageURL={siteImageURL} />
+            <ImageUpload imageUrl={siteImageURL} onChange={onImageUpload} />
           </div>
+
           <div className='mb-3'>
             <SiteCoordinates
               latitude={site.dmsLatitude}
@@ -192,6 +187,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
                 }))}
             />
           </div>
+
           <div className='mb-3'>
             <label className='form-label text-capitalize' htmlFor='site-presentation'>
               {t('analytics.site-modal.site-presentation')}
@@ -203,6 +199,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
               value={site.presentation}
             />
           </div>
+
           <div className='mb-3'>
             <label className='form-label text-capitalize' htmlFor='site-size'>
               {t('analytics.site-modal.site-size')}
@@ -219,17 +216,15 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
               <span className='input-group-text'>ft²</span>
             </div>
           </div>
+
           <div className='mb-3'>
-            {availableSpecies.length > 0 &&
-              (
-                <TreeSpeciesSelector
-                  onChange={species => setSite(current => ({ ...current, species }))}
-                  searchBarLabel='analytics.site-modal.site-tree-species'
-                  species={site.species}
-                  speciesOptions={availableSpecies}
-                />
-              )}
+            <TreeSpeciesSelector
+              label='analytics.site-modal.site-tree-species'
+              onChange={useCallback(species => setSite(current => ({ ...current, species })), [])}
+              species={site.species}
+            />
           </div>
+
           <div className='mb-3'>
             <label className='form-label text-capitalize' htmlFor='site-research-partner'>
               {t('analytics.site-modal.site-research-partner')}
@@ -252,6 +247,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
                   {t('analytics.site-modal.yes')}
                 </label>
               </div>
+
               <div className='form-check form-check-inline'>
                 <input
                   checked={!site.researchPartner}
@@ -268,6 +264,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
               </div>
             </div>
           </div>
+
           <div className='mb-3'>
             <label className='form-label text-capitalize' htmlFor='site-map-visibility'>
               {t('analytics.site-modal.site-map-visibility')}
@@ -290,6 +287,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
                   {t('analytics.site-modal.visible')}
                 </label>
               </div>
+
               <div className='form-check form-check-inline'>
                 <input
                   checked={!site.visibleOnMap}
@@ -308,16 +306,17 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
           </div>
         </form>
       </DialogContent>
+
       <DialogActions>
         <button
           className='btn btn-outline-primary'
           onClick={() => handleClose()}
           type='button'
         >
-          Cancel
+          {t('generic.cancel')}
         </button>
         <button className='btn btn-primary' onClick={() => handleClose('save', site)} type='button'>
-          Subscribe
+          {t('generic.subscribe')}
         </button>
       </DialogActions>
     </Dialog>

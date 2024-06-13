@@ -4,7 +4,7 @@ import type { ChangeEvent, DragEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 
 type Props = {
-  readonly siteImageURL?: string,
+  readonly imageUrl?: string,
   readonly onChange: (file: File) => void,
 }
 
@@ -13,7 +13,7 @@ const supportedFileTypes = [
   'image/jpeg',
 ]
 
-const SiteImageUpload = ({ onChange, siteImageURL }: Props) => {
+const ImageUpload = ({ onChange, imageUrl }: Props) => {
   const { t } = useTranslation()
 
   const handleFileChange = (
@@ -34,28 +34,28 @@ const SiteImageUpload = ({ onChange, siteImageURL }: Props) => {
   }
 
   return (
-    <div id='site-image'>
+    <div id='image-upload'>
       <label
         className='w-100 d-flex flex-column justify-content-center align-items-center p-4 gap-3'
-        htmlFor='inner-site-image'
+        htmlFor='inner-image-upload'
         onDragOver={event => event.preventDefault()}
         onDrop={dropHandler}
         style={{
           border: 'var(--bs-border-width) dashed var(--bs-primary)',
-          backgroundImage: `url(${siteImageURL})`,
+          backgroundImage: `url(${imageUrl})`,
           backgroundSize: 'contain',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',
         }}
       >
         <img alt='' src={UploadIcon} />
-        <div className='btn btn-outline-primary'>Upload</div>
-        <div>{t('analytics.site-modal.site-image-upload')}</div>
+        <div className='btn btn-outline-primary'>{t('generic.upload')}</div>
+        <div>{t('analytics.image-upload')}</div>
       </label>
       <input
         accept={supportedFileTypes.join(',')}
         className='d-none'
-        id='inner-site-image'
+        id='inner-image-upload'
         onChange={event => handleFileChange(event)}
         type='file'
       />
@@ -63,4 +63,4 @@ const SiteImageUpload = ({ onChange, siteImageURL }: Props) => {
   )
 }
 
-export default SiteImageUpload
+export default ImageUpload

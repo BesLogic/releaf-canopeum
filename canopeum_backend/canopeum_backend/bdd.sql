@@ -93,8 +93,12 @@ CREATE TABLE `Batch` (
   `sponsor` text,
   `size` double,
   `soil_condition` text,
+  `plant_count` integer,
+  `survived_count` integer,
+  `replace_count` integer,
   `total_number_seed` integer,
-  `total_propagation` integer
+  `total_propagation` integer,
+  `image_id` integer REFERENCES `Image` (`id`),
 );
 
 CREATE TABLE `Widget` (
