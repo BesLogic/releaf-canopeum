@@ -230,6 +230,8 @@ def create_batches_for_site(site):
     num_batches = random.randint(3, 8)
     for i in range(num_batches):
         number_of_seed = random.randint(50, 200)
+        plant_count = random.randint(0, number_of_seed)
+        survived_count = random.randint(0, plant_count)
         batch = Batch.objects.create(
             name=batch_names[i - 1],
             site=site,
@@ -237,6 +239,9 @@ def create_batches_for_site(site):
             size=random.randint(20, 150),
             sponsor=get_sponsor(),
             soil_condition="Good",
+            plant_count=plant_count,
+            survived_count=survived_count,
+            replace_count=plant_count - survived_count,
             total_number_seed=number_of_seed,
             total_propagation=random.randint(0, number_of_seed),
             updated_at=timezone.now(),
@@ -308,7 +313,26 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("Data Generated"))
 
     def create_fertilizer_types(self):
-        fertilizer_types = [["Synthetic", "Synthetique"], ["Innoculant", "Innoculant"]]
+        fertilizer_types = [
+            ["Synthetic", "Synthétique"],
+            ["Inoculant", "Inoculant"],
+            ["Organic compost", "Compost organique"],
+            ["Manure", "Fumier"],
+            ["Bone meal", "Farine d'os"],
+            ["Fish emulsion", "Émulsion de poisson"],
+            ["Blood meal", "Farine de sang"],
+            ["Seaweed fertilizer", "Engrais d'algues"],
+            ["Bat guano", "Guano de chauve-souris"],
+            ["Worm castings", "Moulée de vers"],
+            ["Compost tea", "Thé de compost"],
+            ["Wood ash", "Cendre de bois"],
+            ["Rock phosphate", "Phosphate de roche"],
+            ["Greensand", "Sable vert"],
+            ["Alfalfa meal", "Farine d'alfalfa"],
+            ["Cottonseed meal", "Farine de tourteau de coton"],
+            ["Feather meal", "Farine de plumes"],
+            ["Humic acid", "Acide humique"],
+        ]
         for _ in fertilizer_types:
             Fertilizertype.objects.create(
                 name=FertilizertypeInternationalization.objects.create(en=_[0], fr=_[1])

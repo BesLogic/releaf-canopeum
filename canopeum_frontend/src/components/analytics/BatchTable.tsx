@@ -252,7 +252,7 @@ const BatchTable = ({ batches }: Props) => {
                 key={`batch-${batch.id}-seedCollectedCount`}
                 style={{ borderColor: cellBorderColor }}
               >
-                {batch.seedCollectedCount}
+                {batch.totalNumberSeed}
               </td>
             ))}
           </tr>

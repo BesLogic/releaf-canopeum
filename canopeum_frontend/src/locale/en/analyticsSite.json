@@ -2,5 +2,29 @@
   "location": "Location",
   "batch-tracking": "Batch Tracking",
   "social-page": "Social Page",
-  "sponsors": "Sponsors"
+  "sponsors": "Sponsors",
+  "add-new-batch": "Add a New Batch",
+  "batch-modal": {
+    "title": "Create a New Batch",
+    "name-label": "Batch Name / ID",
+    "sponsor-label": "Sponsor",
+    "size-label": "Size of the land",
+    "feet-squared": "ft²",
+    "number-of-trees-label": "Number of Trees per Species",
+    "soil-condition-label": "Soil condition",
+    "fertilizers-label": "Fertilizers",
+    "mulch-layers-label": "Mulch layers",
+    "support-species-label": "Support Species",
+    "total-number-of-plants-label": "Total Number of plants",
+    "survived-label": "How many survived",
+    "replaced-label": "How many replaced",
+    "seeds-per-species-label": "Number of Seeds Collected per Species",
+    "total-seeds-label": "Total number of seeds collected",
+    "propagation-label": "Total Propagation",
+    "images-label": "Image",
+    "feedback": {
+      "success": "Batch created successfully",
+      "error": "Error creating batch"
+    }
+  }
 }
