@@ -21,6 +21,7 @@ from .models import (
     Comment,
     Contact,
     Coordinate,
+    Fertilizertype,
     Internationalization,
     Like,
     Mulchlayertype,
@@ -207,6 +208,36 @@ class TreeTypeSerializer(serializers.ModelSerializer[Treetype]):
         return InternationalizationSerializer(obj.name).data.get("fr", None)
 
 
+class FertilizerTypeSerializer(serializers.ModelSerializer[Fertilizertype]):
+    en = serializers.SerializerMethodField()
+    fr = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Fertilizertype
+        fields = ("id", "en", "fr")
+
+    def get_en(self, obj: Fertilizertype):
+        return InternationalizationSerializer(obj.name).data.get("en", None)
+
+    def get_fr(self, obj: Fertilizertype):
+        return InternationalizationSerializer(obj.name).data.get("fr", None)
+
+
+class MulchLayerTypeSerializer(serializers.ModelSerializer[Mulchlayertype]):
+    en = serializers.SerializerMethodField()
+    fr = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Mulchlayertype
+        fields = ("id", "en", "fr")
+
+    def get_en(self, obj: Mulchlayertype):
+        return InternationalizationSerializer(obj.name).data.get("en", None)
+
+    def get_fr(self, obj: Mulchlayertype):
+        return InternationalizationSerializer(obj.name).data.get("fr", None)
+
+
 class AnnouncementSerializer(serializers.ModelSerializer[Announcement]):
     class Meta:
         model = Announcement
@@ -360,10 +391,10 @@ class BatchMulchLayerSerializer(serializers.ModelSerializer[Mulchlayertype]):
         fields = ("id", "en", "fr")
 
     def get_en(self, obj):
-        return InternationalizationSerializer(obj.mulch_layer_type).data.get("en", None)
+        return InternationalizationSerializer(obj.mulch_layer_type.name).data.get("en", None)
 
     def get_fr(self, obj):
-        return InternationalizationSerializer(obj.mulch_layer_type).data.get("fr", None)
+        return InternationalizationSerializer(obj.mulch_layer_type.name).data.get("fr", None)
 
 
 class BatchSupportedSpeciesSerializer(serializers.ModelSerializer[BatchSupportedSpecies]):
@@ -372,13 +403,22 @@ class BatchSupportedSpeciesSerializer(serializers.ModelSerializer[BatchSupported
 
     class Meta:
         model = BatchSupportedSpecies
-        fields = ("en", "fr")
+        fields = ("id", "en", "fr")
 
-    def get_en(self, obj):
-        return InternationalizationSerializer(obj.tree_type).data.get("en", None)
+    def get_id(self, obj: BatchSupportedSpecies):
+        if obj.tree_type is None:
+            return None
+        return obj.tree_type.pk
 
-    def get_fr(self, obj):
-        return InternationalizationSerializer(obj.tree_type).data.get("fr", None)
+    def get_en(self, obj: BatchSupportedSpecies):
+        if obj.tree_type is None:
+            return None
+        return InternationalizationSerializer(obj.tree_type.name).data.get("en", None)
+
+    def get_fr(self, obj: BatchSupportedSpecies):
+        if obj.tree_type is None:
+            return None
+        return InternationalizationSerializer(obj.tree_type.name).data.get("fr", None)
 
 
 class BatchSeedSerializer(serializers.ModelSerializer[BatchSeed]):
@@ -390,10 +430,14 @@ class BatchSeedSerializer(serializers.ModelSerializer[BatchSeed]):
         fields = ("quantity", "en", "fr")
 
     def get_en(self, obj):
-        return InternationalizationSerializer(obj.tree_type).data.get("en", None)
+        if obj.tree_type is None:
+            return None
+        return InternationalizationSerializer(obj.tree_type.name).data.get("en", None)
 
     def get_fr(self, obj):
-        return InternationalizationSerializer(obj.tree_type).data.get("fr", None)
+        if obj.tree_type is None:
+            return None
+        return InternationalizationSerializer(obj.tree_type.name).data.get("fr", None)
 
 
 class BatchSpeciesSerializer(serializers.ModelSerializer[BatchSpecies]):
@@ -425,13 +469,11 @@ class BatchAnalyticsSerializer(serializers.ModelSerializer[Batch]):
     fertilizers = serializers.SerializerMethodField()
     mulch_layers = serializers.SerializerMethodField()
     supported_species = serializers.SerializerMethodField()
-    plant_count = serializers.SerializerMethodField()
-    survived_count = serializers.SerializerMethodField()
-    replace_count = serializers.SerializerMethodField()
-    seed_collected_count = serializers.SerializerMethodField()
     seeds = serializers.SerializerMethodField()
     species = serializers.SerializerMethodField()
     updated_at = serializers.DateTimeField()
+    created_at = serializers.DateTimeField()
+    image = AssetSerializer()
 
     class Meta:
         model = Batch
@@ -447,27 +489,14 @@ class BatchAnalyticsSerializer(serializers.ModelSerializer[Batch]):
             "plant_count",
             "survived_count",
             "replace_count",
-            "seed_collected_count",
+            "total_number_seed",
+            "total_propagation",
             "seeds",
             "species",
+            "created_at",
             "updated_at",
+            "image",
         )
-
-    @extend_schema_field(int)
-    def get_plant_count(self, obj):
-        return random.randint(100, 200)  # noqa: S311
-
-    @extend_schema_field(int)
-    def get_survived_count(self, obj):
-        return random.randint(50, 100)  # noqa: S311
-
-    @extend_schema_field(int)
-    def get_replace_count(self, obj):
-        return random.randint(25, 50)  # noqa: S311
-
-    @extend_schema_field(int)
-    def get_seed_collected_count(self, obj):
-        return random.randint(50, 300)  # noqa: S311
 
     @extend_schema_field(BatchfertilizerSerializer(many=True))
     def get_fertilizers(self, obj):

@@ -22,6 +22,9 @@
   "last-update": "Dernière Mise à Jour",
   "visitors": "Visiteurs",
   "sponsored": "Sponsorisé",
+  "no-admins": "Pas d'administrateurs",
+  "unknown": "Inconnu",
+  "admins-saved": "Administrateurs sauvegardés avec succès pour {{siteName}}!",
   "unnamed-site": "Site sans nom",
   "site-deleted": "Le site {{siteName}} a été supprimé avec succès.",
   "site-deleted-error": "Un problème est survenu lors de la tentative de suppression du site {{siteName}}...",
@@ -46,7 +49,6 @@
     "site-name": "nom du site",
     "site-type": "type de site",
     "site-image": "image du projet ou logo de l'entreprise",
-    "site-image-upload": "ou déposer une image pour télécharger",
     "site-gps-coordinates": "coordonnées GPS",
     "site-dms-latitude": "latitude DMS",
     "site-dms-longitude": "longitude DMS",
@@ -59,5 +61,6 @@
     "no": "non",
     "visible": "visible",
     "invisible": "invisible"
-  }
+  },
+  "image-upload": "ou déposez une image à téléverser"
 }

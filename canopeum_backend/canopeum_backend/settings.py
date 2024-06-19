@@ -14,6 +14,12 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+from corsheaders.defaults import default_headers
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,8 +32,6 @@ SECRET_KEY = "django-insecure-xy@=#v*#0yj@^gsl*0f+ci9+)8@v-x#7+npdvh50fn7^s9ow8g
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS: list[str] = []
 
 
 # Application definition
@@ -47,22 +51,39 @@ INSTALLED_APPS = [
     "canopeum_backend",
 ]
 
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = ["http://localhost:5173", "http://localhost:3000", "http://releaftrees.life"]
+
+ALLOWED_HOSTS: list[str] = ["*"]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "http://releaftrees.life",
+    "https://releaftrees.life",
+]
+
+CORS_ALLOW_HEADERS = (*default_headers, "Access-Control-Allow-Origin")
+
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "http://releaftrees.life",
+    "https://releaftrees.life",
+]
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://localhost:3000",
-    "http://199.188.220.99:5173",
-]
 
 ROOT_URLCONF = "canopeum_backend.urls"
 
@@ -107,7 +128,7 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "Canopeum API",
     "DESCRIPTION": "API for the Canopeum project",
     "VERSION": "0.0.1",
-    "BASE_URL": "http://localhost:3000",
+    "BASE_URL": os.environ.get("HOST", default="http://localhost:3000/"),
     "SWAGGER_UI_SETTINGS": {
         "deepLinking": True,
         "persistAuthorization": True,
@@ -133,11 +154,11 @@ SPECTACULAR_SETTINGS = {
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "canopeum_db",
-        "USER": "root",
-        "PASSWORD": "canopeum",
-        "HOST": os.environ.get("MYSQL_HOST", "localhost"),
-        "PORT": "3308",  # Same as in docker-compose.yaml
+        "NAME": os.getenv("MYSQL_DATABASE"),
+        "USER": os.getenv("MYSQL_USER"),
+        "PASSWORD": os.getenv("MYSQL_PASSWORD"),
+        "HOST": os.getenv("MYSQL_HOST"),
+        "PORT": "3306",  # Same as in docker-compose.yaml
     },
 }
 
