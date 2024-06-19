@@ -11,5 +11,11 @@ RUN pip install -r requirements.txt
 
 COPY . /app/
 
+RUN python manage.py collectstatic --noinput
+
+RUN python manage.py makemigrations
+
+RUN python manage.py migrate
+
 EXPOSE 5001
 CMD ["python", "manage.py", "runserver", "0.0.0.0:5001"]

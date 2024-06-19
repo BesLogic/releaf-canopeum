@@ -144,10 +144,10 @@ class UserSerializer(serializers.ModelSerializer[User]):
         return RoleName.from_string(role_name)  # type: ignore[no-any-return] # mypy false-positive
 
     def get_admin_site_ids(self, obj: User) -> list[int]:
-        return [siteadmin.site.id for siteadmin in Siteadmin.objects.filter(user=obj)]
+        return [siteadmin.site.pk for siteadmin in Siteadmin.objects.filter(user=obj)]
 
     def get_followed_site_ids(self, obj: User) -> list[int]:
-        return [site_follower.site.id for site_follower in SiteFollower.objects.filter(user=obj)]
+        return [site_follower.site.pk for site_follower in SiteFollower.objects.filter(user=obj)]
 
 
 # Note about Any: Generic is the type of "instance", not set here
