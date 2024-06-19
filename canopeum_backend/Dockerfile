@@ -13,5 +13,5 @@ COPY . /app/
 
 EXPOSE 5001
 
-RUN chmod +x /opt/app/docker-entrypoint.sh
-ENTRYPOINT ["/opt/app/docker-entrypoint.sh"]
+RUN chmod +x /app/docker-entrypoint.sh
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
