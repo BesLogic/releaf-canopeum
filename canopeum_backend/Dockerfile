@@ -14,4 +14,6 @@ COPY . /app/
 RUN python manage.py migrate
 
 EXPOSE 5001
-CMD ["python", "manage.py", "runserver", "0.0.0.0:5001"]
+
+RUN chmod +x /opt/app/docker-entrypoint.sh
+ENTRYPOINT ["/opt/app/docker-entrypoint.sh"]
