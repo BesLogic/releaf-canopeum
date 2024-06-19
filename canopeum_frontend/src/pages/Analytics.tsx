@@ -69,8 +69,8 @@ const Analytics = () => {
         // eslint-disable-next-line max-len -- string
         `${dmsLongitude.degrees}°${dmsLongitude.minutes}'${dmsLongitude.seconds}.${dmsLongitude.miliseconds}"${dmsLongitude.cardinal}`
 
-      if (siteId) {
-        void getApiClient().siteClient.update(
+      const response = siteId
+        ? getApiClient().siteClient.update(
           siteId,
           siteName,
           siteType,
@@ -83,8 +83,7 @@ const Analytics = () => {
           researchPartner,
           visibleOnMap,
         )
-      } else {
-        void getApiClient().siteClient.create(
+        : getApiClient().siteClient.create(
           siteName,
           siteType,
           image,
@@ -96,7 +95,8 @@ const Analytics = () => {
           researchPartner,
           visibleOnMap,
         )
-      }
+
+      void response.then(async () => setSiteSummaries(await getApiClient().summaryClient.all()))
     }
 
     setIsModalOpen(false)
@@ -173,7 +173,7 @@ const Analytics = () => {
     })
 
   return (
-    <div>
+    <div className='h-100 overflow-y-auto'>
       <div className='page-container d-flex flex-column gap-2 mt-3'>
         <div className='d-flex justify-content-between'>
           <h1 className='text-light'>{translate('analytics.title')}</h1>
@@ -195,7 +195,7 @@ const Analytics = () => {
           />
         </div>
 
-        <div className='mt-2 row gx-3 gy-3 pb-3'>
+        <div className='mt-2 row gx-3 gy-3 pb-3' style={{ maxHeight: '67rem', overflow: 'auto' }}>
           {siteSummaries.map(site => (
             <SiteSummaryCard
               admins={adminList}

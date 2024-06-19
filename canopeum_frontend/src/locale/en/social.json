@@ -26,5 +26,12 @@
   },
   "posts": {
     "post-body-required": "You must enter a message in order to publish your post."
+  },
+  "widgets": {
+    "create": "add a new widget",
+    "save": "save",
+    "cancel": "cancel",
+    "max-word": "100 words maximum",
+    "title": "widget title"
   }
 }

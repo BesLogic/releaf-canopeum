@@ -1,5 +1,5 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext.tsx'
-import PostWidget from '@components/social/PostWidget.tsx'
+import PostCard from '@components/social/PostCard.tsx'
 import { CircularProgress } from '@mui/material'
 import { useContext, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -49,7 +49,7 @@ const Home = () => {
 
     return (
       <div className='d-flex flex-column gap-3'>
-        {newsPosts.map(post => <PostWidget key={post.id} post={post} />)}
+        {newsPosts.map(post => <PostCard key={post.id} post={post} />)}
       </div>
     )
   }

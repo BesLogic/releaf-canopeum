@@ -64,13 +64,13 @@ const MainLayout = () => {
 
       <Route element={<NavbarLayout />}>
         <Route element={<AuthenticatedRoutes />}>
-          <Route element={<Home />} path='*' />
           <Route element={<Home />} path='/home' />
           <Route element={<Analytics />} path='/sites' />
           <Route element={<AnalyticsSite />} path='/sites/:siteId' />
           <Route element={<UserManagement />} path='/user-management' />
           <Route element={<Utilities />} path='/utilities' />
         </Route>
+        <Route element={<Map />} path='*' />
 
         <Route element={<Home />} path='/home' />
 

@@ -48,6 +48,8 @@ drf-spectacular-sidecar==2024.3.4
 
 EditorConfig==0.12.4
 
+googlemaps==4.10.0
+
 filelock==3.14.0
 
 html-tag-names==0.1.2
