@@ -11,8 +11,6 @@ RUN pip install -r requirements.txt
 
 COPY . /app/
 
-RUN python manage.py migrate
-
 EXPOSE 5001
 
 RUN chmod +x /opt/app/docker-entrypoint.sh
