@@ -29,6 +29,7 @@ services:
       MYSQL_USER: canopeum_user
       MYSQL_PASSWORD: CanopeumUser12345!@
       VIRTUAL_HOST: api.canopeum.releaftrees.life
+      LETSENCRYPT_HOST: api.canopeum.releaftrees.life
     networks:
       - internal-canopeum
       - nginx-canopeum
@@ -42,6 +43,7 @@ services:
       VITE_API_BASE_URL: http://localhost:5001
       NODE_ENV: production
       VIRTUAL_HOST: releaftrees.life
+      LETSENCRYPT_HOST: releaftrees.life
     networks:
       - nginx-canopeum
 
