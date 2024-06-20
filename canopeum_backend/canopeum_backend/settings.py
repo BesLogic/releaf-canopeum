@@ -51,7 +51,12 @@ INSTALLED_APPS = [
 
 CORS_ALLOW_CREDENTIALS = True
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:5173", "http://localhost:3000", "http://releaftrees.life"]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "http://releaftrees.life",
+    "https://releaftrees.life",
+]
 
 ALLOWED_HOSTS: list[str] = ["*"]
 
