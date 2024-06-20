@@ -33,7 +33,7 @@ services:
       VIRTUAL_HOST: api.canopeum.releaftrees.life
       LETSENCRYPT_HOST: api.canopeum.releaftrees.life
     volumes:
-      - /canopeum_backend/media:/var/media
+      - media:/canopeum_backend/media
     networks:
       - internal-canopeum
       - nginx-canopeum
