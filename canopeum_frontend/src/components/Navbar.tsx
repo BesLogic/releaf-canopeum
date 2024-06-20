@@ -33,12 +33,13 @@ const NAVBAR_ITEMS: NavbarItem[] = [
     label: 'map',
     roles: ['User', 'SiteManager', 'MegaAdmin'],
   },
-  {
-    icon: 'style',
-    linkTo: appRoutes.utilities,
-    label: 'utilities',
-    roles: ['SiteManager', 'MegaAdmin'],
-  },
+  // For development purposes
+  // {
+  //   icon: 'style',
+  //   linkTo: appRoutes.utilities,
+  //   label: 'utilities',
+  //   roles: ['SiteManager', 'MegaAdmin'],
+  // },
 ]
 
 const Navbar = () => {

@@ -7,6 +7,6 @@ export const appRoutes = {
   site: (siteId: number) => `/sites/${siteId}`,
   siteSocial: (siteId: number) => `/sites/${siteId}/social`,
   userManagment: '/user-management',
-  utilities: '/utilities',
+  // utilities: '/utilities',  // For development purposes
   map: '/map',
 }
