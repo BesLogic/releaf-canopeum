@@ -32,8 +32,8 @@ services:
       DEBUG: 'False'
       VIRTUAL_HOST: api.canopeum.releaftrees.life
       LETSENCRYPT_HOST: api.canopeum.releaftrees.life
-    # volumes:
-    #   - ./canopeum_backend/media:/media
+    volumes:
+      - ./canopeum_backend/media:/media
     networks:
       - internal-canopeum
       - nginx-canopeum
@@ -56,8 +56,8 @@ volumes:
     driver: local
   mysql8-conf:
     driver: local
-  # media:
-  #   driver: local
+  media:
+    driver: local
 
 networks:
   internal-canopeum:
