@@ -29,9 +29,11 @@ services:
       MYSQL_USER: canopeum_user
       MYSQL_PASSWORD: CanopeumUser12345!@\
       SECRET_KEY: x!dv3-)j4=3e!0)*@fxpu15(lzysm9av28$tw@un9h96krph)m
-      DEBUG: False
+      DEBUG: 'False'
       VIRTUAL_HOST: api.canopeum.releaftrees.life
       LETSENCRYPT_HOST: api.canopeum.releaftrees.life
+    volumes:
+      - ./canopeum_backend/media:/media
     networks:
       - internal-canopeum
       - nginx-canopeum
@@ -53,6 +55,8 @@ volumes:
   mysql8-data:
     driver: local
   mysql8-conf:
+    driver: local
+  media:
     driver: local
 
 networks:
