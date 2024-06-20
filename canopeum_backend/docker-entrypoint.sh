@@ -1,3 +1,5 @@
+#!/bin/bash
+
 echo "Migrate the Database at startup of project"
 
 # Wait for few minute and run db migraiton
