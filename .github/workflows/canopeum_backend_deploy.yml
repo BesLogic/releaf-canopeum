@@ -3,13 +3,7 @@ name: canopeum_backend_deploy
 on:
   push:
     branches:
-      - main
-    paths:
-      - "canopeum_backend/**"
-      - ".github/workflows/canopeum_backend_deploy.yml"
-  pull_request:
-    branches:
-      - main
+      - production
     paths:
       - "canopeum_backend/**"
       - ".github/workflows/canopeum_backend_deploy.yml"
