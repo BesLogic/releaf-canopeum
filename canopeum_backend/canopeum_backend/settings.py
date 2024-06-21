@@ -16,9 +16,19 @@ from pathlib import Path
 
 from corsheaders.defaults import default_headers
 from dotenv import load_dotenv
+import dj_database_url
 
 # Load environment variables from .env file
 load_dotenv()
+
+def get_secret(key, default):
+    value = os.getenv(key, default)
+    if os.path.isfile(value):
+        with open(value) as f:
+            return f.read()
+    return value
+
+SECRET_KEY = get_secret("SECRET_KEY", "")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -154,17 +164,16 @@ SPECTACULAR_SETTINGS = {
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+#     "default": f"mysql://{os.getenv('MYSQL_USER')}:{os.getenv('MYSQL_PASSWORD')}@{os.getenv('MYSQL_HOST')}:3306/{os.getenv('MYSQL_DATABASE')}",
+# }
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": os.getenv("MYSQL_DATABASE"),
-        "USER": os.getenv("MYSQL_USER"),
-        "PASSWORD": os.getenv("MYSQL_PASSWORD"),
-        "HOST": os.getenv("MYSQL_HOST"),
-        "PORT": "3306",  # Same as in docker-compose.yaml
-    },
+    'default': dj_database_url.parse(
+        f"mysql://canopeum_user:{get_secret('MYSQL_PASSWORD_CANOPEUM', '')}@{os.getenv('MYSQL_HOST_CANOPEUM', '')}:3306/canopeum_db",
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
