@@ -63,7 +63,9 @@ volumes:
     driver: local
 
 secrets:
-  backend_secrets:
+  MYSQL_PASSWORD_CANOPEUM:
+    external: true
+  MYSQL_HOST_CANOPEUM:
     external: true
 
 networks:
