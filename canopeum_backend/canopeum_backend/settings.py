@@ -42,204 +42,207 @@ def get_secret(key, default):
             return f.read()
     return value
 
-SECRET_KEY = get_secret("SECRET_KEY", "")
+print(get_secret("MYSQL_PASSWORD_CANOPEUM", ""))
+print(get_secret("MYSQL_HOST_CANOPEUM", ""))
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+# SECRET_KEY = get_secret("SECRET_KEY", "")
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
+# # Build paths inside the project like this: BASE_DIR / 'subdir'.
+# BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY")
+# # Quick-start development settings - unsuitable for production
+# # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", default="True")
+# # SECURITY WARNING: keep the secret key used in production secret!
+# SECRET_KEY = os.getenv("SECRET_KEY")
 
-# Application definition
+# # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = os.getenv("DEBUG", default="True")
 
-INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "rest_framework.authtoken",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    "corsheaders",
-    "drf_spectacular",
-    "drf_spectacular_sidecar",
-    "rest_framework_simplejwt",
-    "canopeum_backend",
-]
+# # Application definition
 
-CORS_ALLOW_CREDENTIALS = True
+# INSTALLED_APPS = [
+#     "django.contrib.admin",
+#     "django.contrib.auth",
+#     "rest_framework.authtoken",
+#     "django.contrib.contenttypes",
+#     "django.contrib.sessions",
+#     "django.contrib.messages",
+#     "django.contrib.staticfiles",
+#     "corsheaders",
+#     "drf_spectacular",
+#     "drf_spectacular_sidecar",
+#     "rest_framework_simplejwt",
+#     "canopeum_backend",
+# ]
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173",
-    "http://localhost:3000",
-    "http://releaftrees.life",
-    "https://releaftrees.life",
-]
+# CORS_ALLOW_CREDENTIALS = True
 
-ALLOWED_HOSTS: list[str] = ["*"]
+# CSRF_TRUSTED_ORIGINS = [
+#     "http://localhost:5173",
+#     "http://localhost:3000",
+#     "http://releaftrees.life",
+#     "https://releaftrees.life",
+# ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://localhost:3000",
-    "http://releaftrees.life",
-    "https://releaftrees.life",
-]
+# ALLOWED_HOSTS: list[str] = ["*"]
 
-CORS_ALLOW_HEADERS = (*default_headers, "Access-Control-Allow-Origin")
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:5173",
+#     "http://localhost:3000",
+#     "http://releaftrees.life",
+#     "https://releaftrees.life",
+# ]
 
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:5173",
-    "http://localhost:3000",
-    "http://releaftrees.life",
-    "https://releaftrees.life",
-]
+# CORS_ALLOW_HEADERS = (*default_headers, "Access-Control-Allow-Origin")
 
-MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-]
+# CORS_ORIGIN_WHITELIST = [
+#     "http://localhost:5173",
+#     "http://localhost:3000",
+#     "http://releaftrees.life",
+#     "https://releaftrees.life",
+# ]
 
-
-ROOT_URLCONF = "canopeum_backend.urls"
-
-TEMPLATES = [
-    {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-            ],
-        },
-    },
-]
-
-WSGI_APPLICATION = "canopeum_backend.wsgi.application"
-
-REST_FRAMEWORK = {
-    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    "DEFAULT_RENDERER_CLASSES": [
-        "djangorestframework_camel_case.render.CamelCaseJSONRenderer",
-    ],
-    "DEFAULT_PARSER_CLASSES": [
-        "rest_framework.parsers.JSONParser",
-    ],
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-    ],
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",
-    ],
-}
-
-SPECTACULAR_SETTINGS = {
-    "SWAGGER_UI_DIST": "SIDECAR",
-    "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
-    "REDOC_DIST": "SIDECAR",
-    "TITLE": "Canopeum API",
-    "DESCRIPTION": "API for the Canopeum project",
-    "VERSION": "0.0.1",
-    "BASE_URL": os.environ.get("HOST", default="http://localhost:3000/"),
-    "SWAGGER_UI_SETTINGS": {
-        "deepLinking": True,
-        "persistAuthorization": True,
-        "displayOperationId": True,
-    },
-    # Split components into request and response parts where appropriate
-    # "COMPONENT_SPLIT_REQUEST": True,
-    # Aid client generator targets that have trouble with read-only properties.
-    "COMPONENT_NO_READ_ONLY_REQUIRED": False,
-    # Create separate components for PATCH endpoints (without required list)
-    "COMPONENT_SPLIT_PATCH": True,
-    # "CAMELIZE_NAMES": True,
-    "POSTPROCESSING_HOOKS": [
-        "drf_spectacular.contrib.djangorestframework_camel_case.camelize_serializer_fields",
-        "drf_spectacular.hooks.postprocess_schema_enums",
-    ],
-}
+# MIDDLEWARE = [
+#     "django.middleware.security.SecurityMiddleware",
+#     "django.contrib.sessions.middleware.SessionMiddleware",
+#     "corsheaders.middleware.CorsMiddleware",
+#     "django.middleware.common.CommonMiddleware",
+#     "django.middleware.csrf.CsrfViewMiddleware",
+#     "django.contrib.auth.middleware.AuthenticationMiddleware",
+#     "django.contrib.messages.middleware.MessageMiddleware",
+#     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+# ]
 
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+# ROOT_URLCONF = "canopeum_backend.urls"
 
-# DATABASES = {
-#     "default": f"mysql://{os.getenv('MYSQL_USER')}:{os.getenv('MYSQL_PASSWORD')}@{os.getenv('MYSQL_HOST')}:3306/{os.getenv('MYSQL_DATABASE')}",
+# TEMPLATES = [
+#     {
+#         "BACKEND": "django.template.backends.django.DjangoTemplates",
+#         "DIRS": [],
+#         "APP_DIRS": True,
+#         "OPTIONS": {
+#             "context_processors": [
+#                 "django.template.context_processors.debug",
+#                 "django.template.context_processors.request",
+#                 "django.contrib.auth.context_processors.auth",
+#                 "django.contrib.messages.context_processors.messages",
+#             ],
+#         },
+#     },
+# ]
+
+# WSGI_APPLICATION = "canopeum_backend.wsgi.application"
+
+# REST_FRAMEWORK = {
+#     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+#     "DEFAULT_RENDERER_CLASSES": [
+#         "djangorestframework_camel_case.render.CamelCaseJSONRenderer",
+#     ],
+#     "DEFAULT_PARSER_CLASSES": [
+#         "rest_framework.parsers.JSONParser",
+#     ],
+#     "DEFAULT_AUTHENTICATION_CLASSES": [
+#         "rest_framework_simplejwt.authentication.JWTAuthentication",
+#     ],
+#     "DEFAULT_PERMISSION_CLASSES": [
+#         "rest_framework.permissions.IsAuthenticated",
+#     ],
 # }
-DATABASES = {
-    'default': dj_database_url.parse(
-        f"mysql://canopeum_user:{get_secret('MYSQL_PASSWORD_CANOPEUM', '')}@{os.getenv('MYSQL_HOST_CANOPEUM', '')}:3306/canopeum_db",
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
 
-# Password validation
-# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
-
-AUTH_USER_MODEL = "canopeum_backend.User"
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
-]
-
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=180),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=50),
-}
+# SPECTACULAR_SETTINGS = {
+#     "SWAGGER_UI_DIST": "SIDECAR",
+#     "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
+#     "REDOC_DIST": "SIDECAR",
+#     "TITLE": "Canopeum API",
+#     "DESCRIPTION": "API for the Canopeum project",
+#     "VERSION": "0.0.1",
+#     "BASE_URL": os.environ.get("HOST", default="http://localhost:3000/"),
+#     "SWAGGER_UI_SETTINGS": {
+#         "deepLinking": True,
+#         "persistAuthorization": True,
+#         "displayOperationId": True,
+#     },
+#     # Split components into request and response parts where appropriate
+#     # "COMPONENT_SPLIT_REQUEST": True,
+#     # Aid client generator targets that have trouble with read-only properties.
+#     "COMPONENT_NO_READ_ONLY_REQUIRED": False,
+#     # Create separate components for PATCH endpoints (without required list)
+#     "COMPONENT_SPLIT_PATCH": True,
+#     # "CAMELIZE_NAMES": True,
+#     "POSTPROCESSING_HOOKS": [
+#         "drf_spectacular.contrib.djangorestframework_camel_case.camelize_serializer_fields",
+#         "drf_spectacular.hooks.postprocess_schema_enums",
+#     ],
+# }
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
+# # Database
+# # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-LANGUAGE_CODE = "en-us"
+# # DATABASES = {
+# #     "default": f"mysql://{os.getenv('MYSQL_USER')}:{os.getenv('MYSQL_PASSWORD')}@{os.getenv('MYSQL_HOST')}:3306/{os.getenv('MYSQL_DATABASE')}",
+# # }
+# DATABASES = {
+#     'default': dj_database_url.parse(
+#         f"mysql://canopeum_user:{get_secret('MYSQL_PASSWORD_CANOPEUM', '')}@{os.getenv('MYSQL_HOST_CANOPEUM', '')}:3306/canopeum_db",
+#         conn_max_age=600,
+#         conn_health_checks=True,
+#     )
+# }
 
-TIME_ZONE = "UTC"
+# # Password validation
+# # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
-USE_I18N = True
+# AUTH_USER_MODEL = "canopeum_backend.User"
 
-USE_TZ = True
+# AUTH_PASSWORD_VALIDATORS = [
+#     {
+#         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+#     },
+#     {
+#         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+#     },
+#     {
+#         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+#     },
+#     {
+#         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+#     },
+# ]
+
+# SIMPLE_JWT = {
+#     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=180),
+#     "REFRESH_TOKEN_LIFETIME": timedelta(days=50),
+# }
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
+# # Internationalization
+# # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-STATIC_URL = "static/"
+# LANGUAGE_CODE = "en-us"
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "canopeum_backend/media"
+# TIME_ZONE = "UTC"
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
+# USE_I18N = True
 
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+# USE_TZ = True
 
-APPEND_SLASH = False
 
-GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
+# # Static files (CSS, JavaScript, Images)
+# # https://docs.djangoproject.com/en/5.0/howto/static-files/
+
+# STATIC_URL = "static/"
+
+# MEDIA_URL = "/media/"
+# MEDIA_ROOT = BASE_DIR / "canopeum_backend/media"
+
+# # Default primary key field type
+# # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
+
+# DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# APPEND_SLASH = False
+
+# GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
