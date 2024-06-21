@@ -25,9 +25,9 @@ services:
     environment:
       MYSQL_DATABASE: canopeum_db
       MYSQL_ROOT_PASSWORD: Canopeum12345!@
-      # MYSQL_HOST: mysql
+      MYSQL_HOST_CANOPEUM: MYSQL_HOST_CANOPEUM
       MYSQL_USER: canopeum_user
-      # MYSQL_PASSWORD: CanopeumUser12345!@
+      MYSQL_PASSWORD_CANOPEUM: /run/secrets/MYSQL_PASSWORD_CANOPEUM
       SECRET_KEY: x!dv3-)j4=3e!0)*@fxpu15(lzysm9av28$tw@un9h96krph)m
       DEBUG: 'False'
       VIRTUAL_HOST: api.canopeum.releaftrees.life
