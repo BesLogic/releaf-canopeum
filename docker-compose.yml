@@ -24,11 +24,10 @@ services:
       - mysql
     environment:
       MYSQL_DATABASE: canopeum_db
-      MYSQL_ROOT_PASSWORD: Canopeum12345!@
       MYSQL_HOST_CANOPEUM: /run/secrets/MYSQL_HOST_CANOPEUM
       MYSQL_USER: canopeum_user
       MYSQL_PASSWORD_CANOPEUM: /run/secrets/MYSQL_PASSWORD_CANOPEUM
-      SECRET_KEY: x!dv3-)j4=3e!0)*@fxpu15(lzysm9av28$tw@un9h96krph)m
+      SECRET_KEY: /run/secrets/SECRET_KEY_DJANGO_CANOPEUM
       DEBUG: 'False'
       VIRTUAL_HOST: api.canopeum.releaftrees.life
       LETSENCRYPT_HOST: api.canopeum.releaftrees.life
@@ -37,6 +36,7 @@ services:
     secrets:
       - MYSQL_PASSWORD_CANOPEUM
       - MYSQL_HOST_CANOPEUM
+      - SECRET_KEY_DJANGO_CANOPEUM
     networks:
       - internal-canopeum
       - nginx-canopeum
@@ -66,6 +66,8 @@ secrets:
   MYSQL_PASSWORD_CANOPEUM:
     external: true
   MYSQL_HOST_CANOPEUM:
+    external: true
+  SECRET_KEY_DJANGO_CANOPEUM:
     external: true
 
 networks:
