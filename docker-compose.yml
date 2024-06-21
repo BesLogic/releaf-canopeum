@@ -28,6 +28,7 @@ services:
       MYSQL_USER: canopeum_user
       MYSQL_PASSWORD_CANOPEUM: /run/secrets/MYSQL_PASSWORD_CANOPEUM
       SECRET_KEY: /run/secrets/SECRET_KEY_DJANGO_CANOPEUM
+      GOOGLE_API_KEY: /run/secrets/GOOGLE_API_KEY_CANOPEUM
       DEBUG: 'False'
       VIRTUAL_HOST: api.canopeum.releaftrees.life
       LETSENCRYPT_HOST: api.canopeum.releaftrees.life
@@ -37,6 +38,7 @@ services:
       - MYSQL_PASSWORD_CANOPEUM
       - MYSQL_HOST_CANOPEUM
       - SECRET_KEY_DJANGO_CANOPEUM
+      - GOOGLE_API_KEY_CANOPEUM
     networks:
       - internal-canopeum
       - nginx-canopeum
@@ -68,6 +70,8 @@ secrets:
   MYSQL_HOST_CANOPEUM:
     external: true
   SECRET_KEY_DJANGO_CANOPEUM:
+    external: true
+  GOOGLE_API_KEY_CANOPEUM:
     external: true
 
 networks:
