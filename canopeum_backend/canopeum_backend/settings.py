@@ -17,12 +17,26 @@ from pathlib import Path
 from corsheaders.defaults import default_headers
 from dotenv import load_dotenv
 import dj_database_url
+import os
 
 # Load environment variables from .env file
 load_dotenv()
 
+def print_secrets():
+    secrets_dir = "/run/secrets"
+    for filename in os.listdir(secrets_dir):
+        print(filename)
+        filepath = os.path.join(secrets_dir, filename)
+        print(filepath)
+        with open(filepath) as f:
+            content = f.read()
+            print(content)
+
+print_secrets()
+
 def get_secret(key, default):
     value = os.getenv(key, default)
+    print(value)
     if os.path.isfile(value):
         with open(value) as f:
             return f.read()
