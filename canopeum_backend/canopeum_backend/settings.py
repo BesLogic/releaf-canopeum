@@ -39,7 +39,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = get_secret("SECRET_KEY_DJANGO_CANOPEUM", "")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", default="True")
+DEBUG = get_secret("DEBUG", "True")
 
 # Application definition
 
