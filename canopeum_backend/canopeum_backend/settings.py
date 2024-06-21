@@ -24,7 +24,6 @@ load_dotenv()
 
 def get_secret(key, default):
     value = os.getenv(key, default)
-    print(value)
     if os.path.isfile(value):
         with open(value) as f:
             return f.read()
@@ -37,7 +36,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_secret("SECRET_KEY", "")
+SECRET_KEY = get_secret("SECRET_KEY_DJANGO_CANOPEUM", "")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", default="True")
