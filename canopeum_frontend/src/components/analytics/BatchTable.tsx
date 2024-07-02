@@ -80,8 +80,8 @@ const BatchTable = ({ batches }: Props) => {
                 style={{ borderColor: cellBorderColor }}
               >
                 <ul>
-                  {batch.species.map(type => (
-                    <li key={`batch-${batch.id}-treeType-${type.en}`}>
+                  {batch.species.map((type, index) => (
+                    <li key={`batch-${batch.id}-treeType-${type.en}-${index}`}>
                       {translateValue(type)} x {type.quantity}
                     </li>
                   ))}

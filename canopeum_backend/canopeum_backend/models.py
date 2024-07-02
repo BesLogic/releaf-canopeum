@@ -155,12 +155,13 @@ class Coordinate(models.Model):
     @classmethod
     def from_dms_lat_long(cls, dms_latitude: str, dms_longitude: str):
         dms_latitude_split = re.split(LAT_LONG_SEP, dms_latitude)
+
         dd_latitude = (
             float(dms_latitude_split[0])
             + float(dms_latitude_split[1]) / 60
             + float(dms_latitude_split[2]) / 3600
         )
-        if dms_latitude_split[4] == "S":
+        if dms_latitude_split[3] == "S":
             dd_latitude *= -1
 
         dms_longitude_split = re.split(LAT_LONG_SEP, dms_longitude)
@@ -169,13 +170,19 @@ class Coordinate(models.Model):
             + float(dms_longitude_split[1]) / 60
             + float(dms_longitude_split[2]) / 3600
         )
-        if dms_longitude_split[4] == "W":
+        if dms_longitude_split[3] == "W":
             dd_longitude *= -1
 
-        formatted_address = (
-            gmaps.reverse_geocode((dd_latitude, dd_longitude), result_type="street_address")[0]  # pyright: ignore[reportAttributeAccessIssue] -- No type stub currently exists
+        full_address = (
+            gmaps.reverse_geocode((dd_latitude, dd_longitude), result_type="street_address")  # pyright: ignore[reportAttributeAccessIssue] -- No type stub currently exists
             if gmaps is not None
             else ""
+        )
+
+        formatted_address = (
+            full_address[0]["formatted_address"]
+            if full_address
+            else f"{dms_latitude}-{dms_longitude}"
         )
 
         return cls.objects.create(

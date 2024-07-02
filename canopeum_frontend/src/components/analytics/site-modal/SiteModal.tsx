@@ -6,6 +6,7 @@ import useApiClient from '@hooks/ApiClientHook'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import type { Sitetreespecies, SiteType } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
+import { use } from 'i18next'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 

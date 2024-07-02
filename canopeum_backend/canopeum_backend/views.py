@@ -235,7 +235,7 @@ class SiteListAPIView(APIView):
                 "type": "object",
                 "properties": {
                     "name": {"type": "string"},
-                    "siteType": {"type": "number"},
+                    "siteType": {"type": "number", "nullable": True},
                     "image": {"type": "string", "format": "binary"},
                     "latitude": {"type": "string"},
                     "longitude": {"type": "string"},
@@ -265,7 +265,10 @@ class SiteListAPIView(APIView):
             return Response(data=asset.errors, status=status.HTTP_400_BAD_REQUEST)
         image = asset.save()
 
-        site_type = Sitetype.objects.get(pk=request.data["siteType"])
+        if request.data.get("siteType") is None:
+            site_type = Sitetype.objects.first()
+        else:
+            Sitetype.objects.get(pk=request.data["siteType"])
 
         coordinate = Coordinate.from_dms_lat_long(
             request.data["latitude"], request.data["longitude"]
