@@ -23,7 +23,7 @@ const SiteSocialPage = () => {
   const { t } = useTranslation()
   const { siteId: siteIdParam } = useParams()
   const { currentUser } = useContext(AuthenticationContext)
-  const { posts, addPost } = usePostsStore()
+  const { posts, addPost, deletePost } = usePostsStore()
   const { getApiClient } = useApiClient()
   const scrollableContainerRef = useRef<HTMLDivElement>(null)
 
@@ -96,6 +96,8 @@ const SiteSocialPage = () => {
   }
 
   const addNewPost = (newPost: Post) => addPost(newPost)
+
+  const handleDeletePost = (postId: number) => deletePost(postId)
 
   useEffect((): void => {
     void fetchSiteData(siteId)
@@ -183,7 +185,9 @@ const SiteSocialPage = () => {
                       </div>
                     </div>
                   )
-                  : sitePosts.map(post => <PostCard key={post.id} post={post} />)}
+                  : sitePosts.map(post => (
+                    <PostCard key={post.id} post={post} deletePost={handleDeletePost} />
+                  ))}
               </div>
 
               {isLoadingMore && (

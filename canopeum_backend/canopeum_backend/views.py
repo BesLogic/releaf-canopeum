@@ -695,6 +695,18 @@ class PostDetailAPIView(APIView):
         serializer = PostSerializer(post, context={"request": request})
         return Response(serializer.data)
 
+    @extend_schema(operation_id="post_delete")
+    def delete(self, request: Request, postId):
+        if not request.user.is_staff:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        try:
+            post = Post.objects.get(pk=postId)
+        except Post.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        post.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class CommentListAPIView(APIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
