@@ -6,7 +6,7 @@ import ToggleSwitch from '@components/inputs/ToggleSwitch'
 import PrimaryIconBadge from '@components/PrimaryIconBadge'
 import useApiClient from '@hooks/ApiClientHook'
 import type { PageViewMode } from '@models/types/PageViewMode.Type'
-import { PatchedUpdateSitePublicStatus, type SiteSocial, User } from '@services/api'
+import { PatchedUpdateSitePublicStatus, RoleEnum, type SiteSocial, User } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -100,17 +100,20 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
                 />
               )}
 
-              {currentUser && currentUser.role !== 'MegaAdmin' && isFollowing !== undefined && (
-                <button
-                  className='btn btn-secondary'
-                  onClick={onFollowClick}
-                  type='button'
-                >
-                  {isFollowing
-                    ? translate('social.site-social-header.unfollow')
-                    : translate('social.site-social-header.follow')}
-                </button>
-              )}
+              {currentUser &&
+                currentUser.role !== RoleEnum.MegaAdmin &&
+                isFollowing !== undefined &&
+                (
+                  <button
+                    className='btn btn-secondary'
+                    onClick={onFollowClick}
+                    type='button'
+                  >
+                    {isFollowing
+                      ? translate('social.site-social-header.unfollow')
+                      : translate('social.site-social-header.follow')}
+                  </button>
+                )}
             </div>
           </div>
 

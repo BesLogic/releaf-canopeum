@@ -5,7 +5,7 @@ import WidgetDialog from '@components/social/WidgetDialog'
 import useApiClient from '@hooks/ApiClientHook'
 import type { PageViewMode } from '@models/types/PageViewMode.Type'
 import { CircularProgress } from '@mui/material'
-import { type IWidget, PatchedWidget, type Post, type SiteSocial, Widget } from '@services/api'
+import { type IWidget, PatchedWidget, type Post, RoleEnum, type SiteSocial, Widget } from '@services/api'
 import { ensureError } from '@services/errors'
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -49,7 +49,7 @@ const SiteSocialPage = () => {
     : 0
 
   const viewMode: PageViewMode = currentUser
-    ? (currentUser.role === 'MegaAdmin' || currentUser.adminSiteIds.includes(siteId))
+    ? (currentUser.role === RoleEnum.MegaAdmin || currentUser.adminSiteIds.includes(siteId))
       ? 'admin'
       : 'user'
     : 'visitor'
@@ -148,7 +148,7 @@ const SiteSocialPage = () => {
                   widget={widget}
                 />
               ))}
-              {currentUser && currentUser.role !== 'User' && (
+              {currentUser && currentUser.role !== RoleEnum.User && (
                 <>
                   <button
                     className={'btn btn-light text-primary text-capitalize d-flex ' +

@@ -3,7 +3,7 @@ import SiteSummaryActions from '@components/analytics/SiteSummaryActions'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import PrimaryIconBadge from '@components/PrimaryIconBadge'
 import { appRoutes } from '@constants/routes.constant'
-import type { SiteSummary, User } from '@services/api'
+import { RoleEnum, type SiteSummary, type User } from '@services/api'
 import { type Dispatch, type SetStateAction, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -40,7 +40,7 @@ const SiteSummaryCard = ({ site, admins, onSiteChange, onSiteEdit }: Props) => {
               </div>
             </Link>
 
-            {currentUser?.role === 'MegaAdmin' &&
+            {currentUser?.role === RoleEnum.MegaAdmin &&
               (
                 <SiteSummaryActions
                   admins={admins}

@@ -1,6 +1,6 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { LanguageContext } from '@components/context/LanguageContext'
-import type { Comment } from '@services/api'
+import { type Comment, RoleEnum } from '@services/api'
 import { createRef, useContext } from 'react'
 
 type Props = {
@@ -15,8 +15,8 @@ const PostComment = ({ comment, onDelete, siteId }: Props) => {
   const ref = createRef<HTMLDivElement>()
 
   const canDeleteComment = currentUser && (
-    currentUser.role === 'MegaAdmin' ||
-    (currentUser.role === 'SiteManager' && currentUser.adminSiteIds.includes(siteId)) ||
+    currentUser.role === RoleEnum.MegaAdmin ||
+    (currentUser.role === RoleEnum.SiteManager && currentUser.adminSiteIds.includes(siteId)) ||
     comment.authorId === currentUser.id
   )
 

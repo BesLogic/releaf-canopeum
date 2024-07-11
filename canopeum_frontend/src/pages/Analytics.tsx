@@ -6,11 +6,10 @@ import SiteSummaryCard from '@components/analytics/SiteSummaryCard'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
+import { RoleEnum, type SiteSummary, Species, type User } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
-import { type SiteSummary, Species, type User } from '../services/api'
 
 const Analytics = () => {
   const { t: translate } = useTranslation()
@@ -109,7 +108,7 @@ const Analytics = () => {
   }
 
   useEffect((): void => {
-    if (currentUser?.role !== 'MegaAdmin') return
+    if (currentUser?.role !== RoleEnum.MegaAdmin) return
 
     void fetchAdmins()
   }, [currentUser?.role, fetchAdmins])
@@ -178,7 +177,7 @@ const Analytics = () => {
         <div className='d-flex justify-content-between'>
           <h1 className='text-light'>{translate('analytics.title')}</h1>
 
-          {currentUser?.role === 'MegaAdmin' &&
+          {currentUser?.role === RoleEnum.MegaAdmin &&
             (
               <button
                 className='btn btn-secondary'

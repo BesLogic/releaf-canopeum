@@ -8,13 +8,13 @@ import PostCommentsDialog from '@components/social/PostCommentsDialog'
 import SharePostDialog from '@components/social/SharePostDialog'
 import useApiClient from '@hooks/ApiClientHook'
 import type { PageViewMode } from '@models/types/PageViewMode.Type'
+import { type Post, RoleEnum } from '@services/api'
 import { useContext, useRef, useState } from 'react'
 import { Dropdown, Popover } from 'rsuite'
 import DropdownMenu from 'rsuite/esm/Dropdown/DropdownMenu'
 import type { OverlayTriggerHandle } from 'rsuite/esm/internals/Picker'
 import Whisper from 'rsuite/esm/Whisper'
 
-import type { Post } from '../../services/api'
 import usePostsStore from '../../store/postsStore'
 
 type Props = {
@@ -35,7 +35,7 @@ const PostCard = ({ post, deletePost }: Props) => {
   const whisperRef = useRef<OverlayTriggerHandle>(null)
 
   const viewMode: PageViewMode = currentUser
-    ? (currentUser.role === 'MegaAdmin' || currentUser.adminSiteIds.includes(post.site.id))
+    ? (currentUser.role === RoleEnum.MegaAdmin || currentUser.adminSiteIds.includes(post.site.id))
       ? 'admin'
       : 'user'
     : 'visitor'
@@ -106,7 +106,7 @@ const PostCard = ({ post, deletePost }: Props) => {
                 trigger='click'
               >
                 <div className='d-flex flex-grow-1 justify-content-end'>
-                  <button className='unstyled-button'>
+                  <button className='unstyled-button' type='button'>
                     <span className='material-symbols-outlined text-primary'>more_vert</span>
                   </button>
                 </div>
