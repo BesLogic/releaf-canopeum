@@ -186,7 +186,7 @@ const SiteSocialPage = () => {
                     </div>
                   )
                   : sitePosts.map(post => (
-                    <PostCard key={post.id} post={post} deletePost={handleDeletePost} />
+                    <PostCard deletePost={handleDeletePost} key={post.id} post={post} />
                   ))}
               </div>
 

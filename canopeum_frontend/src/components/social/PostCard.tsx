@@ -1,25 +1,25 @@
 import AssetGrid from '@components/assets/AssetGrid'
+import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { LanguageContext } from '@components/context/LanguageContext'
+import { SnackbarContext } from '@components/context/SnackbarContext'
+import ConfirmationDialog from '@components/dialogs/ConfirmationDialog'
 import TextExpansion from '@components/inputs/TextExpansion'
 import PostCommentsDialog from '@components/social/PostCommentsDialog'
 import SharePostDialog from '@components/social/SharePostDialog'
 import useApiClient from '@hooks/ApiClientHook'
+import type { PageViewMode } from '@models/types/PageViewMode.Type'
 import { useContext, useRef, useState } from 'react'
+import { Dropdown, Popover } from 'rsuite'
+import DropdownMenu from 'rsuite/esm/Dropdown/DropdownMenu'
+import type { OverlayTriggerHandle } from 'rsuite/esm/internals/Picker'
+import Whisper from 'rsuite/esm/Whisper'
 
 import type { Post } from '../../services/api'
 import usePostsStore from '../../store/postsStore'
-import ConfirmationDialog from '@components/dialogs/ConfirmationDialog'
-import Whisper from 'rsuite/esm/Whisper'
-import type { OverlayTriggerHandle } from 'rsuite/esm/internals/Picker'
-import { Dropdown, Popover } from 'rsuite'
-import DropdownMenu from 'rsuite/esm/Dropdown/DropdownMenu'
-import { SnackbarContext } from '@components/context/SnackbarContext'
-import { AuthenticationContext } from '@components/context/AuthenticationContext'
-import type { PageViewMode } from '@models/types/PageViewMode.Type'
 
 type Props = {
   readonly post: Post,
-  deletePost?: (postId: number) => void,
+  readonly deletePost?: (postId: number) => void,
 }
 
 const PostCard = ({ post, deletePost }: Props) => {
@@ -100,10 +100,10 @@ const PostCard = ({ post, deletePost }: Props) => {
           {viewMode === 'admin' && (
             <>
               <Whisper
+                placement='bottomEnd'
                 ref={whisperRef}
                 speaker={actionsPopover}
                 trigger='click'
-                placement='bottomEnd'
               >
                 <div className='d-flex flex-grow-1 justify-content-end'>
                   <button className='unstyled-button'>
@@ -117,7 +117,7 @@ const PostCard = ({ post, deletePost }: Props) => {
                 open={!!confirmPostDeleteOpen}
                 title='Are you sure you want to delete this post?'
               >
-                {<PostCard post={post} />}
+                <PostCard post={post} />
               </ConfirmationDialog>
             </>
           )}
