@@ -14,12 +14,13 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+import dj_database_url
 from corsheaders.defaults import default_headers
 from dotenv import load_dotenv
-import dj_database_url
 
 # Load environment variables from .env file
 load_dotenv()
+
 
 def get_secret(key, default):
     value = os.getenv(key, default)
@@ -27,6 +28,7 @@ def get_secret(key, default):
         with open(value) as f:
             return f.read()
     return value
+
 
 SECRET_KEY = get_secret("SECRET_KEY", "")
 
@@ -168,8 +170,8 @@ SPECTACULAR_SETTINGS = {
 #     "default": f"mysql://{os.getenv('MYSQL_USER')}:{os.getenv('MYSQL_PASSWORD')}@{os.getenv('MYSQL_HOST')}:3306/{os.getenv('MYSQL_DATABASE')}",
 # }
 DATABASES = {
-    'default': dj_database_url.parse(
-        f"mysql://canopeum_user:{get_secret('MYSQL_PASSWORD_CANOPEUM', '')}@{os.getenv('MYSQL_HOST_CANOPEUM', '')}:3306/canopeum_db",
+    "default": dj_database_url.parse(
+        f"mysql://canopeum_user:{get_secret("MYSQL_PASSWORD_CANOPEUM", "")}@{os.getenv("MYSQL_HOST_CANOPEUM", "")}:3306/canopeum_db",
         conn_max_age=600,
         conn_health_checks=True,
     )
