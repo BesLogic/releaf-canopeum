@@ -107,6 +107,7 @@ For backend
    ```
 
 7. Linting/Formatting:
+
    For Frontend: (Dprint & Eslint)
 
    ```shell
@@ -119,6 +120,12 @@ For backend
    ```shell
    cd canopeum_backend
    python ./scripts/checkers.py
+   ```
+
+   For both: (autofixers)
+
+   ```shell
+   pre-commit run --all
    ```
 
 ### Folder Architecture
