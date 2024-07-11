@@ -1,7 +1,8 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions -- custom input label */
-import UploadIcon from '@assets/icons/upload.svg'
 import type { ChangeEvent, DragEvent } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import UploadIcon from '@assets/icons/upload.svg'
 
 type Props = {
   readonly imageUrl?: string,

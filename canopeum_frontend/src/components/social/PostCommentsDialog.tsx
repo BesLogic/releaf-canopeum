@@ -1,17 +1,17 @@
+import { Dialog, DialogContent } from '@mui/material'
+import { type ChangeEvent, useContext, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { CSSTransition, TransitionGroup } from 'react-transition-group'
+
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import ConfirmationDialog from '@components/dialogs/ConfirmationDialog'
 import PostComment from '@components/social/PostComment'
 import useApiClient from '@hooks/ApiClientHook'
-import { Dialog, DialogContent } from '@mui/material'
 import { type Comment, CreateComment } from '@services/api'
-import { type ChangeEvent, useContext, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { CSSTransition, TransitionGroup } from 'react-transition-group'
-
-import usePostsStore from '../../store/postsStore'
-import { numberOfWordsInText } from '../../utils/stringUtils'
-import type { InputValidationError } from '../../utils/validators'
+import usePostsStore from '@store/postsStore'
+import { numberOfWordsInText } from '@utils/stringUtils'
+import type { InputValidationError } from '@utils/validators'
 
 type Props = {
   readonly postId: number,

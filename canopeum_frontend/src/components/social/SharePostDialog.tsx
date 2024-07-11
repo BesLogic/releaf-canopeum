@@ -1,10 +1,11 @@
+import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import { useContext, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import { APP_CONFIG } from '@config/config'
 import { appRoutes } from '@constants/routes.constant'
-import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import type { Post } from '@services/api'
-import { useContext, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 
 type Props = {
   readonly onClose: () => void,

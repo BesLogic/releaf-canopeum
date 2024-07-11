@@ -1,8 +1,9 @@
+import type { FunctionComponent, ReactNode } from 'react'
+import { createContext, memo, useCallback, useMemo, useRef, useState } from 'react'
+
 import useApiClient from '@hooks/ApiClientHook'
 import type { User } from '@services/api'
 import { STORAGE_ACCESS_TOKEN_KEY, STORAGE_REFRESH_TOKEN_KEY } from '@utils/auth.utils'
-import type { FunctionComponent, ReactNode } from 'react'
-import { createContext, memo, useCallback, useMemo, useRef, useState } from 'react'
 
 type IAuthenticationContext = {
   initAuth: () => Promise<void>,

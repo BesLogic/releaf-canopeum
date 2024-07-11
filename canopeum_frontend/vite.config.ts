@@ -8,6 +8,7 @@ export default ({ mode }: { mode: string }) => {
     plugins: [react()],
     resolve: {
       alias: {
+        // KEEP IN SYNC WITH canopeum_frontend/.eslintrc.cjs AND canopeum_frontend/tsconfig.json
         '@assets': '/src/assets',
         '@components': '/src/components',
         '@config': '/src/config',
@@ -15,6 +16,7 @@ export default ({ mode }: { mode: string }) => {
         '@hooks': '/src/hooks',
         '@models': '/src/models',
         '@services': '/src/services',
+        '@store': '/src/store',
         '@utils': '/src/utils',
       },
     },

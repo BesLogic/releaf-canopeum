@@ -1,9 +1,10 @@
+import { jwtDecode } from 'jwt-decode'
+import { useCallback, useContext } from 'react'
+
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { RefreshClient, TokenRefresh } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 import { STORAGE_ACCESS_TOKEN_KEY, STORAGE_REFRESH_TOKEN_KEY } from '@utils/auth.utils'
-import { jwtDecode } from 'jwt-decode'
-import { useCallback, useContext } from 'react'
 
 const MILLISECONDS_IN_SECOND = 1000
 

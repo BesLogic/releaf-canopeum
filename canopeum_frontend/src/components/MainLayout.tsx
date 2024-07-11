@@ -1,4 +1,3 @@
-import { appRoutes } from '@constants/routes.constant'
 import { useContext, useEffect } from 'react'
 import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
 
@@ -15,6 +14,7 @@ import UserManagement from '../pages/UserManagement'
 import Utilities from '../pages/Utilities'
 import { AuthenticationContext } from './context/AuthenticationContext'
 import Navbar from './Navbar'
+import { appRoutes } from '@constants/routes.constant'
 
 const NavbarLayout = () => (
   <div className='d-flex flex-column vh-100'>

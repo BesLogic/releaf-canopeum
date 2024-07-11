@@ -1,9 +1,9 @@
-import useApiClient from '@hooks/ApiClientHook'
-import useErrorHandling from '@hooks/ErrorHandlingHook'
 import { type RefObject, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import usePostsStore from '../store/postsStore'
+import useApiClient from '@hooks/ApiClientHook'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
+import usePostsStore from '@store/postsStore'
 
 const INCERTITUDE_MARGIN = 3
 const PAGE_SIZE = 5

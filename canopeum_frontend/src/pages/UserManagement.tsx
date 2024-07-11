@@ -1,13 +1,14 @@
 import './UserManagement.scss'
 
+import { useContext, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import EditProfile from '@components/settings/EditProfile'
 import ManageAdmins from '@components/settings/ManageAdmins'
 import SettingsTab from '@components/settings/SettingsTab'
 import TermsAndPolicies from '@components/settings/TermsAndPolicies'
 import type { RoleEnum } from '@services/api'
-import { useContext, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 
 type UserManagementTab = 'editProfile' | 'logout' | 'manageAdmins' | 'termsAndPolicies'
 

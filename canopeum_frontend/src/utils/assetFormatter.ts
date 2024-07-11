@@ -1,5 +1,6 @@
-import type { FileParameter } from '@services/api'
 import imageCompression, { type Options } from 'browser-image-compression'
+
+import type { FileParameter } from '@services/api'
 
 export const assetFormatter = async (file: File): Promise<FileParameter> => {
   const options: Options = {

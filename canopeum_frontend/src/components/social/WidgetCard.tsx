@@ -1,7 +1,7 @@
-import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { useContext } from 'react'
 
-import type { Widget } from '../../services/api'
+import { AuthenticationContext } from '@components/context/AuthenticationContext'
+import type { Widget } from '@services/api'
 
 type Props = {
   readonly widget: Widget,

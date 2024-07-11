@@ -1,4 +1,8 @@
 /* eslint-disable max-lines -- disable max-lines */
+import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import { useCallback, useContext, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
 import FertilizersSelector from '@components/analytics/FertilizersSelector'
 import ImageUpload from '@components/analytics/ImageUpload'
 import MulchLayersSelector from '@components/analytics/MulchLayersSelector'
@@ -6,12 +10,9 @@ import SupportSpeciesSelector from '@components/analytics/SupportSpeciesSelector
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
-import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import { Seeds, type SiteSummary, Species } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
 import { floorNumberValue } from '@utils/formUtils'
-import { useCallback, useContext, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 
 type Props = {
   readonly open: boolean,
