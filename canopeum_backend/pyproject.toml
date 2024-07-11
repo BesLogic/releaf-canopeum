@@ -112,7 +112,7 @@ exclude = [".venv/"]
 plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
 
 strict = true
-# Implicit return types !
+# Implicit return types using pyright ! (mypy doesn't do implicit return types)
 check_untyped_defs = true
 disallow_untyped_calls = false
 disallow_untyped_defs = false

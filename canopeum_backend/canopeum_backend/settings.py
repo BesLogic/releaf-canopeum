@@ -22,11 +22,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-def get_secret(key, default):
+def get_secret(key: str, default: str):
     value = os.getenv(key, default)
-    if os.path.isfile(value):
-        with open(value) as f:
-            return f.read()
+    value_as_path = Path(value)
+    if value_as_path.is_file():
+        return value_as_path.read_text(encoding="utf-8")
     return value
 
 
@@ -166,9 +166,20 @@ SPECTACULAR_SETTINGS = {
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+#     "default": "mysql://{}:{}@{}:3306/{}".format(
+#         os.getenv("MYSQL_USER"),
+#         os.getenv("MYSQL_PASSWORD"),
+#         os.getenv("MYSQL_HOST"),
+#         os.getenv("MYSQL_DATABASE"),
+#     ),
+# }
 DATABASES = {
     "default": dj_database_url.parse(
-        f"mysql://canopeum_user:{get_secret("MYSQL_PASSWORD_CANOPEUM", "")}@{get_secret("MYSQL_HOST_CANOPEUM", "localhost")}:3306/canopeum_db",
+        "mysql://canopeum_user:{}@{}:3306/canopeum_db".format(
+            get_secret("MYSQL_PASSWORD_CANOPEUM", ""),
+            os.getenv("MYSQL_HOST_CANOPEUM", "localhost"),
+        ),
         conn_max_age=600,
         conn_health_checks=True,
     )
