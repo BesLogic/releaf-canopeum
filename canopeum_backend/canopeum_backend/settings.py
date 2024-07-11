@@ -30,19 +30,19 @@ def get_secret(key, default):
     return value
 
 
-SECRET_KEY = get_secret("SECRET_KEY", "")
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = get_secret("SECRET_KEY_DJANGO_CANOPEUM", "")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", default="True")
+DEBUG = get_secret("DEBUG", "True")
 
 # Application definition
 
@@ -166,12 +166,9 @@ SPECTACULAR_SETTINGS = {
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     "default": f"mysql://{os.getenv('MYSQL_USER')}:{os.getenv('MYSQL_PASSWORD')}@{os.getenv('MYSQL_HOST')}:3306/{os.getenv('MYSQL_DATABASE')}",
-# }
 DATABASES = {
     "default": dj_database_url.parse(
-        f"mysql://canopeum_user:{get_secret("MYSQL_PASSWORD_CANOPEUM", "")}@{os.getenv("MYSQL_HOST_CANOPEUM", "")}:3306/canopeum_db",
+        f"mysql://canopeum_user:{get_secret("MYSQL_PASSWORD_CANOPEUM", "")}@{get_secret("MYSQL_HOST_CANOPEUM", "localhost")}:3306/canopeum_db",
         conn_max_age=600,
         conn_health_checks=True,
     )
@@ -230,4 +227,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 APPEND_SLASH = False
 
-GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
+GOOGLE_API_KEY = get_secret("GOOGLE_API_KEY_CANOPEUM", "")
