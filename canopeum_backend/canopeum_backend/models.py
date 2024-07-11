@@ -210,7 +210,7 @@ class Sitetype(models.Model):
     def delete(self, using=None, keep_parents=False):
         # TODO: FIXME, should Sitetype subclass Asset
         # or should it have a foreignkey asset like PostAsset???
-        self.asset.delete()  # pyright: ignore[reportAttributeAccessIssue]
+        self.asset.delete()  # type:ignore[ [attr-defined]] # pyright: ignore[reportAttributeAccessIssue]
         return super().delete(using, keep_parents)
 
 
