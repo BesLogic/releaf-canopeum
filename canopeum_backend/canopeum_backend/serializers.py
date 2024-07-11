@@ -589,19 +589,19 @@ class SiteSummarySerializer(serializers.ModelSerializer[Site]):
             "batches",
         )
 
-    @extend_schema_field(int)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # https://github.com/tfranzel/drf-spectacular/issues/1212
+    @extend_schema_field(int)
     def get_plant_count(self, obj):
         return random.randint(100, 200)  # noqa: S311
 
-    @extend_schema_field(int)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # https://github.com/tfranzel/drf-spectacular/issues/1212
+    @extend_schema_field(int)
     def get_survived_count(self, obj):
         return random.randint(50, 100)  # noqa: S311
 
-    @extend_schema_field(int)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # https://github.com/tfranzel/drf-spectacular/issues/1212
+    @extend_schema_field(int)
     def get_propagation_count(self, obj):
         return random.randint(5, 50)  # noqa: S311
 
-    @extend_schema_field(float)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # https://github.com/tfranzel/drf-spectacular/issues/1212
+    @extend_schema_field(float)
     def get_progress(self, obj):
         return random.randint(0, 100)  # noqa: S311
 
@@ -619,11 +619,11 @@ class CoordinatesMapSerializer(serializers.ModelSerializer[Coordinate]):
         model = Coordinate
         fields = ("latitude", "longitude", "address")
 
-    @extend_schema_field(float)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # https://github.com/tfranzel/drf-spectacular/issues/1212
+    @extend_schema_field(float)
     def get_latitude(self, obj):
         return obj.dd_latitude
 
-    @extend_schema_field(float)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # https://github.com/tfranzel/drf-spectacular/issues/1212
+    @extend_schema_field(float)
     def get_longitude(self, obj):
         return obj.dd_longitude
 
@@ -718,7 +718,7 @@ class CommentSerializer(serializers.ModelSerializer[Comment]):
         model = Comment
         fields = ("id", "body", "author_id", "author_username", "created_at")
 
-    @extend_schema_field(int)  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # https://github.com/tfranzel/drf-spectacular/issues/1212
+    @extend_schema_field(int)
     def get_author_id(self, obj):
         return obj.user.id
 
