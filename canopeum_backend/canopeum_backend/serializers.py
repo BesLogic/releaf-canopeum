@@ -605,7 +605,8 @@ class SiteSummarySerializer(serializers.ModelSerializer[Site]):
     def get_progress(self, obj):
         return random.randint(0, 100)  # noqa: S311
 
-    @extend_schema_field(list[str])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType] # https://github.com/tfranzel/drf-spectacular/issues/1212
+    # https://github.com/tfranzel/drf-spectacular/issues/1212
+    @extend_schema_field(list[str])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
     def get_sponsors(self, obj):
         batches = Batch.objects.filter(site=obj)
         return [batch.sponsor for batch in batches]
