@@ -14,6 +14,11 @@ on:
       - "canopeum_backend/**"
       - ".github/workflows/canopeum_backend.yml"
 
+env:
+  # Since the Django mypy extention RUNS the config file, we need a non-empty secret to avoid
+  # ImproperlyConfigured("The SECRET_KEY setting must not be empty.")
+  SECRET_KEY_DJANGO_CANOPEUM: mypy-ext
+
 jobs:
   mypy:
     runs-on: ${{ matrix.os }}
