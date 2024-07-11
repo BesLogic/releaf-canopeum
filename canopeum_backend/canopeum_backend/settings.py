@@ -40,7 +40,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_secret("SECRET_KEY_DJANGO_CANOPEUM", "mypy" if TYPE_CHECKING else "")
+SECRET_KEY = get_secret("SECRET_KEY_DJANGO_CANOPEUM", "mypy-ext" if TYPE_CHECKING else "")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = get_secret("DEBUG", "True")
