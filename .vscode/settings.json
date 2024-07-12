@@ -30,6 +30,7 @@
     ".flake8": "properties",
     "*.qrc": "xml",
     "*.ui": "xml",
+    "*.nswag": "json",
     ".markdownlint.json": "jsonc",
     ".eslintrc*.json": "jsonc",
     "dprint*.json": "jsonc"
