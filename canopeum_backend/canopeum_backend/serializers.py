@@ -2,6 +2,7 @@
 # pyright: reportIncompatibleVariableOverride=false
 
 import random
+from decimal import Decimal
 from typing import Any
 
 from django.contrib.auth.password_validation import validate_password
@@ -353,7 +354,7 @@ class SiteSocialSerializer(serializers.ModelSerializer[Site]):
             "widget",
         )
 
-    def get_sponsors(self, obj) -> list[str]:
+    def get_sponsors(self, obj) -> list[str]:  # type: ignore[no-any-return]
         return self.context.get("sponsors", list[str]())
 
     @extend_schema_field(WidgetSerializer(many=True))
@@ -612,10 +613,10 @@ class CoordinatesMapSerializer(serializers.ModelSerializer[Coordinate]):
         model = Coordinate
         fields = ("latitude", "longitude", "address")
 
-    def get_latitude(self, obj) -> float:
+    def get_latitude(self, obj: Coordinate) -> Decimal | None:
         return obj.dd_latitude
 
-    def get_longitude(self, obj) -> float:
+    def get_longitude(self, obj: Coordinate) -> Decimal | None:
         return obj.dd_longitude
 
 
@@ -709,10 +710,10 @@ class CommentSerializer(serializers.ModelSerializer[Comment]):
         model = Comment
         fields = ("id", "body", "author_id", "author_username", "created_at")
 
-    def get_author_id(self, obj) -> int:
+    def get_author_id(self, obj: Comment) -> int:
         return obj.user.id
 
-    def get_author_username(self, obj):
+    def get_author_username(self, obj: Comment):
         return obj.user.username
 
 
