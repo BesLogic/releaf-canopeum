@@ -175,3 +175,16 @@ project_name/
 │
 └── README.md                 # Project documentation
 ```
+
+## Regenerating the API spec with NSwagStudio
+
+1. Open NSwagStudio and close any already open Document (re-openning hte same document doesn't clear changes in NSwagStudio)
+1. Open [canopeum.nswag](/docs/canopeum.nswag) with NSwagStudio
+1. Click "Create a local Copy"
+1. Click "Generate Outputs"
+1. Copy the TypeScript Client output to `canopeum_frontend/src/services/api.ts`
+1. Run `npm run lint:fix`
+
+If you save a modification to the `.nswag` file, DO NOT INCLUDE THE LOCAL COPY OF THE SPEC !
+
+![NSwagStudio Documents](/docs/NSwagStudio_Documents.png)
