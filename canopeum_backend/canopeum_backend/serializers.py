@@ -353,10 +353,8 @@ class SiteSocialSerializer(serializers.ModelSerializer[Site]):
             "widget",
         )
 
-    # https://github.com/tfranzel/drf-spectacular/issues/1212
-    @extend_schema_field(list[str])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-    def get_sponsors(self, obj):
-        return self.context.get("sponsors")
+    def get_sponsors(self, obj) -> list[str]:
+        return self.context.get("sponsors", list[str]())
 
     @extend_schema_field(WidgetSerializer(many=True))
     def get_widget(self, obj):
@@ -589,27 +587,21 @@ class SiteSummarySerializer(serializers.ModelSerializer[Site]):
             "batches",
         )
 
-    @extend_schema_field(int)
-    def get_plant_count(self, obj):
+    def get_plant_count(self, obj) -> int:
         return random.randint(100, 200)  # noqa: S311
 
-    @extend_schema_field(int)
-    def get_survived_count(self, obj):
+    def get_survived_count(self, obj) -> int:
         return random.randint(50, 100)  # noqa: S311
 
-    @extend_schema_field(int)
-    def get_propagation_count(self, obj):
+    def get_propagation_count(self, obj) -> int:
         return random.randint(5, 50)  # noqa: S311
 
-    @extend_schema_field(float)
-    def get_progress(self, obj):
-        return random.randint(0, 100)  # noqa: S311
+    def get_progress(self, obj) -> float:
+        return random.randint(0, 10000) / 100  # noqa: S311
 
-    # https://github.com/tfranzel/drf-spectacular/issues/1212
-    @extend_schema_field(list[str])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-    def get_sponsors(self, obj):
+    def get_sponsors(self, obj) -> list[str]:
         batches = Batch.objects.filter(site=obj)
-        return [batch.sponsor for batch in batches]
+        return [batch.sponsor for batch in batches if batch.sponsor]
 
 
 class CoordinatesMapSerializer(serializers.ModelSerializer[Coordinate]):
@@ -620,12 +612,10 @@ class CoordinatesMapSerializer(serializers.ModelSerializer[Coordinate]):
         model = Coordinate
         fields = ("latitude", "longitude", "address")
 
-    @extend_schema_field(float)
-    def get_latitude(self, obj):
+    def get_latitude(self, obj) -> float:
         return obj.dd_latitude
 
-    @extend_schema_field(float)
-    def get_longitude(self, obj):
+    def get_longitude(self, obj) -> float:
         return obj.dd_longitude
 
 
@@ -719,8 +709,7 @@ class CommentSerializer(serializers.ModelSerializer[Comment]):
         model = Comment
         fields = ("id", "body", "author_id", "author_username", "created_at")
 
-    @extend_schema_field(int)
-    def get_author_id(self, obj):
+    def get_author_id(self, obj) -> int:
         return obj.user.id
 
     def get_author_username(self, obj):
