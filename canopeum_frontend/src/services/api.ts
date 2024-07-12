@@ -3263,8 +3263,8 @@ export interface ICoordinates {
 }
 
 export class CoordinatesMap implements ICoordinatesMap {
-  readonly latitude!: number;
-  readonly longitude!: number;
+  readonly latitude!: number | undefined;
+  readonly longitude!: number | undefined;
   address?: string | undefined;
 
   [key: string]: any;
@@ -3311,8 +3311,8 @@ export class CoordinatesMap implements ICoordinatesMap {
 }
 
 export interface ICoordinatesMap {
-  latitude: number;
-  longitude: number;
+  latitude: number | undefined;
+  longitude: number | undefined;
   address?: string | undefined;
 
   [key: string]: any;
