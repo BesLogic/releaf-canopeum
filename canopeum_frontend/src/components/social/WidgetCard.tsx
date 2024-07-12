@@ -1,5 +1,5 @@
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
-import { RoleEnum, type Widget } from '@services/api'
+import type { Widget } from '@services/api'
 import { useContext } from 'react'
 
 type Props = {
@@ -16,7 +16,7 @@ const WidgetCard = ({ widget, handleEditClick }: Props) => {
         <div className='d-flex justify-content-between align-items-center pb-3'>
           <h2 className='card-title'>{widget.title}</h2>
           <div>
-            {currentUser?.role !== RoleEnum.User && (
+            {currentUser?.role !== 'User' && (
               <button
                 className='btn btn-link'
                 onClick={() => handleEditClick()}

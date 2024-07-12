@@ -8,7 +8,7 @@ import PostCommentsDialog from '@components/social/PostCommentsDialog'
 import SharePostDialog from '@components/social/SharePostDialog'
 import useApiClient from '@hooks/ApiClientHook'
 import type { PageViewMode } from '@models/types/PageViewMode.Type'
-import { type Post, RoleEnum } from '@services/api'
+import type { Post } from '@services/api'
 import { useContext, useRef, useState } from 'react'
 import { Dropdown, Popover } from 'rsuite'
 import DropdownMenu from 'rsuite/esm/Dropdown/DropdownMenu'
@@ -35,7 +35,7 @@ const PostCard = ({ post, deletePost }: Props) => {
   const whisperRef = useRef<OverlayTriggerHandle>(null)
 
   const viewMode: PageViewMode = currentUser
-    ? (currentUser.role === RoleEnum.MegaAdmin || currentUser.adminSiteIds.includes(post.site.id))
+    ? (currentUser.role === 'MegaAdmin' || currentUser.adminSiteIds.includes(post.site.id))
       ? 'admin'
       : 'user'
     : 'visitor'

@@ -5,7 +5,7 @@ import EditProfile from '@components/settings/EditProfile'
 import ManageAdmins from '@components/settings/ManageAdmins'
 import SettingsTab from '@components/settings/SettingsTab'
 import TermsAndPolicies from '@components/settings/TermsAndPolicies'
-import { RoleEnum } from '@services/api'
+import type { RoleEnum } from '@services/api'
 import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -41,7 +41,7 @@ const UserManagement = () => {
       return <TermsAndPolicies />
     }
 
-    if (selectedTab === 'manageAdmins' && currentUser?.role === RoleEnum.MegaAdmin) {
+    if (selectedTab === 'manageAdmins' && currentUser?.role === 'MegaAdmin') {
       return <ManageAdmins />
     }
 

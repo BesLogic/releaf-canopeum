@@ -1,5 +1,5 @@
 import { appRoutes } from '@constants/routes.constant'
-import { RoleEnum } from '@services/api'
+import type { RoleEnum } from '@services/api'
 import type { MaterialIcon } from 'material-icons'
 import { useCallback, useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -19,19 +19,19 @@ const NAVBAR_ITEMS: NavbarItem[] = [
     icon: 'home',
     linkTo: appRoutes.home,
     label: 'home',
-    roles: [RoleEnum.User, RoleEnum.SiteManager, RoleEnum.MegaAdmin],
+    roles: ['User', 'SiteManager', 'MegaAdmin'],
   },
   {
     icon: 'donut_small',
     linkTo: appRoutes.sites,
     label: 'sites',
-    roles: [RoleEnum.SiteManager, RoleEnum.MegaAdmin],
+    roles: ['SiteManager', 'MegaAdmin'],
   },
   {
     icon: 'pin_drop',
     linkTo: appRoutes.map,
     label: 'map',
-    roles: [RoleEnum.User, RoleEnum.SiteManager, RoleEnum.MegaAdmin],
+    roles: ['User', 'SiteManager', 'MegaAdmin'],
   },
   // For development purposes
   // {
