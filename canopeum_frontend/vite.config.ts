@@ -15,6 +15,7 @@ export default ({ mode }: { mode: string }) => {
         '@constants': '/src/constants',
         '@hooks': '/src/hooks',
         '@models': '/src/models',
+        '@pages': '/src/pages',
         '@services': '/src/services',
         '@store': '/src/store',
         '@utils': '/src/utils',

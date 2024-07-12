@@ -42,12 +42,10 @@ module.exports = {
           // Relative imports.
           // Anything that starts with a dot or src/
           // KEEP IN SYNC WITH canopeum_frontend/tsconfig.json AND canopeum_frontend/vite.config.ts
-          ['^(\\.|src/|@assets|@components|@config|@constants|@hooks|@models|@services|@store|@utils)'],
+          ['^(\\.|src/|@assets|@components|@config|@constants|@hooks|@models|@pages|@services|@store|@utils)'],
         ],
       },
     ],
-    // For now, we're fine using relative paths instead of ts-paths in this project
-    'no-autofix/no-relative-import-paths/no-relative-import-paths': 'off',
     // Using Bootraps directly without a React wrapper will cause us to have to add classes to React Components
     'react/forbid-component-props': 'off',
     '@typescript-eslint/no-unsafe-member-access': 'warn',
