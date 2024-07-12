@@ -1,14 +1,14 @@
+import { useCallback, useContext, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useParams } from 'react-router-dom'
+
+import LoadingPage from './LoadingPage'
 import CreateBatch from '@components/analytics/add-batch-modal/CreateBatchModal'
 import AnalyticsSiteHeader from '@components/analytics/AnalyticsSiteHeader'
 import BatchTable from '@components/analytics/BatchTable'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
 import type { SiteSummary } from '@services/api'
-import { useCallback, useContext, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useParams } from 'react-router-dom'
-
-import LoadingPage from './LoadingPage'
 
 const AnalyticsSite = () => {
   const { t: translate } = useTranslation<'analytics'>()

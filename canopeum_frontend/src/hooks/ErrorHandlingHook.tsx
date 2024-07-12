@@ -1,6 +1,7 @@
+import { useTranslation } from 'react-i18next'
+
 import { getApiExceptionMessage } from '@constants/errorMessages'
 import { ApiException } from '@services/api'
-import { useTranslation } from 'react-i18next'
 
 const useErrorHandling = () => {
   const { t: translate } = useTranslation()

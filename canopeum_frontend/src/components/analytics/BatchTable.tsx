@@ -1,7 +1,8 @@
-import { LanguageContext } from '@components/context/LanguageContext'
-import type { BatchAnalytics } from '@services/api'
 import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import { LanguageContext } from '@components/context/LanguageContext'
+import type { BatchAnalytics } from '@services/api'
 
 const BATCH_HEADER_CLASS =
   'text-capitalize position-sticky start-0 table-primary border-1 border-top-0 border-primary'

@@ -1,3 +1,7 @@
+import { useContext, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
+
 import AuthPageLayout from '@components/auth/AuthPageLayout'
 import Checkbox from '@components/Checkbox'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
@@ -5,11 +9,7 @@ import { appRoutes } from '@constants/routes.constant'
 import useApiClient from '@hooks/ApiClientHook'
 import { LoginUser } from '@services/api'
 import { storeToken } from '@utils/auth.utils'
-import { useContext, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
-
-import type { InputValidationError } from '../utils/validators'
+import type { InputValidationError } from '@utils/validators'
 
 const Login = () => {
   const { authenticate } = useContext(AuthenticationContext)

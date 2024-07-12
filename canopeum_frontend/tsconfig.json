@@ -7,6 +7,7 @@
     "useDefineForClassFields": true,
     "skipLibCheck": true,
     "paths": {
+      // KEEP IN SYNC WITH canopeum_frontend/.eslintrc.cjs AND canopeum_frontend/vite.config.ts
       "@assets/*": [
         "./src/assets/*"
       ],
@@ -25,8 +26,14 @@
       "@models/*": [
         "./src/models/*"
       ],
+      "@pages/*": [
+        "./src/pages/*"
+      ],
       "@services/*": [
         "./src/services/*"
+      ],
+      "@store/*": [
+        "./src/store/*"
       ],
       "@utils/*": [
         "./src/utils/*"

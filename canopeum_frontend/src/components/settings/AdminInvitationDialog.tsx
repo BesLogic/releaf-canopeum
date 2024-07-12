@@ -1,13 +1,14 @@
+import { Dialog, DialogContent, DialogTitle } from '@mui/material'
+import { useCallback, useContext, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import MultipleSelectChip, { type SelectionItem } from '@components/inputs/MultipleSelectChip'
 import { APP_CONFIG } from '@config/config'
 import useApiClient from '@hooks/ApiClientHook'
 import useErrorHandling from '@hooks/ErrorHandlingHook'
-import { Dialog, DialogContent, DialogTitle } from '@mui/material'
 import { CreateUserInvitation } from '@services/api'
 import { type InputValidationError, isValidEmail } from '@utils/validators'
-import { useCallback, useContext, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 
 type Props = {
   readonly open: boolean,

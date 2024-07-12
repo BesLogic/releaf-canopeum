@@ -1,13 +1,13 @@
+import { useContext, useState } from 'react'
+
 import AssetGrid from '@components/assets/AssetGrid'
 import { LanguageContext } from '@components/context/LanguageContext'
 import TextExpansion from '@components/inputs/TextExpansion'
 import PostCommentsDialog from '@components/social/PostCommentsDialog'
 import SharePostDialog from '@components/social/SharePostDialog'
 import useApiClient from '@hooks/ApiClientHook'
-import { useContext, useState } from 'react'
-
-import type { Post } from '../../services/api'
-import usePostsStore from '../../store/postsStore'
+import type { Post } from '@services/api'
+import usePostsStore from '@store/postsStore'
 
 type Props = {
   readonly post: Post,

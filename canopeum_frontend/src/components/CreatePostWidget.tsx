@@ -1,15 +1,15 @@
-import { SnackbarContext } from '@components/context/SnackbarContext'
-import useApiClient from '@hooks/ApiClientHook'
 import { CircularProgress } from '@mui/material'
 import { type ChangeEvent, useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Asset, type FileParameter, type Post } from '../services/api'
-import { assetFormatter } from '../utils/assetFormatter'
-import { numberOfWordsInText } from '../utils/stringUtils'
-import textAreaAutoGrow from '../utils/textAreaAutoGrow'
-import type { InputValidationError } from '../utils/validators'
 import AssetGrid from './assets/AssetGrid'
+import { SnackbarContext } from '@components/context/SnackbarContext'
+import useApiClient from '@hooks/ApiClientHook'
+import { Asset, type FileParameter, type Post } from '@services/api'
+import { assetFormatter } from '@utils/assetFormatter'
+import { numberOfWordsInText } from '@utils/stringUtils'
+import textAreaAutoGrow from '@utils/textAreaAutoGrow'
+import type { InputValidationError } from '@utils/validators'
 
 const MAX_FILE_WIDTH = 1920
 const MAX_FILE_HEIGHT = 1920

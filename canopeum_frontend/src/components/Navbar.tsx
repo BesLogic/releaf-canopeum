@@ -1,11 +1,11 @@
-import { appRoutes } from '@constants/routes.constant'
-import type { RoleEnum } from '@services/api'
 import type { MaterialIcon } from 'material-icons'
 import { useCallback, useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import { AuthenticationContext } from './context/AuthenticationContext'
+import { appRoutes } from '@constants/routes.constant'
+import type { RoleEnum } from '@services/api'
 
 type NavbarItem = {
   icon: MaterialIcon,
