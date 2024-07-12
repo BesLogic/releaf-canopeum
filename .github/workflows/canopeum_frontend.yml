@@ -10,6 +10,7 @@ on:
   pull_request:
     branches:
       - main
+      - production
     paths:
       - "canopeum_frontend/**"
       - ".github/workflows/canopeum_frontend.yml"
