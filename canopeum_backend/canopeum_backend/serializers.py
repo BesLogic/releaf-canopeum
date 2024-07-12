@@ -354,8 +354,8 @@ class SiteSocialSerializer(serializers.ModelSerializer[Site]):
             "widget",
         )
 
-    def get_sponsors(self, obj) -> list[str]:  # type: ignore[no-any-return]
-        return self.context.get("sponsors", list[str]())
+    def get_sponsors(self, obj) -> list[str]:
+        return self.context.get("sponsors", list[str]())  # type: ignore[no-any-return]
 
     @extend_schema_field(WidgetSerializer(many=True))
     def get_widget(self, obj):
