@@ -2,7 +2,7 @@ import type { ChartsAxisContentProps } from '@mui/x-charts'
 import { BarChart, type BarChartProps } from '@mui/x-charts/BarChart'
 import { useTranslation } from 'react-i18next'
 
-import type { SiteSummary } from '../../services/api'
+import type { SiteSummary } from '@services/api'
 
 type SiteSummaryChartOptions = {
   groups: string[],

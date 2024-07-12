@@ -25,14 +25,34 @@ module.exports = {
     /*
      * Beslogic presets overrides
      */
-    // For now, we're fine using relative paths instead of ts-paths in this project
-    'no-autofix/no-relative-import-paths/no-relative-import-paths': 'off',
+    'simple-import-sort/imports': [
+      'error',
+      {
+        groups: [
+          // Side effect imports.
+          ['^\\u0000'],
+          // Node.js builtins prefixed with `node:`.
+          ['^node:'],
+          // Packages.
+          // Things that start with a letter (or digit or underscore), or `@` followed by a letter.
+          ['^@?\\w'],
+          // Absolute imports and other imports such as Vue-style `@/foo`.
+          // Anything not matched in another group.
+          ['^'],
+          // Relative imports.
+          // Anything that starts with a dot or src/
+          // KEEP IN SYNC WITH canopeum_frontend/tsconfig.json AND canopeum_frontend/vite.config.ts
+          ['^(\\.|src/|@assets|@components|@config|@constants|@hooks|@models|@pages|@services|@store|@utils)'],
+        ],
+      },
+    ],
     // Using Bootraps directly without a React wrapper will cause us to have to add classes to React Components
     'react/forbid-component-props': 'off',
     '@typescript-eslint/no-unsafe-member-access': 'warn',
-    // There is currently a bug with this rule causing the linter to crash with
+    // There is currently a bug with this rule causing the linter to crash
     // Until this is fixed or solved, we'll turn this one off to prevent blocking
     // in PR with the exception
+    // https://github.com/cartant/eslint-plugin-etc/issues/63
     'etc/no-implicit-any-catch': 'off',
   },
 }

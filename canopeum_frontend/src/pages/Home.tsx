@@ -1,12 +1,12 @@
-import { AuthenticationContext } from '@components/context/AuthenticationContext.tsx'
-import PostCard from '@components/social/PostCard.tsx'
 import { CircularProgress } from '@mui/material'
 import { useContext, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import usePostsInfiniteScrolling from '../hooks/PostsInfiniteScrollingHook.tsx'
-import usePostsStore from '../store/postsStore.ts'
 import LoadingPage from './LoadingPage.tsx'
+import { AuthenticationContext } from '@components/context/AuthenticationContext.tsx'
+import PostCard from '@components/social/PostCard.tsx'
+import usePostsInfiniteScrolling from '@hooks/PostsInfiniteScrollingHook.tsx'
+import usePostsStore from '@store/postsStore.ts'
 
 const Home = () => {
   const { t: translate } = useTranslation()

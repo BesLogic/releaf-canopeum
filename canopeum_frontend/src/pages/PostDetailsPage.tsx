@@ -1,13 +1,13 @@
-import PostCard from '@components/social/PostCard'
-import { appRoutes } from '@constants/routes.constant'
-import useApiClient from '@hooks/ApiClientHook'
-import type { Post } from '@services/api'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router-dom'
 
-import usePostsStore from '../store/postsStore'
 import LoadingPage from './LoadingPage'
+import PostCard from '@components/social/PostCard'
+import { appRoutes } from '@constants/routes.constant'
+import useApiClient from '@hooks/ApiClientHook'
+import type { Post } from '@services/api'
+import usePostsStore from '@store/postsStore'
 
 const PostDetailsPage = () => {
   const { t: translate } = useTranslation()

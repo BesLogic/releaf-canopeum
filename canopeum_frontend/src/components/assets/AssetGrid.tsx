@@ -1,7 +1,7 @@
-import type { Asset } from '@services/api'
 import { useState } from 'react'
 
 import AssetViewer from './AssetViewer'
+import type { Asset } from '@services/api'
 
 type Props = {
   readonly medias: Asset[],

@@ -7,8 +7,9 @@ import OutlinedInput from '@mui/material/OutlinedInput'
 import type { SelectChangeEvent } from '@mui/material/Select'
 import Select from '@mui/material/Select'
 import type { SxProps, Theme } from '@mui/material/styles'
-import { notEmpty } from '@utils/arrayUtils'
 import { useState } from 'react'
+
+import { notEmpty } from '@utils/arrayUtils'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8

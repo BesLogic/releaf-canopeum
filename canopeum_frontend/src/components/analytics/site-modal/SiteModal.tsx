@@ -1,13 +1,14 @@
+import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import { useCallback, useContext, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
 import ImageUpload from '@components/analytics/ImageUpload'
 import SiteCoordinates from '@components/analytics/site-modal/SiteCoordinates'
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
-import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import type { Sitetreespecies, SiteType } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
-import { useCallback, useContext, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 
 type Props = {
   readonly open: boolean,

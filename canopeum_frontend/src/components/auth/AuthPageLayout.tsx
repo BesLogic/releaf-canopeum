@@ -1,7 +1,8 @@
-import { appRoutes } from '@constants/routes.constant'
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+
+import { appRoutes } from '@constants/routes.constant'
 
 type Props = {
   readonly children: ReactNode,

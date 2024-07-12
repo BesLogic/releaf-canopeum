@@ -1,7 +1,8 @@
 import { Dialog, DialogActions, DialogContent } from '@mui/material'
-import type { IWidget } from '@services/api'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import type { IWidget } from '@services/api'
 
 type Props = {
   readonly open: [boolean, IWidget | undefined],

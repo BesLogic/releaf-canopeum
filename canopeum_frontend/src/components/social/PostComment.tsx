@@ -1,7 +1,8 @@
+import { createRef, useContext } from 'react'
+
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { LanguageContext } from '@components/context/LanguageContext'
 import type { Comment } from '@services/api'
-import { createRef, useContext } from 'react'
 
 type Props = {
   readonly comment: Comment,

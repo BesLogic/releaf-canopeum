@@ -1,11 +1,11 @@
-import AdminCard from '@components/settings/AdminCard'
-import AdminInvitationDialog from '@components/settings/AdminInvitationDialog'
-import useApiClient from '@hooks/ApiClientHook'
-import type { AdminUserSites } from '@services/api'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import LoadingPage from '../../pages/LoadingPage'
+import AdminCard from '@components/settings/AdminCard'
+import AdminInvitationDialog from '@components/settings/AdminInvitationDialog'
+import useApiClient from '@hooks/ApiClientHook'
+import LoadingPage from '@pages/LoadingPage'
+import type { AdminUserSites } from '@services/api'
 
 const ManageAdmins = () => {
   const { t: translate } = useTranslation()

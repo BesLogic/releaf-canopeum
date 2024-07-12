@@ -1,5 +1,6 @@
-import { Post } from '@services/api'
 import { create } from 'zustand'
+
+import { Post } from '@services/api'
 
 type PostsState = {
   posts: Post[],
