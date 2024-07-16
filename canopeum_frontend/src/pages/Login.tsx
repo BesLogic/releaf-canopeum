@@ -23,7 +23,7 @@ const Login = () => {
   const [emailError, setEmailError] = useState<InputValidationError | undefined>()
   const [passwordError, setPasswordError] = useState<InputValidationError | undefined>()
 
-  const [loginError, setLoginError] = useState<string | undefined>(undefined)
+  const [loginError, setLoginError] = useState<string | undefined>()
 
   const validateEmail = () => {
     if (!email) {

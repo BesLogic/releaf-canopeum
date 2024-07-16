@@ -47,6 +47,7 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "jsxImportSource": "react",
+    "experimentalDecorators": true,
     /* Linting */
     "noUnusedLocals": true,
     "noUnusedParameters": true,
