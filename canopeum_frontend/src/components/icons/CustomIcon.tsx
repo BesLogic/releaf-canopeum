@@ -2,7 +2,7 @@ import { customIcons, type CustomIconType } from './customIconList'
 
 // These sizes match the custom icon scss sizes determined in App.scss
 export type IconSize =
-  // eslint-disable-next-line @typescript-eslint/sort-type-constituents -- Sort them by size
+  // Sort them by size
   | '2xs'
   | 'xs'
   | 'sm'
