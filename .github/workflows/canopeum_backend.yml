@@ -27,7 +27,7 @@ jobs:
       run:
         working-directory: canopeum_backend
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         os: ["ubuntu-latest", "windows-latest"]
     steps:
@@ -46,7 +46,7 @@ jobs:
       run:
         working-directory: canopeum_backend
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         os: ["ubuntu-latest", "windows-latest"]
     steps:
