@@ -1,3 +1,6 @@
+import { useCallback, useContext, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
 import BatchTable from '@components/analytics/BatchTable'
 import type { SiteDto } from '@components/analytics/site-modal/SiteModal'
 import SiteModal from '@components/analytics/site-modal/SiteModal'
@@ -8,8 +11,6 @@ import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
 import { type SiteSummary, Species, type User } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
-import { useCallback, useContext, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 
 const Analytics = () => {
   const { t: translate } = useTranslation()

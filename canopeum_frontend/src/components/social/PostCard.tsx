@@ -1,3 +1,9 @@
+import { useContext, useRef, useState } from 'react'
+import { Dropdown, Popover } from 'rsuite'
+import DropdownMenu from 'rsuite/esm/Dropdown/DropdownMenu'
+import type { OverlayTriggerHandle } from 'rsuite/esm/internals/Picker'
+import Whisper from 'rsuite/esm/Whisper'
+
 import AssetGrid from '@components/assets/AssetGrid'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { LanguageContext } from '@components/context/LanguageContext'
@@ -9,13 +15,7 @@ import SharePostDialog from '@components/social/SharePostDialog'
 import useApiClient from '@hooks/ApiClientHook'
 import type { PageViewMode } from '@models/types/PageViewMode.Type'
 import type { Post } from '@services/api'
-import { useContext, useRef, useState } from 'react'
-import { Dropdown, Popover } from 'rsuite'
-import DropdownMenu from 'rsuite/esm/Dropdown/DropdownMenu'
-import type { OverlayTriggerHandle } from 'rsuite/esm/internals/Picker'
-import Whisper from 'rsuite/esm/Whisper'
-
-import usePostsStore from '../../store/postsStore'
+import usePostsStore from '@store/postsStore'
 
 type Props = {
   readonly post: Post,
@@ -35,9 +35,9 @@ const PostCard = ({ post, deletePost }: Props) => {
   const whisperRef = useRef<OverlayTriggerHandle>(null)
 
   const viewMode: PageViewMode = currentUser
-    ? (currentUser.role === 'MegaAdmin' || currentUser.adminSiteIds.includes(post.site.id))
+    ? ((currentUser.role === 'MegaAdmin' || currentUser.adminSiteIds.includes(post.site.id))
       ? 'admin'
-      : 'user'
+      : 'user')
     : 'visitor'
 
   const openPostComments = () => setCommentsModalOpen(true)
