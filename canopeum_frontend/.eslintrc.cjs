@@ -9,15 +9,21 @@ module.exports = {
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: ['tsconfig?(.*).json'],
+    project: ['**/tsconfig?(.*).json'],
+    // Experimental, but causes pre-commit to actually find the project
+    // TRY EXPERIMENTAL_useProjectService: true,
   },
   ignorePatterns: [
+    // Isn't included in any TSConfig
     '.eslintrc.cjs',
-    'typings.d.ts',
     // Auto-generated
     'src/services/api.ts',
   ],
   rules: {
+    '@typescript-eslint/prefer-nullish-coalescing': ['error', {
+      allowRuleToRunWithoutStrictNullChecksIKnowWhatIAmDoing: true,
+    }],
+    '@typescript-eslint/no-unnecessary-condition': 'off',
     'react-refresh/only-export-components': [
       'warn',
       { allowConstantExport: true },
@@ -42,11 +48,26 @@ module.exports = {
           // Relative imports.
           // Anything that starts with a dot or src/
           // KEEP IN SYNC WITH canopeum_frontend/tsconfig.json AND canopeum_frontend/vite.config.ts
-          ['^(\\.|src/|@assets|@components|@config|@constants|@hooks|@models|@pages|@services|@store|@utils)'],
+          [
+            '^(\\.' +
+            '|src/' +
+            '|@assets' +
+            '|@components' +
+            '|@config' +
+            '|@constants' +
+            '|@hooks' +
+            '|@models' +
+            '|@pages' +
+            '|@services' +
+            '|@store' +
+            '|@utils' +
+            ')',
+          ],
         ],
       },
     ],
-    // Using Bootraps directly without a React wrapper will cause us to have to add classes to React Components
+    // Using Bootraps directly without a React wrapper
+    // will cause us to have to add classes to React Components
     'react/forbid-component-props': 'off',
     '@typescript-eslint/no-unsafe-member-access': 'warn',
     // There is currently a bug with this rule causing the linter to crash
