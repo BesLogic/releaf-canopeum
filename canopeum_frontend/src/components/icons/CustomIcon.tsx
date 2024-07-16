@@ -2,6 +2,7 @@ import { customIcons, type CustomIconType } from './customIconList'
 
 // These sizes match the custom icon scss sizes determined in App.scss
 export type IconSize =
+  // Sort them by size
   | '2xs'
   | 'xs'
   | 'sm'

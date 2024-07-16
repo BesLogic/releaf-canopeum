@@ -101,17 +101,20 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
                 />
               )}
 
-              {currentUser && currentUser.role !== 'MegaAdmin' && isFollowing !== undefined && (
-                <button
-                  className='btn btn-secondary'
-                  onClick={onFollowClick}
-                  type='button'
-                >
-                  {isFollowing
-                    ? translate('social.site-social-header.unfollow')
-                    : translate('social.site-social-header.follow')}
-                </button>
-              )}
+              {currentUser &&
+                currentUser.role !== 'MegaAdmin' &&
+                isFollowing !== undefined &&
+                (
+                  <button
+                    className='btn btn-secondary'
+                    onClick={onFollowClick}
+                    type='button'
+                  >
+                    {isFollowing
+                      ? translate('social.site-social-header.unfollow')
+                      : translate('social.site-social-header.follow')}
+                  </button>
+                )}
             </div>
           </div>
 
