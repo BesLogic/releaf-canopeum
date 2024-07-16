@@ -36,7 +36,7 @@ const SiteSocialPage = () => {
   } = usePostsInfiniteScrolling()
 
   const [isLoadingSite, setIsLoadingSite] = useState(true)
-  const [error, setError] = useState<Error | undefined>(undefined)
+  const [error, setError] = useState<Error | undefined>()
   const [site, setSite] = useState<SiteSocial>()
   const [sitePosts, setSitePosts] = useState<Post[]>([])
   const [isWidgetModalOpen, setIsWidgetModalOpen] = useState<[boolean, Widget | undefined]>([
@@ -49,9 +49,9 @@ const SiteSocialPage = () => {
     : 0
 
   const viewMode: PageViewMode = currentUser
-    ? (currentUser.role === 'MegaAdmin' || currentUser.adminSiteIds.includes(siteId))
+    ? ((currentUser.role === 'MegaAdmin' || currentUser.adminSiteIds.includes(siteId))
       ? 'admin'
-      : 'user'
+      : 'user')
     : 'visitor'
 
   const fetchSiteData = useCallback(async (parsedSiteId: number) => {
@@ -175,15 +175,15 @@ const SiteSocialPage = () => {
                       </div>
                     </div>
                   )
-                  : loadingError
-                  ? (
-                    <div className='card'>
-                      <div className='card-body'>
-                        <span>{loadingError}</span>
+                  : (loadingError
+                    ? (
+                      <div className='card'>
+                        <div className='card-body'>
+                          <span>{loadingError}</span>
+                        </div>
                       </div>
-                    </div>
-                  )
-                  : sitePosts.map(post => <PostCard key={post.id} post={post} />)}
+                    )
+                    : sitePosts.map(post => <PostCard key={post.id} post={post} />))}
               </div>
 
               {isLoadingMore && (
