@@ -9,9 +9,7 @@ module.exports = {
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: [
-      '**/tsconfig?(.*).json',
-    ],
+    project: ['**/tsconfig?(.*).json'],
     // Experimental, but causes pre-commit to actually find the project
     // TRY EXPERIMENTAL_useProjectService: true,
   },
