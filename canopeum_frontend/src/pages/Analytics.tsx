@@ -165,7 +165,7 @@ const Analytics = () => {
             id={`collapse-${site.id}`}
           >
             <div className='accordion-body'>
-              <BatchTable batches={site.batches} />
+              <BatchTable batches={site.batches} siteId={site.id} />
             </div>
           </div>
         </div>
