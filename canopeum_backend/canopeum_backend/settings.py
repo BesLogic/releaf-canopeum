@@ -124,6 +124,7 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_RENDERER_CLASSES": [
         "djangorestframework_camel_case.render.CamelCaseJSONRenderer",
+        # TODO: Check if we need/want this setting ?
         # 'djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer',
     ],
     "DEFAULT_PARSER_CLASSES": [

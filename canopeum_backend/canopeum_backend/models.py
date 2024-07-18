@@ -1,6 +1,6 @@
 import re
 from datetime import datetime, timedelta
-from typing import TYPE_CHECKING, Any, ClassVar, override
+from typing import TYPE_CHECKING, Any, ClassVar, TypeVar, override
 
 import googlemaps  # type: ignore[import-untyped]
 import pytz
@@ -9,7 +9,7 @@ from django.db import models
 
 # No type stub currently exists for googlemaps
 from django.http import QueryDict
-from django.utils.datastructures import MultiValueDict
+from django.utils.datastructures import MultiValueDict as django_MultiValueDict
 from rest_framework.request import Request as drf_Request
 
 from .settings import GOOGLE_API_KEY
@@ -328,14 +328,36 @@ class Internationalization(models.Model):
     fr = models.TextField(db_column="FR", blank=True, null=True)
 
 
+# Everything under here are type overrides
+
+
+_K = TypeVar("_K")
+_V = TypeVar("_V")
+
+
+class MultiValueDict(django_MultiValueDict[_K, _V]):
+    """
+    A custom MultiValueDict type to override the base __getitem__
+    which leads to lots of false-positives.
+    """
+
+    if TYPE_CHECKING:
+        # TODO: Report upstream
+        def __getitem__(self, item: _K) -> _V: ...
+
+
 class Request(drf_Request):
     """A custom Request type to use for parameter annotations."""
 
-    # TODO: Report upstream
-    # Base definition is too vague as `dict[str, Any]`
-    data: MultiValueDict[str, Any]  # pyright: ignore[reportIncompatibleMethodOverride]
-    # Tries to type as django.http.request._ImmutableQueryDict wich doesn't exist
-    query_params: QueryDict  # type: ignore[assignment] # pyright: ignore[reportIncompatibleMethodOverride]
+    if TYPE_CHECKING:
+        # TODO: Report upstream
+        # Base definition is too vague as `dict[str, Any]`
+        @property
+        def data(self) -> MultiValueDict[str, Any]: ...
 
-    # Override with our own User model
-    user: User  # pyright: ignore[reportIncompatibleMethodOverride]
+        # Tries to type as django.http.request._ImmutableQueryDict wich doesn't exist
+        @property
+        def query_params(self) -> QueryDict: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+
+        # Override with our own User model
+        user: User  # pyright: ignore[reportIncompatibleMethodOverride]

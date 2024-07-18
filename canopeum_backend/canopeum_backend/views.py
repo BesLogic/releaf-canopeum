@@ -264,10 +264,10 @@ class SiteListAPIView(APIView):
 
         site_type = Sitetype.objects.get(pk=request.data["siteType"])
 
+        # TODO: Move call to from_dms_lat_long in the serializer
         coordinate = Coordinate.from_dms_lat_long(
             request.data["latitude"], request.data["longitude"]
         )
-
         announcement = Announcement.objects.create()
         contact = Contact.objects.create()
 
@@ -280,8 +280,6 @@ class SiteListAPIView(APIView):
                 announcement=announcement,
                 contact=contact,
                 visitor_count=0,
-                research_partnership=json.loads(request.data["researchPartnership"]),
-                visible_map=json.loads(request.data["visibleMap"]),
             )
             for tree_type_json in request.data.getlist("species"):
                 tree_type_obj = json.loads(tree_type_json)
@@ -352,10 +350,10 @@ class SiteDetailAPIView(APIView):
 
         site_type = Sitetype.objects.get(pk=request.data["siteType"])
 
+        # TODO: Move call to from_dms_lat_long in the serializer
         coordinate = Coordinate.from_dms_lat_long(
             request.data["latitude"], request.data["longitude"]
         )
-
         announcement = Announcement.objects.create()
         contact = Contact.objects.create()
 
@@ -368,8 +366,6 @@ class SiteDetailAPIView(APIView):
                 announcement=announcement,
                 contact=contact,
                 visitor_count=0,
-                research_partnership=json.loads(request.data["researchPartnership"]),
-                visible_map=json.loads(request.data["visibleMap"]),
             )
 
             for tree_type_json in request.data.getlist("species"):
@@ -408,11 +404,10 @@ class SiteSocialDetailPublicStatusAPIView(APIView):
 
         self.check_object_permissions(request, site)
 
-        new_is_public_status = request.data["isPublic"]
-        if new_is_public_status is not bool:
-            Response("is_public data is invalid", status=status.HTTP_400_BAD_REQUEST)
+        site.is_public = request.data["isPublic"]
+        if not isinstance(site.is_public, bool):
+            Response("isPublic data is invalid", status=status.HTTP_400_BAD_REQUEST)
 
-        site.is_public = new_is_public_status
         site.save()
 
         serializer = UpdateSitePublicStatusSerializer(data={"is_public": site.is_public})
