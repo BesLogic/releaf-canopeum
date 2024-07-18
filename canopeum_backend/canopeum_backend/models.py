@@ -2,11 +2,13 @@ import re
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, ClassVar, override
 
-# No type stub currently exists for googlemaps
 import googlemaps  # type: ignore[import-untyped]
 import pytz
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+
+# No type stub currently exists for googlemaps
+from django.http import QueryDict
 from rest_framework.request import Request as drf_Request
 
 from .settings import GOOGLE_API_KEY
@@ -327,6 +329,11 @@ class Internationalization(models.Model):
 
 class Request(drf_Request):
     """A custom Request type to use for parameter annotations."""
+
+    # Base definition is too vague and ends up as `dict[str, Any]`
+    data: QueryDict  # pyright: ignore[reportIncompatibleMethodOverride]
+    # Tries to type as django.http.request._ImmutableQueryDict wich doesn't exist
+    query_params: QueryDict  # pyright: ignore[reportIncompatibleMethodOverride]
 
     # Override with our own User model
     user: User  # pyright: ignore[reportIncompatibleMethodOverride]
