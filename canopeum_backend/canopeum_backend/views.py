@@ -151,9 +151,6 @@ class RegisterAPIView(APIView):
         operation_id="authentication_register",
     )
     def post(self, request: Request):
-        # TODO(NicolasDontigny): Find out how to convert request body properties
-        # from camel case to lower snake case
-        request.data["password_confirmation"] = request.data.get("passwordConfirmation")
         register_user_serializer = RegisterUserSerializer(data=request.data)
 
         if register_user_serializer.is_valid():
@@ -267,10 +264,10 @@ class SiteListAPIView(APIView):
 
         site_type = Sitetype.objects.get(pk=request.data["siteType"])
 
+        # TODO: Move call to from_dms_lat_long in the serializer
         coordinate = Coordinate.from_dms_lat_long(
             request.data["latitude"], request.data["longitude"]
         )
-
         announcement = Announcement.objects.create()
         contact = Contact.objects.create()
 
@@ -283,12 +280,8 @@ class SiteListAPIView(APIView):
                 announcement=announcement,
                 contact=contact,
                 visitor_count=0,
-                research_partnership=json.loads(request.data["researchPartnership"]),
-                visible_map=json.loads(request.data["visibleMap"]),
             )
-            # TODO: Are we sure about getlist ?
-            # If this is correct, consider raising an issue upstream
-            for tree_type_json in request.data.getlist("species"):  # type:ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
+            for tree_type_json in request.data.getlist("species"):
                 tree_type_obj = json.loads(tree_type_json)
                 tree_type = Treetype.objects.get(pk=tree_type_obj["id"])
                 Sitetreespecies.objects.create(
@@ -357,10 +350,10 @@ class SiteDetailAPIView(APIView):
 
         site_type = Sitetype.objects.get(pk=request.data["siteType"])
 
+        # TODO: Move call to from_dms_lat_long in the serializer
         coordinate = Coordinate.from_dms_lat_long(
             request.data["latitude"], request.data["longitude"]
         )
-
         announcement = Announcement.objects.create()
         contact = Contact.objects.create()
 
@@ -373,13 +366,9 @@ class SiteDetailAPIView(APIView):
                 announcement=announcement,
                 contact=contact,
                 visitor_count=0,
-                research_partnership=json.loads(request.data["researchPartnership"]),
-                visible_map=json.loads(request.data["visibleMap"]),
             )
 
-            # TODO: Are we sure about getlist ?
-            # If this is correct, consider raising an issue upstream
-            for tree_type_json in request.data.getlist("species"):  # type:ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
+            for tree_type_json in request.data.getlist("species"):
                 tree_type_obj = json.loads(tree_type_json)
                 tree_type = Treetype.objects.get(pk=tree_type_obj["id"])
                 Sitetreespecies.objects.create(
@@ -415,11 +404,10 @@ class SiteSocialDetailPublicStatusAPIView(APIView):
 
         self.check_object_permissions(request, site)
 
-        new_is_public_status = request.data["isPublic"]
-        if new_is_public_status is not bool:
-            Response("is_public data is invalid", status=status.HTTP_400_BAD_REQUEST)
+        site.is_public = request.data["isPublic"]
+        if not isinstance(site.is_public, bool):
+            Response("isPublic data is invalid", status=status.HTTP_400_BAD_REQUEST)
 
-        site.is_public = new_is_public_status
         site.save()
 
         serializer = UpdateSitePublicStatusSerializer(data={"is_public": site.is_public})
@@ -660,9 +648,7 @@ class PostListAPIView(APIView, PageNumberPagination):  # type:ignore[misc] # pyr
         operation_id="post_create",
     )
     def post(self, request: Request):
-        # TODO: Are we sure about getlist ?
-        # If this is correct, consider raising an issue upstream
-        assets = request.data.getlist("media")  # type:ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
+        assets = request.data.getlist("media")
         saved_assets = []
         for asset_item in assets:
             q = QueryDict("", mutable=True)
@@ -911,17 +897,11 @@ class BatchListAPIView(APIView):
         errors = []
 
         try:
-            parsed_fertilizer_ids = request.data.getlist("fertilizerIds", [])  # type:ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
-            parsed_mulch_layer_ids = request.data.getlist("mulchLayerIds", [])  # type:ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
-            parsed_seeds = [
-                json.loads(seed)
-                for seed in request.data.getlist("seeds", [])  # type:ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
-            ]
-            parsed_species = [
-                json.loads(specie)
-                for specie in request.data.getlist("species", [])  # type:ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
-            ]
-            parsed_supported_species_ids = request.data.getlist("supportedSpecieIds", [])  # type:ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
+            parsed_fertilizer_ids = request.data.getlist("fertilizerIds", [])
+            parsed_mulch_layer_ids = request.data.getlist("mulchLayerIds", [])
+            parsed_seeds = [json.loads(seed) for seed in request.data.getlist("seeds", [])]
+            parsed_species = [json.loads(specie) for specie in request.data.getlist("species", [])]
+            parsed_supported_species_ids = request.data.getlist("supportedSpecieIds", [])
         except json.JSONDecodeError as e:
             return Response(data={"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
