@@ -37,7 +37,7 @@ const Map = () => {
   const { getApiClient } = useApiClient()
 
   const [sites, setSites] = useState<SiteMap[]>([])
-  const [selectedSiteId, setSelectedSiteId] = useState<number | undefined>(undefined)
+  const [selectedSiteId, setSelectedSiteId] = useState<number | undefined>()
 
   const [mapViewState, setMapViewState] = useState({
     longitude: -100,

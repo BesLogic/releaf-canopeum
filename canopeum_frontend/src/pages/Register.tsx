@@ -29,7 +29,7 @@ const Register = () => {
     InputValidationError | undefined
   >()
 
-  const [registrationError, setRegistrationError] = useState<string | undefined>(undefined)
+  const [registrationError, setRegistrationError] = useState<string | undefined>()
   const [codeInvalid, setCodeInvalid] = useState(false)
   const [codeExpired, setCodeExpired] = useState(false)
 

@@ -64,7 +64,7 @@ const SiteSuccessRatesChart = ({ siteSummaries }: Props) => {
     return (
       <div className='p-2'>
         <div className='bg-body p-2 border rounded'>
-          <h5 className='border-bottom'>{props.axisValue}</h5>
+          <h5 className='border-bottom'>{String(props.axisValue)}</h5>
           <div style={{ color: selectedSerie?.color }}>{data?.toFixed(1)} %</div>
         </div>
       </div>

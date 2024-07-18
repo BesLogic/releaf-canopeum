@@ -16,6 +16,7 @@ export const LanguageContext = createContext<ILanguageContext>({
   formatDate: (_: Date | string) => '',
   translateValue: (_: Translatable) => '',
 })
+LanguageContext.displayName = 'LanguageContext'
 
 const { timeZone } = Intl.DateTimeFormat().resolvedOptions()
 
