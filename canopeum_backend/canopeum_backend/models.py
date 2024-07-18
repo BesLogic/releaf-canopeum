@@ -2,12 +2,10 @@ import re
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Any, ClassVar, TypeVar, override
 
-import googlemaps  # type: ignore[import-untyped]
+import googlemaps  # type: ignore[import-untyped] # No type stub currently exists for googlemaps
 import pytz
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
-# No type stub currently exists for googlemaps
 from django.http import QueryDict
 from django.utils.datastructures import MultiValueDict as django_MultiValueDict
 from rest_framework.request import Request as drf_Request
