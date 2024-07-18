@@ -26,6 +26,7 @@ export const AuthenticationContext = createContext<IAuthenticationContext>({
   isSessionLoaded: false,
   currentUser: undefined,
 })
+AuthenticationContext.displayName = 'AuthenticationContext'
 
 const AuthenticationContextProvider: FunctionComponent<{ readonly children?: ReactNode }> = memo(
   props => {
