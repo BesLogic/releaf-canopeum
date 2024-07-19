@@ -1,7 +1,10 @@
-import { useContext } from 'react'
+/* eslint-disable max-lines -- disable max-lines */
+import { useCallback, useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import EditBatchModal from '@components/analytics/batch-modal/EditBatchModal'
 import { LanguageContext } from '@components/context/LanguageContext'
+import useApiClient from '@hooks/ApiClientHook'
 import type { BatchAnalytics } from '@services/api'
 
 const BATCH_HEADER_CLASS =
@@ -9,13 +12,28 @@ const BATCH_HEADER_CLASS =
 
 type Props = {
   readonly batches: BatchAnalytics[],
+  readonly siteId: number,
 }
 
 const cellBorderColor = 'var(--bs-gray-400)'
 
-const BatchTable = ({ batches }: Props) => {
+const BatchTable = (props: Props) => {
   const { t } = useTranslation()
   const { translateValue } = useContext(LanguageContext)
+  const { getApiClient } = useApiClient()
+
+  const [batches, setBatches] = useState(props.batches)
+  const [batchToEdit, setBatchToEdit] = useState<BatchAnalytics | null>(null)
+
+  const fetchBatch = useCallback(
+    async (siteId: number) => {
+      // TODO: Use endpoint to get specific batch directly instead of refetching site summary
+      // Also only update required batch, not the entire array
+      const siteSummary = await getApiClient().siteClient.summary(siteId)
+      setBatches(siteSummary.batches)
+    },
+    [getApiClient],
+  )
 
   return (
     <div className='overflow-auto'>
@@ -47,6 +65,13 @@ const BatchTable = ({ batches }: Props) => {
                 style={{ width: '17.5rem' }}
               >
                 {batch.name}
+                <button
+                  className='unstyled-button text-primary'
+                  onClick={() => setBatchToEdit(batch)}
+                  type='button'
+                >
+                  <span className='material-symbols-outlined fill-icon me-2'>edit</span>
+                </button>
               </th>
             ))}
           </tr>
@@ -282,6 +307,15 @@ const BatchTable = ({ batches }: Props) => {
           </tr>
         </tbody>
       </table>
+      {batchToEdit && (
+        <EditBatchModal
+          batchToEdit={batchToEdit}
+          handleClose={reason => {
+            setBatchToEdit(null)
+            if (reason === 'edit') void fetchBatch(props.siteId)
+          }}
+        />
+      )}
     </div>
   )
 }

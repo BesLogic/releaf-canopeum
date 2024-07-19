@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 
 import LoadingPage from './LoadingPage'
-import CreateBatch from '@components/analytics/add-batch-modal/CreateBatchModal'
 import AnalyticsSiteHeader from '@components/analytics/AnalyticsSiteHeader'
+import CreateBatchModal from '@components/analytics/batch-modal/CreateBatchModal'
 import BatchTable from '@components/analytics/BatchTable'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
@@ -20,7 +20,6 @@ const AnalyticsSite = () => {
   const [lastModifiedBatchDate, setLastModifiedBatchDate] = useState<Date | undefined>()
 
   const [isCreateBatchOpen, setIsCreateBatchOpen] = useState(false)
-  const [wasCreateBatchOpened, setWasCreateBatchOpened] = useState(false)
 
   const fetchSite = useCallback(
     async (siteId: number) => setSiteSummary(await getApiClient().siteClient.summary(siteId)),
@@ -56,12 +55,6 @@ const AnalyticsSite = () => {
     }
   }, [siteSummary])
 
-  useEffect(() => {
-    if (!isCreateBatchOpen) return
-
-    setWasCreateBatchOpened(true)
-  }, [isCreateBatchOpen])
-
   if (!siteSummary) {
     return <LoadingPage />
   }
@@ -93,19 +86,17 @@ const AnalyticsSite = () => {
           </button>
         </div>
 
-        <BatchTable batches={siteSummary.batches} />
+        <BatchTable batches={siteSummary.batches} siteId={siteSummary.id} />
       </div>
 
-      {wasCreateBatchOpened && (
-        <CreateBatch
-          handleClose={reason => {
-            setIsCreateBatchOpen(false)
-            if (reason === 'create') void fetchSite(siteSummary.id)
-          }}
-          open={isCreateBatchOpen}
-          site={siteSummary}
-        />
-      )}
+      <CreateBatchModal
+        handleClose={reason => {
+          setIsCreateBatchOpen(false)
+          if (reason === 'create') void fetchSite(siteSummary.id)
+        }}
+        open={isCreateBatchOpen}
+        site={siteSummary}
+      />
     </div>
   )
 }
