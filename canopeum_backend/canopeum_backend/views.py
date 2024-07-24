@@ -6,6 +6,15 @@ from django.contrib.auth import authenticate
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import QueryDict
+
+# TODO: Figure out why setting CamelCaseMultiPartParser as a DEFAULT_PARSER_CLASSES
+# breaks *some* Views' API generation (adds multiple body params)
+# (then we won't need to import these as it'll simply be default)
+from djangorestframework_camel_case.parser import (
+    CamelCaseFormParser,
+    CamelCaseJSONParser,
+    CamelCaseMultiPartParser,
+)
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import status
@@ -58,8 +67,7 @@ from .serializers import (
     AdminUserSitesSerializer,
     AnnouncementSerializer,
     AssetSerializer,
-    BatchAnalyticsSerializer,
-    BatchSerializer,
+    BatchDetailSerializer,
     ChangePasswordSerializer,
     CommentSerializer,
     ContactSerializer,
@@ -213,6 +221,34 @@ class MulchLayerListAPIView(APIView):
         return Response(serializer.data)
 
 
+SITE_SCHEMA = {
+    "multipart/form-data": {
+        "type": "object",
+        "properties": {
+            "name": {"type": "string"},
+            "siteType": {"type": "number"},
+            "image": {"type": "string", "format": "binary"},
+            "latitude": {"type": "string"},
+            "longitude": {"type": "string"},
+            "description": {"type": "string"},
+            "size": {"type": "number"},
+            "species": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {"type": "number"},
+                        "quantity": {"type": "number"},
+                    },
+                },
+            },
+            "researchPartnership": {"type": "boolean"},
+            "visibleMap": {"type": "boolean"},
+        },
+    },
+}
+
+
 class SiteListAPIView(APIView):
     permission_classes = (MegaAdminPermission,)
 
@@ -227,32 +263,7 @@ class SiteListAPIView(APIView):
     @extend_schema(
         # TODO: Add serializer for multipart/form-data
         # request={"multipart/form-data": SiteSerializer}
-        request={
-            "multipart/form-data": {
-                "type": "object",
-                "properties": {
-                    "name": {"type": "string"},
-                    "siteType": {"type": "number"},
-                    "image": {"type": "string", "format": "binary"},
-                    "latitude": {"type": "string"},
-                    "longitude": {"type": "string"},
-                    "description": {"type": "string"},
-                    "size": {"type": "number"},
-                    "species": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "id": {"type": "number"},
-                                "quantity": {"type": "number"},
-                            },
-                        },
-                    },
-                    "researchPartnership": {"type": "boolean"},
-                    "visibleMap": {"type": "boolean"},
-                },
-            },
-        },
+        request=SITE_SCHEMA,
         responses={201: SiteSerializer},
         operation_id="site_create",
     )
@@ -308,32 +319,9 @@ class SiteDetailAPIView(APIView):
         return Response(serializer.data)
 
     @extend_schema(
-        request={
-            "multipart/form-data": {
-                "type": "object",
-                "properties": {
-                    "name": {"type": "string"},
-                    "siteType": {"type": "number"},
-                    "image": {"type": "string", "format": "binary"},
-                    "latitude": {"type": "string"},
-                    "longitude": {"type": "string"},
-                    "description": {"type": "string"},
-                    "size": {"type": "number"},
-                    "species": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "id": {"type": "number"},
-                                "quantity": {"type": "number"},
-                            },
-                        },
-                    },
-                    "researchPartnership": {"type": "boolean"},
-                    "visibleMap": {"type": "boolean"},
-                },
-            },
-        },
+        # TODO: Add serializer for multipart/form-data
+        # request={"multipart/form-data": SiteSerializer}
+        request=SITE_SCHEMA,
         responses=SiteSerializer,
         operation_id="site_update",
     )
@@ -839,72 +827,81 @@ class LikeListAPIView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class BatchListAPIView(APIView):
-    parser_classes = (MultiPartParser, FormParser)
+# TODO: Add serializer for multipart/form-data
+# request={"multipart/form-data": BatchDetailSerializer}
+BATCH_SCHEMA = {
+    "multipart/form-data": {
+        "type": "object",
+        "properties": {
+            "site": {"type": "number"},
+            "name": {"type": "string", "nullable": True},
+            "sponsor": {"type": "string", "nullable": True},
+            "size": {"type": "number", "nullable": True},
+            "soilCondition": {"type": "string", "nullable": True},
+            "plantCount": {"type": "number", "nullable": True},
+            "survivedCount": {"type": "number", "nullable": True},
+            "replaceCount": {"type": "number", "nullable": True},
+            "totalNumberSeed": {"type": "number", "nullable": True},
+            "totalPropagation": {"type": "number", "nullable": True},
+            "image": {"type": "string", "format": "binary", "nullable": True},
+            "fertilizerIds": {"type": "array", "items": {"type": "number"}},
+            "mulchLayerIds": {"type": "array", "items": {"type": "number"}},
+            "seeds": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {"type": "number"},
+                        "quantity": {"type": "number"},
+                    },
+                },
+            },
+            "species": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {"type": "number"},
+                        "quantity": {"type": "number"},
+                    },
+                },
+            },
+            "supportedSpecieIds": {"type": "array", "items": {"type": "number"}},
+        },
+    },
+}
 
-    @extend_schema(responses=BatchAnalyticsSerializer(many=True), operation_id="batch_all")
+
+class BatchListAPIView(APIView):
+    parser_classes = (CamelCaseJSONParser, CamelCaseFormParser, CamelCaseMultiPartParser)
+
+    @extend_schema(responses=BatchDetailSerializer(many=True), operation_id="batch_all")
     def get(self, request: Request):
         batches = Batch.objects.all()
-        serializer = BatchSerializer(batches, many=True)
+        serializer = BatchDetailSerializer(batches, many=True)
         return Response(serializer.data)
 
     @extend_schema(
-        request={
-            "multipart/form-data": {
-                "type": "object",
-                "properties": {
-                    "site": {"type": "number"},
-                    "name": {"type": "string", "nullable": True},
-                    "sponsor": {"type": "string", "nullable": True},
-                    "size": {"type": "number", "nullable": True},
-                    "soilCondition": {"type": "string", "nullable": True},
-                    "plantCount": {"type": "number", "nullable": True},
-                    "survivedCount": {"type": "number", "nullable": True},
-                    "replaceCount": {"type": "number", "nullable": True},
-                    "totalNumberSeed": {"type": "number", "nullable": True},
-                    "totalPropagation": {"type": "number", "nullable": True},
-                    "image": {"type": "string", "format": "binary", "nullable": True},
-                    "fertilizerIds": {"type": "array", "items": {"type": "number"}},
-                    "mulchLayerIds": {"type": "array", "items": {"type": "number"}},
-                    "seeds": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "id": {"type": "number"},
-                                "quantity": {"type": "number"},
-                            },
-                        },
-                    },
-                    "species": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "id": {"type": "number"},
-                                "quantity": {"type": "number"},
-                            },
-                        },
-                    },
-                    "supportedSpecieIds": {"type": "array", "items": {"type": "number"}},
-                },
-            },
-        },
-        responses={201: BatchSerializer},
+        # TODO: Add serializer for multipart/form-data
+        # request={"multipart/form-data": BatchDetailSerializer}
+        request=BATCH_SCHEMA,
+        responses={201: BatchDetailSerializer},
         operation_id="batch_create",
     )
     def post(self, request: Request):
         errors = []
 
         try:
-            parsed_fertilizer_ids = request.data.getlist("fertilizerIds", [])
-            parsed_mulch_layer_ids = request.data.getlist("mulchLayerIds", [])
+            parsed_fertilizer_ids = request.data.getlist("fertilizer_ids", [])
+            parsed_mulch_layer_ids = request.data.getlist("mulch_layer_ids", [])
             parsed_seeds = [json.loads(seed) for seed in request.data.getlist("seeds", [])]
             parsed_species = [json.loads(specie) for specie in request.data.getlist("species", [])]
-            parsed_supported_species_ids = request.data.getlist("supportedSpecieIds", [])
+            parsed_supported_species_ids = request.data.getlist("supported_specie_ids", [])
         except json.JSONDecodeError as e:
             return Response(data={"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+        # HACK to allow handling the image with a AssetSerializer separately
+        # TODO: Figure out how to feed the image directly to BatchDetailSerializer
         image = None
         if request.data.get("image"):
             asset_serializer = AssetSerializer(data=request.data)
@@ -913,26 +910,12 @@ class BatchListAPIView(APIView):
             else:
                 image = asset_serializer.save()
 
-        batch_data = {
-            "site": request.data.get("site"),
-            "name": request.data.get("name"),
-            "sponsor": request.data.get("sponsor"),
-            "size": request.data.get("size"),
-            "soil_condition": request.data.get("soilCondition"),
-            "plant_count": request.data.get("plantCount"),
-            "survived_count": request.data.get("survivedCount"),
-            "replace_count": request.data.get("replaceCount"),
-            "total_number_seed": request.data.get("totalNumberSeed"),
-            "total_propagation": request.data.get("totalPropagation"),
-        }
-
-        batch_serializer = BatchSerializer(data=batch_data)
+        batch_serializer = BatchDetailSerializer(data=request.data)
         if not batch_serializer.is_valid():
             errors.append(batch_serializer.errors)
         else:
             site = Site.objects.get(pk=request.data.get("site", ""))
-            batch_data["site"] = site
-            batch = batch_serializer.save(**batch_data, image=image)
+            batch = batch_serializer.save(site=site, image=image)
 
             # Batch fertilizer
             for fertilizer_id in parsed_fertilizer_ids:
@@ -970,14 +953,16 @@ class BatchListAPIView(APIView):
 
 
 class BatchDetailAPIView(APIView):
-    @extend_schema(request=BatchSerializer, responses=BatchSerializer, operation_id="batch_update")
+    @extend_schema(
+        request=BatchDetailSerializer, responses=BatchDetailSerializer, operation_id="batch_update"
+    )
     def patch(self, request: Request, batchId):
         try:
             batch = Batch.objects.get(pk=batchId)
         except Batch.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        serializer = BatchSerializer(batch, data=request.data)
+        serializer = BatchDetailSerializer(batch, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

@@ -66,7 +66,7 @@
       "templateDirectory": null,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": null,
+      "output": "../canopeum_frontend/src/services/api.ts",
       "newLineBehavior": "Auto"
     }
   }
