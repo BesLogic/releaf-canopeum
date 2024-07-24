@@ -56,5 +56,10 @@
     "sass": "1.77.6",
     "typescript": "^5.2.2",
     "vite": "^5.1.6"
+  },
+  "// @oclif/plugin-help": "Dependency of mockoon, depended on vulnerable braces, see https://github.com/BesLogic/releaf-canopeum/security/dependabot/11",
+  "overrides": {
+    "@oclif/plugin-help": "^6.2.2",
+    "braces": "^3.0.3"
   }
 }
