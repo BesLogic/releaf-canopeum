@@ -251,14 +251,13 @@ SITE_SCHEMA = {
 
 class SiteListAPIView(APIView):
     permission_classes = (MegaAdminPermission,)
+    parser_classes = (MultiPartParser, FormParser)
 
     @extend_schema(responses=SiteSerializer(many=True), operation_id="site_all")
     def get(self, request: Request):
         sites = get_public_sites_unless_admin(request.user)
         serializer = SiteSerializer(sites, many=True)
         return Response(serializer.data)
-
-    parser_classes = (MultiPartParser, FormParser)
 
     @extend_schema(
         # TODO: Add serializer for multipart/form-data
@@ -305,7 +304,6 @@ class SiteListAPIView(APIView):
 
 class SiteDetailAPIView(APIView):
     permission_classes = (MegaAdminPermissionReadOnly, SiteAdminPermission)
-
     parser_classes = (MultiPartParser, FormParser)
 
     @extend_schema(request=SiteSerializer, responses=SiteSerializer, operation_id="site_detail")
@@ -574,6 +572,7 @@ class SiteMapListAPIView(APIView):
 # Incompatible "request" in base types
 class PostListAPIView(APIView, PageNumberPagination):  # type:ignore[misc] # pyright: ignore[reportIncompatibleVariableOverride]
     permission_classes = (IsAuthenticatedOrReadOnly,)
+    parser_classes = (MultiPartParser, FormParser)
 
     @extend_schema(
         responses=PostPaginationSerializer,
@@ -616,8 +615,6 @@ class PostListAPIView(APIView, PageNumberPagination):  # type:ignore[misc] # pyr
 
         serializer = PostSerializer(page_posts, many=True, context={"request": request})
         return self.get_paginated_response(serializer.data)
-
-    parser_classes = (MultiPartParser, FormParser)
 
     @extend_schema(
         # TODO: Add serializer for multipart/form-data
