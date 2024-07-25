@@ -79,7 +79,7 @@ const Analytics = () => {
           longitude,
           presentation,
           size,
-          species.map(specie => new Species({ id: specie.id, quantity: specie.quantity })),
+          species.map(specie => new Species(specie)),
           researchPartner,
           visibleOnMap,
         )
@@ -91,7 +91,7 @@ const Analytics = () => {
           longitude,
           presentation,
           size,
-          species.map(specie => new Species({ id: specie.id, quantity: specie.quantity })),
+          species.map(specie => new Species(specie)),
           researchPartner,
           visibleOnMap,
         )

@@ -1,5 +1,6 @@
 import json
 import secrets
+from copy import deepcopy
 from typing import cast
 
 from django.contrib.auth import authenticate
@@ -826,7 +827,7 @@ class LikeListAPIView(APIView):
 
 # TODO: Add serializer for multipart/form-data
 # request={"multipart/form-data": BatchDetailSerializer}
-BATCH_SCHEMA = {
+BATCH_CREATE_SCHEMA = {
     "multipart/form-data": {
         "type": "object",
         "properties": {
@@ -881,7 +882,7 @@ class BatchListAPIView(APIView):
     @extend_schema(
         # TODO: Add serializer for multipart/form-data
         # request={"multipart/form-data": BatchDetailSerializer}
-        request=BATCH_SCHEMA,
+        request=BATCH_CREATE_SCHEMA,
         responses={201: BatchDetailSerializer},
         operation_id="batch_create",
     )
@@ -949,9 +950,20 @@ class BatchListAPIView(APIView):
         return Response(batch_serializer.data, status=status.HTTP_201_CREATED)
 
 
+BATCH_EDIT_SCHEMA = deepcopy(BATCH_CREATE_SCHEMA)
+del BATCH_EDIT_SCHEMA["multipart/form-data"]["properties"]["site"]
+del BATCH_EDIT_SCHEMA["multipart/form-data"]["properties"]["image"]
+
+
 class BatchDetailAPIView(APIView):
+    parser_classes = (CamelCaseJSONParser, CamelCaseFormParser, CamelCaseMultiPartParser)
+
     @extend_schema(
-        request=BatchDetailSerializer, responses=BatchDetailSerializer, operation_id="batch_update"
+        # TODO: Add serializer for multipart/form-data
+        # request={"multipart/form-data": BatchDetailSerializer}
+        request=BATCH_EDIT_SCHEMA,
+        responses=BatchDetailSerializer,
+        operation_id="batch_update",
     )
     def patch(self, request: Request, batchId):
         try:
@@ -959,11 +971,64 @@ class BatchDetailAPIView(APIView):
         except Batch.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        serializer = BatchDetailSerializer(batch, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        errors = []
+
+        try:
+            parsed_fertilizer_ids = request.data.getlist("fertilizer_ids", [])
+            parsed_mulch_layer_ids = request.data.getlist("mulch_layer_ids", [])
+            parsed_seeds = [json.loads(seed) for seed in request.data.getlist("seeds", [])]
+            parsed_species = [json.loads(specie) for specie in request.data.getlist("species", [])]
+            parsed_supported_species_ids = request.data.getlist("supported_specie_ids", [])
+        except json.JSONDecodeError as e:
+            return Response(data={"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        # image = None
+        # if request.data.get("image"):
+        #     asset_serializer = AssetSerializer(data=request.data)
+        #     if not asset_serializer.is_valid():
+        #         errors.append(asset_serializer.errors)
+        #     else:
+        #         image = asset_serializer.save()
+
+        batch_serializer = BatchDetailSerializer(data=request.data, partial=True)
+        if not batch_serializer.is_valid():
+            errors.append(batch_serializer.errors)
+        else:
+            batch = batch_serializer.save()
+
+            # Batch fertilizer
+            for fertilizer_id in parsed_fertilizer_ids:
+                fertilizer_type = Fertilizertype.objects.get(pk=fertilizer_id)
+                Batchfertilizer.objects.create(fertilizer_type=fertilizer_type, batch=batch)
+
+            # Mulch layer
+            for mulch_layer_id in parsed_mulch_layer_ids:
+                mulch_layer_type = Mulchlayertype.objects.get(pk=mulch_layer_id)
+                Batchmulchlayer.objects.create(mulch_layer_type=mulch_layer_type, batch=batch)
+
+            # Seeds
+            for seed in parsed_seeds:
+                tree_type = Treetype.objects.get(pk=seed["id"])
+                BatchSeed.objects.create(
+                    tree_type=tree_type, quantity=seed.get("quantity", 0), batch=batch
+                )
+
+            # Species
+            for specie in parsed_species:
+                tree_type = Treetype.objects.get(pk=specie["id"])
+                BatchSpecies.objects.create(
+                    tree_type=tree_type, quantity=specie.get("quantity", 0), batch=batch
+                )
+
+            # Supported species
+            for supported_specie_id in parsed_supported_species_ids:
+                tree_type = Treetype.objects.get(pk=supported_specie_id)
+                BatchSupportedSpecies.objects.create(tree_type=tree_type, batch=batch)
+
+        if errors:
+            return Response(data={"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(batch_serializer.data)
 
     @extend_schema(operation_id="batch_delete")
     def delete(self, request: Request, batchId):

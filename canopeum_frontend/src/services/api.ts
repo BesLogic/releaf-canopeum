@@ -192,20 +192,57 @@ export class BatchClient {
         return Promise.resolve<BatchDetail>(null as any);
     }
 
-    update(batchId: number, body?: PatchedBatchDetail | undefined): Promise<BatchDetail> {
+    update(batchId: number, name?: string | null | undefined, sponsor?: string | null | undefined, size?: number | null | undefined, soilCondition?: string | null | undefined, plantCount?: number | null | undefined, survivedCount?: number | null | undefined, replaceCount?: number | null | undefined, totalNumberSeed?: number | null | undefined, totalPropagation?: number | null | undefined, fertilizerIds?: number[] | undefined, mulchLayerIds?: number[] | undefined, seeds?: Seeds2[] | undefined, species?: Species2[] | undefined, supportedSpecieIds?: number[] | undefined): Promise<BatchDetail> {
         let url_ = this.baseUrl + "/analytics/batches/{batchId}/";
         if (batchId === undefined || batchId === null)
             throw new Error("The parameter 'batchId' must be defined.");
         url_ = url_.replace("{batchId}", encodeURIComponent("" + batchId));
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
+        const content_ = new FormData();
+        if (name !== null && name !== undefined)
+            content_.append("name", name.toString());
+        if (sponsor !== null && sponsor !== undefined)
+            content_.append("sponsor", sponsor.toString());
+        if (size !== null && size !== undefined)
+            content_.append("size", size.toString());
+        if (soilCondition !== null && soilCondition !== undefined)
+            content_.append("soilCondition", soilCondition.toString());
+        if (plantCount !== null && plantCount !== undefined)
+            content_.append("plantCount", plantCount.toString());
+        if (survivedCount !== null && survivedCount !== undefined)
+            content_.append("survivedCount", survivedCount.toString());
+        if (replaceCount !== null && replaceCount !== undefined)
+            content_.append("replaceCount", replaceCount.toString());
+        if (totalNumberSeed !== null && totalNumberSeed !== undefined)
+            content_.append("totalNumberSeed", totalNumberSeed.toString());
+        if (totalPropagation !== null && totalPropagation !== undefined)
+            content_.append("totalPropagation", totalPropagation.toString());
+        if (fertilizerIds === null || fertilizerIds === undefined)
+            throw new Error("The parameter 'fertilizerIds' cannot be null.");
+        else
+            fertilizerIds.forEach(item_ => content_.append("fertilizerIds", item_.toString()));
+        if (mulchLayerIds === null || mulchLayerIds === undefined)
+            throw new Error("The parameter 'mulchLayerIds' cannot be null.");
+        else
+            mulchLayerIds.forEach(item_ => content_.append("mulchLayerIds", item_.toString()));
+        if (seeds === null || seeds === undefined)
+            throw new Error("The parameter 'seeds' cannot be null.");
+        else
+            seeds.forEach(item_ => content_.append("seeds", item_.toString()));
+        if (species === null || species === undefined)
+            throw new Error("The parameter 'species' cannot be null.");
+        else
+            species.forEach(item_ => content_.append("species", item_.toString()));
+        if (supportedSpecieIds === null || supportedSpecieIds === undefined)
+            throw new Error("The parameter 'supportedSpecieIds' cannot be null.");
+        else
+            supportedSpecieIds.forEach(item_ => content_.append("supportedSpecieIds", item_.toString()));
 
         let options_: RequestInit = {
             body: content_,
             method: "PATCH",
             headers: {
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -466,7 +503,7 @@ export class SiteClient {
         return Promise.resolve<Site[]>(null as any);
     }
 
-    create(name?: string | undefined, siteType?: number | undefined, image?: FileParameter | undefined, latitude?: string | undefined, longitude?: string | undefined, description?: string | undefined, size?: number | undefined, species?: Species2[] | undefined, researchPartnership?: boolean | undefined, visibleMap?: boolean | undefined): Promise<Site> {
+    create(name?: string | undefined, siteType?: number | undefined, image?: FileParameter | undefined, latitude?: string | undefined, longitude?: string | undefined, description?: string | undefined, size?: number | undefined, species?: Species3[] | undefined, researchPartnership?: boolean | undefined, visibleMap?: boolean | undefined): Promise<Site> {
         let url_ = this.baseUrl + "/analytics/sites/";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -580,7 +617,7 @@ export class SiteClient {
         return Promise.resolve<Site>(null as any);
     }
 
-    update(siteId: number, name?: string | undefined, siteType?: number | undefined, image?: FileParameter | undefined, latitude?: string | undefined, longitude?: string | undefined, description?: string | undefined, size?: number | undefined, species?: Species3[] | undefined, researchPartnership?: boolean | undefined, visibleMap?: boolean | undefined): Promise<Site> {
+    update(siteId: number, name?: string | undefined, siteType?: number | undefined, image?: FileParameter | undefined, latitude?: string | undefined, longitude?: string | undefined, description?: string | undefined, size?: number | undefined, species?: Species4[] | undefined, researchPartnership?: boolean | undefined, visibleMap?: boolean | undefined): Promise<Site> {
         let url_ = this.baseUrl + "/analytics/sites/{siteId}/";
         if (siteId === undefined || siteId === null)
             throw new Error("The parameter 'siteId' must be defined.");
@@ -3644,166 +3681,6 @@ export interface IPatchedAnnouncement {
     [key: string]: any;
 }
 
-export class PatchedBatchDetail implements IPatchedBatchDetail {
-    readonly id?: number;
-    readonly fertilizers?: Batchfertilizer[];
-    readonly mulchLayers?: BatchMulchLayer[];
-    readonly supportedSpecies?: BatchSupportedSpecies[];
-    readonly seeds?: BatchSeed[];
-    readonly species?: BatchSpecies[];
-    image?: Asset;
-    createdAt?: Date | undefined;
-    updatedAt?: Date | undefined;
-    name?: string | undefined;
-    sponsor?: string | undefined;
-    size?: number | undefined;
-    soilCondition?: string | undefined;
-    plantCount?: number | undefined;
-    survivedCount?: number | undefined;
-    replaceCount?: number | undefined;
-    totalNumberSeed?: number | undefined;
-    totalPropagation?: number | undefined;
-    site?: number | undefined;
-
-    [key: string]: any;
-
-    constructor(data?: IPatchedBatchDetail) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            for (var property in _data) {
-                if (_data.hasOwnProperty(property))
-                    this[property] = _data[property];
-            }
-            (<any>this).id = _data["id"];
-            if (Array.isArray(_data["fertilizers"])) {
-                (<any>this).fertilizers = [] as any;
-                for (let item of _data["fertilizers"])
-                    (<any>this).fertilizers!.push(Batchfertilizer.fromJS(item));
-            }
-            if (Array.isArray(_data["mulchLayers"])) {
-                (<any>this).mulchLayers = [] as any;
-                for (let item of _data["mulchLayers"])
-                    (<any>this).mulchLayers!.push(BatchMulchLayer.fromJS(item));
-            }
-            if (Array.isArray(_data["supportedSpecies"])) {
-                (<any>this).supportedSpecies = [] as any;
-                for (let item of _data["supportedSpecies"])
-                    (<any>this).supportedSpecies!.push(BatchSupportedSpecies.fromJS(item));
-            }
-            if (Array.isArray(_data["seeds"])) {
-                (<any>this).seeds = [] as any;
-                for (let item of _data["seeds"])
-                    (<any>this).seeds!.push(BatchSeed.fromJS(item));
-            }
-            if (Array.isArray(_data["species"])) {
-                (<any>this).species = [] as any;
-                for (let item of _data["species"])
-                    (<any>this).species!.push(BatchSpecies.fromJS(item));
-            }
-            this.image = _data["image"] ? Asset.fromJS(_data["image"]) : <any>undefined;
-            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
-            this.updatedAt = _data["updatedAt"] ? new Date(_data["updatedAt"].toString()) : <any>undefined;
-            this.name = _data["name"];
-            this.sponsor = _data["sponsor"];
-            this.size = _data["size"];
-            this.soilCondition = _data["soilCondition"];
-            this.plantCount = _data["plantCount"];
-            this.survivedCount = _data["survivedCount"];
-            this.replaceCount = _data["replaceCount"];
-            this.totalNumberSeed = _data["totalNumberSeed"];
-            this.totalPropagation = _data["totalPropagation"];
-            this.site = _data["site"];
-        }
-    }
-
-    static fromJS(data: any): PatchedBatchDetail {
-        data = typeof data === 'object' ? data : {};
-        let result = new PatchedBatchDetail();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        for (var property in this) {
-            if (this.hasOwnProperty(property))
-                data[property] = this[property];
-        }
-        data["id"] = this.id;
-        if (Array.isArray(this.fertilizers)) {
-            data["fertilizers"] = [];
-            for (let item of this.fertilizers)
-                data["fertilizers"].push(item.toJSON());
-        }
-        if (Array.isArray(this.mulchLayers)) {
-            data["mulchLayers"] = [];
-            for (let item of this.mulchLayers)
-                data["mulchLayers"].push(item.toJSON());
-        }
-        if (Array.isArray(this.supportedSpecies)) {
-            data["supportedSpecies"] = [];
-            for (let item of this.supportedSpecies)
-                data["supportedSpecies"].push(item.toJSON());
-        }
-        if (Array.isArray(this.seeds)) {
-            data["seeds"] = [];
-            for (let item of this.seeds)
-                data["seeds"].push(item.toJSON());
-        }
-        if (Array.isArray(this.species)) {
-            data["species"] = [];
-            for (let item of this.species)
-                data["species"].push(item.toJSON());
-        }
-        data["image"] = this.image ? this.image.toJSON() : <any>undefined;
-        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
-        data["updatedAt"] = this.updatedAt ? this.updatedAt.toISOString() : <any>undefined;
-        data["name"] = this.name;
-        data["sponsor"] = this.sponsor;
-        data["size"] = this.size;
-        data["soilCondition"] = this.soilCondition;
-        data["plantCount"] = this.plantCount;
-        data["survivedCount"] = this.survivedCount;
-        data["replaceCount"] = this.replaceCount;
-        data["totalNumberSeed"] = this.totalNumberSeed;
-        data["totalPropagation"] = this.totalPropagation;
-        data["site"] = this.site;
-        return data;
-    }
-}
-
-export interface IPatchedBatchDetail {
-    id?: number;
-    fertilizers?: Batchfertilizer[];
-    mulchLayers?: BatchMulchLayer[];
-    supportedSpecies?: BatchSupportedSpecies[];
-    seeds?: BatchSeed[];
-    species?: BatchSpecies[];
-    image?: Asset;
-    createdAt?: Date | undefined;
-    updatedAt?: Date | undefined;
-    name?: string | undefined;
-    sponsor?: string | undefined;
-    size?: number | undefined;
-    soilCondition?: string | undefined;
-    plantCount?: number | undefined;
-    survivedCount?: number | undefined;
-    replaceCount?: number | undefined;
-    totalNumberSeed?: number | undefined;
-    totalPropagation?: number | undefined;
-    site?: number | undefined;
-
-    [key: string]: any;
-}
-
 export class PatchedContact implements IPatchedContact {
     readonly id?: number;
     address?: string | undefined;
@@ -5673,6 +5550,58 @@ export interface ISpecies {
     [key: string]: any;
 }
 
+export class Seeds2 implements ISeeds2 {
+    id?: number;
+    quantity?: number;
+
+    [key: string]: any;
+
+    constructor(data?: ISeeds2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.quantity = _data["quantity"];
+        }
+    }
+
+    static fromJS(data: any): Seeds2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new Seeds2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["quantity"] = this.quantity;
+        return data;
+    }
+}
+
+export interface ISeeds2 {
+    id?: number;
+    quantity?: number;
+
+    [key: string]: any;
+}
+
 export class Species2 implements ISpecies2 {
     id?: number;
     quantity?: number;
@@ -5771,6 +5700,58 @@ export class Species3 implements ISpecies3 {
 }
 
 export interface ISpecies3 {
+    id?: number;
+    quantity?: number;
+
+    [key: string]: any;
+}
+
+export class Species4 implements ISpecies4 {
+    id?: number;
+    quantity?: number;
+
+    [key: string]: any;
+
+    constructor(data?: ISpecies4) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            for (var property in _data) {
+                if (_data.hasOwnProperty(property))
+                    this[property] = _data[property];
+            }
+            this.id = _data["id"];
+            this.quantity = _data["quantity"];
+        }
+    }
+
+    static fromJS(data: any): Species4 {
+        data = typeof data === 'object' ? data : {};
+        let result = new Species4();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        for (var property in this) {
+            if (this.hasOwnProperty(property))
+                data[property] = this[property];
+        }
+        data["id"] = this.id;
+        data["quantity"] = this.quantity;
+        return data;
+    }
+}
+
+export interface ISpecies4 {
     id?: number;
     quantity?: number;
 
