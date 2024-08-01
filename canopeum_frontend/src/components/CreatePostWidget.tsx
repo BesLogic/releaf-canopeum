@@ -181,7 +181,6 @@ const CreatePostWidget = ({ siteId, addNewPost }: Props) => {
               isEditable={{ removeFile }}
               medias={files.map(
                 // Find the best way to type file data
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- See above
                 file => (new Asset({ id: 0, asset: URL.createObjectURL(file.data) })),
               )}
             />
