@@ -190,5 +190,13 @@
   "evenBetterToml.formatter.reorderArrays": true,
   "evenBetterToml.formatter.trailingNewline": true,
   // We like keeping TOML keys in a certain non-alphabetical order that feels more natural
-  "evenBetterToml.formatter.reorderKeys": false
+  "evenBetterToml.formatter.reorderKeys": false,
+  "powershell.codeFormatting.pipelineIndentationStyle": "IncreaseIndentationForFirstPipeline",
+  "powershell.codeFormatting.autoCorrectAliases": true,
+  "powershell.codeFormatting.trimWhitespaceAroundPipe": true,
+  "powershell.codeFormatting.useConstantStrings": true,
+  "powershell.codeFormatting.useCorrectCasing": true,
+  "powershell.codeFormatting.whitespaceBetweenParameters": true,
+  // Fixes a "unexpectedly closed" warning popup everytime this console is closed
+  "powershell.integratedConsole.showOnStartup": false
 }
