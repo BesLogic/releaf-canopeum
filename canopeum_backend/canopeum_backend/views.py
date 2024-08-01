@@ -915,34 +915,16 @@ class BatchListAPIView(APIView):
             site = Site.objects.get(pk=request.data.get("site", ""))
             batch = batch_serializer.save(site=site, image=image)
 
-            # Batch fertilizer
             for fertilizer_id in parsed_fertilizer_ids:
-                fertilizer_type = Fertilizertype.objects.get(pk=fertilizer_id)
-                Batchfertilizer.objects.create(fertilizer_type=fertilizer_type, batch=batch)
-
-            # Mulch layer
+                batch.add_fertilizer_by_id(fertilizer_id)
             for mulch_layer_id in parsed_mulch_layer_ids:
-                mulch_layer_type = Mulchlayertype.objects.get(pk=mulch_layer_id)
-                Batchmulchlayer.objects.create(mulch_layer_type=mulch_layer_type, batch=batch)
-
-            # Seeds
+                batch.add_mulch_by_id(mulch_layer_id)
             for seed in parsed_seeds:
-                tree_type = Treetype.objects.get(pk=seed["id"])
-                BatchSeed.objects.create(
-                    tree_type=tree_type, quantity=seed.get("quantity", 0), batch=batch
-                )
-
-            # Species
+                batch.add_seed_by_id(seed["id"], seed.get("quantity", 0))
             for specie in parsed_species:
-                tree_type = Treetype.objects.get(pk=specie["id"])
-                BatchSpecies.objects.create(
-                    tree_type=tree_type, quantity=specie.get("quantity", 0), batch=batch
-                )
-
-            # Supported species
+                batch.add_specie_by_id(specie["id"], specie.get("quantity", 0))
             for supported_specie_id in parsed_supported_species_ids:
-                tree_type = Treetype.objects.get(pk=supported_specie_id)
-                BatchSupportedSpecies.objects.create(tree_type=tree_type, batch=batch)
+                batch.add_supported_specie_by_id(supported_specie_id)
 
         if errors:
             return Response(data={"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
@@ -982,6 +964,7 @@ class BatchDetailAPIView(APIView):
         except json.JSONDecodeError as e:
             return Response(data={"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+        # TODO: On updating an image, we need to delete it too
         # image = None
         # if request.data.get("image"):
         #     asset_serializer = AssetSerializer(data=request.data)
@@ -996,34 +979,22 @@ class BatchDetailAPIView(APIView):
         else:
             batch = batch_serializer.save()
 
-            # Batch fertilizer
+            # Less efficient, but so much easier to just remove all then recreate mappings.
+            Batchfertilizer.objects.filter(batch=batch).delete()
+            Batchmulchlayer.objects.filter(batch=batch).delete()
+            BatchSeed.objects.filter(batch=batch).delete()
+            BatchSpecies.objects.filter(batch=batch).delete()
+            BatchSupportedSpecies.objects.filter(batch=batch).delete()
             for fertilizer_id in parsed_fertilizer_ids:
-                fertilizer_type = Fertilizertype.objects.get(pk=fertilizer_id)
-                Batchfertilizer.objects.create(fertilizer_type=fertilizer_type, batch=batch)
-
-            # Mulch layer
+                batch.add_fertilizer_by_id(fertilizer_id)
             for mulch_layer_id in parsed_mulch_layer_ids:
-                mulch_layer_type = Mulchlayertype.objects.get(pk=mulch_layer_id)
-                Batchmulchlayer.objects.create(mulch_layer_type=mulch_layer_type, batch=batch)
-
-            # Seeds
+                batch.add_mulch_by_id(mulch_layer_id)
             for seed in parsed_seeds:
-                tree_type = Treetype.objects.get(pk=seed["id"])
-                BatchSeed.objects.create(
-                    tree_type=tree_type, quantity=seed.get("quantity", 0), batch=batch
-                )
-
-            # Species
+                batch.add_seed_by_id(seed["id"], seed.get("quantity", 0))
             for specie in parsed_species:
-                tree_type = Treetype.objects.get(pk=specie["id"])
-                BatchSpecies.objects.create(
-                    tree_type=tree_type, quantity=specie.get("quantity", 0), batch=batch
-                )
-
-            # Supported species
+                batch.add_specie_by_id(specie["id"], specie.get("quantity", 0))
             for supported_specie_id in parsed_supported_species_ids:
-                tree_type = Treetype.objects.get(pk=supported_specie_id)
-                BatchSupportedSpecies.objects.create(tree_type=tree_type, batch=batch)
+                batch.add_supported_specie_by_id(supported_specie_id)
 
         if errors:
             return Response(data={"errors": errors}, status=status.HTTP_400_BAD_REQUEST)

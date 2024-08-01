@@ -42,11 +42,26 @@ module.exports = {
           // Relative imports.
           // Anything that starts with a dot or src/
           // KEEP IN SYNC WITH canopeum_frontend/tsconfig.json AND canopeum_frontend/vite.config.ts
-          ['^(\\.|src/|@assets|@components|@config|@constants|@hooks|@models|@pages|@services|@store|@utils)'],
+          [
+            '^(\\.' +
+            '|src/' +
+            '|@assets' +
+            '|@components' +
+            '|@config' +
+            '|@constants' +
+            '|@hooks' +
+            '|@models' +
+            '|@pages' +
+            '|@services' +
+            '|@store' +
+            '|@utils' +
+            ')',
+          ],
         ],
       },
     ],
-    // Using Bootraps directly without a React wrapper will cause us to have to add classes to React Components
+    // Using Bootraps directly without a React wrapper
+    // will cause us to have to add classes to React Components
     'react/forbid-component-props': 'off',
     '@typescript-eslint/no-unsafe-member-access': 'warn',
     // There is currently a bug with this rule causing the linter to crash

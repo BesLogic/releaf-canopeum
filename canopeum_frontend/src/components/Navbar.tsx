@@ -43,6 +43,7 @@ const NAVBAR_ITEMS: NavbarItem[] = [
 ]
 
 const Navbar = () => {
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Unmarked 3rd party method
   const { i18n: { changeLanguage, language }, t: translate } = useTranslation()
   const [currentLanguage, setCurrentLanguage] = useState(language)
   const { currentUser } = useContext(AuthenticationContext)
