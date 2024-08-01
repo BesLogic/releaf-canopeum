@@ -9,15 +9,29 @@ module.exports = {
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: ['tsconfig?(.*).json'],
+    project: ['**/tsconfig?(.*).json'],
+    // Experimental, but causes pre-commit to actually find the project
+    // EXPERIMENTAL_useProjectService: true,
   },
   ignorePatterns: [
+    // Isn't included in any TSConfig
     '.eslintrc.cjs',
-    'typings.d.ts',
     // Auto-generated
     'src/services/api.ts',
   ],
   rules: {
+    // Try disabling the 8 slowest rules for pre-commit
+    '@typescript-eslint/no-unsafe-argument': 'off',
+    '@typescript-eslint/no-unsafe-assignment': 'off',
+    'react/no-array-index-key': 'off',
+    'react/jsx-fragments': 'off',
+    '@typescript-eslint/no-confusing-void-expression': 'off',
+    'import/defaul': 'off',
+    '@typescript-eslint/no-unsafe-return': 'off',
+    'react/no-unstable-nested-components': 'off',
+
+    '@typescript-eslint/prefer-nullish-coalescing': 'off',
+    '@typescript-eslint/no-unnecessary-condition': 'off',
     'react-refresh/only-export-components': [
       'warn',
       { allowConstantExport: true },
@@ -42,11 +56,26 @@ module.exports = {
           // Relative imports.
           // Anything that starts with a dot or src/
           // KEEP IN SYNC WITH canopeum_frontend/tsconfig.json AND canopeum_frontend/vite.config.ts
-          ['^(\\.|src/|@assets|@components|@config|@constants|@hooks|@models|@pages|@services|@store|@utils)'],
+          [
+            '^(\\.' +
+            '|src/' +
+            '|@assets' +
+            '|@components' +
+            '|@config' +
+            '|@constants' +
+            '|@hooks' +
+            '|@models' +
+            '|@pages' +
+            '|@services' +
+            '|@store' +
+            '|@utils' +
+            ')',
+          ],
         ],
       },
     ],
-    // Using Bootraps directly without a React wrapper will cause us to have to add classes to React Components
+    // Using Bootraps directly without a React wrapper
+    // will cause us to have to add classes to React Components
     'react/forbid-component-props': 'off',
     '@typescript-eslint/no-unsafe-member-access': 'warn',
     // There is currently a bug with this rule causing the linter to crash
