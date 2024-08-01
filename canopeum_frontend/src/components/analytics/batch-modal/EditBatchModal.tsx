@@ -4,12 +4,12 @@ import { useTranslation } from 'react-i18next'
 
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
-import type { BatchAnalytics, IPatchedBatch } from '@services/api'
-import { PatchedBatch } from '@services/api'
+import type { BatchDetail, IPatchedBatchDetail } from '@services/api'
+import { PatchedBatchDetail } from '@services/api'
 import { floorNumberValue } from '@utils/formUtils'
 
 type Props = {
-  readonly batchToEdit: BatchAnalytics,
+  readonly batchToEdit: BatchDetail,
   readonly handleClose: (reason?: 'edit') => void,
 }
 
@@ -18,13 +18,13 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
   const { getApiClient } = useApiClient()
   const { openAlertSnackbar } = useContext(SnackbarContext)
 
-  const [batch, setBatch] = useState<IPatchedBatch>({ ...batchToEdit, image: undefined })
+  const [batch, setBatch] = useState<IPatchedBatchDetail>({ ...batchToEdit, image: undefined })
 
   const handleSubmitBatch = async () => {
     try {
       await getApiClient().batchClient.update(
         batchToEdit.id,
-        new PatchedBatch(batch),
+        new PatchedBatchDetail(batch),
         // TODO: These can only be set on creation atm, we should be able to edit them
         // image,
         // fertilizerIds,

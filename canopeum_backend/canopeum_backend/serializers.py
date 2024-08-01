@@ -458,44 +458,19 @@ class BatchSpeciesSerializer(serializers.ModelSerializer[BatchSpecies]):
         return InternationalizationSerializer(obj.tree_type.name).data.get("fr", None)
 
 
-class BatchSerializer(serializers.ModelSerializer[Batch]):
-    class Meta:
-        model = Batch
-        fields = "__all__"
-
-
-class BatchAnalyticsSerializer(serializers.ModelSerializer[Batch]):
+class BatchDetailSerializer(serializers.ModelSerializer[Batch]):
     fertilizers = serializers.SerializerMethodField()
     mulch_layers = serializers.SerializerMethodField()
     supported_species = serializers.SerializerMethodField()
     seeds = serializers.SerializerMethodField()
     species = serializers.SerializerMethodField()
-    updated_at = serializers.DateTimeField()
-    created_at = serializers.DateTimeField()
-    image = AssetSerializer()
+    # HACK to allow handling the image with a AssetSerializer separately
+    # TODO: Figure out how to feed the image directly to BatchDetailSerializer
+    image = AssetSerializer(required=False)
 
     class Meta:
         model = Batch
-        fields = (
-            "id",
-            "name",
-            "size",
-            "soil_condition",
-            "sponsor",
-            "fertilizers",
-            "mulch_layers",
-            "supported_species",
-            "plant_count",
-            "survived_count",
-            "replace_count",
-            "total_number_seed",
-            "total_propagation",
-            "seeds",
-            "species",
-            "created_at",
-            "updated_at",
-            "image",
-        )
+        fields = "__all__"
 
     @extend_schema_field(BatchfertilizerSerializer(many=True))
     def get_fertilizers(self, obj):
@@ -569,7 +544,7 @@ class SiteSummarySerializer(serializers.ModelSerializer[Site]):
     progress = serializers.SerializerMethodField()
     sponsors = serializers.SerializerMethodField()
     admins = SiteAdminSerializer(source="siteadmin_set", many=True)
-    batches = BatchAnalyticsSerializer(source="batch_set", read_only=True, many=True)
+    batches = BatchDetailSerializer(source="batch_set", read_only=True, many=True)
 
     class Meta:
         model = Site

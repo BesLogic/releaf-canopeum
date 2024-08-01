@@ -124,7 +124,7 @@ const Analytics = () => {
       const lastModifiedBatchDate = site.batches.length > 0
         ? site
           .batches
-          .map(batch => batch.updatedAt)
+          .map(batch => batch.updatedAt ?? new Date())
           .sort((a, b) =>
             a > b
               ? -1
