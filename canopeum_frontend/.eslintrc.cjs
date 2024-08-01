@@ -20,18 +20,18 @@ module.exports = {
     'src/services/api.ts',
   ],
   rules: {
-    // Try disabling the 8 slowest rules for pre-commit
+    // Try disabling the 10 slowest rules for pre-commit
     '@typescript-eslint/no-unsafe-argument': 'off',
     '@typescript-eslint/no-unsafe-assignment': 'off',
     'react/no-array-index-key': 'off',
     'react/jsx-fragments': 'off',
     '@typescript-eslint/no-confusing-void-expression': 'off',
-    'import/defaul': 'off',
+    'import/default': 'off',
     '@typescript-eslint/no-unsafe-return': 'off',
     'react/no-unstable-nested-components': 'off',
-
     '@typescript-eslint/prefer-nullish-coalescing': 'off',
     '@typescript-eslint/no-unnecessary-condition': 'off',
+
     'react-refresh/only-export-components': [
       'warn',
       { allowConstantExport: true },
