@@ -128,6 +128,11 @@ For backend
    pre-commit run --all
    ```
 
+### Quickly running the application locally
+
+We've made a `start-local-env.ps1` helper script to ease starting up the application. Feel free to use and improve it.
+TODO: Setup Python debugging of running application to debug backend started by script.
+
 ### Folder Architecture
 
 ```ini
