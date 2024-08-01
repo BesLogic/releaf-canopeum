@@ -973,7 +973,7 @@ class BatchDetailAPIView(APIView):
         #     else:
         #         image = asset_serializer.save()
 
-        batch_serializer = BatchDetailSerializer(data=request.data, partial=True)
+        batch_serializer = BatchDetailSerializer(batch, data=request.data, partial=True)
         if not batch_serializer.is_valid():
             errors.append(batch_serializer.errors)
         else:
