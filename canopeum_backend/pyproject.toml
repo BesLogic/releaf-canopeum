@@ -123,7 +123,7 @@ disallow_incomplete_defs = false
 
 [[tool.mypy.overrides]]
 # Untyped dependencies
-module = ["rest_framework.*"]
+module = ["djangorestframework_camel_case.*", "rest_framework.*"]
 ignore_missing_imports = true
 
 [tool.django-stubs]
