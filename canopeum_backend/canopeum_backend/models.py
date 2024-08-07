@@ -161,7 +161,7 @@ class Coordinate(models.Model):
             + float(dms_latitude_split[1]) / 60
             + float(dms_latitude_split[2]) / 3600
         )
-        if dms_latitude_split[4] == "S":
+        if dms_latitude_split[3] == "S":
             dd_latitude *= -1
 
         dms_longitude_split = re.split(LAT_LONG_SEP, dms_longitude)
@@ -170,7 +170,7 @@ class Coordinate(models.Model):
             + float(dms_longitude_split[1]) / 60
             + float(dms_longitude_split[2]) / 3600
         )
-        if dms_longitude_split[4] == "W":
+        if dms_longitude_split[3] == "W":
             dd_longitude *= -1
 
         formatted_address = (
