@@ -8,6 +8,7 @@ import SiteSuccessRatesChart from '@components/analytics/SiteSuccessRatesChart'
 import SiteSummaryCard from '@components/analytics/SiteSummaryCard'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { LanguageContext } from '@components/context/LanguageContext'
+import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
 import { type SiteSummary, Species, type User } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
@@ -15,6 +16,7 @@ import { assetFormatter } from '@utils/assetFormatter'
 const Analytics = () => {
   const { t: translate } = useTranslation()
   const { formatDate } = useContext(LanguageContext)
+  const { openAlertSnackbar } = useContext(SnackbarContext)
   const { currentUser } = useContext(AuthenticationContext)
   const { getApiClient } = useApiClient()
 
@@ -50,23 +52,25 @@ const Analytics = () => {
         ? await assetFormatter(data.siteImage)
         : undefined
 
-      const { dmsLatitude } = data
-      const latitude =
-        // eslint-disable-next-line max-len -- string
-        `${dmsLatitude.degrees}°${dmsLatitude.minutes}'${dmsLatitude.seconds}.${dmsLatitude.miliseconds}"${dmsLatitude.cardinal}`
+      const species = data.species.map(specie => new Species(specie))
 
       const {
+        dmsLatitude,
         dmsLongitude,
         siteName,
         siteType,
         presentation,
         researchPartner,
         size,
-        species,
         visibleOnMap,
       } = data
+
+      const latitude =
+        // eslint-disable-next-line max-len -- This or `prefer-template`
+        `${dmsLatitude.degrees}°${dmsLatitude.minutes}'${dmsLatitude.seconds}.${dmsLatitude.miliseconds}"${dmsLatitude.cardinal}`
+
       const longitude =
-        // eslint-disable-next-line max-len -- string
+        // eslint-disable-next-line max-len -- This or `prefer-template`
         `${dmsLongitude.degrees}°${dmsLongitude.minutes}'${dmsLongitude.seconds}.${dmsLongitude.miliseconds}"${dmsLongitude.cardinal}`
 
       const response = siteId
@@ -79,7 +83,7 @@ const Analytics = () => {
           longitude,
           presentation,
           size,
-          species.map(specie => new Species({ id: specie.id, quantity: specie.quantity })),
+          species,
           researchPartner,
           visibleOnMap,
         )
@@ -91,16 +95,25 @@ const Analytics = () => {
           longitude,
           presentation,
           size,
-          species.map(specie => new Species({ id: specie.id, quantity: specie.quantity })),
+          species,
           researchPartner,
           visibleOnMap,
         )
 
-      void response.then(async () => setSiteSummaries(await getApiClient().summaryClient.all()))
+      response.then(async () => {
+        openAlertSnackbar(
+          translate('analytics.site-save-success'),
+        )
+        setIsModalOpen(false)
+        setSiteId(undefined)
+        setSiteSummaries(await getApiClient().summaryClient.all())
+      }).catch(() =>
+        openAlertSnackbar(
+          translate('analytics.site-save-error'),
+          { severity: 'error' },
+        )
+      )
     }
-
-    setIsModalOpen(false)
-    setSiteId(undefined)
   }
 
   const handleSiteEdit = (_siteId: number) => {
