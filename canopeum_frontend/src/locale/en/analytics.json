@@ -1,6 +1,7 @@
 {
   "title": "Manage my Sites",
   "create-site": "Create a New Site",
+  "edit-site-info": "Edit Site Information",
   "average": "average",
   "batches_one": "batch",
   "batches_other": "batches",
@@ -23,6 +24,8 @@
   "visitors": "Visitors",
   "sponsored": "Sponsored",
   "unnamed-site": "Unnamed site",
+  "site-save-success": "Site saved successfully",
+  "site-save-error": "Error saving Site",
   "site-deleted": "Site {{siteName}} was successfully deleted.",
   "site-deleted-error": "There was a problem while trying to delete the site {{siteName}}...",
   "success-rate-chart": {
@@ -42,7 +45,6 @@
     "admins-saved": "Admins saved successfully for {{siteName}}!"
   },
   "site-modal": {
-    "create-site": "create site",
     "site-name": "site name",
     "site-type": "site type",
     "site-image": "project image or enterprise logo",
