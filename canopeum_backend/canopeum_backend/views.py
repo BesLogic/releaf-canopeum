@@ -933,8 +933,9 @@ class BatchListAPIView(APIView):
 
 
 BATCH_EDIT_SCHEMA = deepcopy(BATCH_CREATE_SCHEMA)
-del BATCH_EDIT_SCHEMA["multipart/form-data"]["properties"]["site"]
-del BATCH_EDIT_SCHEMA["multipart/form-data"]["properties"]["image"]
+# type ignore: not gonna do a TypedDict for that, inline TypedDict are still experimental
+del BATCH_EDIT_SCHEMA["multipart/form-data"]["properties"]["site"]  # type: ignore[attr-defined]
+del BATCH_EDIT_SCHEMA["multipart/form-data"]["properties"]["image"]  # type: ignore[attr-defined]
 
 
 class BatchDetailAPIView(APIView):
