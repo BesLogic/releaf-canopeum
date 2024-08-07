@@ -41,9 +41,9 @@ else {
   $commandsBackend = @'
   cd canopeum_backend
   python -m venv venv
-  .\venv\bin\Activate.ps1
+  .\venv\Scripts\Activate.ps1
   pip install -r requirements.txt
-  python3 manage.py runserver
+  python manage.py runserver
 '@
 }
 
@@ -58,10 +58,22 @@ npm run dev
 
 # Initialize database
 if ($IsLinux -or $IsMacOS) {
-  $commandsInitializeDatabase = 'python3 manage.py initialize_database'
+  $commandsInitializeDatabase = @'
+  cd canopeum_backend
+  python -m venv venv
+  .\venv\bin\Activate.ps1
+  python3 manage.py initialize_database
+  cd ..
+'@
 }
 else {
-  $commandsInitializeDatabase = 'python manage.py initialize_database'
+  $commandsInitializeDatabase = @'
+  cd canopeum_backend
+  python -m venv venv
+  .\venv\Scripts\Activate.ps1
+  python manage.py initialize_database
+  cd ..
+'@
 }
 
 function Show-Menu {

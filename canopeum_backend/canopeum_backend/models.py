@@ -86,6 +86,26 @@ class Batch(models.Model):
     total_propagation = models.IntegerField(blank=True, null=True)
     image = models.ForeignKey(Asset, models.DO_NOTHING, blank=True, null=True)
 
+    def add_fertilizer_by_id(self, pk: int):
+        fertilizer_type = Fertilizertype.objects.get(pk=pk)
+        return Batchfertilizer.objects.create(fertilizer_type=fertilizer_type, batch=self)
+
+    def add_mulch_by_id(self, pk: int):
+        mulch_layer_type = Mulchlayertype.objects.get(pk=pk)
+        return Batchmulchlayer.objects.create(mulch_layer_type=mulch_layer_type, batch=self)
+
+    def add_seed_by_id(self, pk: int, quantity: int):
+        tree_type = Treetype.objects.get(pk=pk)
+        return BatchSeed.objects.create(tree_type=tree_type, quantity=quantity, batch=self)
+
+    def add_specie_by_id(self, pk: int, quantity: int):
+        tree_type = Treetype.objects.get(pk=pk)
+        return BatchSpecies.objects.create(tree_type=tree_type, quantity=quantity, batch=self)
+
+    def add_supported_specie_by_id(self, pk: int):
+        tree_type = Treetype.objects.get(pk=pk)
+        return BatchSupportedSpecies.objects.create(tree_type=tree_type, batch=self)
+
 
 class FertilizertypeInternationalization(models.Model):
     en = models.TextField(db_column="EN", blank=True, null=True)
