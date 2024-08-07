@@ -37,6 +37,13 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
   const [searchValue, setSearchValue] = useState('')
 
   useEffect(() => setAvailableOptions(options), [options])
+  // useEffect(() => {
+  //   setSelectedOptions(selected)
+  //   const selectedOptionValues = new Set(selected.map(_selected => _selected.option.value))
+  //   setAvailableOptions(
+  //     options.filter(currentOption => !selectedOptionValues.has(currentOption.value)),
+  //   )
+  // }, [options, selected])
   useEffect(() => setFilteredOptions(availableOptions), [availableOptions])
   useEffect(() => onChange(selectedOptions), [selectedOptions, onChange])
 

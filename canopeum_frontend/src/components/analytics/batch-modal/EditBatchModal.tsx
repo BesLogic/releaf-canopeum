@@ -1,7 +1,7 @@
 /* eslint-disable etc/no-commented-out-code -- Add image editing */
 /* eslint-disable max-lines -- disable max-lines */
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import FertilizersSelector from '@components/analytics/FertilizersSelector'
@@ -10,8 +10,8 @@ import SupportSpeciesSelector from '@components/analytics/SupportSpeciesSelector
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
+import { Seeds, Sitetreespecies } from '@services/api'
 import { type BatchDetail, Species } from '@services/api'
-import { Seeds } from '@services/api'
 import { floorNumberValue } from '@utils/formUtils'
 
 type Props = {
@@ -45,10 +45,19 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
 
   const [batch, setBatch] = useState<EditBatchDto>({
     ...batchToEdit,
+    species: batchToEdit.species,
     fertilizerIds: batchToEdit.fertilizers.map(fertilizer => fertilizer.id),
     mulchLayerIds: batchToEdit.mulchLayers.map(layer => layer.id),
     supportedSpecieIds: batchToEdit.supportedSpecies.map(specie => specie.id),
   })
+
+  useEffect(() =>
+    setBatch({
+      ...batchToEdit,
+      fertilizerIds: batchToEdit.fertilizers.map(fertilizer => fertilizer.id),
+      mulchLayerIds: batchToEdit.mulchLayers.map(layer => layer.id),
+      supportedSpecieIds: batchToEdit.supportedSpecies.map(specie => specie.id),
+    }), [batchToEdit, batchToEdit.species])
 
   const handleSubmitBatch = async () => {
     const {
@@ -120,6 +129,17 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
       mulchLayerIds: batchToEdit.mulchLayers.map(layer => layer.id),
       supportedSpecieIds: batchToEdit.supportedSpecies.map(specie => specie.id),
     })
+
+  const typesOfSeedsCollected = batchToEdit.seeds.map(seed => {
+    const typeOfSeed = batchToEdit.species.find(specie => specie.id)
+    if (!typeOfSeed) return
+
+    return new Sitetreespecies({
+      ...typeOfSeed,
+      ...seed,
+      id: typeOfSeed.id,
+    })
+  }).filter(Boolean)
 
   return (
     <Dialog fullWidth maxWidth='sm' onClose={onClose} open={!!batchToEdit}>
@@ -193,6 +213,7 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
                     })),
                   [],
                 )}
+                species={batchToEdit.species}
               />
             </div>
 
@@ -212,6 +233,7 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
 
             TODO: Fill in this field automatically
             <FertilizersSelector
+              fertilizers={batchToEdit.fertilizers}
               onChange={useCallback(
                 fertilizers =>
                   setBatch(current => ({
@@ -222,8 +244,9 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
               )}
             />
 
-            TODO: Fill in this field automatically
+            TODO: Fill in this field automatically TEST HERE
             <MulchLayersSelector
+              mulchLayers={batchToEdit.mulchLayers}
               onChange={useCallback(
                 mulchLayers =>
                   setBatch(current => ({
@@ -244,6 +267,7 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
                   })),
                 [],
               )}
+              species={batchToEdit.supportedSpecies}
             />
 
             <div>
@@ -305,15 +329,11 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
                   species =>
                     setBatch(current => ({
                       ...current,
-                      seeds: species.map(specie =>
-                        new Seeds({
-                          id: specie.id,
-                          quantity: specie.quantity,
-                        })
-                      ),
+                      seeds: species.map(specie => new Seeds(specie)),
                     })),
                   [],
                 )}
+                species={typesOfSeedsCollected}
               />
             </div>
 

@@ -2807,6 +2807,7 @@ export interface IBatchSeed {
 }
 
 export class BatchSpecies implements IBatchSpecies {
+    readonly id!: number;
     quantity?: number | undefined;
     readonly en!: string;
     readonly fr!: string;
@@ -2828,6 +2829,7 @@ export class BatchSpecies implements IBatchSpecies {
                 if (_data.hasOwnProperty(property))
                     this[property] = _data[property];
             }
+            (<any>this).id = _data["id"];
             this.quantity = _data["quantity"];
             (<any>this).en = _data["en"];
             (<any>this).fr = _data["fr"];
@@ -2847,6 +2849,7 @@ export class BatchSpecies implements IBatchSpecies {
             if (this.hasOwnProperty(property))
                 data[property] = this[property];
         }
+        data["id"] = this.id;
         data["quantity"] = this.quantity;
         data["en"] = this.en;
         data["fr"] = this.fr;
@@ -2855,6 +2858,7 @@ export class BatchSpecies implements IBatchSpecies {
 }
 
 export interface IBatchSpecies {
+    id: number;
     quantity?: number | undefined;
     en: string;
     fr: string;

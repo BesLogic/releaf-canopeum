@@ -445,7 +445,12 @@ class BatchSpeciesSerializer(serializers.ModelSerializer[BatchSpecies]):
 
     class Meta:
         model = BatchSpecies
-        fields = ("quantity", "en", "fr")
+        fields = ("id", "quantity", "en", "fr")
+
+    def get_id(self, obj: BatchSpecies):
+        if obj.tree_type is None:
+            return None
+        return obj.tree_type.pk
 
     def get_en(self, obj: BatchSpecies):
         if obj.tree_type is None:
