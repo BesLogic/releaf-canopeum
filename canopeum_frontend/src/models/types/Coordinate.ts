@@ -26,6 +26,9 @@ export const defaultLongitude: Coordinate = {
   cardinal: 'W',
 }
 
+export const coordinateToString = (coord: Coordinate) =>
+  `${coord.degrees}°${coord.minutes}'${coord.seconds}.${coord.miliseconds}"${coord.cardinal}`
+
 export const extractCoordinate = (coordinates: string) => {
   const char1 = coordinates.indexOf('°')
   const char2 = coordinates.indexOf("'")

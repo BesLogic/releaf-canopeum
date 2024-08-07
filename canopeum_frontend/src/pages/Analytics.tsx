@@ -9,6 +9,7 @@ import SiteSummaryCard from '@components/analytics/SiteSummaryCard'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
+import { coordinateToString } from '@models/types/Coordinate'
 import { type SiteSummary, Species, type User } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
 
@@ -50,7 +51,6 @@ const Analytics = () => {
         ? await assetFormatter(data.siteImage)
         : undefined
 
-
       const {
         dmsLatitude,
         dmsLongitude,
@@ -63,13 +63,8 @@ const Analytics = () => {
         visibleOnMap,
       } = data
 
-      const latitude =
-        // eslint-disable-next-line max-len -- This or `prefer-template`
-        `${dmsLatitude.degrees}°${dmsLatitude.minutes}'${dmsLatitude.seconds}.${dmsLatitude.miliseconds}"${dmsLatitude.cardinal}`
-
-      const longitude =
-        // eslint-disable-next-line max-len -- This or `prefer-template`
-        `${dmsLongitude.degrees}°${dmsLongitude.minutes}'${dmsLongitude.seconds}.${dmsLongitude.miliseconds}"${dmsLongitude.cardinal}`
+      const latitude = coordinateToString(dmsLatitude)
+      const longitude = coordinateToString(dmsLongitude)
 
       const response = siteId
         ? getApiClient().siteClient.update(

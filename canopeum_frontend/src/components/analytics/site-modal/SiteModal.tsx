@@ -54,8 +54,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
     if (!siteId) return
 
     const siteDetail = await getApiClient().siteClient.detail(siteId)
-    const dmsLat = siteDetail.coordinate.dmsLatitude
-    const dmsLong = siteDetail.coordinate.dmsLongitude
+    const { dmsLatitude, dmsLongitude } = siteDetail.coordinate
 
     const imgResponse = await fetch(`${getApiBaseUrl()}${siteDetail.image.asset}`)
     const blob = await imgResponse.blob()
@@ -64,8 +63,12 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
       siteName: siteDetail.name,
       siteType: siteDetail.siteType.id,
       siteImage: new File([blob], 'temp', { type: blob.type }),
-      dmsLatitude: extractCoordinate(dmsLat),
-      dmsLongitude: extractCoordinate(dmsLong),
+      dmsLatitude: dmsLatitude
+        ? extractCoordinate(dmsLatitude)
+        : defaultLatitude,
+      dmsLongitude: dmsLongitude
+        ? extractCoordinate(dmsLongitude)
+        : defaultLongitude,
       presentation: siteDetail.description,
       size: Number(siteDetail.size),
       species: siteDetail.siteTreeSpecies,
