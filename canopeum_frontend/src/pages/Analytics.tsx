@@ -50,12 +50,9 @@ const Analytics = () => {
         ? await assetFormatter(data.siteImage)
         : undefined
 
-      const { dmsLatitude } = data
-      const latitude =
-        // eslint-disable-next-line max-len -- string
-        `${dmsLatitude.degrees}°${dmsLatitude.minutes}'${dmsLatitude.seconds}.${dmsLatitude.miliseconds}"${dmsLatitude.cardinal}`
 
       const {
+        dmsLatitude,
         dmsLongitude,
         siteName,
         siteType,
@@ -65,8 +62,13 @@ const Analytics = () => {
         species,
         visibleOnMap,
       } = data
+
+      const latitude =
+        // eslint-disable-next-line max-len -- This or `prefer-template`
+        `${dmsLatitude.degrees}°${dmsLatitude.minutes}'${dmsLatitude.seconds}.${dmsLatitude.miliseconds}"${dmsLatitude.cardinal}`
+
       const longitude =
-        // eslint-disable-next-line max-len -- string
+        // eslint-disable-next-line max-len -- This or `prefer-template`
         `${dmsLongitude.degrees}°${dmsLongitude.minutes}'${dmsLongitude.seconds}.${dmsLongitude.miliseconds}"${dmsLongitude.cardinal}`
 
       const response = siteId
