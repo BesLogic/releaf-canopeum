@@ -19,7 +19,6 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -251,7 +250,7 @@ SITE_SCHEMA = {
 
 class SiteListAPIView(APIView):
     permission_classes = (MegaAdminPermission,)
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (CamelCaseJSONParser, CamelCaseFormParser, CamelCaseMultiPartParser)
 
     @extend_schema(responses=SiteSerializer(many=True), operation_id="site_all")
     def get(self, request: Request):
@@ -272,7 +271,7 @@ class SiteListAPIView(APIView):
             return Response(data=asset.errors, status=status.HTTP_400_BAD_REQUEST)
         image = asset.save()
 
-        site_type = Sitetype.objects.get(pk=request.data["siteType"])
+        site_type = Sitetype.objects.get(pk=request.data["site_type"])
 
         # TODO: Move call to from_dms_lat_long in the serializer
         coordinate = Coordinate.from_dms_lat_long(
@@ -304,7 +303,7 @@ class SiteListAPIView(APIView):
 
 class SiteDetailAPIView(APIView):
     permission_classes = (MegaAdminPermissionReadOnly, SiteAdminPermission)
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (CamelCaseJSONParser, CamelCaseFormParser, CamelCaseMultiPartParser)
 
     @extend_schema(request=SiteSerializer, responses=SiteSerializer, operation_id="site_detail")
     def get(self, request: Request, siteId):
@@ -334,7 +333,7 @@ class SiteDetailAPIView(APIView):
             return Response(data=asset.errors, status=status.HTTP_400_BAD_REQUEST)
         image = asset.save()
 
-        site_type = Sitetype.objects.get(pk=request.data["siteType"])
+        site_type = Sitetype.objects.get(pk=request.data["site_type"])
 
         # TODO: Move call to from_dms_lat_long in the serializer
         coordinate = Coordinate.from_dms_lat_long(
@@ -390,14 +389,12 @@ class SiteSocialDetailPublicStatusAPIView(APIView):
 
         self.check_object_permissions(request, site)
 
-        site.is_public = request.data["isPublic"]
-        if not isinstance(site.is_public, bool):
-            Response("isPublic data is invalid", status=status.HTTP_400_BAD_REQUEST)
+        serializer = UpdateSitePublicStatusSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+        site.is_public = serializer.validated_data["is_public"]
         site.save()
-
-        serializer = UpdateSitePublicStatusSerializer(data={"is_public": site.is_public})
-        serializer.is_valid()
 
         return Response(serializer.data)
 
@@ -572,7 +569,7 @@ class SiteMapListAPIView(APIView):
 # Incompatible "request" in base types
 class PostListAPIView(APIView, PageNumberPagination):  # type:ignore[misc] # pyright: ignore[reportIncompatibleVariableOverride]
     permission_classes = (IsAuthenticatedOrReadOnly,)
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (CamelCaseJSONParser, CamelCaseFormParser, CamelCaseMultiPartParser)
 
     @extend_schema(
         responses=PostPaginationSerializer,
@@ -590,7 +587,7 @@ class PostListAPIView(APIView, PageNumberPagination):  # type:ignore[misc] # pyr
         ],
     )
     def get(self, request: Request):
-        site_ids = request.GET.getlist("siteId")
+        site_ids = request.GET.getlist("site_id")
         posts = Post.objects.filter(site__in=site_ids) if site_ids else Post.objects.all()
         sorted_posts = posts.order_by("-created_at")
 
