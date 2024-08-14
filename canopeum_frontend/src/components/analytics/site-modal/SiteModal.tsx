@@ -51,7 +51,12 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
   const [siteImageURL, setSiteImageURL] = useState<string>()
 
   const fetchSite = useCallback(async () => {
-    if (!siteId) return
+    if (!siteId) {
+      // Clear the image that could come from having opened the modal with a previous site
+      setSiteImageURL(undefined)
+
+      return
+    }
 
     const siteDetail = await getApiClient().siteClient.detail(siteId)
     const { dmsLatitude, dmsLongitude } = siteDetail.coordinate
@@ -102,7 +107,11 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
     <Dialog fullWidth maxWidth='sm' onClose={(_, reason) => handleClose(reason)} open={open}>
       <DialogTitle>
         <div className='fs-5 text-capitalize m-auto text-center'>
-          {t('analytics.site-modal.create-site')}
+          {t(
+            siteId
+              ? 'analytics.edit-site-info'
+              : 'analytics.create-site',
+          )}
         </div>
       </DialogTitle>
 
@@ -288,10 +297,11 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
           {t('generic.cancel')}
         </button>
         <button className='btn btn-primary' onClick={() => handleClose('save', site)} type='button'>
-          {t('generic.subscribe')}
+          {t('generic.save')}
         </button>
       </DialogActions>
     </Dialog>
   )
 }
+// eslint-disable-next-line max-lines -- Will resolve itself with https://github.com/BesLogic/releaf-canopeum/pull/193
 export default SiteModal
