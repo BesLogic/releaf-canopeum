@@ -108,7 +108,8 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
         species,
         supportedSpecieIds,
       )
-    } catch {
+    } catch (error: unknown) {
+      console.error(error)
       openAlertSnackbar(
         t('analyticsSite.batch-modal.feedback.create-error'),
         { severity: 'error' },

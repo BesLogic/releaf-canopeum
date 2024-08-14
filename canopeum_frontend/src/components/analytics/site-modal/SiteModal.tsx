@@ -7,6 +7,7 @@ import SiteCoordinates from '@components/analytics/site-modal/SiteCoordinates'
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
+import { type Coordinate, defaultLatitude, defaultLongitude, extractCoordinate } from '@models/types/Coordinate'
 import type { Sitetreespecies, SiteType } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 
@@ -23,20 +24,8 @@ export type SiteDto = {
   siteName?: string,
   siteType?: number,
   siteImage?: File,
-  dmsLatitude: {
-    degrees?: number,
-    minutes?: number,
-    seconds?: number,
-    miliseconds?: number,
-    cardinal?: string,
-  },
-  dmsLongitude: {
-    degrees?: number,
-    minutes?: number,
-    seconds?: number,
-    miliseconds?: number,
-    cardinal?: string,
-  },
+  dmsLatitude: Coordinate,
+  dmsLongitude: Coordinate,
   presentation?: string,
   size?: number,
   species: Sitetreespecies[],
@@ -45,32 +34,11 @@ export type SiteDto = {
 }
 
 const defaultSiteDto: SiteDto = {
-  dmsLatitude: {
-    cardinal: 'N',
-  },
-  dmsLongitude: {
-    cardinal: 'W',
-  },
+  dmsLatitude: defaultLatitude,
+  dmsLongitude: defaultLongitude,
   species: [],
   researchPartner: true,
   visibleOnMap: true,
-}
-
-const extractCoordinate = (coordinates?: string) => {
-  if (!coordinates) return {}
-
-  const char1 = coordinates.indexOf('°')
-  const char2 = coordinates.indexOf("'")
-  const char3 = coordinates.indexOf('.')
-  const char4 = coordinates.indexOf('"')
-
-  return {
-    degrees: Number(coordinates.slice(0, char1)),
-    minutes: Number(coordinates.slice(char1 + 1, char2)),
-    seconds: Number(coordinates.slice(char2 + 1, char3)),
-    miliseconds: Number(coordinates.slice(char3 + 1, char4)),
-    cardinal: coordinates.at(-1),
-  }
 }
 
 const SiteModal = ({ open, handleClose, siteId }: Props) => {
@@ -91,8 +59,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
     }
 
     const siteDetail = await getApiClient().siteClient.detail(siteId)
-    const dmsLat = siteDetail.coordinate.dmsLatitude
-    const dmsLong = siteDetail.coordinate.dmsLongitude
+    const { dmsLatitude, dmsLongitude } = siteDetail.coordinate
 
     const imgResponse = await fetch(`${getApiBaseUrl()}${siteDetail.image.asset}`)
     const blob = await imgResponse.blob()
@@ -101,8 +68,12 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
       siteName: siteDetail.name,
       siteType: siteDetail.siteType.id,
       siteImage: new File([blob], 'temp', { type: blob.type }),
-      dmsLatitude: extractCoordinate(dmsLat),
-      dmsLongitude: extractCoordinate(dmsLong),
+      dmsLatitude: dmsLatitude
+        ? extractCoordinate(dmsLatitude)
+        : defaultLatitude,
+      dmsLongitude: dmsLongitude
+        ? extractCoordinate(dmsLongitude)
+        : defaultLongitude,
       presentation: siteDetail.description,
       size: Number(siteDetail.size),
       species: siteDetail.siteTreeSpecies,
@@ -332,5 +303,4 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
     </Dialog>
   )
 }
-// eslint-disable-next-line max-lines -- Will resolve itself with https://github.com/BesLogic/releaf-canopeum/pull/193
 export default SiteModal

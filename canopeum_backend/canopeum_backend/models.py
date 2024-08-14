@@ -86,6 +86,26 @@ class Batch(models.Model):
     total_propagation = models.IntegerField(blank=True, null=True)
     image = models.ForeignKey(Asset, models.DO_NOTHING, blank=True, null=True)
 
+    def add_fertilizer_by_id(self, pk: int):
+        fertilizer_type = Fertilizertype.objects.get(pk=pk)
+        return Batchfertilizer.objects.create(fertilizer_type=fertilizer_type, batch=self)
+
+    def add_mulch_by_id(self, pk: int):
+        mulch_layer_type = Mulchlayertype.objects.get(pk=pk)
+        return Batchmulchlayer.objects.create(mulch_layer_type=mulch_layer_type, batch=self)
+
+    def add_seed_by_id(self, pk: int, quantity: int):
+        tree_type = Treetype.objects.get(pk=pk)
+        return BatchSeed.objects.create(tree_type=tree_type, quantity=quantity, batch=self)
+
+    def add_specie_by_id(self, pk: int, quantity: int):
+        tree_type = Treetype.objects.get(pk=pk)
+        return BatchSpecies.objects.create(tree_type=tree_type, quantity=quantity, batch=self)
+
+    def add_supported_specie_by_id(self, pk: int):
+        tree_type = Treetype.objects.get(pk=pk)
+        return BatchSupportedSpecies.objects.create(tree_type=tree_type, batch=self)
+
 
 class FertilizertypeInternationalization(models.Model):
     en = models.TextField(db_column="EN", blank=True, null=True)
@@ -161,7 +181,7 @@ class Coordinate(models.Model):
             + float(dms_latitude_split[1]) / 60
             + float(dms_latitude_split[2]) / 3600
         )
-        if dms_latitude_split[4] == "S":
+        if dms_latitude_split[3] == "S":
             dd_latitude *= -1
 
         dms_longitude_split = re.split(LAT_LONG_SEP, dms_longitude)
@@ -170,7 +190,7 @@ class Coordinate(models.Model):
             + float(dms_longitude_split[1]) / 60
             + float(dms_longitude_split[2]) / 3600
         )
-        if dms_longitude_split[4] == "W":
+        if dms_longitude_split[3] == "W":
             dd_longitude *= -1
 
         formatted_address = (
