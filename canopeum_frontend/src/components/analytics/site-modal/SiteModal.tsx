@@ -303,5 +303,4 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
     </Dialog>
   )
 }
-// eslint-disable-next-line max-lines -- Will resolve itself with https://github.com/BesLogic/releaf-canopeum/pull/193
 export default SiteModal
