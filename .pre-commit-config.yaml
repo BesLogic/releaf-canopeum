@@ -15,7 +15,7 @@ repos:
 
   # You can run this locally with `ruff check --fix || ruff format`
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.5.2 # must match canopeum_backend/requirements-dev.txt
+    rev: v0.5.7 # must match canopeum_backend/requirements-dev.txt
     hooks:
       # Run the linter.
       - id: ruff

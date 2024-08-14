@@ -97,6 +97,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "djangorestframework_camel_case.middleware.CamelCaseMiddleWare",
 ]
 
 
@@ -124,13 +125,13 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_RENDERER_CLASSES": [
         "djangorestframework_camel_case.render.CamelCaseJSONRenderer",
-        # TODO: Check if we need/want this setting ?
-        # 'djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer',
+        "djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer",
     ],
     "DEFAULT_PARSER_CLASSES": [
-        "djangorestframework_camel_case.parser.CamelCaseFormParser",
-        "djangorestframework_camel_case.parser.CamelCaseMultiPartParser",
         "djangorestframework_camel_case.parser.CamelCaseJSONParser",
+        "djangorestframework_camel_case.parser.CamelCaseFormParser",
+        # TODO: Figure out why this breaks *some* Views' API generation (adds multiple body params)
+        # "djangorestframework_camel_case.parser.CamelCaseMultiPartParser",
     ],
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -171,7 +172,7 @@ SPECTACULAR_SETTINGS = {
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 # DATABASES = {
-#     "default": "mysql://{}:{}@{}:3306/{}".format(
+#     "default": "mysql://{}:{}@{}:3308/{}".format(
 #         os.getenv("MYSQL_USER"),
 #         os.getenv("MYSQL_PASSWORD"),
 #         os.getenv("MYSQL_HOST"),
@@ -180,7 +181,7 @@ SPECTACULAR_SETTINGS = {
 # }
 DATABASES = {
     "default": dj_database_url.parse(
-        "mysql://canopeum_user:{}@{}:3306/canopeum_db".format(
+        "mysql://canopeum_user:{}@{}:3308/canopeum_db".format(
             get_secret("MYSQL_PASSWORD_CANOPEUM", ""),
             os.getenv("MYSQL_HOST_CANOPEUM", "localhost"),
         ),

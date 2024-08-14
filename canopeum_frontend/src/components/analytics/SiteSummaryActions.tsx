@@ -165,7 +165,7 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange, onSiteEdit }: P
           {administratorsSelection}
         </Dropdown.Menu>
         <Dropdown.Item onClick={() => onSiteEdit(siteSummary.id)}>
-          Edit Site Information
+          {translate('analytics.edit-site-info')}
         </Dropdown.Item>
         <Dropdown.Item onClick={onDeleteSiteClick}>Delete</Dropdown.Item>
       </Dropdown.Menu>

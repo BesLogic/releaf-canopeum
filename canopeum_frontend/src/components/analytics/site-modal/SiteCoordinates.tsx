@@ -1,24 +1,18 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { type Coordinate, defaultLatitude, defaultLongitude } from '@models/types/Coordinate'
+
 type Props = {
   readonly latitude?: Coordinate,
   readonly longitude?: Coordinate,
   readonly onChange: (latitude: Coordinate, longitude: Coordinate) => void,
 }
 
-export type Coordinate = {
-  degrees?: number,
-  minutes?: number,
-  seconds?: number,
-  miliseconds?: number,
-  cardinal?: string,
-}
-
 const SiteCoordinates = ({ latitude, longitude, onChange }: Props) => {
   const { t } = useTranslation()
-  const [lat, setLat] = useState<Coordinate>(latitude ?? {})
-  const [long, setLong] = useState<Coordinate>(longitude ?? {})
+  const [lat, setLat] = useState<Coordinate>(latitude ?? defaultLatitude)
+  const [long, setLong] = useState<Coordinate>(longitude ?? defaultLongitude)
 
   useEffect(() => onChange(lat, long), [lat, long, onChange])
   useEffect(() => latitude && setLat(latitude), [latitude])

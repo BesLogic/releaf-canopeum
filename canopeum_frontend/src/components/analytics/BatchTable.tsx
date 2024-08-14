@@ -5,13 +5,13 @@ import { useTranslation } from 'react-i18next'
 import EditBatchModal from '@components/analytics/batch-modal/EditBatchModal'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
-import type { BatchAnalytics } from '@services/api'
+import type { BatchDetail } from '@services/api'
 
 const BATCH_HEADER_CLASS =
   'text-capitalize position-sticky start-0 table-primary border-1 border-top-0 border-primary'
 
 type Props = {
-  readonly batches: BatchAnalytics[],
+  readonly batches: BatchDetail[],
   readonly siteId: number,
 }
 
@@ -23,7 +23,7 @@ const BatchTable = (props: Props) => {
   const { getApiClient } = useApiClient()
 
   const [batches, setBatches] = useState(props.batches)
-  const [batchToEdit, setBatchToEdit] = useState<BatchAnalytics | null>(null)
+  const [batchToEdit, setBatchToEdit] = useState<BatchDetail | null>(null)
 
   const fetchBatch = useCallback(
     async (siteId: number) => {
