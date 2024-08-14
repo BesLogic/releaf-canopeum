@@ -1,6 +1,6 @@
 -r requirements.txt
 pre-commit==3.8.*
-ruff==0.5.2 # must match .pre-commit-config.yaml
+ruff==0.5.7 # must match .pre-commit-config.yaml
 pyright==1.1.374
 # mypy is taken from [compatible-mypy]
 django-stubs[compatible-mypy]>=5.0.0

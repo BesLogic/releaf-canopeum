@@ -318,12 +318,7 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
                   species =>
                     setBatch(current => ({
                       ...current,
-                      seeds: species.map(specie =>
-                        new Seeds({
-                          id: specie.id,
-                          quantity: specie.quantity,
-                        })
-                      ),
+                      seeds: species.map(specie => new Seeds(specie)),
                     })),
                   [],
                 )}
