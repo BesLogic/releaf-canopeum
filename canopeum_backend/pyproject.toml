@@ -1,3 +1,31 @@
+[project]
+name = "Canopeum"
+version = "0.0.0"
+requires-python = ">= 3.12"
+dependencies = [
+  "Django>=5.0.8", # Fix for https://github.com/BesLogic/releaf-canopeum/security/dependabot/25
+  "dj-database-url",
+  "django-cors-headers",
+  "djangorestframework-camel-case",
+  "djangorestframework-simplejwt", # TODO: Bump above 5.3.1 as soon as fixed for https://github.com/BesLogic/releaf-canopeum/security/dependabot/3
+  "djangorestframework>=3.15.2", # Fix for https://github.com/BesLogic/releaf-canopeum/security/dependabot/15
+  "drf-spectacular>=0.27.2", # https://github.com/tfranzel/drf-spectacular/pull/1216
+  "googlemaps",
+  "python-dotenv",
+  "pytz",
+]
+[project.optional-dependencies]
+dev = [
+  "django-stubs[compatible-mypy]>=5.0.0",
+  "djangorestframework-stubs[compatible-mypy]>=3.14.0",
+  "mypy", # version taken from [compatible-mypy],
+  "pre-commit==3.8.*",
+  "pyright>=1.1.374",
+  "ruff==0.5.7", # must match .pre-commit-config.yaml
+  "types-jsonschema>=4.21.0",
+  "types-pytz>=2024.1",
+]
+
 # https://docs.astral.sh/ruff/configuration/
 [tool.ruff]
 target-version = "py312"

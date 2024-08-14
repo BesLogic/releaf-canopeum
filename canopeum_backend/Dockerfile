@@ -1,13 +1,15 @@
 FROM python:3.12.2
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-COPY 'requirements.txt' /app/
+COPY 'pyproject.toml' /app/
+COPY 'uv.lock' /app/
 
-RUN pip install -r requirements.txt
+RUN uv sync --locked
 
 COPY . /app/
 
