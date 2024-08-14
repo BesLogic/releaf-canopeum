@@ -29,8 +29,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install uv using the standalone installer
-        run: irm https://astral.sh/uv/install.ps1 | iex
-        shell: pwsh
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
       - run: uv sync --locked --extra dev
       - run: mypy . --python-version=3.12
 
@@ -42,8 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install uv using the standalone installer
-        run: irm https://astral.sh/uv/install.ps1 | iex
-        shell: pwsh
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
       - run: uv sync --locked --extra dev
       - uses: jakebailey/pyright-action@v2
         with:
