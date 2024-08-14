@@ -42,7 +42,11 @@ npm run dev
 '@
 
 # Initialize database
-$commandsInitializeDatabase = 'uv run manage.py initialize_database'
+$commandsInitializeDatabase = @'
+  cd canopeum_backend
+  uv run manage.py initialize_database
+  cd ..
+'@
 
 function Show-Menu {
   param (
