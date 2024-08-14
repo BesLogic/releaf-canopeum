@@ -10,7 +10,6 @@ djangorestframework-stubs[compatible-mypy]>=3.14.0
 types-colorama>=0.4.6
 types-docutils>=0.20.0
 types-jsonschema>=4.21.0
-types-pytz>=2024.1
 types-regex>=2023.12.25
 types-requests>=2.31.0
 types-setuptools>=71.0.4
