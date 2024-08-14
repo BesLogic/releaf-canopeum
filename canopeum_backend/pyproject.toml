@@ -18,12 +18,14 @@ dependencies = [
 ]
 [project.optional-dependencies]
 dev = [
-  "django-stubs[compatible-mypy]>=5.0.0",
-  "djangorestframework-stubs[compatible-mypy]>=3.14.0",
+  # Tools
   "mypy", # version taken from [compatible-mypy],
   "pre-commit==3.8.*",
   "pyright>=1.1.374",
   "ruff==0.5.7", # must match .pre-commit-config.yaml
+  # Stubs
+  "django-stubs[compatible-mypy]>=5.0.0",
+  "djangorestframework-stubs[compatible-mypy]>=3.14.0",
   "types-jsonschema>=4.21.0",
   "types-pytz>=2024.1",
 ]
