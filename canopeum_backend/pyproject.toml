@@ -9,8 +9,10 @@ dependencies = [
   "djangorestframework-camel-case",
   "djangorestframework-simplejwt", # TODO: Bump above 5.3.1 as soon as fixed for https://github.com/BesLogic/releaf-canopeum/security/dependabot/3
   "djangorestframework>=3.15.2", # Fix for https://github.com/BesLogic/releaf-canopeum/security/dependabot/15
+  "drf-spectacular-sidecar",
   "drf-spectacular>=0.27.2", # https://github.com/tfranzel/drf-spectacular/pull/1216
   "googlemaps",
+  "mysqlclient",
   "python-dotenv",
   "pytz",
 ]
