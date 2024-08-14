@@ -35,7 +35,6 @@ dependencies = [
     { name = "googlemaps" },
     { name = "mysqlclient" },
     { name = "python-dotenv" },
-    { name = "pytz" },
 ]
 
 [package.optional-dependencies]
@@ -49,7 +48,6 @@ dev = [
     { name = "pyright" },
     { name = "ruff" },
     { name = "types-jsonschema" },
-    { name = "types-pytz" },
 ]
 
 [[package]]
@@ -433,15 +431,6 @@ wheels = [
 ]
 
 [[package]]
-name = "pytz"
-version = "2024.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/90/26/9f1f00a5d021fff16dee3de13d43e5e978f3d58928e129c3a62cf7eb9738/pytz-2024.1.tar.gz", hash = "sha256:2a29735ea9c18baf14b448846bde5a48030ed267578472d8955cd0e7443a9812", size = 316214 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/9c/3d/a121f284241f08268b21359bd425f7d4825cffc5ac5cd0e1b3d82ffd2b10/pytz-2024.1-py2.py3-none-any.whl", hash = "sha256:328171f4e3623139da4983451950b28e95ac706e13f3f2630a879749e7a8b319", size = 505474 },
-]
-
-[[package]]
 name = "pyyaml"
 version = "6.0.2"
 source = { registry = "https://pypi.org/simple" }
@@ -573,15 +562,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/c7/97/4f1880bfeb87a70c78d87089073ad0d0361747d5c36b2e3fafa5b2edb263/types-jsonschema-4.23.0.20240813.tar.gz", hash = "sha256:c93f48206f209a5bc4608d295ac39f172fb98b9e24159ce577dbd25ddb79a1c0", size = 10091 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/3c/6f/8acab5c921096a52bd26888d5155a36cd2ff7f820b4fbb4e36c662e9a32e/types_jsonschema-4.23.0.20240813-py3-none-any.whl", hash = "sha256:be283e23f0b87547316c2ee6b0fd36d95ea30e921db06478029e10b5b6aa6ac3", size = 10314 },
-]
-
-[[package]]
-name = "types-pytz"
-version = "2024.1.0.20240417"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/9b/b0/079f6f340c0051fbe03ac3a6d9fce323c9797b85380d455e1566eaf2716b/types-pytz-2024.1.0.20240417.tar.gz", hash = "sha256:6810c8a1f68f21fdf0f4f374a432487c77645a0ac0b31de4bf4690cf21ad3981", size = 5459 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/e8/8d/f5dc5239d59bb4a7b58e2b6d0dc6f2c2ba797b110f83cdda8479508c63dd/types_pytz-2024.1.0.20240417-py3-none-any.whl", hash = "sha256:8335d443310e2db7b74e007414e74c4f53b67452c0cb0d228ca359ccfba59659", size = 5246 },
 ]
 
 [[package]]

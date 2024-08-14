@@ -14,7 +14,6 @@ dependencies = [
   "googlemaps",
   "mysqlclient",
   "python-dotenv",
-  "pytz",
 ]
 [project.optional-dependencies]
 dev = [
@@ -27,7 +26,6 @@ dev = [
   "django-stubs[compatible-mypy]>=5.0.0",
   "djangorestframework-stubs[compatible-mypy]>=3.15.0",
   "types-jsonschema",
-  "types-pytz",
 ]
 
 # https://mypy.readthedocs.io/en/stable/config_file.html
