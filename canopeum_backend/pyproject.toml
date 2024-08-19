@@ -1,3 +1,33 @@
+[project]
+name = "Canopeum"
+version = "0.0.0"
+requires-python = ">= 3.12"
+dependencies = [
+  "Django>=5.0.8", # Fix for https://github.com/BesLogic/releaf-canopeum/security/dependabot/25
+  "dj-database-url",
+  "django-cors-headers",
+  "djangorestframework-camel-case",
+  "djangorestframework-simplejwt", # TODO: Bump above 5.3.1 as soon as fixed for https://github.com/BesLogic/releaf-canopeum/security/dependabot/3
+  "djangorestframework>=3.15.2", # Fix for https://github.com/BesLogic/releaf-canopeum/security/dependabot/15
+  "drf-spectacular-sidecar",
+  "drf-spectacular>=0.27.2", # https://github.com/tfranzel/drf-spectacular/pull/1216
+  "googlemaps",
+  "mysqlclient",
+  "python-dotenv",
+]
+[project.optional-dependencies]
+dev = [
+  # Tools
+  "mypy", # version taken from [compatible-mypy],
+  "pre-commit==3.8.*",
+  "pyright>=1.1.374",
+  "ruff==0.5.7", # must match .pre-commit-config.yaml
+  # Stubs
+  "django-stubs[compatible-mypy]>=5.0.0",
+  "djangorestframework-stubs[compatible-mypy]>=3.15.0",
+  "types-jsonschema",
+]
+
 # https://mypy.readthedocs.io/en/stable/config_file.html
 [tool.mypy]
 show_column_numbers = true
