@@ -1,9 +1,8 @@
 import re
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING, Any, ClassVar, TypeVar, override
 
 import googlemaps  # type: ignore[import-untyped] # No type stub currently exists for googlemaps
-import pytz
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.http import QueryDict
@@ -63,7 +62,7 @@ class Announcement(models.Model):
 
 
 def upload_to(_, filename):
-    now = datetime.now(pytz.utc).strftime("%Y%m%d%H%M%S%f")
+    now = datetime.now(UTC).strftime("%Y%m%d%H%M%S%f")
     return f"{now}{filename}"
 
 
@@ -305,7 +304,7 @@ class Siteadmin(models.Model):
 
 
 def one_week_from_today():
-    return datetime.now(pytz.utc) + timedelta(days=7)
+    return datetime.now(UTC) + timedelta(days=7)
 
 
 class UserInvitation(models.Model):
@@ -315,7 +314,7 @@ class UserInvitation(models.Model):
     assigned_to_sites = models.ManyToManyField(Site)
 
     def is_expired(self) -> bool:
-        return self.expires_at <= datetime.now(pytz.utc)
+        return self.expires_at <= datetime.now(UTC)
 
 
 class SiteFollower(models.Model):
