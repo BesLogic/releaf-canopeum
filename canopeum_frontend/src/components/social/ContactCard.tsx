@@ -6,13 +6,18 @@ import linkedinLogo from '@assets/icons/linkedin-contact-logo.svg'
 import xLogo from '@assets/icons/x-contact-logo.svg'
 import type { PageViewMode } from '@models/types/PageViewMode.Type'
 import type { Contact } from '@services/api'
+import SiteContactModal from '@components/social/site-modal/SiteContactModal'
+import { useState } from 'react'
 
 type Props = {
   readonly contact: Contact,
   readonly viewMode: PageViewMode,
+  onEdit: (contact: Contact) => void,
 }
 
-const ContactCard = ({ contact, viewMode }: Props) => {
+const ContactCard = ({ contact, viewMode, onEdit }: Props) => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
   const renderContactCard = () => (
     <div className='card rounded'>
       <div className='card-body'>
@@ -20,7 +25,7 @@ const ContactCard = ({ contact, viewMode }: Props) => {
           <h2 className='card-title'>Contact</h2>
           <div>
             {viewMode === 'admin' && (
-              <span className='material-symbols-outlined text-primary fs-2'>edit_square</span>
+              <span className='material-symbols-outlined text-primary fs-2' role="button" onClick={() => setIsModalOpen(!isModalOpen)}>edit_square</span>
             )}
           </div>
         </div>
@@ -67,6 +72,10 @@ const ContactCard = ({ contact, viewMode }: Props) => {
   return (
     <div>
       {renderContactCard()}
+      <SiteContactModal contact={contact} isOpen={isModalOpen} handleClose={(contact: Contact | null) => {
+        setIsModalOpen(!isModalOpen)
+        contact ? onEdit(contact) : null
+      }} />
     </div>
   )
 }

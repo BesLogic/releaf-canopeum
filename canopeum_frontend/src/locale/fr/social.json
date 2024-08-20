@@ -26,5 +26,15 @@
   },
   "posts": {
     "post-body-required": "Vous devez saisir un message pour pouvoir publier votre message."
+  },
+  "contact": {
+    "title": "Contact",
+    "address": "Adresse",
+    "phone": "Téléphone",
+    "email": "Email",
+    "feedback": {
+      "edit-success": "Contact modifié avec succès",
+      "edit-error": "Erreur lors de la modification du contact"
+    }
   }
 }

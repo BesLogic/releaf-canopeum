@@ -50,6 +50,28 @@ dev = [
     { name = "types-jsonschema" },
 ]
 
+[package.metadata]
+requires-dist = [
+    { name = "dj-database-url" },
+    { name = "django", specifier = ">=5.0.8" },
+    { name = "django-cors-headers" },
+    { name = "django-stubs", extras = ["compatible-mypy"], marker = "extra == 'dev'", specifier = ">=5.0.0" },
+    { name = "djangorestframework", specifier = ">=3.15.2" },
+    { name = "djangorestframework-camel-case" },
+    { name = "djangorestframework-simplejwt" },
+    { name = "djangorestframework-stubs", extras = ["compatible-mypy"], marker = "extra == 'dev'", specifier = ">=3.15.0" },
+    { name = "drf-spectacular", specifier = ">=0.27.2" },
+    { name = "drf-spectacular-sidecar" },
+    { name = "googlemaps" },
+    { name = "mypy", marker = "extra == 'dev'" },
+    { name = "mysqlclient" },
+    { name = "pre-commit", marker = "extra == 'dev'", specifier = "==3.8.*" },
+    { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.374" },
+    { name = "python-dotenv" },
+    { name = "ruff", marker = "extra == 'dev'", specifier = "==0.5.7" },
+    { name = "types-jsonschema", marker = "extra == 'dev'" },
+]
+
 [[package]]
 name = "certifi"
 version = "2024.7.4"
@@ -212,7 +234,7 @@ name = "djangorestframework-stubs"
 version = "3.15.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "django-stubs", extra = ["compatible-mypy"] },
+    { name = "django-stubs" },
     { name = "requests" },
     { name = "types-pyyaml" },
     { name = "types-requests" },
@@ -226,6 +248,7 @@ wheels = [
 [package.optional-dependencies]
 compatible-mypy = [
     { name = "django-stubs" },
+    { name = "django-stubs", extra = ["compatible-mypy"] },
     { name = "mypy" },
 ]
 

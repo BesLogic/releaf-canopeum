@@ -1,0 +1,111 @@
+import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import type { Contact, PatchedContact } from '@services/api';
+import { useTranslation } from 'react-i18next'
+import { useContext, useState } from 'react';
+import useApiClient from '@hooks/ApiClientHook';
+import { SnackbarContext } from '@components/context/SnackbarContext'
+
+type Props = {
+  readonly contact: Contact,
+  isOpen: boolean,
+  handleClose: (contact: Contact | null) => void,
+}
+
+type EditSiteContactDto = {
+  address?: string,
+  email?: string,
+  phone?: string,
+  facebookLink?: string,
+  xLink?: string,
+  instagramLink?: string,
+  linkedinLink?: string,
+}
+
+const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
+  const { t } = useTranslation()
+  const [editedContact, setEditedContact] = useState<EditSiteContactDto>(contact)
+  const { getApiClient } = useApiClient()
+  const { openAlertSnackbar } = useContext(SnackbarContext)
+
+  const handleSubmitSiteContact = async () => {
+
+    try {
+      await getApiClient().contactClient.update(contact.id, editedContact as PatchedContact)
+    } catch (error: unknown) {
+      console.error(error)
+      openAlertSnackbar(
+        t('social.contact.feedback.edit-error'),
+        { severity: 'error' },
+      )
+
+      return
+    }
+    openAlertSnackbar(
+      t('social.contact.feedback.edit-success'),
+    )
+    handleClose(editedContact as Contact)
+  }
+
+  return (
+    <Dialog fullWidth maxWidth='sm' open={isOpen} onClose={() => handleClose(null)} >
+      <DialogTitle>{t('social.contact.title')}</DialogTitle>
+      <DialogContent className='pb-5'>
+        <form className='d-flex flex-column'>
+          <div className='d-flex flex-column gap-4'>
+            <div>
+              <label className='form-label' htmlFor='address'>
+                {t('social.contact.address')}
+              </label>
+              <input
+                className='form-control'
+                id='address'
+                onChange={event => setEditedContact(value => ({ ...value, address: event.target.value }))}
+                type='text'
+                value={editedContact.address}
+              />
+            </div>
+            <div>
+              <label className='form-label' htmlFor='email'>
+                {t('social.contact.email')}
+              </label>
+              <input
+                className='form-control'
+                id='email'
+                onChange={event => setEditedContact(value => ({ ...value, email: event.target.value }))}
+                type='email'
+                value={editedContact.email}
+              />
+            </div>
+            <div>
+              <label className='form-label' htmlFor='phone'>
+                {t('social.contact.phone')}
+              </label>
+              <input
+                className='form-control'
+                id='phone'
+                onChange={event => setEditedContact(value => ({ ...value, phone: event.target.value }))}
+                type='tel'
+                value={editedContact.phone}
+              />
+            </div>
+          </div>
+        </form>
+      </DialogContent>
+      <DialogActions>
+        <button
+          className='btn btn-outline-primary'
+          onClick={() => handleClose(null)}
+          type='button'
+        >
+          {t('generic.cancel')}
+        </button>
+
+        <button className='btn btn-primary' onClick={async () => handleSubmitSiteContact()} type='button'>
+          {t('generic.edit')}
+        </button>
+      </DialogActions>
+    </Dialog>
+  )
+};
+
+export default SiteContactModal;
