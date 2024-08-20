@@ -15,7 +15,7 @@ import WidgetDialog from '@components/social/WidgetDialog'
 import useApiClient from '@hooks/ApiClientHook'
 import usePostsInfiniteScrolling from '@hooks/PostsInfiniteScrollingHook'
 import type { PageViewMode } from '@models/types/PageViewMode.Type'
-import { Contact, type IWidget, PatchedWidget, type Post, type SiteSocial, Widget } from '@services/api'
+import { Announcement, Contact, type IWidget, PatchedWidget, type Post, type SiteSocial, Widget } from '@services/api'
 import { ensureError } from '@services/errors'
 import usePostsStore from '@store/postsStore'
 
@@ -139,7 +139,9 @@ const SiteSocialPage = () => {
         <div className='row row-gap-1 m-0'>
           <div className='col-12 col-md-6 col-lg-5 col-xl-4'>
             <div className='d-flex flex-column gap-4'>
-              <AnnouncementCard announcement={site.announcement} viewMode={viewMode} />
+              <AnnouncementCard announcement={site.announcement} viewMode={viewMode} onEdit={(editedAnnoucement: Announcement) =>
+                setSite(site => ({...site, announcement: editedAnnoucement} as SiteSocial))
+              } />
               <ContactCard contact={site.contact} viewMode={viewMode} onEdit={(editedContact: Contact) =>
                 setSite(site => ({...site, contact: editedContact} as SiteSocial))
               } />

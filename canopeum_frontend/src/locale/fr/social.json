@@ -35,6 +35,15 @@
     "feedback": {
       "edit-success": "Contact modifié avec succès",
       "edit-error": "Erreur lors de la modification du contact"
+    },
+    "announcement": {
+      "title": "Annonce",
+      "body": "Corps",
+      "link": "Lien",
+      "feedback": {
+        "edit-success": "Annonce modifiée avec succès",
+        "edit-error": "Erreur lors de la modification de l'annonce"
+      }
     }
   }
 }
