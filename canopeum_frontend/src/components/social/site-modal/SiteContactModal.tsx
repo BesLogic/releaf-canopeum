@@ -4,6 +4,10 @@ import { useTranslation } from 'react-i18next'
 import { useContext, useState } from 'react';
 import useApiClient from '@hooks/ApiClientHook';
 import { SnackbarContext } from '@components/context/SnackbarContext'
+import facebookLogo from '@assets/icons/facebook-contact-logo.svg'
+import instagramLogo from '@assets/icons/instagram-contact-logo.svg'
+import linkedinLogo from '@assets/icons/linkedin-contact-logo.svg'
+import xLogo from '@assets/icons/x-contact-logo.svg'
 
 type Props = {
   readonly contact: Contact,
@@ -33,6 +37,7 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
       await getApiClient().contactClient.update(contact.id, editedContact as PatchedContact)
     } catch (error: unknown) {
       console.error(error)
+
       openAlertSnackbar(
         t('social.contact.feedback.edit-error'),
         { severity: 'error' },
@@ -86,6 +91,46 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
                 onChange={event => setEditedContact(value => ({ ...value, phone: event.target.value }))}
                 type='tel'
                 value={editedContact.phone}
+              />
+            </div>
+            <div className='d-flex'>
+              <img alt='facebook-logo' className='px-2' src={facebookLogo} />
+              <input
+                className='form-control'
+                id='facebookLink'
+                onChange={event => setEditedContact(value => ({ ...value, facebookLink: event.target.value }))}
+                type='url'
+                value={editedContact.facebookLink}
+              />
+            </div>
+            <div className='d-flex'>
+              <img alt='x-logo' className='px-2' src={xLogo} />
+              <input
+                className='form-control'
+                id='xLink'
+                onChange={event => setEditedContact(value => ({ ...value, xLink: event.target.value }))}
+                type='url'
+                value={editedContact.xLink}
+              />
+            </div>
+            <div className='d-flex'>
+              <img alt='instagram-logo' className='px-2' src={instagramLogo} />
+              <input
+                className='form-control'
+                id='instagramLink'
+                onChange={event => setEditedContact(value => ({ ...value, instagramLink: event.target.value }))}
+                type='url'
+                value={editedContact.instagramLink}
+              />
+            </div>
+            <div className='d-flex'>
+              <img alt='linkedin-logo' className='px-2' src={linkedinLogo} />
+              <input
+                className='form-control'
+                id='linkedinLink'
+                onChange={event => setEditedContact(value => ({ ...value, linkedinLink: event.target.value }))}
+                type='url'
+                value={editedContact.linkedinLink}
               />
             </div>
           </div>
