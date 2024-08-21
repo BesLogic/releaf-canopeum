@@ -22,7 +22,13 @@ const AnnouncementCard = ({ announcement, viewMode, onEdit }: Props) => {
             <h2 className='card-title'>Announcement</h2>
             <div>
               {viewMode === 'admin' && (
-                <span className='material-symbols-outlined text-primary fs-2' role="button" onClick={() => setIsModalOpen(!isModalOpen)}>edit_square</span>
+                <span
+                  className='material-symbols-outlined text-primary fs-2'
+                  role='button'
+                  onClick={() => setIsModalOpen(!isModalOpen)}
+                >
+                  edit_square
+                </span>
               )}
             </div>
           </div>
@@ -30,14 +36,20 @@ const AnnouncementCard = ({ announcement, viewMode, onEdit }: Props) => {
             {announcement.body}
           </p>
           {announcement.link && (
-            <Link className='card-text' to={announcement.link}>{announcement.link}</Link>
+            <Link className='card-text' to={{ pathname: announcement.link }} target='_blank'>
+              {announcement.link}
+            </Link>
           )}
         </div>
       </div>
-      <SiteAnnouncementModal announcement={announcement} isOpen={isModalOpen} handleClose={(announcement: Announcement | null) => {
-        setIsModalOpen(!isModalOpen)
-        announcement ? onEdit(announcement) : null
-      }} />
+      <SiteAnnouncementModal
+        announcement={announcement}
+        isOpen={isModalOpen}
+        handleClose={(announcement: Announcement | null) => {
+          setIsModalOpen(!isModalOpen)
+          announcement ? onEdit(announcement) : null
+        }}
+      />
     </>
   )
 }

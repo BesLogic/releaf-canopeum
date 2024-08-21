@@ -31,6 +31,7 @@ type EditSiteContactDto = {
 const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
   const { t } = useTranslation()
   const [editedContact, setEditedContact] = useState<EditSiteContactDto>(contact)
+  const [isFormValid, setIsFormValid] = useState<boolean>(true)
   const { getApiClient } = useApiClient()
   const { openAlertSnackbar } = useContext(SnackbarContext)
 
@@ -80,6 +81,7 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
                 onChange={eventValue =>
                   setEditedContact(value => ({ ...value, email: eventValue }))}
                 value={editedContact.email}
+                isValid={value => setIsFormValid(value)}
               />
             </div>
             <div>
@@ -91,6 +93,7 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
                 onChange={eventValue =>
                   setEditedContact(value => ({ ...value, phone: eventValue }))}
                 value={editedContact.phone}
+                isValid={value => setIsFormValid(value)}
               />
             </div>
             <div className='d-flex'>
@@ -103,6 +106,7 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
                 }}
                 onChange={eventValue =>
                   setEditedContact(value => ({ ...value, facebookLink: eventValue }))}
+                isValid={value => setIsFormValid(value)}
               />
             </div>
             <div className='d-flex'>
@@ -115,6 +119,7 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
                 }}
                 onChange={eventValue =>
                   setEditedContact(value => ({ ...value, xLink: eventValue }))}
+                isValid={value => setIsFormValid(value)}
               />
             </div>
             <div className='d-flex'>
@@ -124,6 +129,7 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
                 attributes={{ className: 'form-control', id: 'instagramLink' }}
                 onChange={eventValue =>
                   setEditedContact(value => ({ ...value, instagramLink: eventValue }))}
+                isValid={value => setIsFormValid(value)}
               />
             </div>
             <div className='d-flex'>
@@ -136,6 +142,7 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
                 }}
                 onChange={eventValue =>
                   setEditedContact(value => ({ ...value, linkedinLink: eventValue }))}
+                isValid={value => setIsFormValid(value)}
               />
             </div>
           </div>
@@ -154,6 +161,7 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
           className='btn btn-primary'
           onClick={async () => handleSubmitSiteContact()}
           type='button'
+          disabled={!isFormValid}
         >
           {t('generic.edit')}
         </button>

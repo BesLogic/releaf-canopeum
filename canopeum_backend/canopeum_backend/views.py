@@ -736,6 +736,7 @@ class AnnouncementDetailAPIView(APIView):
         serializer = AnnouncementSerializer(announcement, data=request.data)
         if serializer.is_valid():
             serializer.save()
+            Site.objects.filter(pk=siteId).update(announcement=announcement)
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

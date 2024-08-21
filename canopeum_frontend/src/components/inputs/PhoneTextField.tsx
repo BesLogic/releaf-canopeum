@@ -1,27 +1,32 @@
 import { isValidPhone } from '@utils/validators'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 type Props = {
   value: string | undefined,
   attributes?: React.InputHTMLAttributes<HTMLInputElement>,
   onChange: (value: string) => void,
+  isValid: (valid: boolean) => void,
 }
 
 const PhoneTextField: React.FC<Props> = props => {
+  const { t } = useTranslation()
   const [error, setError] = useState<string | null>(null)
 
   const handleChange = (value: string) => {
     if (value && !isValidPhone(value)) {
-      setError('Invalid phone number format (e.g. +1234567890)')
+      setError(t('errors.phone-invalid'))
+      props.isValid(false)
     } else {
       setError(null)
+      props.isValid(true)
     }
 
     props.onChange(value)
   }
 
   return (
-    <>
+    <div className='d-flex flex-column flex-grow-1'>
       <input
         {...props.attributes}
         onChange={event => handleChange(event.target.value)}
@@ -29,7 +34,7 @@ const PhoneTextField: React.FC<Props> = props => {
         value={props.value}
       />
       {error && <span className='help-block text-danger'>{error}</span>}
-    </>
+    </div>
   )
 }
 

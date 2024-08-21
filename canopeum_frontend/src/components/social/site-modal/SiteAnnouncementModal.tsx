@@ -21,6 +21,7 @@ const SiteAnnouncementModal = ({ announcement, isOpen, handleClose }: Props) => 
   const [editedAnnouncement, setEditedAnnouncement] = useState<EditSiteAnnouncementDto>(
     announcement,
   )
+  const [isFormValid, setIsFormValid] = useState<boolean>(true)
   const { getApiClient } = useApiClient()
   const { openAlertSnackbar } = useContext(SnackbarContext)
 
@@ -77,6 +78,7 @@ const SiteAnnouncementModal = ({ announcement, isOpen, handleClose }: Props) => 
                 }}
                 onChange={eventValue =>
                   setEditedAnnouncement(value => ({ ...value, link: eventValue }))}
+                isValid={value => setIsFormValid(value)}
               />
             </div>
           </div>
@@ -95,6 +97,7 @@ const SiteAnnouncementModal = ({ announcement, isOpen, handleClose }: Props) => 
           className='btn btn-primary'
           onClick={async () => handleSubmitSiteAnnouncement()}
           type='button'
+          disabled={!isFormValid}
         >
           {t('generic.edit')}
         </button>
