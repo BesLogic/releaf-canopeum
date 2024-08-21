@@ -1,14 +1,16 @@
-import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-import type { Contact, PatchedContact } from '@services/api';
+import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import type { Contact, PatchedContact } from '@services/api'
 import { useTranslation } from 'react-i18next'
-import { useContext, useState } from 'react';
-import useApiClient from '@hooks/ApiClientHook';
+import { useContext, useState } from 'react'
+import useApiClient from '@hooks/ApiClientHook'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import facebookLogo from '@assets/icons/facebook-contact-logo.svg'
 import instagramLogo from '@assets/icons/instagram-contact-logo.svg'
 import linkedinLogo from '@assets/icons/linkedin-contact-logo.svg'
 import xLogo from '@assets/icons/x-contact-logo.svg'
-// import useErrorHandling from '@hooks/ErrorHandlingHook';
+import UrlTextField from '@components/inputs/UrlTextField'
+import EmailTextField from '@components/inputs/EmailTextField'
+import PhoneTextField from '@components/inputs/PhoneTextField'
 
 type Props = {
   readonly contact: Contact,
@@ -31,15 +33,16 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
   const [editedContact, setEditedContact] = useState<EditSiteContactDto>(contact)
   const { getApiClient } = useApiClient()
   const { openAlertSnackbar } = useContext(SnackbarContext)
-  // const { getErrorMessage } = useErrorHandling()
 
   const handleSubmitSiteContact = async () => {
-    await getApiClient().contactClient.update(contact.id, editedContact as PatchedContact).then(() => {
-      openAlertSnackbar(
-        t('social.contact.feedback.edit-success'),
-      )
-      handleClose(editedContact as Contact)
-    }).catch((error: unknown) => {
+    await getApiClient().contactClient.update(contact.id, editedContact as PatchedContact).then(
+      () => {
+        openAlertSnackbar(
+          t('social.contact.feedback.edit-success'),
+        )
+        handleClose(editedContact as Contact)
+      },
+    ).catch((error: unknown) => {
       console.error(error)
 
       openAlertSnackbar(
@@ -47,26 +50,10 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
         { severity: 'error' },
       )
     })
-    // try {
-    //   await getApiClient().contactClient.update(contact.id, editedContact as PatchedContact)
-    // } catch (error: unknown) {
-    //   console.error(error)
-
-    //   openAlertSnackbar(
-    //     t('social.contact.feedback.edit-error'),
-    //     { severity: 'error' },
-    //   )
-
-    //   return
-    // }
-    // openAlertSnackbar(
-    //   t('social.contact.feedback.edit-success'),
-    // )
-    // handleClose(editedContact as Contact)
   }
 
   return (
-    <Dialog fullWidth maxWidth='sm' open={isOpen} onClose={() => handleClose(null)} >
+    <Dialog fullWidth maxWidth='sm' open={isOpen} onClose={() => handleClose(null)}>
       <DialogTitle>{t('social.contact.title')}</DialogTitle>
       <DialogContent className='pb-5'>
         <form className='d-flex flex-column'>
@@ -78,7 +65,8 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
               <input
                 className='form-control'
                 id='address'
-                onChange={event => setEditedContact(value => ({ ...value, address: event.target.value }))}
+                onChange={event =>
+                  setEditedContact(value => ({ ...value, address: event.target.value }))}
                 type='text'
                 value={editedContact.address}
               />
@@ -87,11 +75,10 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
               <label className='form-label' htmlFor='email'>
                 {t('social.contact.email')}
               </label>
-              <input
-                className='form-control'
-                id='email'
-                onChange={event => setEditedContact(value => ({ ...value, email: event.target.value }))}
-                type='email'
+              <EmailTextField
+                attributes={{ className: 'form-control', id: 'email' }}
+                onChange={eventValue =>
+                  setEditedContact(value => ({ ...value, email: eventValue }))}
                 value={editedContact.email}
               />
             </div>
@@ -99,52 +86,56 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
               <label className='form-label' htmlFor='phone'>
                 {t('social.contact.phone')}
               </label>
-              <input
-                className='form-control'
-                id='phone'
-                onChange={event => setEditedContact(value => ({ ...value, phone: event.target.value }))}
-                type='tel'
+              <PhoneTextField
+                attributes={{ className: 'form-control', id: 'phone' }}
+                onChange={eventValue =>
+                  setEditedContact(value => ({ ...value, phone: eventValue }))}
                 value={editedContact.phone}
               />
             </div>
             <div className='d-flex'>
               <img alt='facebook-logo' className='px-2' src={facebookLogo} />
-              <input
-                className='form-control'
-                id='facebookLink'
-                onChange={event => setEditedContact(value => ({ ...value, facebookLink: event.target.value }))}
-                type='url'
+              <UrlTextField
                 value={editedContact.facebookLink}
+                attributes={{
+                  className: 'form-control',
+                  id: 'facebookLink',
+                }}
+                onChange={eventValue =>
+                  setEditedContact(value => ({ ...value, facebookLink: eventValue }))}
               />
             </div>
             <div className='d-flex'>
               <img alt='x-logo' className='px-2' src={xLogo} />
-              <input
-                className='form-control'
-                id='xLink'
-                onChange={event => setEditedContact(value => ({ ...value, xLink: event.target.value }))}
-                type='url'
+              <UrlTextField
                 value={editedContact.xLink}
+                attributes={{
+                  className: 'form-control',
+                  id: 'xLink',
+                }}
+                onChange={eventValue =>
+                  setEditedContact(value => ({ ...value, xLink: eventValue }))}
               />
             </div>
             <div className='d-flex'>
               <img alt='instagram-logo' className='px-2' src={instagramLogo} />
-              <input
-                className='form-control'
-                id='instagramLink'
-                onChange={event => setEditedContact(value => ({ ...value, instagramLink: event.target.value }))}
-                type='url'
+              <UrlTextField
                 value={editedContact.instagramLink}
+                attributes={{ className: 'form-control', id: 'instagramLink' }}
+                onChange={eventValue =>
+                  setEditedContact(value => ({ ...value, instagramLink: eventValue }))}
               />
             </div>
             <div className='d-flex'>
               <img alt='linkedin-logo' className='px-2' src={linkedinLogo} />
-              <input
-                className='form-control'
-                id='linkedinLink'
-                onChange={event => setEditedContact(value => ({ ...value, linkedinLink: event.target.value }))}
-                type='url'
+              <UrlTextField
                 value={editedContact.linkedinLink}
+                attributes={{
+                  className: 'form-control',
+                  id: 'linkedinLink',
+                }}
+                onChange={eventValue =>
+                  setEditedContact(value => ({ ...value, linkedinLink: eventValue }))}
               />
             </div>
           </div>
@@ -159,12 +150,16 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
           {t('generic.cancel')}
         </button>
 
-        <button className='btn btn-primary' onClick={async () => handleSubmitSiteContact()} type='button'>
+        <button
+          className='btn btn-primary'
+          onClick={async () => handleSubmitSiteContact()}
+          type='button'
+        >
           {t('generic.edit')}
         </button>
       </DialogActions>
     </Dialog>
   )
-};
+}
 
-export default SiteContactModal;
+export default SiteContactModal

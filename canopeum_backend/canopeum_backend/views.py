@@ -731,7 +731,7 @@ class AnnouncementDetailAPIView(APIView):
         try:
             announcement = Announcement.objects.get(site=siteId)
         except Announcement.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            announcement = Announcement.objects.create(site=siteId)
 
         serializer = AnnouncementSerializer(announcement, data=request.data)
         if serializer.is_valid():

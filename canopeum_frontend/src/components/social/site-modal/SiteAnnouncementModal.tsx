@@ -1,9 +1,10 @@
-import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-import type { Announcement, PatchedAnnouncement } from '@services/api';
+import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import type { Announcement, PatchedAnnouncement } from '@services/api'
 import { useTranslation } from 'react-i18next'
-import { useContext, useState } from 'react';
-import useApiClient from '@hooks/ApiClientHook';
+import { useContext, useState } from 'react'
+import useApiClient from '@hooks/ApiClientHook'
 import { SnackbarContext } from '@components/context/SnackbarContext'
+import UrlTextField from '@components/inputs/UrlTextField'
 type Props = {
   readonly announcement: Announcement,
   isOpen: boolean,
@@ -17,14 +18,18 @@ type EditSiteAnnouncementDto = {
 
 const SiteAnnouncementModal = ({ announcement, isOpen, handleClose }: Props) => {
   const { t } = useTranslation()
-  const [editedAnnouncement, setEditedAnnouncement] = useState<EditSiteAnnouncementDto>(announcement)
+  const [editedAnnouncement, setEditedAnnouncement] = useState<EditSiteAnnouncementDto>(
+    announcement,
+  )
   const { getApiClient } = useApiClient()
   const { openAlertSnackbar } = useContext(SnackbarContext)
 
   const handleSubmitSiteAnnouncement = async () => {
-
     try {
-      await getApiClient().announcementClient.update(announcement.id, editedAnnouncement as PatchedAnnouncement)
+      await getApiClient().announcementClient.update(
+        announcement.id,
+        editedAnnouncement as PatchedAnnouncement,
+      )
     } catch (error: unknown) {
       console.error(error)
 
@@ -42,7 +47,7 @@ const SiteAnnouncementModal = ({ announcement, isOpen, handleClose }: Props) => 
   }
 
   return (
-    <Dialog fullWidth maxWidth='sm' open={isOpen} onClose={() => handleClose(null)} >
+    <Dialog fullWidth maxWidth='sm' open={isOpen} onClose={() => handleClose(null)}>
       <DialogTitle>{t('social.announcement.title')}</DialogTitle>
       <DialogContent className='pb-5'>
         <form className='d-flex flex-column'>
@@ -55,7 +60,8 @@ const SiteAnnouncementModal = ({ announcement, isOpen, handleClose }: Props) => 
                 className='form-control'
                 rows={5}
                 id='body'
-                onChange={event => setEditedAnnouncement(value => ({ ...value, body: event.target.value }))}
+                onChange={event =>
+                  setEditedAnnouncement(value => ({ ...value, body: event.target.value }))}
                 value={editedAnnouncement.body}
               />
             </div>
@@ -63,12 +69,14 @@ const SiteAnnouncementModal = ({ announcement, isOpen, handleClose }: Props) => 
               <label className='form-label' htmlFor='link'>
                 {t('social.announcement.link')}
               </label>
-              <input
-                className='form-control'
-                id='link'
-                onChange={event => setEditedAnnouncement(value => ({ ...value, link: event.target.value }))}
-                type='text'
+              <UrlTextField
                 value={editedAnnouncement.link}
+                attributes={{
+                  className: 'form-control',
+                  id: 'link',
+                }}
+                onChange={eventValue =>
+                  setEditedAnnouncement(value => ({ ...value, link: eventValue }))}
               />
             </div>
           </div>
@@ -83,12 +91,16 @@ const SiteAnnouncementModal = ({ announcement, isOpen, handleClose }: Props) => 
           {t('generic.cancel')}
         </button>
 
-        <button className='btn btn-primary' onClick={async () => handleSubmitSiteAnnouncement()} type='button'>
+        <button
+          className='btn btn-primary'
+          onClick={async () => handleSubmitSiteAnnouncement()}
+          type='button'
+        >
           {t('generic.edit')}
         </button>
       </DialogActions>
     </Dialog>
   )
-};
+}
 
-export default SiteAnnouncementModal;
+export default SiteAnnouncementModal

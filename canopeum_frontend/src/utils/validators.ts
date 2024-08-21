@@ -9,3 +9,11 @@ export const isValidEmail = (input: string) => new RegExp(emailRegex).test(input
 export const mustMatch = (input1: string, input2: string) => input1 === input2
 
 export type InputValidationError = 'email' | 'maximumChars' | 'mustMatch' | 'password' | 'required'
+
+const urlRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/u
+
+export const isValidUrl = (input: string) => new RegExp(urlRegex).test(input)
+
+const phoneRegex = /^\+?[0-9]{1,3}[-. (]?\d{3}[-. )]?\d{3}[-. ]?\d{4}$/u
+
+export const isValidPhone = (input: string) => new RegExp(phoneRegex).test(input)
