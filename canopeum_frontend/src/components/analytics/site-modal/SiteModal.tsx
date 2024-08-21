@@ -14,7 +14,7 @@ import { getApiBaseUrl } from '@services/apiSettings'
 type Props = {
   readonly open: boolean,
   readonly handleClose: (
-    reason?: 'backdropClick' | 'escapeKeyDown' | 'save',
+    reason?: 'backdropClick' | 'escapeKeyDown' | 'save' | 'cancel',
     data?: SiteDto,
   ) => void,
   readonly siteId: number | undefined,
@@ -291,7 +291,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
       <DialogActions>
         <button
           className='btn btn-outline-primary'
-          onClick={() => handleClose()}
+          onClick={() => handleClose('cancel')}
           type='button'
         >
           {t('generic.cancel')}

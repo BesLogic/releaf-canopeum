@@ -38,7 +38,7 @@ const Analytics = () => {
   )
 
   const handleModalClose = async (
-    reason?: 'backdropClick' | 'escapeKeyDown' | 'save',
+    reason?: 'backdropClick' | 'escapeKeyDown' | 'save' | 'cancel',
     data?: SiteDto,
   ) => {
     if (reason && reason !== 'save') {

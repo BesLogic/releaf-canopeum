@@ -8,6 +8,7 @@ import facebookLogo from '@assets/icons/facebook-contact-logo.svg'
 import instagramLogo from '@assets/icons/instagram-contact-logo.svg'
 import linkedinLogo from '@assets/icons/linkedin-contact-logo.svg'
 import xLogo from '@assets/icons/x-contact-logo.svg'
+// import useErrorHandling from '@hooks/ErrorHandlingHook';
 
 type Props = {
   readonly contact: Contact,
@@ -30,25 +31,38 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
   const [editedContact, setEditedContact] = useState<EditSiteContactDto>(contact)
   const { getApiClient } = useApiClient()
   const { openAlertSnackbar } = useContext(SnackbarContext)
+  // const { getErrorMessage } = useErrorHandling()
 
   const handleSubmitSiteContact = async () => {
-
-    try {
-      await getApiClient().contactClient.update(contact.id, editedContact as PatchedContact)
-    } catch (error: unknown) {
+    await getApiClient().contactClient.update(contact.id, editedContact as PatchedContact).then(() => {
+      openAlertSnackbar(
+        t('social.contact.feedback.edit-success'),
+      )
+      handleClose(editedContact as Contact)
+    }).catch((error: unknown) => {
       console.error(error)
 
       openAlertSnackbar(
         t('social.contact.feedback.edit-error'),
         { severity: 'error' },
       )
+    })
+    // try {
+    //   await getApiClient().contactClient.update(contact.id, editedContact as PatchedContact)
+    // } catch (error: unknown) {
+    //   console.error(error)
 
-      return
-    }
-    openAlertSnackbar(
-      t('social.contact.feedback.edit-success'),
-    )
-    handleClose(editedContact as Contact)
+    //   openAlertSnackbar(
+    //     t('social.contact.feedback.edit-error'),
+    //     { severity: 'error' },
+    //   )
+
+    //   return
+    // }
+    // openAlertSnackbar(
+    //   t('social.contact.feedback.edit-success'),
+    // )
+    // handleClose(editedContact as Contact)
   }
 
   return (
