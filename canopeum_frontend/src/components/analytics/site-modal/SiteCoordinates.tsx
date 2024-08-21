@@ -14,7 +14,7 @@ const SiteCoordinates = ({ latitude, longitude, onChange }: Props) => {
   const [lat, setLat] = useState<Coordinate>(latitude ?? defaultLatitude)
   const [long, setLong] = useState<Coordinate>(longitude ?? defaultLongitude)
 
-  useEffect(() => onChange(lat, long), [lat, long, onChange])
+  useEffect(() => onChange(lat, long), [lat, long])
   useEffect(() => latitude && setLat(latitude), [latitude])
   useEffect(() => longitude && setLong(longitude), [longitude])
 
