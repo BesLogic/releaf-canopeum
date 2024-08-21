@@ -59,6 +59,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
     }
 
     const siteDetail = await getApiClient().siteClient.detail(siteId)
+    console.log(siteDetail)
     const { dmsLatitude, dmsLongitude } = siteDetail.coordinate
 
     const imgResponse = await fetch(`${getApiBaseUrl()}${siteDetail.image.asset}`)
@@ -80,6 +81,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
       researchPartner: siteDetail.researchPartnership,
       visibleOnMap: siteDetail.visibleMap,
     })
+    console.log(site.species)
     setSiteImageURL(URL.createObjectURL(blob))
   }, [siteId, getApiClient])
 

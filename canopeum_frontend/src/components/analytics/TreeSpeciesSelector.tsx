@@ -38,7 +38,7 @@ const TreeSpeciesSelector = (
     [getApiClient, translateValue],
   )
 
-  useEffect(() => void fetchTreeSpecies(), [fetchTreeSpecies])
+  useEffect(() => void fetchTreeSpecies(), [])
 
   useEffect(() => {
     if (!species) return
@@ -50,7 +50,7 @@ const TreeSpeciesSelector = (
       },
       quantity: specie.quantity,
     })))
-  }, [species, translateValue])
+  }, [availableSpecies])
 
   const handleChange = useCallback((selectedOptions: SelectorOptionQuantity<number>[]) => {
     const selectedSpecies = selectedOptions

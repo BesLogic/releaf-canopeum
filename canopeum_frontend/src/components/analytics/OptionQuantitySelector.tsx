@@ -2,7 +2,8 @@
 import './OptionQuantitySelector.scss'
 
 import { Autocomplete } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { set } from 'date-fns'
+import { useCallback, useEffect, useState } from 'react'
 
 type Props<TValue> = {
   readonly id: string,
@@ -85,6 +86,10 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
     setSelectedOptions(updated)
   }
 
+  useEffect(() => {
+    setSelectedOptions(selected)
+  }, [selected])
+
   const removeType = (option: SelectorOption<TValue>) => {
     setSelectedOptions(
       selectedOptions.filter(optionQuantity => optionQuantity.option.value !== option.value),
@@ -98,56 +103,58 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
         {label}
       </label>
 
-      <Autocomplete
-        autoSelect
-        clearOnBlur
-        freeSolo
-        getOptionKey={option => {
-          if (typeof (option) === 'string') return option
+      {
+        <Autocomplete
+          autoSelect
+          clearOnBlur
+          freeSolo
+          getOptionKey={option => {
+            if (typeof (option) === 'string') return option
 
-          return option.value
-        }}
-        getOptionLabel={option => {
-          if (typeof (option) === 'string') return option
+            return option.value
+          }}
+          getOptionLabel={option => {
+            if (typeof (option) === 'string') return option
 
-          return option.displayText
-        }}
-        id={id}
-        onChange={(_event, option) => {
-          if (option === null || typeof (option) === 'string') return
+            return option.displayText
+          }}
+          id={id}
+          onChange={(_event, option) => {
+            if (option === null || typeof (option) === 'string') return
 
-          onSelect(option)
-        }}
-        onClose={_event => setIsAutocompleteOpen(false)}
-        onOpen={_event => setIsAutocompleteOpen(true)}
-        open={isAutocompleteOpen}
-        options={filteredOptions}
-        renderInput={params => (
-          <div
-            className='option-quantity-selector-input-group'
-            ref={params.InputProps.ref}
-          >
-            <input
-              {...params.inputProps}
-              className='form-control option-quantity-selector-input'
-              onChange={event => setSearchValue(event.target.value)}
-              type='text'
-              value={searchValue}
-            />
-            <button
-              className='unstyled-button h-100 d-flex justify-content-center align-items-center'
-              onClick={() => setIsAutocompleteOpen(previous => !previous)}
-              type='button'
+            onSelect(option)
+          }}
+          onClose={_event => setIsAutocompleteOpen(false)}
+          onOpen={_event => setIsAutocompleteOpen(true)}
+          open={isAutocompleteOpen}
+          options={filteredOptions}
+          renderInput={params => (
+            <div
+              className='option-quantity-selector-input-group'
+              ref={params.InputProps.ref}
             >
-              <span className='material-symbols-outlined fill-icon icon-md'>
-                {isAutocompleteOpen
-                  ? 'expand_less'
-                  : 'expand_more'}
-              </span>
-            </button>
-          </div>
-        )}
-      />
+              <input
+                {...params.inputProps}
+                className='form-control option-quantity-selector-input'
+                onChange={event => setSearchValue(event.target.value)}
+                type='text'
+                value={searchValue}
+              />
+              <button
+                className='unstyled-button h-100 d-flex justify-content-center align-items-center'
+                onClick={() => setIsAutocompleteOpen(previous => !previous)}
+                type='button'
+              >
+                <span className='material-symbols-outlined fill-icon icon-md'>
+                  {isAutocompleteOpen
+                    ? 'expand_less'
+                    : 'expand_more'}
+                </span>
+              </button>
+            </div>
+          )}
+        />
+      }
 
       <ul className='list-group list-group-flush overflow-hidden mt-1'>
         {selectedOptions.map(optionQuantity => (
