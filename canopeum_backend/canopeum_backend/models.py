@@ -192,11 +192,11 @@ class Coordinate(models.Model):
         if dms_longitude_split[3] == "W":
             dd_longitude *= -1
 
-        formatted_address = (
-            gmaps.reverse_geocode((dd_latitude, dd_longitude), result_type="street_address")[0]  # pyright: ignore[reportAttributeAccessIssue] -- No type stub currently exists
-            if gmaps is not None
-            else ""
-        )
+        if gmaps is not None:
+            data_retrieved = gmaps.reverse_geocode((dd_latitude, dd_longitude), result_type="street_address") # pyright: ignore[reportAttributeAccessIssue] -- No type stub currently exists
+            formatted_address = data_retrieved[0]["formatted_address"] if data_retrieved else "Custom address"
+        else:
+            formatted_address = "Unknown address"
 
         return cls.objects.create(
             dms_latitude=dms_latitude,
