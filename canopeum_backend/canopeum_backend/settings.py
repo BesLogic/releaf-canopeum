@@ -178,7 +178,8 @@ DATABASES = {
             os.getenv("MYSQL_HOST_CANOPEUM", "localhost"),
         ),
         # "default": dj_database_url.parse(
-        #     f"mysql://canopeum_user:{get_secret("MYSQL_PASSWORD_CANOPEUM", "")}@{get_secret("MYSQL_HOST_CANOPEUM", "localhost")}:3306/canopeum_db",
+        #     f"mysql://canopeum_user:{get_secret("MYSQL_PASSWORD_CANOPEUM", "")}
+        # @{get_secret("MYSQL_HOST_CANOPEUM", "localhost")}:3306/canopeum_db",
         conn_max_age=600,
         conn_health_checks=True,
     )
