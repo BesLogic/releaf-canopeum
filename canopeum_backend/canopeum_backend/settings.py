@@ -174,7 +174,10 @@ SPECTACULAR_SETTINGS = {
 
 DATABASES = {
     'default': dj_database_url.parse(
-        f"mysql://canopeum_user:{get_secret('MYSQL_PASSWORD_CANOPEUM', '')}@{get_secret('MYSQL_HOST_CANOPEUM', 'localhost')}:3306/canopeum_db",
+        "mysql://canopeum_user:{}@{}:3308/canopeum_db".format(
+            get_secret("MYSQL_PASSWORD_CANOPEUM", ""),
+            os.getenv("MYSQL_HOST_CANOPEUM", "localhost"),
+        ),
         conn_max_age=600,
         conn_health_checks=True,
     )

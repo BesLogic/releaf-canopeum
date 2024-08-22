@@ -2,8 +2,7 @@
 import './OptionQuantitySelector.scss'
 
 import { Autocomplete } from '@mui/material'
-import { set } from 'date-fns'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 type Props<TValue> = {
   readonly id: string,

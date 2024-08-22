@@ -5,7 +5,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import { AuthenticationContext } from './context/AuthenticationContext'
 import { appRoutes } from '@constants/routes.constant'
-import type { RoleEnum } from '@services/api'
+import { RoleEnum } from '@services/api'
 
 type NavbarItem = {
   icon: MaterialIcon,
@@ -19,19 +19,19 @@ const NAVBAR_ITEMS: NavbarItem[] = [
     icon: 'home',
     linkTo: appRoutes.home,
     label: 'home',
-    roles: ['User', 'SiteManager', 'MegaAdmin'],
+    roles: [RoleEnum.User, RoleEnum.SiteManager, RoleEnum.MegaAdmin],
   },
   {
     icon: 'donut_small',
     linkTo: appRoutes.sites,
     label: 'sites',
-    roles: ['SiteManager', 'MegaAdmin'],
+    roles: [RoleEnum.SiteManager, RoleEnum.MegaAdmin],
   },
   {
     icon: 'pin_drop',
     linkTo: appRoutes.map,
     label: 'map',
-    roles: ['User', 'SiteManager', 'MegaAdmin'],
+    roles: [RoleEnum.User, RoleEnum.SiteManager, RoleEnum.MegaAdmin],
   },
   // For development purposes
   // {

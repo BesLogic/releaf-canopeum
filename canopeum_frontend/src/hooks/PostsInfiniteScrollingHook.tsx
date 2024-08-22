@@ -31,8 +31,8 @@ const usePostsInfiniteScrolling = () => {
     try {
       const response = await getApiClient().postClient.all(
         currentPage + 1,
-        PAGE_SIZE,
         siteIds,
+        PAGE_SIZE,
       )
       if (!response.next) {
         setPostsAreAllLoaded(true)

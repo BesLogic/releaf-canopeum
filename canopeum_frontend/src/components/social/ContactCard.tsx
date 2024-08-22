@@ -25,7 +25,13 @@ const ContactCard = ({ contact, viewMode, onEdit }: Props) => {
           <h2 className='card-title'>Contact</h2>
           <div>
             {viewMode === 'admin' && (
-              <span className='material-symbols-outlined text-primary fs-2' role="button" onClick={() => setIsModalOpen(!isModalOpen)}>edit_square</span>
+              <span
+                className='material-symbols-outlined text-primary fs-2'
+                role='button'
+                onClick={() => setIsModalOpen(!isModalOpen)}
+              >
+                edit_square
+              </span>
             )}
           </div>
         </div>
@@ -72,10 +78,14 @@ const ContactCard = ({ contact, viewMode, onEdit }: Props) => {
   return (
     <div>
       {renderContactCard()}
-      <SiteContactModal contact={contact} isOpen={isModalOpen} handleClose={(contact: Contact | null) => {
-        setIsModalOpen(!isModalOpen)
-        contact ? onEdit(contact) : null
-      }} />
+      <SiteContactModal
+        contact={contact}
+        isOpen={isModalOpen}
+        handleClose={(contact: Contact | null) => {
+          setIsModalOpen(!isModalOpen)
+          contact ? onEdit(contact) : null
+        }}
+      />
     </div>
   )
 }

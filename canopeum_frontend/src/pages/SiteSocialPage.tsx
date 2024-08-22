@@ -139,12 +139,18 @@ const SiteSocialPage = () => {
         <div className='row row-gap-1 m-0'>
           <div className='col-12 col-md-6 col-lg-5 col-xl-4'>
             <div className='d-flex flex-column gap-4'>
-              <AnnouncementCard announcement={site.announcement} viewMode={viewMode} onEdit={(editedAnnoucement: Announcement) =>
-                setSite(site => ({...site, announcement: editedAnnoucement} as SiteSocial))
-              } />
-              <ContactCard contact={site.contact} viewMode={viewMode} onEdit={(editedContact: Contact) =>
-                setSite(site => ({...site, contact: editedContact} as SiteSocial))
-              } />
+              <AnnouncementCard
+                announcement={site.announcement}
+                viewMode={viewMode}
+                onEdit={(editedAnnoucement: Announcement) =>
+                  setSite(site => ({ ...site, announcement: editedAnnoucement } as SiteSocial))}
+              />
+              <ContactCard
+                contact={site.contact}
+                viewMode={viewMode}
+                onEdit={(editedContact: Contact) =>
+                  setSite(site => ({ ...site, contact: editedContact } as SiteSocial))}
+              />
               {site.widget.map(widget => (
                 <WidgetCard
                   handleEditClick={() => setIsWidgetModalOpen([true, widget])}
