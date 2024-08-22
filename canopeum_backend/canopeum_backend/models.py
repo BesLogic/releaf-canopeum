@@ -193,9 +193,9 @@ class Coordinate(models.Model):
             dd_longitude *= -1
 
         if gmaps is not None:
-            data_retrieved = gmaps.reverse_geocode(
+            data_retrieved = gmaps.reverse_geocode( # pyright: ignore[reportAttributeAccessIssue] -- No type stub currently exists
                 (dd_latitude, dd_longitude), result_type="street_address"
-            )  # pyright: ignore[reportAttributeAccessIssue] -- No type stub currently exists
+            )
             formatted_address = (
                 data_retrieved[0]["formatted_address"] if data_retrieved else "Custom address"
             )
