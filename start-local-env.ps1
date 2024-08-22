@@ -24,28 +24,13 @@ function Start-MySQLContainer {
 }
 
 # Backend
-# Acticate virtual environment
-# Install dependencies
-# Run database initialisation
+# Update virtual environment / Install dependencies
 # Run Django server
-if ($IsLinux -or $IsMacOS) {
-  $commandsBackend = @'
-    cd canopeum_backend
-    python -m venv venv
-    .\venv\bin\Activate.ps1
-    pip install -r requirements.txt
-    python3 manage.py runserver
-'@
-}
-else {
-  $commandsBackend = @'
+$commandsBackend = @'
   cd canopeum_backend
-  python -m venv venv
-  .\venv\Scripts\Activate.ps1
-  pip install -r requirements.txt
-  python manage.py runserver
+  uv sync --locked --extra dev
+  uv run manage.py runserver
 '@
-}
 
 # Frontend
 # Install dependencies
@@ -57,24 +42,11 @@ npm run dev
 '@
 
 # Initialize database
-if ($IsLinux -or $IsMacOS) {
-  $commandsInitializeDatabase = @'
+$commandsInitializeDatabase = @'
   cd canopeum_backend
-  python -m venv venv
-  .\venv\bin\Activate.ps1
-  python3 manage.py initialize_database
+  uv run manage.py initialize_database
   cd ..
 '@
-}
-else {
-  $commandsInitializeDatabase = @'
-  cd canopeum_backend
-  python -m venv venv
-  .\venv\Scripts\Activate.ps1
-  python manage.py initialize_database
-  cd ..
-'@
-}
 
 function Show-Menu {
   param (
