@@ -26,6 +26,7 @@ For frontend:
 For backend
 
 - [Python 3.12](https://www.python.org/downloads/)
+- [UV](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer)
 - [Docker](https://www.docker.com/get-started/)
 
 ### Installation
@@ -50,47 +51,17 @@ For backend
    Install everything under "**WORKSPACE RECOMMENDATIONS**", you can ignore "other recommendations":\
    ![Recommended Extensions](/docs/Recommended_Extensions.png)
 
-4. Set up a Python 3.12 virtual environment
-
-   ```shell
-   cd canopeum_backend
-   python3.12 -m venv .venv
-   ```
-
-   or on Windows if "python3.12" is not a recognized command:
-
-   ```powershell
-   cd canopeum_backend
-   py -3.12 -m venv .venv
-   ```
-
-   Then activate the environment (you need to do this everytime if your editor isn't configured to do so):
-
-   ```shell
-   source .venv/scripts/activate
-   ```
-
-   and on Windows:
-
-   ```powershell
-   .venv/scripts/activate
-   ```
-
-   In VSCode (Windows):
-   `CTRL+Shift+P` (Open Command Palette) > `Python: Select Interpreter`
-   ![VSCode_select_venv](/docs/VSCode_select_venv.png)
-
-5. Set up Django backend and Database: (Skip this section for Frontend only)
+4. Set up Django backend and Database: (Skip this section for Frontend only)
 
    ```shell
    cd canopeum_backend
    docker compose up
-   python -m pip install -r requirements-dev.txt
-   python manage.py initialize_database
-   python manage.py runserver
+   uv sync --locked --extra dev
+   uv run manage.py initialize_database
+   uv run manage.py runserver
    ```
 
-6. Set up React frontend:
+5. Set up React frontend:
 
    ```shell
    cd canopeum_frontend
@@ -106,7 +77,7 @@ For backend
    npm run mockoon
    ```
 
-7. Linting/Formatting:
+6. Linting/Formatting:
 
    For Frontend: (Dprint & Eslint)
 
@@ -119,7 +90,7 @@ For backend
 
    ```shell
    cd canopeum_backend
-   python ./scripts/checkers.py
+   uv run ./scripts/checkers.py
    ```
 
    For both: (autofixers)
@@ -148,7 +119,7 @@ project_name/
 │   │   ├── myproject/        # Django project settings
 │   │   ├── manage.py         # Django management script
 │   │   └── ...               # Other Django project files
-│   └── requirements.txt      # Python dependencies
+│   └── pyproject.toml        # Python dependencies
 │   └── docker-compose.yml    # File configuration container MySQL
 │
 ├── frontend/                 # React frontend
