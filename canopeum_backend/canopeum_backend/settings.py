@@ -17,6 +17,8 @@ from pathlib import Path
 import dj_database_url
 from corsheaders.defaults import default_headers
 from dotenv import load_dotenv
+import dj_database_url
+import os
 
 # Load environment variables from .env file
 load_dotenv()
@@ -28,7 +30,6 @@ def get_secret(key: str, default: str):
     if value_as_path.is_file():
         return value_as_path.read_text(encoding="utf-8")
     return value
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
@@ -171,20 +172,9 @@ SPECTACULAR_SETTINGS = {
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     "default": "mysql://{}:{}@{}:3308/{}".format(
-#         os.getenv("MYSQL_USER"),
-#         os.getenv("MYSQL_PASSWORD"),
-#         os.getenv("MYSQL_HOST"),
-#         os.getenv("MYSQL_DATABASE"),
-#     ),
-# }
 DATABASES = {
-    "default": dj_database_url.parse(
-        "mysql://canopeum_user:{}@{}:3308/canopeum_db".format(
-            get_secret("MYSQL_PASSWORD_CANOPEUM", ""),
-            os.getenv("MYSQL_HOST_CANOPEUM", "localhost"),
-        ),
+    'default': dj_database_url.parse(
+        f"mysql://canopeum_user:{get_secret('MYSQL_PASSWORD_CANOPEUM', '')}@{get_secret('MYSQL_HOST_CANOPEUM', 'localhost')}:3306/canopeum_db",
         conn_max_age=600,
         conn_health_checks=True,
     )
