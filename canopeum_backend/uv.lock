@@ -39,9 +39,7 @@ dependencies = [
 
 [package.optional-dependencies]
 dev = [
-    { name = "django-stubs" },
     { name = "django-stubs", extra = ["compatible-mypy"] },
-    { name = "djangorestframework-stubs" },
     { name = "djangorestframework-stubs", extra = ["compatible-mypy"] },
     { name = "mypy" },
     { name = "pre-commit" },
@@ -247,7 +245,6 @@ wheels = [
 
 [package.optional-dependencies]
 compatible-mypy = [
-    { name = "django-stubs" },
     { name = "django-stubs", extra = ["compatible-mypy"] },
     { name = "mypy" },
 ]
