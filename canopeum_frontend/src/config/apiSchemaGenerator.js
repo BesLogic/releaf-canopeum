@@ -1,10 +1,10 @@
-import * as fs from 'fs'
-import * as path from 'path'
 import { spawnSync } from 'node:child_process'
+import * as fs from 'node:fs'
+import * as path from 'node:path'
 import * as url from 'node:url'
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
-var schemaUrl = 'http://127.0.0.1:8000/api/schema/'
+const schemaUrl = 'http://127.0.0.1:8000/api/schema/'
 const outputPath = path.join(__dirname, 'openapi.yaml')
 const nswagPath = path.join(__dirname, '../../..', 'docs/canopeum.nswag')
 
