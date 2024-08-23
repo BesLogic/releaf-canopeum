@@ -163,3 +163,5 @@ project_name/
 If you save a modification to the `.nswag` file, DO NOT INCLUDE THE LOCAL COPY OF THE SPEC !
 
 ![NSwagStudio Documents](/docs/NSwagStudio_Documents.png)
+
+PRO TIP: You can use the npm command `npm run generate-client` to generate and replace directly the api.ts file !
