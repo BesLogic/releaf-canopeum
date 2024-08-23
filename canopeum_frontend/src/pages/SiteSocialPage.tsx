@@ -142,14 +142,12 @@ const SiteSocialPage = () => {
               <AnnouncementCard
                 announcement={site.announcement}
                 viewMode={viewMode}
-                onEdit={(editedAnnoucement: Announcement) =>
-                  setSite(site => ({ ...site, announcement: editedAnnoucement } as SiteSocial))}
+                onEdit={announcement => setSite(site => ({ ...site, announcement } as SiteSocial))}
               />
               <ContactCard
                 contact={site.contact}
                 viewMode={viewMode}
-                onEdit={(editedContact: Contact) =>
-                  setSite(site => ({ ...site, contact: editedContact } as SiteSocial))}
+                onEdit={contact => setSite(site => ({ ...site, contact } as SiteSocial))}
               />
               {site.widget.map(widget => (
                 <WidgetCard

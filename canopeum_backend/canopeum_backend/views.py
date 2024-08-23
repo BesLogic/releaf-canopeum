@@ -730,10 +730,10 @@ class AnnouncementDetailAPIView(APIView):
     def patch(self, request: Request, siteId):
         announcement = Announcement.objects.get_or_create(site=siteId)[0]
 
-        serializer = AnnouncementSerializer(announcement[0], data=request.data)
+        serializer = AnnouncementSerializer(announcement, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            Site.objects.filter(pk=siteId).update(announcement=announcement[0])
+            Site.objects.filter(pk=siteId).update(announcement=announcement)
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
