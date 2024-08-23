@@ -1,0 +1,2385 @@
+openapi: 3.0.3
+info:
+  title: Canopeum API
+  version: 0.0.1
+  description: API for the Canopeum project
+paths:
+  /admin-user-sites/:
+    get:
+      operationId: admin-user-sites_all
+      tags:
+      - admin-user-sites
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminUserSites'
+          description: ''
+  /analytics/batches/:
+    get:
+      operationId: batch_all
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BatchDetail'
+          description: ''
+    post:
+      operationId: batch_create
+      tags:
+      - analytics
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                site:
+                  type: number
+                name:
+                  type: string
+                  nullable: true
+                sponsor:
+                  type: string
+                  nullable: true
+                size:
+                  type: number
+                  nullable: true
+                soilCondition:
+                  type: string
+                  nullable: true
+                plantCount:
+                  type: number
+                  nullable: true
+                survivedCount:
+                  type: number
+                  nullable: true
+                replaceCount:
+                  type: number
+                  nullable: true
+                totalNumberSeed:
+                  type: number
+                  nullable: true
+                totalPropagation:
+                  type: number
+                  nullable: true
+                image:
+                  type: string
+                  format: binary
+                  nullable: true
+                fertilizerIds:
+                  type: array
+                  items:
+                    type: number
+                mulchLayerIds:
+                  type: array
+                  items:
+                    type: number
+                seeds:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      quantity:
+                        type: number
+                species:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      quantity:
+                        type: number
+                supportedSpecieIds:
+                  type: array
+                  items:
+                    type: number
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchDetail'
+          description: ''
+  /analytics/batches/{batchId}/:
+    patch:
+      operationId: batch_update
+      parameters:
+      - in: path
+        name: batchId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - analytics
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  nullable: true
+                sponsor:
+                  type: string
+                  nullable: true
+                size:
+                  type: number
+                  nullable: true
+                soilCondition:
+                  type: string
+                  nullable: true
+                plantCount:
+                  type: number
+                  nullable: true
+                survivedCount:
+                  type: number
+                  nullable: true
+                replaceCount:
+                  type: number
+                  nullable: true
+                totalNumberSeed:
+                  type: number
+                  nullable: true
+                totalPropagation:
+                  type: number
+                  nullable: true
+                fertilizerIds:
+                  type: array
+                  items:
+                    type: number
+                mulchLayerIds:
+                  type: array
+                  items:
+                    type: number
+                seeds:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      quantity:
+                        type: number
+                species:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      quantity:
+                        type: number
+                supportedSpecieIds:
+                  type: array
+                  items:
+                    type: number
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchDetail'
+          description: ''
+    delete:
+      operationId: batch_delete
+      parameters:
+      - in: path
+        name: batchId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /analytics/fertilizers:
+    get:
+      operationId: fertilizer_allTypes
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FertilizerType'
+          description: ''
+  /analytics/mulch-layers:
+    get:
+      operationId: mulchLayer_allTypes
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MulchLayerType'
+          description: ''
+  /analytics/site-types:
+    get:
+      operationId: site_types
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SiteType'
+          description: ''
+  /analytics/sites/:
+    get:
+      operationId: site_all
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Site'
+          description: ''
+    post:
+      operationId: site_create
+      tags:
+      - analytics
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                siteType:
+                  type: number
+                image:
+                  type: string
+                  format: binary
+                latitude:
+                  type: string
+                longitude:
+                  type: string
+                description:
+                  type: string
+                size:
+                  type: number
+                species:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      quantity:
+                        type: number
+                researchPartnership:
+                  type: boolean
+                visibleMap:
+                  type: boolean
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Site'
+          description: ''
+  /analytics/sites/{siteId}/:
+    get:
+      operationId: site_detail
+      parameters:
+      - in: path
+        name: siteId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Site'
+          description: ''
+    patch:
+      operationId: site_update
+      parameters:
+      - in: path
+        name: siteId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - analytics
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                siteType:
+                  type: number
+                image:
+                  type: string
+                  format: binary
+                latitude:
+                  type: string
+                longitude:
+                  type: string
+                description:
+                  type: string
+                size:
+                  type: number
+                species:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      quantity:
+                        type: number
+                researchPartnership:
+                  type: boolean
+                visibleMap:
+                  type: boolean
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Site'
+          description: ''
+    delete:
+      operationId: site_delete
+      parameters:
+      - in: path
+        name: siteId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /analytics/sites/{siteId}/admins:
+    patch:
+      operationId: site_updateAdmins
+      parameters:
+      - in: path
+        name: siteId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - analytics
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSiteAdminUpdateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSiteAdminUpdateRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SiteAdmin'
+          description: ''
+  /analytics/sites/{siteId}/followers/:
+    post:
+      operationId: site_follow
+      parameters:
+      - in: path
+        name: siteId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          description: No response body
+    delete:
+      operationId: site_unfollow
+      parameters:
+      - in: path
+        name: siteId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /analytics/sites/{siteId}/followers/current-user/:
+    get:
+      operationId: site_isFollowing
+      parameters:
+      - in: path
+        name: siteId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: boolean
+          description: ''
+  /analytics/sites/{siteId}/summary:
+    get:
+      operationId: site_summary
+      parameters:
+      - in: path
+        name: siteId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteSummary'
+          description: ''
+  /analytics/sites/summary:
+    get:
+      operationId: site_summary_all
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SiteSummary'
+          description: ''
+  /analytics/tree-species:
+    get:
+      operationId: tree_species
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TreeType'
+          description: ''
+  /api/schema/:
+    get:
+      operationId: api_schema_retrieve
+      description: |-
+        OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+        - YAML: application/vnd.oai.openapi
+        - JSON: application/vnd.oai.openapi+json
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      - in: query
+        name: lang
+        schema:
+          type: string
+          enum:
+          - af
+          - ar
+          - ar-dz
+          - ast
+          - az
+          - be
+          - bg
+          - bn
+          - br
+          - bs
+          - ca
+          - ckb
+          - cs
+          - cy
+          - da
+          - de
+          - dsb
+          - el
+          - en
+          - en-au
+          - en-gb
+          - eo
+          - es
+          - es-ar
+          - es-co
+          - es-mx
+          - es-ni
+          - es-ve
+          - et
+          - eu
+          - fa
+          - fi
+          - fr
+          - fy
+          - ga
+          - gd
+          - gl
+          - he
+          - hi
+          - hr
+          - hsb
+          - hu
+          - hy
+          - ia
+          - id
+          - ig
+          - io
+          - is
+          - it
+          - ja
+          - ka
+          - kab
+          - kk
+          - km
+          - kn
+          - ko
+          - ky
+          - lb
+          - lt
+          - lv
+          - mk
+          - ml
+          - mn
+          - mr
+          - ms
+          - my
+          - nb
+          - ne
+          - nl
+          - nn
+          - os
+          - pa
+          - pl
+          - pt
+          - pt-br
+          - ro
+          - ru
+          - sk
+          - sl
+          - sq
+          - sr
+          - sr-latn
+          - sv
+          - sw
+          - ta
+          - te
+          - tg
+          - th
+          - tk
+          - tr
+          - tt
+          - udm
+          - ug
+          - uk
+          - ur
+          - uz
+          - vi
+          - zh-hans
+          - zh-hant
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/vnd.oai.openapi:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/yaml:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/vnd.oai.openapi+json:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /auth/login/:
+    post:
+      operationId: authentication_login
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LoginUser'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserToken'
+          description: ''
+  /auth/register/:
+    post:
+      operationId: authentication_register
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RegisterUser'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserToken'
+          description: ''
+  /auth/token/:
+    post:
+      operationId: auth_token_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /auth/token/refresh/:
+    post:
+      operationId: auth_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /map/sites/:
+    get:
+      operationId: site_map
+      tags:
+      - map
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SiteMap'
+          description: ''
+  /social/posts/:
+    get:
+      operationId: post_all
+      parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+        required: true
+      - in: query
+        name: siteId
+        schema:
+          type: array
+          items:
+            type: integer
+      - in: query
+        name: size
+        schema:
+          type: integer
+        required: true
+      tags:
+      - social
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostPagination'
+          description: ''
+    post:
+      operationId: post_create
+      tags:
+      - social
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                site:
+                  type: number
+                body:
+                  type: string
+                media:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+          description: ''
+  /social/posts/{postId}/:
+    get:
+      operationId: post_detail
+      parameters:
+      - in: path
+        name: postId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - social
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+          description: ''
+    delete:
+      operationId: post_delete
+      parameters:
+      - in: path
+        name: postId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - social
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /social/posts/{postId}/comments/:
+    get:
+      operationId: comment_all
+      parameters:
+      - in: path
+        name: postId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - social
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+          description: ''
+    post:
+      operationId: comment_create
+      parameters:
+      - in: path
+        name: postId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - social
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateComment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreateComment'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+          description: ''
+  /social/posts/{postId}/comments/{commentId}/:
+    delete:
+      operationId: comment_delete
+      parameters:
+      - in: path
+        name: commentId
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: postId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - social
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /social/posts/{postId}/likes/:
+    post:
+      operationId: like_likePost
+      parameters:
+      - in: path
+        name: postId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - social
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Like'
+          description: ''
+    delete:
+      operationId: like_delete
+      parameters:
+      - in: path
+        name: postId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - social
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Like'
+          description: ''
+  /social/sites/{siteId}/:
+    get:
+      operationId: site_social
+      parameters:
+      - in: path
+        name: siteId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - social
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteSocial'
+          description: ''
+  /social/sites/{siteId}/announcements/:
+    patch:
+      operationId: announcement_update
+      parameters:
+      - in: path
+        name: siteId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - social
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAnnouncement'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAnnouncement'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Announcement'
+          description: ''
+  /social/sites/{siteId}/contacts/{contactId}/:
+    patch:
+      operationId: contact_update
+      parameters:
+      - in: path
+        name: contactId
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: siteId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - social
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedContact'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedContact'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+          description: ''
+  /social/sites/{siteId}/public-status:
+    patch:
+      operationId: site_social_updatePublicStatus
+      parameters:
+      - in: path
+        name: siteId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - social
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateSitePublicStatus'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateSitePublicStatus'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateSitePublicStatus'
+          description: ''
+  /social/sites/{siteId}/widgets/:
+    post:
+      operationId: widget_create
+      parameters:
+      - in: path
+        name: siteId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - social
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Widget'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Widget'
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Widget'
+          description: ''
+  /social/sites/{siteId}/widgets/{widgetId}/:
+    patch:
+      operationId: widget_update
+      parameters:
+      - in: path
+        name: siteId
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: widgetId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - social
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedWidget'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedWidget'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Widget'
+          description: ''
+    delete:
+      operationId: widget_delete
+      parameters:
+      - in: path
+        name: siteId
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: widgetId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - social
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /user-invitations/:
+    post:
+      operationId: user-invitation_create
+      tags:
+      - user-invitations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserInvitation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreateUserInvitation'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInvitation'
+          description: ''
+  /user-invitations/{code}:
+    get:
+      operationId: user-invitation_detail
+      parameters:
+      - in: path
+        name: code
+        schema:
+          type: string
+        required: true
+      tags:
+      - user-invitations
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInvitation'
+          description: ''
+  /users/:
+    get:
+      operationId: user_all
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+          description: ''
+  /users/{userId}/:
+    get:
+      operationId: user_detail
+      parameters:
+      - in: path
+        name: userId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: user_update
+      parameters:
+      - in: path
+        name: userId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateUser'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /users/current_user/:
+    get:
+      operationId: user_current
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /users/site-managers:
+    get:
+      operationId: user_allSiteManagers
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+          description: ''
+components:
+  schemas:
+    AdminUserSites:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 255
+        sites:
+          type: array
+          items:
+            $ref: '#/components/schemas/SiteName'
+          readOnly: true
+      required:
+      - email
+      - id
+      - sites
+      - username
+    Announcement:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        body:
+          type: string
+          nullable: true
+        link:
+          type: string
+          nullable: true
+      required:
+      - id
+    Asset:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        asset:
+          type: string
+          format: uri
+      required:
+      - asset
+      - id
+    BatchDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        fertilizers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Batchfertilizer'
+          readOnly: true
+        mulchLayers:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchMulchLayer'
+          readOnly: true
+        supportedSpecies:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchSupportedSpecies'
+          readOnly: true
+        seeds:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchSeed'
+          readOnly: true
+        species:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchSpecies'
+          readOnly: true
+        image:
+          $ref: '#/components/schemas/Asset'
+        createdAt:
+          type: string
+          format: date-time
+          nullable: true
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        sponsor:
+          type: string
+          nullable: true
+        size:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        soilCondition:
+          type: string
+          nullable: true
+        plantCount:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        survivedCount:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        replaceCount:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        totalNumberSeed:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        totalPropagation:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        site:
+          type: integer
+          nullable: true
+      required:
+      - fertilizers
+      - id
+      - mulchLayers
+      - seeds
+      - species
+      - supportedSpecies
+    BatchMulchLayer:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        en:
+          type: string
+          readOnly: true
+        fr:
+          type: string
+          readOnly: true
+      required:
+      - en
+      - fr
+      - id
+    BatchSeed:
+      type: object
+      properties:
+        quantity:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        en:
+          type: string
+          readOnly: true
+        fr:
+          type: string
+          readOnly: true
+      required:
+      - en
+      - fr
+    BatchSpecies:
+      type: object
+      properties:
+        quantity:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        en:
+          type: string
+          readOnly: true
+        fr:
+          type: string
+          readOnly: true
+      required:
+      - en
+      - fr
+    BatchSupportedSpecies:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        en:
+          type: string
+          readOnly: true
+        fr:
+          type: string
+          readOnly: true
+      required:
+      - en
+      - fr
+      - id
+    Batchfertilizer:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        en:
+          type: string
+          readOnly: true
+        fr:
+          type: string
+          readOnly: true
+      required:
+      - en
+      - fr
+      - id
+    ChangePassword:
+      type: object
+      properties:
+        currentPassword:
+          type: string
+          writeOnly: true
+        newPassword:
+          type: string
+          writeOnly: true
+        newPasswordConfirmation:
+          type: string
+          writeOnly: true
+      required:
+      - currentPassword
+      - newPassword
+      - newPasswordConfirmation
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        body:
+          type: string
+        authorId:
+          type: integer
+          readOnly: true
+        authorUsername:
+          type: string
+          readOnly: true
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - authorId
+      - authorUsername
+      - body
+      - createdAt
+      - id
+    Contact:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        address:
+          type: string
+          nullable: true
+        email:
+          type: string
+          format: email
+          nullable: true
+          maxLength: 254
+        phone:
+          type: string
+          nullable: true
+          maxLength: 20
+        facebookLink:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+        xLink:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+        instagramLink:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+        linkedinLink:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+      required:
+      - id
+    Coordinates:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        dmsLatitude:
+          type: string
+          nullable: true
+        dmsLongitude:
+          type: string
+          nullable: true
+        ddLatitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        ddLongitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        address:
+          type: string
+          nullable: true
+      required:
+      - id
+    CoordinatesMap:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+          nullable: true
+          readOnly: true
+        longitude:
+          type: number
+          format: double
+          nullable: true
+          readOnly: true
+        address:
+          type: string
+          nullable: true
+      required:
+      - latitude
+      - longitude
+    CreateComment:
+      type: object
+      properties:
+        body:
+          type: string
+      required:
+      - body
+    CreateUserInvitation:
+      type: object
+      properties:
+        siteIds:
+          type: array
+          items:
+            type: integer
+        email:
+          type: string
+          format: email
+      required:
+      - email
+      - siteIds
+    FertilizerType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        en:
+          type: string
+          readOnly: true
+        fr:
+          type: string
+          readOnly: true
+      required:
+      - en
+      - fr
+      - id
+    Like:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+        post:
+          type: integer
+      required:
+      - id
+      - post
+      - user
+    LoginUser:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 255
+        password:
+          type: string
+          maxLength: 128
+      required:
+      - email
+      - password
+    MulchLayerType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        en:
+          type: string
+          readOnly: true
+        fr:
+          type: string
+          readOnly: true
+      required:
+      - en
+      - fr
+      - id
+    PatchedAnnouncement:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        body:
+          type: string
+          nullable: true
+        link:
+          type: string
+          nullable: true
+    PatchedContact:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        address:
+          type: string
+          nullable: true
+        email:
+          type: string
+          format: email
+          nullable: true
+          maxLength: 254
+        phone:
+          type: string
+          nullable: true
+          maxLength: 20
+        facebookLink:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+        xLink:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+        instagramLink:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+        linkedinLink:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+    PatchedSiteAdminUpdateRequest:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: integer
+    PatchedUpdateSitePublicStatus:
+      type: object
+      properties:
+        isPublic:
+          type: boolean
+    PatchedUpdateUser:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 255
+        changePassword:
+          $ref: '#/components/schemas/ChangePassword'
+    PatchedWidget:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          nullable: true
+        body:
+          type: string
+          nullable: true
+        site:
+          type: integer
+          nullable: true
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        site:
+          $ref: '#/components/schemas/SiteOverview'
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+        body:
+          type: string
+        likeCount:
+          type: integer
+          readOnly: true
+        shareCount:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        commentCount:
+          type: integer
+          readOnly: true
+        hasLiked:
+          type: boolean
+          readOnly: true
+        media:
+          type: array
+          items:
+            $ref: '#/components/schemas/Asset'
+      required:
+      - body
+      - commentCount
+      - createdAt
+      - hasLiked
+      - id
+      - likeCount
+      - media
+      - site
+    PostPagination:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+        previous:
+          type: string
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Post'
+      required:
+      - count
+      - results
+    RegisterUser:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          writeOnly: true
+        passwordConfirmation:
+          type: string
+          writeOnly: true
+        code:
+          type: string
+      required:
+      - email
+      - password
+      - passwordConfirmation
+      - username
+    RoleEnum:
+      enum:
+      - User
+      - SiteManager
+      - MegaAdmin
+      type: string
+    Site:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        siteType:
+          $ref: '#/components/schemas/SiteType'
+        coordinate:
+          $ref: '#/components/schemas/Coordinates'
+        siteTreeSpecies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Sitetreespecies'
+          readOnly: true
+        contact:
+          $ref: '#/components/schemas/Contact'
+        announcement:
+          $ref: '#/components/schemas/Announcement'
+        image:
+          $ref: '#/components/schemas/Asset'
+        name:
+          type: string
+        isPublic:
+          type: boolean
+        description:
+          type: string
+          nullable: true
+        size:
+          type: string
+          nullable: true
+        researchPartnership:
+          type: boolean
+          nullable: true
+        visibleMap:
+          type: boolean
+          nullable: true
+        visitorCount:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+      required:
+      - announcement
+      - contact
+      - coordinate
+      - id
+      - image
+      - name
+      - siteTreeSpecies
+      - siteType
+    SiteAdmin:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+      required:
+      - user
+    SiteMap:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+        siteType:
+          $ref: '#/components/schemas/SiteType'
+        coordinates:
+          allOf:
+          - $ref: '#/components/schemas/CoordinatesMap'
+          readOnly: true
+        image:
+          $ref: '#/components/schemas/Asset'
+      required:
+      - coordinates
+      - id
+      - image
+      - name
+      - siteType
+    SiteName:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+      required:
+      - id
+      - name
+    SiteOverview:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+        image:
+          $ref: '#/components/schemas/Asset'
+      required:
+      - id
+      - image
+      - name
+    SiteSocial:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+        isPublic:
+          type: boolean
+        siteType:
+          $ref: '#/components/schemas/SiteType'
+        image:
+          $ref: '#/components/schemas/Asset'
+        description:
+          type: string
+          nullable: true
+        contact:
+          $ref: '#/components/schemas/Contact'
+        announcement:
+          $ref: '#/components/schemas/Announcement'
+        sponsors:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        widget:
+          type: array
+          items:
+            $ref: '#/components/schemas/Widget'
+          readOnly: true
+      required:
+      - announcement
+      - contact
+      - id
+      - image
+      - name
+      - siteType
+      - sponsors
+      - widget
+    SiteSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+        coordinate:
+          $ref: '#/components/schemas/Coordinates'
+        siteType:
+          $ref: '#/components/schemas/SiteType'
+        plantCount:
+          type: integer
+          readOnly: true
+        survivedCount:
+          type: integer
+          readOnly: true
+        propagationCount:
+          type: integer
+          readOnly: true
+        visitorCount:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        sponsors:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        progress:
+          type: number
+          format: double
+          readOnly: true
+        admins:
+          type: array
+          items:
+            $ref: '#/components/schemas/SiteAdmin'
+        batches:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchDetail'
+          readOnly: true
+      required:
+      - admins
+      - batches
+      - coordinate
+      - id
+      - name
+      - plantCount
+      - progress
+      - propagationCount
+      - siteType
+      - sponsors
+      - survivedCount
+    SiteType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        en:
+          type: string
+          readOnly: true
+        fr:
+          type: string
+          readOnly: true
+      required:
+      - en
+      - fr
+      - id
+    Sitetreespecies:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        quantity:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        en:
+          type: string
+          readOnly: true
+        fr:
+          type: string
+          readOnly: true
+      required:
+      - en
+      - fr
+      - id
+    TokenObtainPair:
+      type: object
+      properties:
+        email:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - email
+      - password
+      - refresh
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+    TreeType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        en:
+          type: string
+          readOnly: true
+        fr:
+          type: string
+          readOnly: true
+      required:
+      - en
+      - fr
+      - id
+    UpdateSitePublicStatus:
+      type: object
+      properties:
+        isPublic:
+          type: boolean
+      required:
+      - isPublic
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        role:
+          allOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          readOnly: true
+        adminSiteIds:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+        followedSiteIds:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+        lastLogin:
+          type: string
+          format: date-time
+          nullable: true
+        isSuperuser:
+          type: boolean
+          title: Superuser status
+          description: Designates that this user has all permissions without explicitly
+            assigning them.
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        firstName:
+          type: string
+          maxLength: 150
+        lastName:
+          type: string
+          maxLength: 150
+        isStaff:
+          type: boolean
+          title: Staff status
+          description: Designates whether the user can log into this admin site.
+        isActive:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        dateJoined:
+          type: string
+          format: date-time
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 255
+        groups:
+          type: array
+          items:
+            type: integer
+          description: The groups this user belongs to. A user will get all permissions
+            granted to each of their groups.
+        userPermissions:
+          type: array
+          items:
+            type: integer
+          description: Specific permissions for this user.
+      required:
+      - adminSiteIds
+      - email
+      - followedSiteIds
+      - id
+      - role
+      - username
+    UserInvitation:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        code:
+          type: string
+          maxLength: 64
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        expiresAt:
+          type: string
+          format: date-time
+      required:
+      - code
+      - email
+      - expiresAt
+      - id
+    UserToken:
+      type: object
+      properties:
+        token:
+          $ref: '#/components/schemas/TokenRefresh'
+        user:
+          $ref: '#/components/schemas/User'
+      required:
+      - token
+      - user
+    Widget:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          nullable: true
+        body:
+          type: string
+          nullable: true
+        site:
+          type: integer
+          nullable: true
+      required:
+      - id
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

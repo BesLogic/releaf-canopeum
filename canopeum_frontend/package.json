@@ -10,7 +10,8 @@
     "eslint": "eslint ./ --ignore-path .gitignore",
     "lint": "dprint check && npm run eslint",
     "lint:fix": "dprint fmt && npm run eslint -- --fix",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate-api-client": "node ./src/config/api-schema-generator.js && nswag run ../docs/canopeum.nswag"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
@@ -25,6 +26,7 @@
     "jwt-decode": "4.0.0",
     "maplibre-gl": "^4.1.1",
     "material-icons": "^1.13.12",
+    "nswag": "^14.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^14.1.0",
