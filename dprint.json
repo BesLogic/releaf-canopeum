@@ -13,8 +13,6 @@
     "**/obj",
     // capacitor folders
     "**/*/android/app",
-    "**/*/ios/App",
-    // specific to this project
-    "**/*/services/api.ts"
+    "**/*/ios/App"
   ]
 }
