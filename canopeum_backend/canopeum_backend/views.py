@@ -728,10 +728,7 @@ class AnnouncementDetailAPIView(APIView):
         operation_id="announcement_update",
     )
     def patch(self, request: Request, siteId):
-        try:
-            announcement = Announcement.objects.get_or_create(site=siteId)
-        except Exception:
-            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        announcement = Announcement.objects.get_or_create(site=siteId)
 
         serializer = AnnouncementSerializer(announcement[0], data=request.data)
         if serializer.is_valid():
