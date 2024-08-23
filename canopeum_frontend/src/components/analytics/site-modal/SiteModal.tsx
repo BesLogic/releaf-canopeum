@@ -59,7 +59,6 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
     }
 
     const siteDetail = await getApiClient().siteClient.detail(siteId)
-    console.log(siteDetail)
     const { dmsLatitude, dmsLongitude } = siteDetail.coordinate
 
     const imgResponse = await fetch(`${getApiBaseUrl()}${siteDetail.image.asset}`)
