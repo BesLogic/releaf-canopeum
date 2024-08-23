@@ -171,19 +171,12 @@ SPECTACULAR_SETTINGS = {
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     "default": "mysql://{}:{}@{}:3308/{}".format(
-#         os.getenv("MYSQL_USER"),
-#         os.getenv("MYSQL_PASSWORD"),
-#         os.getenv("MYSQL_HOST"),
-#         os.getenv("MYSQL_DATABASE"),
-#     ),
-# }
 DATABASES = {
     "default": dj_database_url.parse(
-        "mysql://canopeum_user:{}@{}:3308/canopeum_db".format(
+        "mysql://canopeum_user:{}@{}:{}/canopeum_db".format(
             get_secret("MYSQL_PASSWORD_CANOPEUM", ""),
-            os.getenv("MYSQL_HOST_CANOPEUM", "localhost"),
+            get_secret("MYSQL_HOST_CANOPEUM", "localhost"),
+            get_secret("MYSQL_PORT_CANOPEUM", "3308"),
         ),
         conn_max_age=600,
         conn_health_checks=True,
