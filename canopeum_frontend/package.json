@@ -11,7 +11,7 @@
     "lint": "dprint check && npm run eslint",
     "lint:fix": "dprint fmt && npm run eslint -- --fix",
     "preview": "vite preview",
-    "generate-api-client": "node ./src/config/api-schema-generator.js && nswag run ../docs/canopeum.nswag"
+    "generate-api-client": "node ./src/config/apiSchemaGenerator.js && nswag run ../docs/canopeum.nswag"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
