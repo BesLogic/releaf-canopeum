@@ -3,7 +3,7 @@
   "defaultVariables": null,
   "documentGenerator": {
     "fromDocument": {
-      "url": "../canopeum_frontend/src/config/openapi.yaml",
+      "url": "http://127.0.0.1:8000/api/schema/",
       "output": null,
       "newLineBehavior": "Auto"
     }
