@@ -154,6 +154,11 @@ project_name/
 
 ## Regenerating the API spec with NSwagStudio
 
+Run `npm run generate-api-client` to generate and replace directly the openapi spec file
+(Hint: Don't forget to be in canopeum_frontend folder to run the command)
+
+<!--
+In case the command stops working and you need to manually regenerate it (prefer fixing the command though):
 1. Open NSwagStudio and close any already open Document (re-openning the same document doesn't clear changes in NSwagStudio)
 1. Open [canopeum.nswag](/docs/canopeum.nswag) with NSwagStudio
 1. Click "Create a local Copy"
@@ -163,3 +168,4 @@ project_name/
 If you save a modification to the `.nswag` file, DO NOT INCLUDE THE LOCAL COPY OF THE SPEC !
 
 ![NSwagStudio Documents](/docs/NSwagStudio_Documents.png)
+-->
