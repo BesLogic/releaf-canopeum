@@ -1,14 +1,14 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
+import SiteAnnouncementModal from '@components/social/site-modal/SiteAnnouncementModal'
 import type { PageViewMode } from '@models/types/PageViewMode.Type'
 import type { Announcement } from '@services/api'
-import { useState } from 'react'
-import SiteAnnouncementModal from '@components/social/site-modal/SiteAnnouncementModal'
 
 type Props = {
   readonly announcement: Announcement,
   readonly viewMode: PageViewMode,
-  onEdit: (announcement: Announcement) => void,
+  readonly onEdit: (announcement: Announcement) => void,
 }
 
 const AnnouncementCard = ({ announcement, viewMode, onEdit }: Props) => {
@@ -24,8 +24,8 @@ const AnnouncementCard = ({ announcement, viewMode, onEdit }: Props) => {
               {viewMode === 'admin' && (
                 <span
                   className='material-symbols-outlined text-primary fs-2'
-                  role='button'
                   onClick={() => setIsModalOpen(!isModalOpen)}
+                  role='button'
                 >
                   edit_square
                 </span>
@@ -36,7 +36,7 @@ const AnnouncementCard = ({ announcement, viewMode, onEdit }: Props) => {
             {announcement.body}
           </p>
           {announcement.link && (
-            <Link className='card-text' to={{ pathname: announcement.link }} target='_blank'>
+            <Link className='card-text' target='_blank' to={{ pathname: announcement.link }}>
               {announcement.link}
             </Link>
           )}
@@ -44,11 +44,13 @@ const AnnouncementCard = ({ announcement, viewMode, onEdit }: Props) => {
       </div>
       <SiteAnnouncementModal
         announcement={announcement}
-        isOpen={isModalOpen}
         handleClose={(announcement: Announcement | null) => {
           setIsModalOpen(!isModalOpen)
-          announcement ? onEdit(announcement) : null
+          announcement
+? onEdit(announcement)
+: null
         }}
+        isOpen={isModalOpen}
       />
     </>
   )

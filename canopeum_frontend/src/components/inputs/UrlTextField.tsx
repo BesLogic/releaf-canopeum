@@ -1,12 +1,14 @@
-import { isValidUrl } from '@utils/validators'
-import React, { useState } from 'react'
+import type React from 'react';
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { isValidUrl } from '@utils/validators'
+
 type Props = {
-  value: string | undefined,
-  attributes?: React.InputHTMLAttributes<HTMLInputElement>,
-  onChange: (value: string) => void,
-  isValid: (valid: boolean) => void,
+  readonly value: string | undefined,
+  readonly attributes?: React.InputHTMLAttributes<HTMLInputElement>,
+  readonly onChange: (value: string) => void,
+  readonly isValid: (valid: boolean) => void,
 }
 
 const UrlTextField: React.FC<Props> = props => {

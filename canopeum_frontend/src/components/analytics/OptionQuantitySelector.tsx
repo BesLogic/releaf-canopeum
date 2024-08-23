@@ -102,8 +102,7 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
         {label}
       </label>
 
-      {
-        <Autocomplete
+      <Autocomplete
           autoSelect
           clearOnBlur
           freeSolo
@@ -153,7 +152,6 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
             </div>
           )}
         />
-      }
 
       <ul className='list-group list-group-flush overflow-hidden mt-1'>
         {selectedOptions.map(optionQuantity => (

@@ -1,18 +1,18 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import facebookLogo from '@assets/icons/facebook-contact-logo.svg'
 import instagramLogo from '@assets/icons/instagram-contact-logo.svg'
 import linkedinLogo from '@assets/icons/linkedin-contact-logo.svg'
 import xLogo from '@assets/icons/x-contact-logo.svg'
+import SiteContactModal from '@components/social/site-modal/SiteContactModal'
 import type { PageViewMode } from '@models/types/PageViewMode.Type'
 import type { Contact } from '@services/api'
-import SiteContactModal from '@components/social/site-modal/SiteContactModal'
-import { useState } from 'react'
 
 type Props = {
   readonly contact: Contact,
   readonly viewMode: PageViewMode,
-  onEdit: (contact: Contact) => void,
+  readonly onEdit: (contact: Contact) => void,
 }
 
 const ContactCard = ({ contact, viewMode, onEdit }: Props) => {
@@ -27,8 +27,8 @@ const ContactCard = ({ contact, viewMode, onEdit }: Props) => {
             {viewMode === 'admin' && (
               <span
                 className='material-symbols-outlined text-primary fs-2'
-                role='button'
                 onClick={() => setIsModalOpen(!isModalOpen)}
+                role='button'
               >
                 edit_square
               </span>
@@ -80,11 +80,13 @@ const ContactCard = ({ contact, viewMode, onEdit }: Props) => {
       {renderContactCard()}
       <SiteContactModal
         contact={contact}
-        isOpen={isModalOpen}
         handleClose={(contact: Contact | null) => {
           setIsModalOpen(!isModalOpen)
-          contact ? onEdit(contact) : null
+          contact
+? onEdit(contact)
+: null
         }}
+        isOpen={isModalOpen}
       />
     </div>
   )

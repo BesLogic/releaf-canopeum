@@ -1,6 +1,7 @@
-import { isValidPhone } from '@utils/validators'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import { isValidPhone } from '@utils/validators'
 
 type Props = {
   value: string | undefined,

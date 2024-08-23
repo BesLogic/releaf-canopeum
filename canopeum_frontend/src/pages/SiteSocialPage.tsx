@@ -4,10 +4,10 @@ import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 
 import LoadingPage from './LoadingPage'
-import AnnouncementCard from '@components/social/AnnouncementCard'
-import ContactCard from '@components/social/ContactCard'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import CreatePostWidget from '@components/CreatePostWidget'
+import AnnouncementCard from '@components/social/AnnouncementCard'
+import ContactCard from '@components/social/ContactCard'
 import PostCard from '@components/social/PostCard'
 import SiteSocialHeader from '@components/social/SiteSocialHeader'
 import WidgetCard from '@components/social/WidgetCard'
@@ -15,7 +15,7 @@ import WidgetDialog from '@components/social/WidgetDialog'
 import useApiClient from '@hooks/ApiClientHook'
 import usePostsInfiniteScrolling from '@hooks/PostsInfiniteScrollingHook'
 import type { PageViewMode } from '@models/types/PageViewMode.Type'
-import { Announcement, Contact, type IWidget, PatchedWidget, type Post, type SiteSocial, Widget } from '@services/api'
+import { type IWidget, PatchedWidget, type Post, type SiteSocial, Widget } from '@services/api'
 import { ensureError } from '@services/errors'
 import usePostsStore from '@store/postsStore'
 
@@ -141,13 +141,13 @@ const SiteSocialPage = () => {
             <div className='d-flex flex-column gap-4'>
               <AnnouncementCard
                 announcement={site.announcement}
-                viewMode={viewMode}
                 onEdit={announcement => setSite(site => ({ ...site, announcement } as SiteSocial))}
+                viewMode={viewMode}
               />
               <ContactCard
                 contact={site.contact}
-                viewMode={viewMode}
                 onEdit={contact => setSite(site => ({ ...site, contact } as SiteSocial))}
+                viewMode={viewMode}
               />
               {site.widget.map(widget => (
                 <WidgetCard

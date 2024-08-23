@@ -131,8 +131,8 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
               <span>{translate('social.site-social-header.sponsors')}:</span>
             </div>
             <div className='row'>
-              {site.sponsors.map((sponsorName, i) => (
-                <div className='col-12 col-sm-6 col-md-4 col-lg-3 mb-3' key={i}>
+              {site.sponsors.map((sponsorName, index) => (
+                <div className='col-12 col-sm-6 col-md-4 col-lg-3 mb-3' key={index}>
                   {sponsorName}
                 </div>
               ))}

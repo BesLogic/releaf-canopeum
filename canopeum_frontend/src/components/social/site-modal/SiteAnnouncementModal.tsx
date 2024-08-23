@@ -1,14 +1,16 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
-import type { Announcement, PatchedAnnouncement } from '@services/api'
-import { useTranslation } from 'react-i18next'
 import { useContext, useState } from 'react'
-import useApiClient from '@hooks/ApiClientHook'
+import { useTranslation } from 'react-i18next'
+
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import UrlTextField from '@components/inputs/UrlTextField'
+import useApiClient from '@hooks/ApiClientHook'
+import type { Announcement, PatchedAnnouncement } from '@services/api'
+
 type Props = {
   readonly announcement: Announcement,
-  isOpen: boolean,
-  handleClose: (contact: Announcement | null) => void,
+  readonly isOpen: boolean,
+  readonly handleClose: (contact: Announcement | null) => void,
 }
 
 type EditSiteAnnouncementDto = {
@@ -48,7 +50,7 @@ const SiteAnnouncementModal = ({ announcement, isOpen, handleClose }: Props) => 
   }
 
   return (
-    <Dialog fullWidth maxWidth='sm' open={isOpen} onClose={() => handleClose(null)}>
+    <Dialog fullWidth maxWidth='sm' onClose={() => handleClose(null)} open={isOpen}>
       <DialogTitle>{t('social.announcement.title')}</DialogTitle>
       <DialogContent className='pb-5'>
         <form className='d-flex flex-column'>
@@ -59,10 +61,10 @@ const SiteAnnouncementModal = ({ announcement, isOpen, handleClose }: Props) => 
               </label>
               <textarea
                 className='form-control'
-                rows={5}
                 id='body'
                 onChange={event =>
                   setEditedAnnouncement(value => ({ ...value, body: event.target.value }))}
+                rows={5}
                 value={editedAnnouncement.body}
               />
             </div>
@@ -71,14 +73,14 @@ const SiteAnnouncementModal = ({ announcement, isOpen, handleClose }: Props) => 
                 {t('social.announcement.link')}
               </label>
               <UrlTextField
-                value={editedAnnouncement.link}
                 attributes={{
                   className: 'form-control',
                   id: 'link',
                 }}
+                isValid={value => setIsFormValid(value)}
                 onChange={eventValue =>
                   setEditedAnnouncement(value => ({ ...value, link: eventValue }))}
-                isValid={value => setIsFormValid(value)}
+                value={editedAnnouncement.link}
               />
             </div>
           </div>
@@ -95,9 +97,9 @@ const SiteAnnouncementModal = ({ announcement, isOpen, handleClose }: Props) => 
 
         <button
           className='btn btn-primary'
+          disabled={!isFormValid}
           onClick={async () => handleSubmitSiteAnnouncement()}
           type='button'
-          disabled={!isFormValid}
         >
           {t('generic.edit')}
         </button>
