@@ -728,7 +728,7 @@ class AnnouncementDetailAPIView(APIView):
         operation_id="announcement_update",
     )
     def patch(self, request: Request, siteId):
-        announcement = Announcement.objects.get_or_create(site=siteId)
+        announcement = Announcement.objects.get_or_create(site=siteId)[0]
 
         serializer = AnnouncementSerializer(announcement[0], data=request.data)
         if serializer.is_valid():
