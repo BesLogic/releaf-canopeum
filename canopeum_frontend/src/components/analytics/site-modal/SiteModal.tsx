@@ -80,7 +80,6 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
       researchPartner: siteDetail.researchPartnership,
       visibleOnMap: siteDetail.visibleMap,
     })
-    console.log(site.species)
     setSiteImageURL(URL.createObjectURL(blob))
   }, [siteId, getApiClient])
 
