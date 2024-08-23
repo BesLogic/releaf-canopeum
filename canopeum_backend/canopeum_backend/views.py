@@ -729,14 +729,14 @@ class AnnouncementDetailAPIView(APIView):
     )
     def patch(self, request: Request, siteId):
         try:
-            announcement = Announcement.objects.get(site=siteId)
-        except Announcement.DoesNotExist:
-            announcement = Announcement.objects.create()
+            announcement = Announcement.objects.get_or_create(site=siteId)
+        except Exception:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        serializer = AnnouncementSerializer(announcement, data=request.data)
+        serializer = AnnouncementSerializer(announcement[0], data=request.data)
         if serializer.is_valid():
             serializer.save()
-            Site.objects.filter(pk=siteId).update(announcement=announcement)
+            Site.objects.filter(pk=siteId).update(announcement=announcement[0])
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
