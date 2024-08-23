@@ -27,6 +27,7 @@ services:
     environment:
       MYSQL_DATABASE: canopeum_db
       MYSQL_HOST_CANOPEUM: /run/secrets/MYSQL_HOST_CANOPEUM
+      MYSQL_PORT_CANOPEUM: /run/secrets/MYSQL_PORT_CANOPEUM
       MYSQL_USER: canopeum_user
       MYSQL_PASSWORD_CANOPEUM: /run/secrets/MYSQL_PASSWORD_CANOPEUM
       SECRET_KEY_DJANGO_CANOPEUM: /run/secrets/SECRET_KEY_DJANGO_CANOPEUM
@@ -70,6 +71,8 @@ secrets:
   MYSQL_PASSWORD_CANOPEUM:
     external: true
   MYSQL_HOST_CANOPEUM:
+    external: true
+  MYSQL_PORT_CANOPEUM:
     external: true
   SECRET_KEY_DJANGO_CANOPEUM:
     external: true
