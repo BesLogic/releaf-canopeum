@@ -1,19 +1,21 @@
 import * as fs from 'fs'
 import * as path from 'path'
+import { spawnSync } from 'node:child_process'
+import * as url from 'node:url'
+
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 var schemaUrl = 'http://127.0.0.1:8000/api/schema/'
-var outputPath = path.join(process.cwd(), '/src/config/openapi.yaml')
-console.log('Fetching schema from:', schemaUrl)
-console.log('Saving to:', outputPath)
-fetch(schemaUrl)
-  .then(function(response) {
-    if (!response.ok) {
-      throw new Error('Failed to fetch schema')
-    }
-    return response.text()
-  })
-  .then(function(response) {
-    fs.writeFileSync(outputPath, response)
-  })
-  .catch(function(error) {
-    console.error('Failed to fetch schema:', error)
-  })
+const outputPath = path.join(__dirname, 'openapi.yaml')
+const nswagPath = path.join(__dirname, '../../..', 'docs/canopeum.nswag')
+
+const response = await fetch(schemaUrl)
+if (!response.ok) {
+  throw new Error('Failed to fetch schema, make sure the backend server is running')
+}
+const text = await response.text()
+fs.writeFileSync(outputPath, text)
+spawnSync('nswag', ['run', nswagPath], { stdio: 'inherit', shell: true })
+console.info('Removing schema')
+fs.unlinkSync(outputPath)
+console.info('Running dprint formatter')
+spawnSync('dprint fmt', { stdio: 'inherit', shell: true })
