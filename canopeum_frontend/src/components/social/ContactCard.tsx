@@ -23,17 +23,15 @@ const ContactCard = ({ contact, viewMode, onEdit }: Props) => {
       <div className='card-body'>
         <div className='d-flex justify-content-between align-items-center pb-3'>
           <h2 className='card-title'>Contact</h2>
-          <div>
-            {viewMode === 'admin' && (
-              <span
-                className='material-symbols-outlined text-primary fs-2'
-                onClick={() => setIsModalOpen(!isModalOpen)}
-                role='button'
-              >
-                edit_square
-              </span>
-            )}
-          </div>
+          {viewMode === 'admin' && (
+            <button
+              className='material-symbols-outlined text-primary fs-2'
+              onClick={() => setIsModalOpen(!isModalOpen)}
+              type='button'
+            >
+              edit_square
+            </button>
+          )}
         </div>
         <div className='info-section d-flex flex-column'>
           <div className='card-text adress d-flex align-items-center pb-3 gap-2'>
@@ -80,11 +78,9 @@ const ContactCard = ({ contact, viewMode, onEdit }: Props) => {
       {renderContactCard()}
       <SiteContactModal
         contact={contact}
-        handleClose={(contact: Contact | null) => {
+        handleClose={(newContact: Contact | null) => {
           setIsModalOpen(!isModalOpen)
-          contact
-? onEdit(contact)
-: null
+          if (newContact) onEdit(newContact)
         }}
         isOpen={isModalOpen}
       />

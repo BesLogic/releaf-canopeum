@@ -36,8 +36,8 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
   const { getApiClient } = useApiClient()
   const { openAlertSnackbar } = useContext(SnackbarContext)
 
-  const handleSubmitSiteContact = async () => {
-    await getApiClient().contactClient.update(contact.id, editedContact as PatchedContact).then(
+  const handleSubmitSiteContact = (): void => {
+    getApiClient().contactClient.update(contact.id, editedContact as PatchedContact).then(
       () => {
         openAlertSnackbar(
           t('social.contact.feedback.edit-success'),
@@ -78,7 +78,9 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
                 {t('social.contact.email')}
               </label>
               <EmailTextField
-                attributes={{ className: 'form-control', id: 'email' }}
+                attributes={{
+                  id: 'email',
+                }}
                 isValid={value => setIsFormValid(value)}
                 onChange={eventValue =>
                   setEditedContact(value => ({ ...value, email: eventValue }))}
@@ -90,7 +92,9 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
                 {t('social.contact.phone')}
               </label>
               <PhoneTextField
-                attributes={{ className: 'form-control', id: 'phone' }}
+                attributes={{
+                  id: 'phone',
+                }}
                 isValid={value => setIsFormValid(value)}
                 onChange={eventValue =>
                   setEditedContact(value => ({ ...value, phone: eventValue }))}
@@ -101,7 +105,6 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
               <img alt='facebook-logo' className='px-2' src={facebookLogo} />
               <UrlTextField
                 attributes={{
-                  className: 'form-control',
                   id: 'facebookLink',
                 }}
                 isValid={value => setIsFormValid(value)}
@@ -114,7 +117,6 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
               <img alt='x-logo' className='px-2' src={xLogo} />
               <UrlTextField
                 attributes={{
-                  className: 'form-control',
                   id: 'xLink',
                 }}
                 isValid={value => setIsFormValid(value)}
@@ -126,7 +128,9 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
             <div className='d-flex'>
               <img alt='instagram-logo' className='px-2' src={instagramLogo} />
               <UrlTextField
-                attributes={{ className: 'form-control', id: 'instagramLink' }}
+                attributes={{
+                  id: 'instagramLink',
+                }}
                 isValid={value => setIsFormValid(value)}
                 onChange={eventValue =>
                   setEditedContact(value => ({ ...value, instagramLink: eventValue }))}
@@ -137,7 +141,6 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
               <img alt='linkedin-logo' className='px-2' src={linkedinLogo} />
               <UrlTextField
                 attributes={{
-                  className: 'form-control',
                   id: 'linkedinLink',
                 }}
                 isValid={value => setIsFormValid(value)}
@@ -161,7 +164,7 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
         <button
           className='btn btn-primary'
           disabled={!isFormValid}
-          onClick={async () => handleSubmitSiteContact()}
+          onClick={() => handleSubmitSiteContact()}
           type='button'
         >
           {t('generic.edit')}

@@ -1,16 +1,16 @@
-import { useState } from 'react'
+import { type FC, type InputHTMLAttributes, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { isValidPhone } from '@utils/validators'
 
 type Props = {
-  value: string | undefined,
-  attributes?: React.InputHTMLAttributes<HTMLInputElement>,
-  onChange: (value: string) => void,
-  isValid: (valid: boolean) => void,
+  readonly value: string | undefined,
+  readonly attributes?: InputHTMLAttributes<HTMLInputElement>,
+  readonly onChange: (value: string) => void,
+  readonly isValid: (valid: boolean) => void,
 }
 
-const PhoneTextField: React.FC<Props> = props => {
+const PhoneTextField: FC<Props> = props => {
   const { t } = useTranslation()
   const [error, setError] = useState<string | null>(null)
 
@@ -28,12 +28,14 @@ const PhoneTextField: React.FC<Props> = props => {
 
   return (
     <div className='d-flex flex-column flex-grow-1'>
+      {/* eslint-disable react/jsx-props-no-spreading -- Needed for custom input */}
       <input
         {...props.attributes}
         onChange={event => handleChange(event.target.value)}
         type='tel'
         value={props.value}
       />
+      {/* eslint-enable react/jsx-props-no-spreading */}
       {error && <span className='help-block text-danger'>{error}</span>}
     </div>
   )

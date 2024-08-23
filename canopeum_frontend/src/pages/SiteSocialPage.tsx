@@ -141,12 +141,12 @@ const SiteSocialPage = () => {
             <div className='d-flex flex-column gap-4'>
               <AnnouncementCard
                 announcement={site.announcement}
-                onEdit={announcement => setSite(site => ({ ...site, announcement } as SiteSocial))}
+                onEdit={announcement => setSite(() => ({ ...site, announcement } as SiteSocial))}
                 viewMode={viewMode}
               />
               <ContactCard
                 contact={site.contact}
-                onEdit={contact => setSite(site => ({ ...site, contact } as SiteSocial))}
+                onEdit={contact => setSite(() => ({ ...site, contact } as SiteSocial))}
                 viewMode={viewMode}
               />
               {site.widget.map(widget => (

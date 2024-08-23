@@ -74,7 +74,6 @@ const SiteAnnouncementModal = ({ announcement, isOpen, handleClose }: Props) => 
               </label>
               <UrlTextField
                 attributes={{
-                  className: 'form-control',
                   id: 'link',
                 }}
                 isValid={value => setIsFormValid(value)}

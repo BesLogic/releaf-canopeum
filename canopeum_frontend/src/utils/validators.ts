@@ -10,7 +10,9 @@ export const mustMatch = (input1: string, input2: string) => input1 === input2
 
 export type InputValidationError = 'email' | 'maximumChars' | 'mustMatch' | 'password' | 'required'
 
-const urlRegex = /^(https?:\/\/)?([\d\-.a-z]+)\.([.a-z]{2,6})([\w \-./]*)*$/u
+const urlRegex =
+  // eslint-disable-next-line regexp/no-unused-capturing-group -- Could be useful in the future
+  /^https?:\/\/(w{3}\.)?[\w#%+\-.:=@~]{1,256}\.[()0-9A-Za-z]{1,6}\b([\w#%&()+\-./:=?@~]*)$/u
 
 export const isValidUrl = (input: string) => new RegExp(urlRegex).test(input)
 

@@ -85,9 +85,7 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
     setSelectedOptions(updated)
   }
 
-  useEffect(() => {
-    setSelectedOptions(selected)
-  }, [selected])
+  useEffect((): void => setSelectedOptions(selected), [selected])
 
   const removeType = (option: SelectorOption<TValue>) => {
     setSelectedOptions(
@@ -103,55 +101,55 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
       </label>
 
       <Autocomplete
-          autoSelect
-          clearOnBlur
-          freeSolo
-          getOptionKey={option => {
-            if (typeof (option) === 'string') return option
+        autoSelect
+        clearOnBlur
+        freeSolo
+        getOptionKey={option => {
+          if (typeof (option) === 'string') return option
 
-            return option.value
-          }}
-          getOptionLabel={option => {
-            if (typeof (option) === 'string') return option
+          return option.value
+        }}
+        getOptionLabel={option => {
+          if (typeof (option) === 'string') return option
 
-            return option.displayText
-          }}
-          id={id}
-          onChange={(_event, option) => {
-            if (option === null || typeof (option) === 'string') return
+          return option.displayText
+        }}
+        id={id}
+        onChange={(_event, option) => {
+          if (option === null || typeof (option) === 'string') return
 
-            onSelect(option)
-          }}
-          onClose={_event => setIsAutocompleteOpen(false)}
-          onOpen={_event => setIsAutocompleteOpen(true)}
-          open={isAutocompleteOpen}
-          options={filteredOptions}
-          renderInput={params => (
-            <div
-              className='option-quantity-selector-input-group'
-              ref={params.InputProps.ref}
+          onSelect(option)
+        }}
+        onClose={_event => setIsAutocompleteOpen(false)}
+        onOpen={_event => setIsAutocompleteOpen(true)}
+        open={isAutocompleteOpen}
+        options={filteredOptions}
+        renderInput={params => (
+          <div
+            className='option-quantity-selector-input-group'
+            ref={params.InputProps.ref}
+          >
+            <input
+              {...params.inputProps}
+              className='form-control option-quantity-selector-input'
+              onChange={event => setSearchValue(event.target.value)}
+              type='text'
+              value={searchValue}
+            />
+            <button
+              className='unstyled-button h-100 d-flex justify-content-center align-items-center'
+              onClick={() => setIsAutocompleteOpen(previous => !previous)}
+              type='button'
             >
-              <input
-                {...params.inputProps}
-                className='form-control option-quantity-selector-input'
-                onChange={event => setSearchValue(event.target.value)}
-                type='text'
-                value={searchValue}
-              />
-              <button
-                className='unstyled-button h-100 d-flex justify-content-center align-items-center'
-                onClick={() => setIsAutocompleteOpen(previous => !previous)}
-                type='button'
-              >
-                <span className='material-symbols-outlined fill-icon icon-md'>
-                  {isAutocompleteOpen
-                    ? 'expand_less'
-                    : 'expand_more'}
-                </span>
-              </button>
-            </div>
-          )}
-        />
+              <span className='material-symbols-outlined fill-icon icon-md'>
+                {isAutocompleteOpen
+                  ? 'expand_less'
+                  : 'expand_more'}
+              </span>
+            </button>
+          </div>
+        )}
+      />
 
       <ul className='list-group list-group-flush overflow-hidden mt-1'>
         {selectedOptions.map(optionQuantity => (

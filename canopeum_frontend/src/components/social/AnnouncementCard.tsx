@@ -22,13 +22,13 @@ const AnnouncementCard = ({ announcement, viewMode, onEdit }: Props) => {
             <h2 className='card-title'>Announcement</h2>
             <div>
               {viewMode === 'admin' && (
-                <span
+                <button
                   className='material-symbols-outlined text-primary fs-2'
                   onClick={() => setIsModalOpen(!isModalOpen)}
-                  role='button'
+                  type='button'
                 >
                   edit_square
-                </span>
+                </button>
               )}
             </div>
           </div>
@@ -44,11 +44,9 @@ const AnnouncementCard = ({ announcement, viewMode, onEdit }: Props) => {
       </div>
       <SiteAnnouncementModal
         announcement={announcement}
-        handleClose={(announcement: Announcement | null) => {
+        handleClose={(newAnnouncement: Announcement | null): void => {
           setIsModalOpen(!isModalOpen)
-          announcement
-? onEdit(announcement)
-: null
+          if (newAnnouncement) onEdit(newAnnouncement)
         }}
         isOpen={isModalOpen}
       />
