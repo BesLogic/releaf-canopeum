@@ -176,7 +176,6 @@ DATABASES = {
         "mysql://canopeum_user:{}@{}:3308/canopeum_db".format(
             get_secret("MYSQL_PASSWORD_CANOPEUM", ""),
             get_secret("MYSQL_HOST_CANOPEUM", "localhost"),
-            get_secret("MYSQL_PORT_CANOPEUM", "3308"),
         ),
         # "default": dj_database_url.parse(
         #     f"mysql://canopeum_user:{get_secret("MYSQL_PASSWORD_CANOPEUM", "")}
