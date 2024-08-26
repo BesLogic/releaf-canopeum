@@ -49,8 +49,7 @@ const AnnouncementCard = ({ announcement, viewMode, onEdit }: Props) => {
         }}
         isOpen={isModalOpen}
       />
-    </>
-  )
+  </>
 }
 
 export default AnnouncementCard
