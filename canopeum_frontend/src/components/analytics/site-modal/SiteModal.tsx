@@ -14,7 +14,7 @@ import { getApiBaseUrl } from '@services/apiSettings'
 type Props = {
   readonly open: boolean,
   readonly handleClose: (
-    reason?: 'backdropClick' | 'escapeKeyDown' | 'save' | 'cancel',
+    reason: 'backdropClick' | 'escapeKeyDown' | 'save' | 'cancel',
     data?: SiteDto,
   ) => void,
   readonly siteId: number | undefined,
