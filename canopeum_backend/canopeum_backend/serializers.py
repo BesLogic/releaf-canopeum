@@ -528,7 +528,7 @@ class SiteFollowerSerializer(serializers.ModelSerializer[SiteFollower]):
         fields = ("user", "site")
 
 
-class WeatherSerializer(serializers.Serializer):
+class WeatherSerializer(serializers.Serializer[Any]):
     temperature = serializers.DecimalField(max_digits=4, decimal_places=1)
     humidity = serializers.DecimalField(max_digits=4, decimal_places=1)
     description = serializers.CharField()

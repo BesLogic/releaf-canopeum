@@ -1,6 +1,6 @@
-import openmeteo_requests
+import openmeteo_requests  # type: ignore[import-untyped]
 import requests_cache
-from retry_requests import retry
+from retry_requests import retry  # type: ignore[import-untyped]
 
 WMO_Categories = {
     0: "Clear sky",
