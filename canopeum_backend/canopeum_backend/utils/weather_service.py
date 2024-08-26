@@ -49,12 +49,14 @@ def get_weather_data(latitude: float, longitude: float):
 
     response = responses[0]
     current = response.Current()
-    current_temperature_2m = round(current.Variables(0).Value(), 3)  # pyright: ignore[reportOptionalMemberAccess]
-    current_relative_humidity_2m = round(current.Variables(1).Value(), 3)  # pyright: ignore[reportOptionalMemberAccess]
-    current_description = WMO_Categories[int(current.Variables(2).Value())] or "Unknown weather"  # pyright: ignore[reportOptionalMemberAccess]
+    temperature_value = current.Variables(0).Value()  # pyright: ignore[reportOptionalMemberAccess]
+    current_temperature = round(temperature_value, 3) if temperature_value is not None else 0.0
+    humidity_value = current.Variables(1).Value()  # pyright: ignore[reportOptionalMemberAccess]
+    current_relative_humidity = round(humidity_value, 3) if humidity_value is not None else 0.0
+    current_description = WMO_Categories.get(int(current.Variables(2).Value()), "Unknown weather")  # pyright: ignore[reportOptionalMemberAccess]
 
     return {
-        "temperature": current_temperature_2m,
-        "humidity": current_relative_humidity_2m,
+        "temperature": current_temperature,
+        "humidity": current_relative_humidity,
         "description": current_description,
     }

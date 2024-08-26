@@ -590,7 +590,7 @@ class SiteSummarySerializer(serializers.ModelSerializer[Site]):
         return [batch.sponsor for batch in batches if batch.sponsor]
 
 
-class SiteDetailSummarySerializer(serializers.ModelSerializer[Site]):
+class SiteSummaryDetailSerializer(serializers.ModelSerializer[Site]):
     site_type = SiteTypeSerializer()
     coordinate = CoordinatesSerializer()
     plant_count = serializers.SerializerMethodField()
