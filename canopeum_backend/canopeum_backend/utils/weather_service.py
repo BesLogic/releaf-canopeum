@@ -51,7 +51,7 @@ def get_weather_data(latitude: float, longitude: float):
     current = response.Current()
     current_temperature_2m = round(current.Variables(0).Value(), 3)  # pyright: ignore[reportOptionalMemberAccess]
     current_relative_humidity_2m = round(current.Variables(1).Value(), 3)  # pyright: ignore[reportOptionalMemberAccess]
-    current_description = WMO_Categories[current.Variables(2).Value()] or "Unknown weather"  # pyright: ignore[reportOptionalMemberAccess]
+    current_description = WMO_Categories[int(current.Variables(2).Value())] or "Unknown weather"  # pyright: ignore[reportOptionalMemberAccess]
 
     return {
         "temperature": current_temperature_2m,
