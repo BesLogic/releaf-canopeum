@@ -83,6 +83,7 @@ from .serializers import (
     RegisterUserSerializer,
     SiteAdminSerializer,
     SiteAdminUpdateRequestSerializer,
+    SiteDetailSummarySerializer,
     SiteMapSerializer,
     SitePostSerializer,
     SiteSerializer,
@@ -419,7 +420,7 @@ class SiteSummaryListAPIView(APIView):
 class SiteSummaryDetailAPIView(APIView):
     permission_classes = (SiteAdminPermission,)
 
-    @extend_schema(responses=SiteSummarySerializer, operation_id="site_summary")
+    @extend_schema(responses=SiteDetailSummarySerializer, operation_id="site_summary")
     def get(self, request: Request, siteId):
         try:
             site = Site.objects.get(pk=siteId)
@@ -432,7 +433,7 @@ class SiteSummaryDetailAPIView(APIView):
         survived_count = 0
         propagation_count = 0
         progress = 0
-        serializer = SiteSummarySerializer(
+        serializer = SiteDetailSummarySerializer(
             site,
             context={
                 "plant_count": plant_count,

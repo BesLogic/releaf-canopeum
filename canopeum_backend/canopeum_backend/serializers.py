@@ -39,6 +39,7 @@ from .models import (
     UserInvitation,
     Widget,
 )
+from .utils.weather_service import get_weather_data
 
 
 class IntegerListFieldSerializer(serializers.ListField):
@@ -527,6 +528,15 @@ class SiteFollowerSerializer(serializers.ModelSerializer[SiteFollower]):
         fields = ("user", "site")
 
 
+class WeatherSerializer(serializers.Serializer):
+    temperature = serializers.DecimalField(max_digits=4, decimal_places=1)
+    humidity = serializers.DecimalField(max_digits=4, decimal_places=1)
+    description = serializers.CharField()
+
+    class Meta:
+        fields = ("temperature", "humidity", "description")
+
+
 # Note about Any: Generic is the type of "instance", not set here
 class SiteAdminUpdateRequestSerializer(serializers.Serializer[Any]):
     ids = IntegerListFieldSerializer()
@@ -578,6 +588,58 @@ class SiteSummarySerializer(serializers.ModelSerializer[Site]):
     def get_sponsors(self, obj) -> list[str]:
         batches = Batch.objects.filter(site=obj)
         return [batch.sponsor for batch in batches if batch.sponsor]
+
+
+class SiteDetailSummarySerializer(serializers.ModelSerializer[Site]):
+    site_type = SiteTypeSerializer()
+    coordinate = CoordinatesSerializer()
+    plant_count = serializers.SerializerMethodField()
+    survived_count = serializers.SerializerMethodField()
+    propagation_count = serializers.SerializerMethodField()
+    progress = serializers.SerializerMethodField()
+    sponsors = serializers.SerializerMethodField()
+    admins = SiteAdminSerializer(source="siteadmin_set", many=True)
+    batches = BatchDetailSerializer(source="batch_set", read_only=True, many=True)
+    weather = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Site
+        fields = (
+            "id",
+            "name",
+            "coordinate",
+            "site_type",
+            "plant_count",
+            "survived_count",
+            "propagation_count",
+            "visitor_count",
+            "sponsors",
+            "progress",
+            "admins",
+            "batches",
+            "weather",
+        )
+
+    def get_plant_count(self, obj) -> int:
+        return random.randint(100, 200)  # noqa: S311
+
+    def get_survived_count(self, obj) -> int:
+        return random.randint(50, 100)  # noqa: S311
+
+    def get_propagation_count(self, obj) -> int:
+        return random.randint(5, 50)  # noqa: S311
+
+    def get_progress(self, obj) -> float:
+        return random.randint(0, 10000) / 100  # noqa: S311
+
+    def get_sponsors(self, obj) -> list[str]:
+        batches = Batch.objects.filter(site=obj)
+        return [batch.sponsor for batch in batches if batch.sponsor]
+
+    @extend_schema_field(WeatherSerializer)
+    def get_weather(self, obj):
+        weather = get_weather_data(obj.coordinate.dd_latitude, obj.coordinate.dd_longitude)
+        return WeatherSerializer(weather).data
 
 
 class CoordinatesMapSerializer(serializers.ModelSerializer[Coordinate]):

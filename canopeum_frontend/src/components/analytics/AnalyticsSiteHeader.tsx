@@ -9,10 +9,10 @@ import SiteSponsorProgress from '@components/analytics/SiteSponsorProgress'
 import { LanguageContext } from '@components/context/LanguageContext'
 import CustomIconBadge from '@components/CustomIconBadge'
 import { appRoutes } from '@constants/routes.constant'
-import type { SiteSummary } from '@services/api'
+import type { SiteDetailSummary } from '@services/api'
 
 type Props = {
-  readonly siteSummary: SiteSummary,
+  readonly siteSummary: SiteDetailSummary,
 }
 
 const DUMMY_WEATHER_IMAGE_URL =
@@ -43,13 +43,13 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
           `,
         }}
       >
-        <h2 className='text-light'>{translate('analyticsSite.location')}</h2>
+        <h2 className='text-light fs-6 text-center'>{siteSummary.coordinate.address}</h2>
 
-        <span style={{ fontSize: '300%' }}>33°C</span>
+        <span style={{ fontSize: '300%' }}>{`${siteSummary.weather.temperature}°C`}</span>
 
         <div className='d-flex flex-column text-center'>
-          <span>Light Rain</span>
-          <span>Humidity 87%</span>
+          <span>{siteSummary.weather.description}</span>
+          <span>{`Humidity ${siteSummary.weather.humidity}%`}</span>
         </div>
       </div>
 
