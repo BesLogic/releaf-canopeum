@@ -85,6 +85,8 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
     setSelectedOptions(updated)
   }
 
+  useEffect((): void => setSelectedOptions(selected), [selected])
+
   const removeType = (option: SelectorOption<TValue>) => {
     setSelectedOptions(
       selectedOptions.filter(optionQuantity => optionQuantity.option.value !== option.value),

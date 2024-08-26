@@ -7,5 +7,6 @@
   "subscribe": "S'abonner",
   "copied-clipboard": "Copié dans le presse-papier",
   "error-default": "Oooops! Une erreur est survenue lors du chargement des données.",
-  "upload": "Téléverser"
+  "upload": "Téléverser",
+  "edit": "Modifier"
 }

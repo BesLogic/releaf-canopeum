@@ -26,19 +26,17 @@ const TreeSpeciesSelector = (
   const [options, setOptions] = useState<SelectorOption<number>[]>([])
   const [selected, setSelected] = useState<SelectorOptionQuantity<number>[]>([])
 
-  const fetchTreeSpecies = useCallback(
-    async () => {
+  useEffect(() => {
+    const fetchTreeSpecies = async () => {
       const speciesResponse = await getApiClient().treeClient.species()
       setAvailableSpecies(speciesResponse)
       setOptions(speciesResponse.map(treeType => ({
         value: treeType.id,
         displayText: translateValue(treeType),
       })))
-    },
-    [getApiClient, translateValue],
-  )
-
-  useEffect(() => void fetchTreeSpecies(), [fetchTreeSpecies])
+    }
+    void fetchTreeSpecies()
+  }, [getApiClient, translateValue])
 
   useEffect(() => {
     if (!species) return
@@ -50,7 +48,8 @@ const TreeSpeciesSelector = (
       },
       quantity: specie.quantity,
     })))
-  }, [species, translateValue])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- translateValue is a dependency
+  }, [availableSpecies, species])
 
   const handleChange = useCallback((selectedOptions: SelectorOptionQuantity<number>[]) => {
     const selectedSpecies = selectedOptions

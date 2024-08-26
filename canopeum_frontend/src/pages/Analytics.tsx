@@ -38,17 +38,17 @@ const Analytics = () => {
   )
 
   const handleModalClose = async (
-    reason?: 'backdropClick' | 'escapeKeyDown' | 'save',
+    reason: 'backdropClick' | 'escapeKeyDown' | 'save' | 'cancel',
     data?: SiteDto,
   ) => {
-    if (reason && reason !== 'save') {
+    if (reason !== 'save') {
       setIsModalOpen(false)
       setSiteId(undefined)
 
       return
     }
 
-    if (reason === 'save' && data) {
+    if (data) {
       const image = data.siteImage
         ? await assetFormatter(data.siteImage)
         : undefined

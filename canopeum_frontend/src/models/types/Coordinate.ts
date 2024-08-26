@@ -38,7 +38,7 @@ export const extractCoordinate = (coordinates: string) => {
   NOTE: It should be impossible for the nullish coalescence to happen here,
   We're also type-guarding the string union immediatly after */
   const cardinal = coordinates.at(-1) as Cardinal
-  if (!(cardinal in VALID_CARDINALS)) {
+  if (!(VALID_CARDINALS.includes(cardinal))) {
     throw new RangeError(
       `The last character of coordinates string must be ${VALID_CARDINALS.toString()}`,
     )

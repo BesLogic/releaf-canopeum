@@ -4,10 +4,10 @@ import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 
 import LoadingPage from './LoadingPage'
-import AnnouncementCard from '@components/AnnouncementCard'
-import ContactCard from '@components/ContactCard'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import CreatePostWidget from '@components/CreatePostWidget'
+import AnnouncementCard from '@components/social/AnnouncementCard'
+import ContactCard from '@components/social/ContactCard'
 import PostCard from '@components/social/PostCard'
 import SiteSocialHeader from '@components/social/SiteSocialHeader'
 import WidgetCard from '@components/social/WidgetCard'
@@ -139,8 +139,16 @@ const SiteSocialPage = () => {
         <div className='row row-gap-1 m-0'>
           <div className='col-12 col-md-6 col-lg-5 col-xl-4'>
             <div className='d-flex flex-column gap-4'>
-              <AnnouncementCard announcement={site.announcement} viewMode={viewMode} />
-              <ContactCard contact={site.contact} viewMode={viewMode} />
+              <AnnouncementCard
+                announcement={site.announcement}
+                onEdit={announcement => setSite(() => ({ ...site, announcement } as SiteSocial))}
+                viewMode={viewMode}
+              />
+              <ContactCard
+                contact={site.contact}
+                onEdit={contact => setSite(() => ({ ...site, contact } as SiteSocial))}
+                viewMode={viewMode}
+              />
               {site.widget.map(widget => (
                 <WidgetCard
                   handleEditClick={() => setIsWidgetModalOpen([true, widget])}

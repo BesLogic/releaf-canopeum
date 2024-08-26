@@ -14,7 +14,7 @@ import { getApiBaseUrl } from '@services/apiSettings'
 type Props = {
   readonly open: boolean,
   readonly handleClose: (
-    reason?: 'backdropClick' | 'escapeKeyDown' | 'save',
+    reason: 'backdropClick' | 'escapeKeyDown' | 'save' | 'cancel',
     data?: SiteDto,
   ) => void,
   readonly siteId: number | undefined,
@@ -120,6 +120,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
           <div className='mb-3'>
             <label className='form-label text-capitalize' htmlFor='site-name'>
               {t('analytics.site-modal.site-name')}
+              {site.siteName}
             </label>
             <input
               className='form-control'
@@ -291,7 +292,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
       <DialogActions>
         <button
           className='btn btn-outline-primary'
-          onClick={() => handleClose()}
+          onClick={() => handleClose('cancel')}
           type='button'
         >
           {t('generic.cancel')}

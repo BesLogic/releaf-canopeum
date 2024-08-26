@@ -728,14 +728,12 @@ class AnnouncementDetailAPIView(APIView):
         operation_id="announcement_update",
     )
     def patch(self, request: Request, siteId):
-        try:
-            announcement = Announcement.objects.get(site=siteId)
-        except Announcement.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        announcement = Announcement.objects.get_or_create(site=siteId)[0]
 
         serializer = AnnouncementSerializer(announcement, data=request.data)
         if serializer.is_valid():
             serializer.save()
+            Site.objects.filter(pk=siteId).update(announcement=announcement)
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -744,9 +742,9 @@ class ContactDetailAPIView(APIView):
     @extend_schema(
         request=ContactSerializer, responses=ContactSerializer, operation_id="contact_update"
     )
-    def patch(self, request: Request, pk):
+    def patch(self, request: Request, contactId):
         try:
-            contact = Contact.objects.get(pk=pk)
+            contact = Contact.objects.get(pk=contactId)
         except Contact.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
