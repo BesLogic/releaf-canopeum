@@ -14,8 +14,7 @@ type Props = {
 const AnnouncementCard = ({ announcement, viewMode, onEdit }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  return (
-    <>
+  return <>
       <div className='card rounded'>
         <div className='card-body'>
           <div className='d-flex justify-content-between align-items-center pb-3'>
