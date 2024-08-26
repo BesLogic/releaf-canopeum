@@ -44,14 +44,12 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
         )
         handleClose(editedContact as Contact)
       },
-    ).catch((error: unknown) => {
-      console.error(error)
-
+    ).catch(() =>
       openAlertSnackbar(
         t('social.contact.feedback.edit-error'),
         { severity: 'error' },
       )
-    })
+    )
   }
 
   return (

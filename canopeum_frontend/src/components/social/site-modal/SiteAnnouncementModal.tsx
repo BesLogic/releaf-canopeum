@@ -33,9 +33,7 @@ const SiteAnnouncementModal = ({ announcement, isOpen, handleClose }: Props) => 
         announcement.id,
         editedAnnouncement as PatchedAnnouncement,
       )
-    } catch (error: unknown) {
-      console.error(error)
-
+    } catch {
       openAlertSnackbar(
         t('social.announcement.feedback.edit-error'),
         { severity: 'error' },
