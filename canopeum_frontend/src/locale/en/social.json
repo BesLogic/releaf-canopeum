@@ -33,5 +33,24 @@
     "cancel": "cancel",
     "max-word": "100 words maximum",
     "title": "widget title"
+  },
+  "contact": {
+    "title": "Contact",
+    "address": "Address",
+    "phone": "Phone",
+    "email": "Email",
+    "feedback": {
+      "edit-success": "Contact edited successfully",
+      "edit-error": "Error editing contact"
+    }
+  },
+  "announcement": {
+    "title": "Announcement",
+    "body": "Body",
+    "link": "Link",
+    "feedback": {
+      "edit-success": "Announcement edited successfully",
+      "edit-error": "Error editing announcement"
+    }
   }
 }

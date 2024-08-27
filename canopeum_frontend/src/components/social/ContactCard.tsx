@@ -1,28 +1,37 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import facebookLogo from '@assets/icons/facebook-contact-logo.svg'
 import instagramLogo from '@assets/icons/instagram-contact-logo.svg'
 import linkedinLogo from '@assets/icons/linkedin-contact-logo.svg'
 import xLogo from '@assets/icons/x-contact-logo.svg'
+import SiteContactModal from '@components/social/site-modal/SiteContactModal'
 import type { PageViewMode } from '@models/types/PageViewMode.Type'
 import type { Contact } from '@services/api'
 
 type Props = {
   readonly contact: Contact,
   readonly viewMode: PageViewMode,
+  readonly onEdit: (contact: Contact) => void,
 }
 
-const ContactCard = ({ contact, viewMode }: Props) => {
+const ContactCard = ({ contact, viewMode, onEdit }: Props) => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
   const renderContactCard = () => (
     <div className='card rounded'>
       <div className='card-body'>
         <div className='d-flex justify-content-between align-items-center pb-3'>
           <h2 className='card-title'>Contact</h2>
-          <div>
-            {viewMode === 'admin' && (
-              <span className='material-symbols-outlined text-primary fs-2'>edit_square</span>
-            )}
-          </div>
+          {viewMode === 'admin' && (
+            <button
+              className='material-symbols-outlined text-primary fs-2'
+              onClick={() => setIsModalOpen(!isModalOpen)}
+              type='button'
+            >
+              edit_square
+            </button>
+          )}
         </div>
         <div className='info-section d-flex flex-column'>
           <div className='card-text adress d-flex align-items-center pb-3 gap-2'>
@@ -67,6 +76,14 @@ const ContactCard = ({ contact, viewMode }: Props) => {
   return (
     <div>
       {renderContactCard()}
+      <SiteContactModal
+        contact={contact}
+        handleClose={(newContact: Contact | null) => {
+          setIsModalOpen(!isModalOpen)
+          if (newContact) onEdit(newContact)
+        }}
+        isOpen={isModalOpen}
+      />
     </div>
   )
 }

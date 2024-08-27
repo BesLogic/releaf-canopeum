@@ -14,7 +14,8 @@ const SiteCoordinates = ({ latitude, longitude, onChange }: Props) => {
   const [lat, setLat] = useState<Coordinate>(latitude ?? defaultLatitude)
   const [long, setLong] = useState<Coordinate>(longitude ?? defaultLongitude)
 
-  useEffect(() => onChange(lat, long), [lat, long, onChange])
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- onChange is a dependency
+  useEffect(() => onChange(lat, long), [lat, long])
   useEffect(() => latitude && setLat(latitude), [latitude])
   useEffect(() => longitude && setLong(longitude), [longitude])
 
