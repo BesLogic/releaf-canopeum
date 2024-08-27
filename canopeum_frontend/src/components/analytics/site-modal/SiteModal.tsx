@@ -10,6 +10,7 @@ import useApiClient from '@hooks/ApiClientHook'
 import { type Coordinate, defaultLatitude, defaultLongitude, extractCoordinate } from '@models/types/Coordinate'
 import type { SiteType } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
+import { use } from 'i18next'
 
 type Props = {
   readonly open: boolean,

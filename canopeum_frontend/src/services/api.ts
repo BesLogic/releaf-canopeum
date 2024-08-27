@@ -673,7 +673,7 @@ export class SiteClient {
   create(
     name?: string | undefined,
     siteType?: number | undefined,
-    image?: FileParameter | undefined,
+    image?: FileParameter | null | undefined,
     latitude?: string | undefined,
     longitude?: string | undefined,
     description?: string | undefined,
@@ -696,9 +696,7 @@ export class SiteClient {
     } else {
       content_.append('siteType', siteType.toString())
     }
-    if (image === null || image === undefined) {
-      throw new Error("The parameter 'image' cannot be null.")
-    } else {
+    if (image !== null && image !== undefined) {
       content_.append('image', image.data, image.fileName ? image.fileName : 'image')
     }
     if (latitude === null || latitude === undefined) {
@@ -830,7 +828,7 @@ export class SiteClient {
     siteId: number,
     name?: string | undefined,
     siteType?: number | undefined,
-    image?: FileParameter | undefined,
+    image?: FileParameter | null | undefined,
     latitude?: string | undefined,
     longitude?: string | undefined,
     description?: string | undefined,
@@ -857,9 +855,7 @@ export class SiteClient {
     } else {
       content_.append('siteType', siteType.toString())
     }
-    if (image === null || image === undefined) {
-      throw new Error("The parameter 'image' cannot be null.")
-    } else {
+    if (image !== null && image !== undefined) {
       content_.append('image', image.data, image.fileName ? image.fileName : 'image')
     }
     if (latitude === null || latitude === undefined) {
@@ -5693,7 +5689,7 @@ export interface ISiteType {
 
 export class Sitetreespecies implements ISitetreespecies {
   readonly id!: number
-  readonly typeId!: number | undefined
+  readonly typeId!: number
   quantity?: number | undefined
   readonly en!: string
   readonly fr!: string;
@@ -5750,7 +5746,7 @@ export class Sitetreespecies implements ISitetreespecies {
 
 export interface ISitetreespecies {
   id: number
-  typeId: number | undefined
+  typeId: number
   quantity?: number | undefined
   en: string
   fr: string

@@ -260,8 +260,8 @@ class SitetreespeciesSerializer(serializers.ModelSerializer[Sitetreespecies]):
         model = Sitetreespecies
         fields = ("id", "type_id", "quantity", "en", "fr")
 
-    def get_type_id(self, obj) -> int | None:
-        return TreeTypeSerializer(obj.tree_type).data.get("id", None)
+    def get_type_id(self, obj) -> int:
+        return TreeTypeSerializer(obj.tree_type).data.get("id", None)  # type: ignore[no-any-return]
 
     def get_en(self, obj):
         return TreeTypeSerializer(obj.tree_type).data.get("en", None)
