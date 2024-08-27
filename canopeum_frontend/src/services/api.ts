@@ -1178,7 +1178,7 @@ export class SiteClient {
     return Promise.resolve<boolean>(null as any)
   }
 
-  summary(siteId: number): Promise<SiteSummary> {
+  summary(siteId: number): Promise<SiteDetailSummary> {
     let url_ = this.baseUrl + '/analytics/sites/{siteId}/summary'
     if (siteId === undefined || siteId === null) {
       throw new Error("The parameter 'siteId' must be defined.")
@@ -1198,7 +1198,7 @@ export class SiteClient {
     })
   }
 
-  protected processSummary(response: Response): Promise<SiteSummary> {
+  protected processSummary(response: Response): Promise<SiteDetailSummary> {
     const status = response.status
     let _headers: any = {}
     if (response.headers && response.headers.forEach) {
@@ -1210,7 +1210,7 @@ export class SiteClient {
         let resultData200 = _responseText === ''
           ? null
           : JSON.parse(_responseText, this.jsonParseReviver)
-        result200 = SiteSummary.fromJS(resultData200)
+        result200 = SiteDetailSummary.fromJS(resultData200)
         return result200
       })
     } else if (status !== 200 && status !== 204) {
@@ -1223,7 +1223,7 @@ export class SiteClient {
         )
       })
     }
-    return Promise.resolve<SiteSummary>(null as any)
+    return Promise.resolve<SiteDetailSummary>(null as any)
   }
 
   map(): Promise<SiteMap[]> {
@@ -5186,6 +5186,145 @@ export interface ISiteAdmin {
   [key: string]: any
 }
 
+export class SiteDetailSummary implements ISiteDetailSummary {
+  readonly id!: number
+  name!: string
+  coordinate!: Coordinates
+  siteType!: SiteType
+  readonly plantCount!: number
+  readonly survivedCount!: number
+  readonly propagationCount!: number
+  visitorCount?: number | undefined
+  readonly sponsors!: string[]
+  readonly progress!: number
+  admins!: SiteAdmin[]
+  readonly batches!: BatchDetail[]
+  readonly weather!: Weather;
+
+  [key: string]: any
+
+  constructor(data?: ISiteDetailSummary) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) {
+          ;(<any> this)[property] = (<any> data)[property]
+        }
+      }
+    }
+    if (!data) {
+      this.coordinate = new Coordinates()
+      this.siteType = new SiteType()
+      this.sponsors = []
+      this.admins = []
+      this.batches = []
+      this.weather = new Weather()
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) {
+          this[property] = _data[property]
+        }
+      }
+      ;(<any> this).id = _data['id']
+      this.name = _data['name']
+      this.coordinate = _data['coordinate']
+        ? Coordinates.fromJS(_data['coordinate'])
+        : new Coordinates()
+      this.siteType = _data['siteType'] ? SiteType.fromJS(_data['siteType']) : new SiteType()
+      ;(<any> this).plantCount = _data['plantCount']
+      ;(<any> this).survivedCount = _data['survivedCount']
+      ;(<any> this).propagationCount = _data['propagationCount']
+      this.visitorCount = _data['visitorCount']
+      if (Array.isArray(_data['sponsors'])) {
+        ;(<any> this).sponsors = [] as any
+        for (let item of _data['sponsors']) {
+          ;(<any> this).sponsors!.push(item)
+        }
+      }
+      ;(<any> this).progress = _data['progress']
+      if (Array.isArray(_data['admins'])) {
+        this.admins = [] as any
+        for (let item of _data['admins']) {
+          this.admins!.push(SiteAdmin.fromJS(item))
+        }
+      }
+      if (Array.isArray(_data['batches'])) {
+        ;(<any> this).batches = [] as any
+        for (let item of _data['batches']) {
+          ;(<any> this).batches!.push(BatchDetail.fromJS(item))
+        }
+      }
+      ;(<any> this).weather = _data['weather'] ? Weather.fromJS(_data['weather']) : new Weather()
+    }
+  }
+
+  static fromJS(data: any): SiteDetailSummary {
+    data = typeof data === 'object' ? data : {}
+    let result = new SiteDetailSummary()
+    result.init(data)
+    return result
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {}
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) {
+        data[property] = this[property]
+      }
+    }
+    data['id'] = this.id
+    data['name'] = this.name
+    data['coordinate'] = this.coordinate ? this.coordinate.toJSON() : <any> undefined
+    data['siteType'] = this.siteType ? this.siteType.toJSON() : <any> undefined
+    data['plantCount'] = this.plantCount
+    data['survivedCount'] = this.survivedCount
+    data['propagationCount'] = this.propagationCount
+    data['visitorCount'] = this.visitorCount
+    if (Array.isArray(this.sponsors)) {
+      data['sponsors'] = []
+      for (let item of this.sponsors) {
+        data['sponsors'].push(item)
+      }
+    }
+    data['progress'] = this.progress
+    if (Array.isArray(this.admins)) {
+      data['admins'] = []
+      for (let item of this.admins) {
+        data['admins'].push(item.toJSON())
+      }
+    }
+    if (Array.isArray(this.batches)) {
+      data['batches'] = []
+      for (let item of this.batches) {
+        data['batches'].push(item.toJSON())
+      }
+    }
+    data['weather'] = this.weather ? this.weather.toJSON() : <any> undefined
+    return data
+  }
+}
+
+export interface ISiteDetailSummary {
+  id: number
+  name: string
+  coordinate: Coordinates
+  siteType: SiteType
+  plantCount: number
+  survivedCount: number
+  propagationCount: number
+  visitorCount?: number | undefined
+  sponsors: string[]
+  progress: number
+  admins: SiteAdmin[]
+  batches: BatchDetail[]
+  weather: Weather
+
+  [key: string]: any
+}
+
 export class SiteMap implements ISiteMap {
   readonly id!: number
   name!: string
@@ -6269,6 +6408,65 @@ export class UserToken implements IUserToken {
 export interface IUserToken {
   token: TokenRefresh
   user: User
+
+  [key: string]: any
+}
+
+export class Weather implements IWeather {
+  temperature!: string
+  humidity!: string
+  description!: string;
+
+  [key: string]: any
+
+  constructor(data?: IWeather) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) {
+          ;(<any> this)[property] = (<any> data)[property]
+        }
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) {
+          this[property] = _data[property]
+        }
+      }
+      this.temperature = _data['temperature']
+      this.humidity = _data['humidity']
+      this.description = _data['description']
+    }
+  }
+
+  static fromJS(data: any): Weather {
+    data = typeof data === 'object' ? data : {}
+    let result = new Weather()
+    result.init(data)
+    return result
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {}
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) {
+        data[property] = this[property]
+      }
+    }
+    data['temperature'] = this.temperature
+    data['humidity'] = this.humidity
+    data['description'] = this.description
+    return data
+  }
+}
+
+export interface IWeather {
+  temperature: string
+  humidity: string
+  description: string
 
   [key: string]: any
 }
