@@ -45,7 +45,9 @@
     "no-admins": "Pas d'administrateurs",
     "visitors": "Visiteurs",
     "unknown": "Inconnu",
-    "admins-saved": "Administrateurs sauvegardés avec succès pour {{siteName}}!"
+    "admins-saved": "Administrateurs sauvegardés avec succès pour {{siteName}}!",
+    "delete-site-confirmation-title": "Suppression du Site",
+    "delete-site-confirmation-message": "Etes vous sur de vouloir supprimer le site {{siteName}}?"
   },
   "site-modal": {
     "site-name": "nom du site",

@@ -354,6 +354,8 @@ class SiteDetailAPIView(APIView):
                 visitor_count=0,
             )
 
+            Sitetreespecies.objects.filter(site=site).delete()
+
             for tree_type_json in request.data.getlist("species"):
                 tree_type_obj = json.loads(tree_type_json)
                 tree_type = Treetype.objects.get(pk=tree_type_obj["id"])

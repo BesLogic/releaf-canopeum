@@ -42,7 +42,9 @@
     "no-admins": "No Admins",
     "visitors": "Visitors",
     "unknown": "Unknown",
-    "admins-saved": "Admins saved successfully for {{siteName}}!"
+    "admins-saved": "Admins saved successfully for {{siteName}}!",
+    "delete-site-confirmation-title": "Delete Site",
+    "delete-site-confirmation-message": "Are you sure you want to delete the site {{siteName}}?"
   },
   "site-modal": {
     "site-name": "site name",

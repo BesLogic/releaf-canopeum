@@ -5,13 +5,13 @@ import OptionQuantitySelector, { type SelectorOption, type SelectorOptionQuantit
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
 import type { TreeType } from '@services/api'
-import { Sitetreespecies } from '@services/api'
 import { notEmpty } from '@utils/arrayUtils'
+import type { TreeTypeDto } from '@components/analytics/site-modal/SiteModal'
 
 type Props = {
-  readonly species?: Sitetreespecies[],
+  readonly species?: TreeTypeDto[],
   // Make sure that onChange is included in a useCallback if part of a component
-  readonly onChange: (selectedSpecies: Sitetreespecies[]) => void,
+  readonly onChange: (selectedSpecies: TreeTypeDto[]) => void,
   readonly label: string,
 }
 
@@ -39,19 +39,21 @@ const TreeSpeciesSelector = (
   }, [getApiClient, translateValue])
 
   useEffect(() => {
-    if (!species) return
+    species &&
+      setSelected(species.map(specie => ({
+        option: {
+          displayText: translateValue(
+            availableSpecies.find(treeType => treeType.id === specie.id)!,
+          ),
+          value: specie.id,
+        },
+        quantity: specie.quantity,
+      })))
 
-    setSelected(species.map(specie => ({
-      option: {
-        displayText: translateValue(specie),
-        value: specie.id,
-      },
-      quantity: specie.quantity,
-    })))
     // eslint-disable-next-line react-hooks/exhaustive-deps -- translateValue is a dependency
-  }, [availableSpecies, species])
+  }, [availableSpecies])
 
-  const handleChange = useCallback((selectedOptions: SelectorOptionQuantity<number>[]) => {
+  const handleChange = (selectedOptions: SelectorOptionQuantity<number>[]) => {
     const selectedSpecies = selectedOptions
       .map(optionQuantity => {
         const matchingSpecie = availableSpecies.find(specieOption =>
@@ -59,15 +61,17 @@ const TreeSpeciesSelector = (
         )
         if (!matchingSpecie) return null
 
-        return new Sitetreespecies({
+        return {
           ...matchingSpecie,
           quantity: optionQuantity.quantity ?? 0,
-        })
+        } as TreeTypeDto
       })
       .filter(notEmpty)
 
+    if (selectedSpecies === species) return
+
     onChange(selectedSpecies)
-  }, [availableSpecies, onChange])
+  }
 
   return (
     <OptionQuantitySelector

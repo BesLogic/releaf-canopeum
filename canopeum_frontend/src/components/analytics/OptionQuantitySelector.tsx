@@ -38,7 +38,7 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
 
   useEffect(() => setAvailableOptions(options), [options])
   useEffect(() => setFilteredOptions(availableOptions), [availableOptions])
-  useEffect(() => onChange(selectedOptions), [selectedOptions, onChange])
+  useEffect(() => onChange(selectedOptions), [selectedOptions])
 
   useEffect(() =>
     setFilteredOptions(
@@ -49,10 +49,16 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
 
   const onSelect = (option: SelectorOption<TValue>) => {
     setSearchValue('')
-    setSelectedOptions(current => [...current, { option, quantity: 0 }])
-    setAvailableOptions(current =>
-      current.filter(currentOption => currentOption.value !== option.value)
+    const existingOption = selectedOptions.find(optionQuantity =>
+      optionQuantity.option.value === option.value
     )
+
+    if (existingOption) {
+      addQuantity(option)
+      return
+    }
+
+    setSelectedOptions(current => [...current, { option, quantity: 0 }])
   }
 
   const addQuantity = (option: SelectorOption<TValue>) => {

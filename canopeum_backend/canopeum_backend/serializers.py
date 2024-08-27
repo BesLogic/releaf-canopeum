@@ -254,10 +254,14 @@ class ContactSerializer(serializers.ModelSerializer[Contact]):
 class SitetreespeciesSerializer(serializers.ModelSerializer[Sitetreespecies]):
     en = serializers.SerializerMethodField()
     fr = serializers.SerializerMethodField()
+    type_id = serializers.SerializerMethodField()
 
     class Meta:
         model = Sitetreespecies
-        fields = ("id", "quantity", "en", "fr")
+        fields = ("id", "type_id", "quantity", "en", "fr")
+
+    def get_type_id(self, obj) -> int | None:
+        return TreeTypeSerializer(obj.tree_type).data.get("id", None)
 
     def get_en(self, obj):
         return TreeTypeSerializer(obj.tree_type).data.get("en", None)
