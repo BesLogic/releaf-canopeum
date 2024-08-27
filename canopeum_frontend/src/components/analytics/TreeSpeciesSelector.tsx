@@ -43,12 +43,11 @@ const TreeSpeciesSelector = (
     setSelected(species.map(specie => {
       const matchingSpecie = availableSpecies.find(specieOption => specieOption.id === specie.id)
 
-
-return {
+      return {
         option: {
           displayText: matchingSpecie
-? translateValue(matchingSpecie)
-: '',
+            ? translateValue(matchingSpecie)
+            : '',
           value: specie.id,
         },
         quantity: specie.quantity,
