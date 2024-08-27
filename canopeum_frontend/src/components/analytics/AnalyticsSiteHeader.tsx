@@ -9,8 +9,8 @@ import SiteSponsorProgress from '@components/analytics/SiteSponsorProgress'
 import { LanguageContext } from '@components/context/LanguageContext'
 import CustomIconBadge from '@components/CustomIconBadge'
 import { appRoutes } from '@constants/routes.constant'
-import type { SiteDetailSummary } from '@services/api'
 import { getImageNameByWMOCategories } from '@constants/weatherImageMap'
+import type { SiteDetailSummary } from '@services/api'
 
 type Props = {
   readonly siteSummary: SiteDetailSummary,
