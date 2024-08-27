@@ -49,7 +49,6 @@ const Analytics = () => {
     }
 
     if (data) {
-      console.log('la', data.siteImage)
       const image = data.siteImage
         ? await assetFormatter(data.siteImage)
         : undefined
