@@ -55,6 +55,7 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
 
     if (existingOption) {
       addQuantity(option)
+
       return
     }
 

@@ -1,12 +1,12 @@
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import OptionQuantitySelector, { type SelectorOption, type SelectorOptionQuantity } from '@components/analytics/OptionQuantitySelector'
+import type { TreeTypeDto } from '@components/analytics/site-modal/SiteModal'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
 import type { TreeType } from '@services/api'
 import { notEmpty } from '@utils/arrayUtils'
-import type { TreeTypeDto } from '@components/analytics/site-modal/SiteModal'
 
 type Props = {
   readonly species?: TreeTypeDto[],
@@ -38,20 +38,22 @@ const TreeSpeciesSelector = (
     void fetchTreeSpecies()
   }, [getApiClient, translateValue])
 
-  useEffect(() => {
+  useEffect(() =>
     species &&
-      setSelected(species.map(specie => ({
+    setSelected(species.map(specie => {
+      const matchingSpecie = availableSpecies.find(specieOption => specieOption.id === specie.id)
+
+      
+return {
         option: {
-          displayText: translateValue(
-            availableSpecies.find(treeType => treeType.id === specie.id)!,
-          ),
+          displayText: matchingSpecie
+? translateValue(matchingSpecie)
+: '',
           value: specie.id,
         },
         quantity: specie.quantity,
-      })))
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- translateValue is a dependency
-  }, [availableSpecies])
+      }
+    })), [availableSpecies])
 
   const handleChange = (selectedOptions: SelectorOptionQuantity<number>[]) => {
     const selectedSpecies = selectedOptions

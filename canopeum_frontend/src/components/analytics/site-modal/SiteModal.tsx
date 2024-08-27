@@ -10,7 +10,6 @@ import useApiClient from '@hooks/ApiClientHook'
 import { type Coordinate, defaultLatitude, defaultLongitude, extractCoordinate } from '@models/types/Coordinate'
 import type { SiteType } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
-import { use } from 'i18next'
 
 type Props = {
   readonly open: boolean,
@@ -149,7 +148,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
               id='site-type'
               onChange={event =>
                 setSite(current => ({ ...current, siteType: Number(event.target.value) }))}
-              value={site.siteType || availableSiteTypes[0]?.id}
+              value={site.siteType ?? availableSiteTypes[0]?.id}
             >
               {availableSiteTypes.map(value => (
                 <option key={`available-specie-${value.id}`} value={value.id}>

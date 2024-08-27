@@ -78,7 +78,12 @@ const CreatePostWidget = ({ siteId, addNewPost }: Props) => {
         .map(file => assetFormatter(file)),
     )
 
-    setFiles(previousFiles => [...previousFiles, ...validCompressedFiles])
+    setFiles(
+      previousFiles => [
+        ...previousFiles,
+        ...validCompressedFiles.filter(file => file !== undefined),
+      ],
+    )
   }
 
   const removeFile = (index: number) =>
