@@ -1,24 +1,19 @@
-import { readonlyURL } from 'readonly-types'
-
 type WMOCategoriesImageUrls = {
   readonly imageUrl: string | undefined,
   WMOCategories: string[],
 }
 
-const getURLString = (internalUrl: string): string | undefined =>
-  readonlyURL(internalUrl, import.meta.url)?.href
-
 const WMOCategoriesImages: WMOCategoriesImageUrls[] = [
   {
-    imageUrl: '@assets/images/weather/sunny-bg.jpeg',
+    imageUrl: new URL('@assets/images/weather/sunny-bg.jpeg', import.meta.url).href,
     WMOCategories: ['Clear sky', 'Mainly clear'],
   },
   {
-    imageUrl: getURLString('@assets/images/weather/cloudy-bg.jpeg'),
+    imageUrl: new URL('@assets/images/weather/cloudy-bg.jpeg', import.meta.url).href,
     WMOCategories: ['Partly cloudy', 'Overcast', 'Foggy', 'Depositing rime fog'],
   },
   {
-    imageUrl: getURLString('@assets/images/weather/rainy-bg.jpeg'),
+    imageUrl: new URL('@assets/images/weather/rainy-bg.jpeg', import.meta.url).href,
     WMOCategories: [
       'Slight Rain',
       'Moderate Rain',
@@ -33,11 +28,11 @@ const WMOCategoriesImages: WMOCategoriesImageUrls[] = [
     ],
   },
   {
-    imageUrl: getURLString('@assets/images/weather/snowy-bg.jpeg'),
+    imageUrl: new URL('@assets/images/weather/snowy-bg.jpeg', import.meta.url).href,
     WMOCategories: ['Slight Snow fall', 'Moderate Snow fall', 'Heavy Snow fall', 'Snow grains'],
   },
   {
-    imageUrl: getURLString('@assets/images/weather/foggy-bg.jpeg'),
+    imageUrl: new URL('@assets/images/weather/foggy-bg.jpeg', import.meta.url).href,
     WMOCategories: [
       'Light Drizzle',
       'Moderate Drizzle',
@@ -47,7 +42,7 @@ const WMOCategoriesImages: WMOCategoriesImageUrls[] = [
     ],
   },
   {
-    imageUrl: getURLString('@assets/images/weather/thunderstorm-bg.jpeg'),
+    imageUrl: new URL('@assets/images/weather/thunderstorm-bg.jpeg', import.meta.url).href,
     WMOCategories: [
       'Thunderstorm with slight hail',
       'Thunderstorm with hail',
