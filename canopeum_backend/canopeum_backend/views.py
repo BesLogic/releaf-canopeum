@@ -330,7 +330,9 @@ class SiteDetailAPIView(APIView):
         except Site.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        if request.data.get("image") is not None:
+        if request.data.get("image") is None:
+            image = site.image
+        else:
             asset = AssetSerializer(data=request.data)
             if not asset.is_valid():
                 return Response(data=asset.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -348,7 +350,7 @@ class SiteDetailAPIView(APIView):
         serializer = SiteSerializer(site, data=request.data, partial=True)
         if serializer.is_valid():
             site = serializer.save(
-                image=site.image if request.data.get("image") is None else image,  # pyright: ignore[reportPossiblyUnboundVariable]
+                image=image,
                 site_type=site_type,
                 coordinate=coordinate,
                 announcement=announcement,

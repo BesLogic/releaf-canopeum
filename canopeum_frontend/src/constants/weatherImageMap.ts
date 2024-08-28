@@ -61,9 +61,7 @@ const getImageNameByWMOCategories = (WMOCategory: string): string | undefined =>
 
   return image && image.imageUrl
     ? image.imageUrl.href
-    // image is defined manually, so it is guaranteed to have an imageUrl
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- comment above
-    : WMOCategoriesImages[0].imageUrl!.href
+    : WMOCategoriesImages[0].imageUrl?.href
 }
 
 export { getImageNameByWMOCategories }
