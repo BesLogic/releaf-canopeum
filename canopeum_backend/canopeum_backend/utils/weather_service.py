@@ -1,6 +1,6 @@
-import openmeteo_requests  # type: ignore[import-untyped]
+import openmeteo_requests
 import requests_cache
-from retry_requests import retry  # type: ignore[import-untyped]
+from retry_requests import retry
 
 WMO_Categories = {
     0: "Clear sky",
@@ -47,13 +47,21 @@ def get_weather_data(latitude: float, longitude: float):
     }
     responses = openmeteo.weather_api(url, params=params)
 
+    current_temperature = 0.0
+    current_relative_humidity = 0.0
+    current_description = "Unknown weather"
+
     response = responses[0]
     current = response.Current()
-    temperature_value = current.Variables(0).Value()  # pyright: ignore[reportOptionalMemberAccess]
-    current_temperature = round(temperature_value, 3) if temperature_value is not None else 0.0
-    humidity_value = current.Variables(1).Value()  # pyright: ignore[reportOptionalMemberAccess]
-    current_relative_humidity = round(humidity_value, 3) if humidity_value is not None else 0.0
-    current_description = WMO_Categories.get(int(current.Variables(2).Value()), "Unknown weather")  # pyright: ignore[reportOptionalMemberAccess]
+    if current is not None:
+        if temperature_variable := current.Variables(0):
+            current_temperature = round(temperature_variable.Value(), 3)
+        if humidity_variable := current.Variables(1):
+            current_relative_humidity = round(humidity_variable.Value(), 3)
+        if weathercode_variable := current.Variables(2):
+            current_description = WMO_Categories.get(
+                int(weathercode_variable.Value()), "Unknown weather"
+            )
 
     return {
         "temperature": current_temperature,

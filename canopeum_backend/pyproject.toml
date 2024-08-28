@@ -57,7 +57,13 @@ disallow_incomplete_defs = false
 
 [[tool.mypy.overrides]]
 # Untyped dependencies
-module = ["djangorestframework_camel_case.*", "rest_framework.*"]
+module = [
+  "djangorestframework_camel_case.*",
+  "googlemaps.*",
+  "openmeteo_requests.*",
+  "rest_framework.*",
+  "retry_requests.*",
+]
 ignore_missing_imports = true
 
 [tool.django-stubs]
