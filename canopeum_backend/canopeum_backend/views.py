@@ -348,7 +348,7 @@ class SiteDetailAPIView(APIView):
         serializer = SiteSerializer(site, data=request.data, partial=True)
         if serializer.is_valid():
             site = serializer.save(
-                image=image if request.data.get("image") is not None else site.image,  # pyright: ignore[reportPossiblyUnboundVariable]
+                image=site.image if request.data.get("image") is None else image,  # pyright: ignore[reportPossiblyUnboundVariable]
                 site_type=site_type,
                 coordinate=coordinate,
                 announcement=announcement,

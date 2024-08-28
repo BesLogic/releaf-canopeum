@@ -38,6 +38,7 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
 
   useEffect(() => setAvailableOptions(options), [options])
   useEffect(() => setFilteredOptions(availableOptions), [availableOptions])
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- onChange is a dependency
   useEffect(() => onChange(selectedOptions), [selectedOptions])
 
   useEffect(() =>

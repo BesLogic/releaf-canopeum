@@ -52,6 +52,7 @@ const TreeSpeciesSelector = (
         },
         quantity: specie.quantity,
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- onChange is a dependency
     })), [availableSpecies])
 
   const handleChange = (selectedOptions: SelectorOptionQuantity<number>[]) => {

@@ -1,19 +1,21 @@
+import { type ReadonlyURL, readonlyURL } from 'readonly-types'
+
 type WMOCategoriesImageUrls = {
-  readonly imageUrl: string | undefined,
+  readonly imageUrl: ReadonlyURL | undefined,
   WMOCategories: string[],
 }
 
 const WMOCategoriesImages: WMOCategoriesImageUrls[] = [
   {
-    imageUrl: new URL('@assets/images/weather/sunny-bg.jpeg', import.meta.url).href,
+    imageUrl: readonlyURL('../assets/images/weather/sunny-bg.jpeg', import.meta.url),
     WMOCategories: ['Clear sky', 'Mainly clear'],
   },
   {
-    imageUrl: new URL('@assets/images/weather/cloudy-bg.jpeg', import.meta.url).href,
+    imageUrl: readonlyURL('../assets/images/weather/cloudy-bg.jpeg', import.meta.url),
     WMOCategories: ['Partly cloudy', 'Overcast', 'Foggy', 'Depositing rime fog'],
   },
   {
-    imageUrl: new URL('@assets/images/weather/rainy-bg.jpeg', import.meta.url).href,
+    imageUrl: readonlyURL('../assets/images/weather/rainy-bg.jpeg', import.meta.url),
     WMOCategories: [
       'Slight Rain',
       'Moderate Rain',
@@ -28,11 +30,11 @@ const WMOCategoriesImages: WMOCategoriesImageUrls[] = [
     ],
   },
   {
-    imageUrl: new URL('@assets/images/weather/snowy-bg.jpeg', import.meta.url).href,
+    imageUrl: readonlyURL('../assets/images/weather/snowy-bg.jpeg', import.meta.url),
     WMOCategories: ['Slight Snow fall', 'Moderate Snow fall', 'Heavy Snow fall', 'Snow grains'],
   },
   {
-    imageUrl: new URL('@assets/images/weather/foggy-bg.jpeg', import.meta.url).href,
+    imageUrl: readonlyURL('../assets/images/weather/foggy-bg.jpeg', import.meta.url),
     WMOCategories: [
       'Light Drizzle',
       'Moderate Drizzle',
@@ -42,7 +44,7 @@ const WMOCategoriesImages: WMOCategoriesImageUrls[] = [
     ],
   },
   {
-    imageUrl: new URL('@assets/images/weather/thunderstorm-bg.jpeg', import.meta.url).href,
+    imageUrl: readonlyURL('../assets/images/weather/thunderstorm-bg.jpeg', import.meta.url),
     WMOCategories: [
       'Thunderstorm with slight hail',
       'Thunderstorm with hail',
@@ -57,9 +59,11 @@ const getImageNameByWMOCategories = (WMOCategory: string): string | undefined =>
       wmoCategoriesImage.WMOCategories.some(category => WMOCategory.includes(category))
     ) ?? undefined
 
-  return image
-    ? image.imageUrl
-    : WMOCategoriesImages[0].imageUrl
+  return image && image.imageUrl
+    ? image.imageUrl.href
+    // image is defined manually, so it is guaranteed to have an imageUrl
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- comment above
+    : WMOCategoriesImages[0].imageUrl!.href
 }
 
 export { getImageNameByWMOCategories }
