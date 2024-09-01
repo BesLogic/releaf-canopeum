@@ -48,6 +48,13 @@ $commandsInitializeDatabase = @'
   cd ..
 '@
 
+# Generate OpenAPI specs
+$commandsGenerateOpenAPI = @'
+  cd canopeum_frontend
+  npm run generate-api-client
+  cd ..
+'@
+
 function Show-Menu {
   param (
     [string]$Title = 'Run Local Environment'
@@ -59,6 +66,7 @@ function Show-Menu {
   Write-Host '3: Run Django server'
   Write-Host '4: Run React Vite server'
   Write-Host '5: Initialize database'
+  Write-Host '6: Generate OpenAPI specs'
   Write-Host 'Q: Quit'
 }
 
@@ -83,6 +91,9 @@ do {
     }
     '5' {
       Invoke-Expression $commandsInitializeDatabase
+    }
+    '6' {
+      Invoke-Expression $commandsGenerateOpenAPI
     }
     'q' {
       break

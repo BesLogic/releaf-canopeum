@@ -8,7 +8,7 @@ import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
 import { type Coordinate, defaultLatitude, defaultLongitude, extractCoordinate } from '@models/types/Coordinate'
-import type { Sitetreespecies, SiteType } from '@services/api'
+import type { SiteType } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 
 type Props = {
@@ -20,6 +20,11 @@ type Props = {
   readonly siteId: number | undefined,
 }
 
+export type TreeTypeDto = {
+  id: number,
+  quantity: number,
+}
+
 export type SiteDto = {
   siteName?: string,
   siteType?: number,
@@ -28,7 +33,7 @@ export type SiteDto = {
   dmsLongitude: Coordinate,
   presentation?: string,
   size?: number,
-  species: Sitetreespecies[],
+  species: TreeTypeDto[],
   researchPartner?: boolean,
   visibleOnMap?: boolean,
 }
@@ -76,7 +81,10 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
         : defaultLongitude,
       presentation: siteDetail.description,
       size: Number(siteDetail.size),
-      species: siteDetail.siteTreeSpecies,
+      species: siteDetail.siteTreeSpecies.map(specie => ({
+        id: specie.typeId,
+        quantity: specie.quantity,
+      } as TreeTypeDto)),
       researchPartner: siteDetail.researchPartnership,
       visibleOnMap: siteDetail.visibleMap,
     })
@@ -140,7 +148,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
               id='site-type'
               onChange={event =>
                 setSite(current => ({ ...current, siteType: Number(event.target.value) }))}
-              value={site.siteType}
+              value={site.siteType ?? availableSiteTypes[0]?.id}
             >
               {availableSiteTypes.map(value => (
                 <option key={`available-specie-${value.id}`} value={value.id}>
@@ -202,7 +210,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
           <div className='mb-3'>
             <TreeSpeciesSelector
               label='analytics.site-modal.site-tree-species'
-              onChange={useCallback(species => setSite(current => ({ ...current, species })), [])}
+              onChange={newSpecies => setSite(current => ({ ...current, species: newSpecies }))}
               species={site.species}
             />
           </div>

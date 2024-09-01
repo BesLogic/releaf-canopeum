@@ -228,7 +228,7 @@ SITE_SCHEMA = {
         "properties": {
             "name": {"type": "string"},
             "siteType": {"type": "number"},
-            "image": {"type": "string", "format": "binary"},
+            "image": {"type": "string", "format": "binary", "nullable": True},
             "latitude": {"type": "string"},
             "longitude": {"type": "string"},
             "description": {"type": "string"},
@@ -330,10 +330,13 @@ class SiteDetailAPIView(APIView):
         except Site.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        asset = AssetSerializer(data=request.data)
-        if not asset.is_valid():
-            return Response(data=asset.errors, status=status.HTTP_400_BAD_REQUEST)
-        image = asset.save()
+        if request.data.get("image") is None:
+            image = site.image
+        else:
+            asset = AssetSerializer(data=request.data)
+            if not asset.is_valid():
+                return Response(data=asset.errors, status=status.HTTP_400_BAD_REQUEST)
+            image = asset.save()
 
         site_type = Sitetype.objects.get(pk=request.data["site_type"])
 
@@ -354,6 +357,8 @@ class SiteDetailAPIView(APIView):
                 contact=contact,
                 visitor_count=0,
             )
+
+            Sitetreespecies.objects.filter(site=site).delete()
 
             for tree_type_json in request.data.getlist("species"):
                 tree_type_obj = json.loads(tree_type_json)

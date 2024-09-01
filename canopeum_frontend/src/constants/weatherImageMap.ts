@@ -1,24 +1,21 @@
-import { readonlyURL } from 'readonly-types'
+import { type ReadonlyURL, readonlyURL } from 'readonly-types'
 
 type WMOCategoriesImageUrls = {
-  readonly imageUrl: string | undefined,
+  readonly imageUrl: ReadonlyURL | undefined,
   WMOCategories: string[],
 }
 
-const getURLString = (internalUrl: string): string | undefined =>
-  readonlyURL(internalUrl, import.meta.url)?.href
-
 const WMOCategoriesImages: WMOCategoriesImageUrls[] = [
   {
-    imageUrl: '@assets/images/weather/sunny-bg.jpeg',
+    imageUrl: readonlyURL('../assets/images/weather/sunny-bg.jpeg', import.meta.url),
     WMOCategories: ['Clear sky', 'Mainly clear'],
   },
   {
-    imageUrl: getURLString('@assets/images/weather/cloudy-bg.jpeg'),
+    imageUrl: readonlyURL('../assets/images/weather/cloudy-bg.jpeg', import.meta.url),
     WMOCategories: ['Partly cloudy', 'Overcast', 'Foggy', 'Depositing rime fog'],
   },
   {
-    imageUrl: getURLString('@assets/images/weather/rainy-bg.jpeg'),
+    imageUrl: readonlyURL('../assets/images/weather/rainy-bg.jpeg', import.meta.url),
     WMOCategories: [
       'Slight Rain',
       'Moderate Rain',
@@ -33,11 +30,11 @@ const WMOCategoriesImages: WMOCategoriesImageUrls[] = [
     ],
   },
   {
-    imageUrl: getURLString('@assets/images/weather/snowy-bg.jpeg'),
+    imageUrl: readonlyURL('../assets/images/weather/snowy-bg.jpeg', import.meta.url),
     WMOCategories: ['Slight Snow fall', 'Moderate Snow fall', 'Heavy Snow fall', 'Snow grains'],
   },
   {
-    imageUrl: getURLString('@assets/images/weather/foggy-bg.jpeg'),
+    imageUrl: readonlyURL('../assets/images/weather/foggy-bg.jpeg', import.meta.url),
     WMOCategories: [
       'Light Drizzle',
       'Moderate Drizzle',
@@ -47,7 +44,7 @@ const WMOCategoriesImages: WMOCategoriesImageUrls[] = [
     ],
   },
   {
-    imageUrl: getURLString('@assets/images/weather/thunderstorm-bg.jpeg'),
+    imageUrl: readonlyURL('../assets/images/weather/thunderstorm-bg.jpeg', import.meta.url),
     WMOCategories: [
       'Thunderstorm with slight hail',
       'Thunderstorm with hail',
@@ -62,9 +59,9 @@ const getImageNameByWMOCategories = (WMOCategory: string): string | undefined =>
       wmoCategoriesImage.WMOCategories.some(category => WMOCategory.includes(category))
     ) ?? undefined
 
-  return image
-    ? image.imageUrl
-    : WMOCategoriesImages[0].imageUrl
+  return image && image.imageUrl
+    ? image.imageUrl.href
+    : WMOCategoriesImages[0].imageUrl?.href
 }
 
 export { getImageNameByWMOCategories }
