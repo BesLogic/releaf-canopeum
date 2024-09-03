@@ -30,7 +30,7 @@ repos:
       - id: eslint
         name: eslint
         language: node
-        entry: bash -c 'cd canopeum_frontend && npm run eslint -- --quiet'
+        entry: bash -c 'cd canopeum_frontend && npm run eslint -- --fix --quiet'
         files: \.[jt]sx?$ # *.js, *.jsx, *.ts and *.tsx
         types: [file]
         pass_filenames: false
