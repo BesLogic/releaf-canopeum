@@ -33,6 +33,7 @@ repos:
         entry: bash -c 'cd canopeum_frontend && npm run eslint -- --quiet'
         files: \.[jt]sx?$ # *.js, *.jsx, *.ts and *.tsx
         types: [file]
+        pass_filenames: false
         additional_dependencies: [
             "eslint@8.57.0",
             # Keep these in sync with canopeum_frontend/package.json
@@ -71,7 +72,6 @@ repos:
             "@typescript-eslint/parser@7.18", # dependency of typescript-eslint
             "semver@6.3.1", # dependency of eslint-plugin-import
           ]
-        pass_filenames: false
 
 ci:
   autoupdate_schedule: quarterly
