@@ -23,23 +23,55 @@ repos:
       # Run the formatter.
       - id: ruff-format
 
-  # # You can run this locally with `npm run lint:fix`
-  # # NOTE: exceeds tier max size 250MiB: 289.9MiB
-  # - repo: https://github.com/pre-commit/mirrors-eslint
-  #   rev: v8.56.0
-  #   hooks:
-  #     - id: eslint
-  #       files: \.[jt]sx?$ # *.js, *.jsx, *.ts and *.tsx
-  #       types: [file]
-  #       additional_dependencies: [
-  #           # Keep these in sync with canopeum_backend/package.json
-  #           "eslint-config-beslogic@2.4.5",
-  #           "eslint-plugin-jsx-a11y@6.8.0",
-  #           "eslint-plugin-react@7.34.1",
-  #           "eslint-plugin-react-hooks@4.6.0",
-  #           "eslint-plugin-react-prefer-function-component@3.3.0",
-  #           "eslint-plugin-react-refresh@0.4.5",
-  #         ]
+  # You can run this locally with `npm run lint:fix`
+
+  - repo: local
+    hooks:
+      - id: eslint
+        name: eslint
+        language: node
+        entry: bash -c 'cd canopeum_frontend && npm run eslint -- --quiet'
+        files: \.[jt]sx?$ # *.js, *.jsx, *.ts and *.tsx
+        types: [file]
+        additional_dependencies: [
+            "eslint@8.57.0",
+            # Keep these in sync with canopeum_frontend/package.json
+            "eslint-config-beslogic@2.4.13",
+            "eslint-plugin-jsx-a11y@6.8.0",
+            "eslint-plugin-react@7.34.1",
+            "eslint-plugin-react-hooks@4.6.0",
+            "eslint-plugin-react-prefer-function-component@3.3.0",
+            "eslint-plugin-react-refresh@0.4.5",
+            # NOTE: Optional, removing to reduce bundle size: exceeds tier max size 250MiB
+            # "@eslint-community/eslint-plugin-eslint-comments",
+            # "eslint-plugin-total-functions",
+            # "eslint-plugin-no-autofix",
+            # "eslint-import-resolver-typescript",
+            # "eslint-plugin-testing-library",
+            # "eslint-plugin-jest-formatting",
+            # "eslint-plugin-jest",
+            # "eslint-plugin-etc",
+            #
+            # pre-commit requires *explicitly* setting all dependencies, which is... annoying
+            # (this is to prevent inconsistent dependency ranges and promote repeatability)
+            # Dependencies of ESLint-Config-Beslogic
+            "confusing-browser-globals@1.0",
+            "eslint-plugin-autofix@2.0",
+            "eslint-plugin-extra-rules@0.0.0-development",
+            "eslint-plugin-import@2.27.3",
+            "eslint-plugin-no-relative-import-paths@1.5.3",
+            "eslint-plugin-prefer-arrow@1.2",
+            "eslint-plugin-regexp@2.0",
+            "eslint-plugin-simple-import-sort@12.0",
+            "eslint-plugin-sonarjs@1.0",
+            "eslint-plugin-unicorn@49.0",
+            "eslint-plugin-unused-imports@3.2",
+            # Transitive dependencies of ESLint-Config-Beslogic
+            "@typescript-eslint/eslint-plugin@7.18", # dependency of typescript-eslint
+            "@typescript-eslint/parser@7.18", # dependency of typescript-eslint
+            "semver@6.3.1", # dependency of eslint-plugin-import
+          ]
+        pass_filenames: false
 
 ci:
   autoupdate_schedule: quarterly

@@ -1,4 +1,3 @@
-/* eslint-disable etc/no-commented-out-code -- Add image editing */
 /* eslint-disable max-lines -- disable max-lines */
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import { useCallback, useContext, useState } from 'react'
@@ -30,7 +29,7 @@ type EditBatchDto = {
   replaceCount?: number,
   totalNumberSeed?: number,
   totalPropagation?: number,
-  // image?: File,
+  // TODO: image?: File,
   fertilizerIds: number[],
   mulchLayerIds: number[],
   seeds: Seeds[],
@@ -70,6 +69,7 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
       // image,
     } = batch
 
+    // TODO:
     // const batchImage = image
     //   ? await assetFormatter(image)
     //   : undefined

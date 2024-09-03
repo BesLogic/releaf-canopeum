@@ -12,7 +12,7 @@ type SiteSummaryChartOptions = {
 }
 
 const buildChartOptions = (siteSummaries: SiteSummary[]) => {
-  // eslint-disable-next-line total-functions/no-partial-division -- length checked above
+  // total-functions/no-partial-division -- length checked above
   const average = siteSummaries.reduce(
     (accumulator, current) => accumulator + current.progress,
     0,
@@ -57,8 +57,7 @@ const SiteSuccessRatesChart = ({ siteSummaries }: Props) => {
 
   const renderChartTooltip = (props: ChartsAxisContentProps) => {
     const selectedSerie = props.series.find(serie => serie.id === props.axisValue)
-    // value type is known from the context
-    // eslint-disable-next-line total-functions/no-unsafe-type-assertion -- See above
+    // total-functions/no-unsafe-type-assertion -- value type is known from the context
     const data = selectedSerie?.data.find(value => !!value) as number | undefined
 
     return (
