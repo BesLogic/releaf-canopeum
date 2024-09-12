@@ -4,6 +4,9 @@
 
 This project integrates Django backend with React Vite frontend template to create a full-stack web application.
 
+Backlog: https://github.com/orgs/BesLogic/projects/3/views/1?filterQuery=-status%3ADone \
+Figma: https://www.figma.com/design/iKVdInwWsIsxBFxeoGNb6h/Philanthropy-Canopeum
+
 ## Getting Started
 
 This project has been configured to run in VsCode dev container with all
