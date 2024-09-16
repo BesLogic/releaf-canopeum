@@ -1,24 +1,47 @@
-// Keep in alphabetical order
+// SPDX-License-Identifier: MIT
+// Copyright 2024 Beslogic Inc.
+// The source skeleton for this configuration can be found at
+// https://github.com/BesLogic/shared-configs/blob/main/.vscode/extensions.json
+// Modifications to this file that are not project-specific should also be done upstream.
+
 {
+  // See https://go.microsoft.com/fwlink/?LinkId=827846 to learn about workspace recommendations.
+  // List of extensions which should be recommended for users of this workspace.
+  // Only keep those used by your specific project
   "recommendations": [
-    "bierner.github-markdown-preview",
-    "charliermarsh.ruff",
-    "davidanson.vscode-markdownlint",
-    "dbaeumer.vscode-eslint",
-    "dotenv.dotenv-vscode",
-    "dprint.dprint",
+    // General
     "eamodio.gitlens",
+    "editorconfig.editorconfig",
+    "pkief.material-icon-theme",
+    // GitHub
+    "bierner.github-markdown-preview",
     "github.vscode-github-actions",
+    // Dotenv
+    "dotenv.dotenv-vscode",
+    // JS/TS/JSON
+    "dbaeumer.vscode-eslint",
+    "dprint.dprint",
     "meganrogge.template-string-converter",
+    // Python/TOML
+    "charliermarsh.ruff",
     "ms-python.mypy-type-checker",
     "ms-python.python",
     "ms-python.vscode-pylance",
+    "tamasfe.even-better-toml",
+    // Markdown
+    "bierner.github-markdown-preview",
+    "davidanson.vscode-markdownlint",
+    "dprint.dprint",
+    // Powershell
     "ms-vscode.powershell",
-    "pkief.material-icon-theme",
-    // "redhat.vscode-xml",
-    "redhat.vscode-yaml",
-    "tamasfe.even-better-toml"
+    // YAML
+    "redhat.vscode-yaml"
+    //
+    // Add your project's framework-specific and project-specific extensions under here
   ],
+  // List of extensions recommended by VS Code that should not be recommended for users of this workspace.
+  // Developpers should uninstall or disable the following extensions for this workspace
+  // https://github.com/microsoft/vscode/issues/40239
   "unwantedRecommendations": [
     // Must disable in this workspace //
     // https://github.com/microsoft/vscode/issues/40239 //
@@ -54,8 +77,6 @@
     "ms-python.flake8",
     "ms-python.isort",
     "ms-python.pylint",
-    // We use autopep8
-    "ms-python.black-formatter",
     // Not configurable per workspace, tends to conflict with other linters
     "sonarsource.sonarlint-vscode",
     // Prefer using VSCode itself as a text editor
