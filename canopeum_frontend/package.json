@@ -13,11 +13,12 @@
     "preview": "vite preview",
     "generate-api-client": "node ./src/config/apiSchemaGenerator.js"
   },
+  "// @mui/x-charts": "https://github.com/mui/mui-x/pull/14392/files#r1764019386",
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.15.14",
-    "@mui/x-charts": "^7.0.0",
+    "@mui/x-charts": "~7.15.0",
     "@types/node": "^20.11.30",
     "bootstrap": "^5.3.3",
     "browser-image-compression": "^2.0.2",
@@ -46,7 +47,7 @@
     "@types/react-transition-group": "^4.4.10",
     "@vitejs/plugin-react": "^4.2.1",
     "dprint": "^0.47.2",
-    "eslint-config-beslogic": "^2.4.13",
+    "eslint-config-beslogic": "^2.4.14",
     "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-plugin-react": "^7.34.1",
     "eslint-plugin-react-hooks": "^4.6.0",

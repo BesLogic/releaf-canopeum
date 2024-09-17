@@ -37,7 +37,7 @@ repos:
         additional_dependencies: [
             "eslint@8.57.0",
             # Keep these in sync with canopeum_frontend/package.json
-            "eslint-config-beslogic@2.4.13",
+            "eslint-config-beslogic@2.4.14",
             "eslint-plugin-jsx-a11y@6.8.0",
             "eslint-plugin-react@7.34.1",
             "eslint-plugin-react-hooks@4.6.0",
