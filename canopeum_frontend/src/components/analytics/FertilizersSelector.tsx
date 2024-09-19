@@ -18,41 +18,52 @@ const FertilizersSelector = ({ onChange, fertilizers }: Props) => {
   const { translateValue } = useContext(LanguageContext)
   const { getApiClient } = useApiClient()
 
-  const [availableFertilizers, setAvailableFertilizers] = useState<FertilizerType[]>([])
+  const [availableFertilizers, setAvailableFertilizers] = useState<Map<number, FertilizerType>>(
+    new Map(),
+  )
   const [options, setOptions] = useState<SelectorOption<number>[]>([])
   const [selected, setSelected] = useState<SelectorOptionQuantity<number>[]>([])
 
-  const fetchFertilizers = useCallback(
-    async () => {
-      const fertilizerTypesResponse = await getApiClient().fertilizerClient.allTypes()
-      setAvailableFertilizers(fertilizerTypesResponse)
-      setOptions(fertilizerTypesResponse.map(fertilizerType => ({
-        value: fertilizerType.id,
-        displayText: translateValue(fertilizerType),
-      })))
-    },
-    [getApiClient, translateValue],
-  )
-
-  useEffect(() => void fetchFertilizers(), [fetchFertilizers])
-
   useEffect(() => {
-    if (!fertilizers) return
+    const fetchFertilizers = async () => {
+      const fertilizerTypesResponse = await getApiClient().fertilizerClient.allTypes()
 
-    setSelected(fertilizers.map(fertilizer => ({
-      option: {
-        displayText: translateValue(fertilizer),
-        value: fertilizer.id,
-      },
-    })))
-  }, [fertilizers, translateValue])
+      const fertilizerMap = new Map<number, FertilizerType>()
+      const fertilizerOptions = []
+      for (const currentFertilizer of fertilizerTypesResponse) {
+        fertilizerMap.set(currentFertilizer.id, currentFertilizer)
+        fertilizerOptions.push({
+          value: currentFertilizer.id,
+          displayText: translateValue(currentFertilizer),
+        })
+      }
+
+      setAvailableFertilizers(fertilizerMap)
+      setOptions(fertilizerOptions)
+    }
+    void fetchFertilizers()
+  }, [getApiClient, translateValue])
+
+  useEffect(() =>
+    fertilizers &&
+    setSelected(
+      fertilizers.map(fertilizer => {
+        const matchingFertilizer = availableFertilizers.get(fertilizer.id)
+        if (!matchingFertilizer) return null
+
+        return {
+          option: {
+            displayText: translateValue(matchingFertilizer),
+            value: matchingFertilizer.id,
+          },
+        }
+      }).filter(notEmpty),
+    ), [availableFertilizers, fertilizers, translateValue])
 
   const handleChange = useCallback((selectedOptions: SelectorOptionQuantity<number>[]) => {
     const selectedFertilizers = selectedOptions
       .map(optionQuantity => {
-        const matchingFertilizer = availableFertilizers.find(fertilizerOption =>
-          fertilizerOption.id === optionQuantity.option.value
-        )
+        const matchingFertilizer = availableFertilizers.get(optionQuantity.option.value)
         if (!matchingFertilizer) return null
 
         return new Batchfertilizer({

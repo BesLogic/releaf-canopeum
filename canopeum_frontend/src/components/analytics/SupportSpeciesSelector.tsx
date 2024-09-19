@@ -19,41 +19,50 @@ const SupportSpeciesSelector = ({ onChange, species }: Props) => {
   const { translateValue } = useContext(LanguageContext)
   const { getApiClient } = useApiClient()
 
-  const [availableSpecies, setAvailableSpecies] = useState<TreeType[]>([])
+  const [availableSpecies, setAvailableSpecies] = useState<Map<number, TreeType>>(new Map())
   const [options, setOptions] = useState<SelectorOption<number>[]>([])
   const [selected, setSelected] = useState<SelectorOptionQuantity<number>[]>([])
 
-  const fetchTreeSpecies = useCallback(
-    async () => {
-      const speciesResponse = await getApiClient().treeClient.species()
-      setAvailableSpecies(speciesResponse)
-      setOptions(speciesResponse.map(treeType => ({
-        value: treeType.id,
-        displayText: translateValue(treeType),
-      })))
-    },
-    [getApiClient, translateValue],
-  )
-
-  useEffect(() => void fetchTreeSpecies(), [fetchTreeSpecies])
-
   useEffect(() => {
-    if (!species) return
+    const fetchTreeSpecies = async () => {
+      const speciesResponse = await getApiClient().treeClient.species()
 
-    setSelected(species.map(specie => ({
-      option: {
-        displayText: translateValue(specie),
-        value: specie.id,
-      },
-    })))
-  }, [species, translateValue])
+      const speciesMap = new Map<number, TreeType>()
+      const speciesOptions = []
+      for (const currentSpecies of speciesResponse) {
+        speciesMap.set(currentSpecies.id, currentSpecies)
+        speciesOptions.push({
+          value: currentSpecies.id,
+          displayText: translateValue(currentSpecies),
+        })
+      }
+
+      setAvailableSpecies(speciesMap)
+      setOptions(speciesOptions)
+    }
+    void fetchTreeSpecies()
+  }, [getApiClient, translateValue])
+
+  useEffect(() =>
+    species &&
+    setSelected(
+      species.map(specie => {
+        const matchingSpecie = availableSpecies.get(specie.id)
+        if (!matchingSpecie) return null
+
+        return {
+          option: {
+            displayText: translateValue(matchingSpecie),
+            value: matchingSpecie.id,
+          },
+        }
+      }).filter(notEmpty),
+    ), [availableSpecies, species, translateValue])
 
   const handleChange = useCallback((selectedOptions: SelectorOptionQuantity<number>[]) => {
     const selectedSpecies = selectedOptions
       .map(optionQuantity => {
-        const matchingSpecie = availableSpecies.find(specieOption =>
-          specieOption.id === optionQuantity.option.value
-        )
+        const matchingSpecie = availableSpecies.get(optionQuantity.option.value)
         if (!matchingSpecie) return null
 
         return new BatchSupportedSpecies({
