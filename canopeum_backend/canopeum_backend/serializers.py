@@ -378,7 +378,7 @@ class BatchfertilizerSerializer(serializers.ModelSerializer[Batchfertilizer]):
         fields = ("id", "en", "fr")
 
     def get_id(self, obj: Batchfertilizer):
-        return obj.fertilizer_type.pk if obj.fertilizer_type else None
+        return FertilizerTypeSerializer(obj.fertilizer_type).data.get("id", None)
 
     def get_en(self, obj: Batchfertilizer):
         return (
@@ -405,7 +405,7 @@ class BatchMulchLayerSerializer(serializers.ModelSerializer[Batchmulchlayer]):
         fields = ("id", "en", "fr")
 
     def get_id(self, obj: Batchmulchlayer):
-        return obj.mulch_layer_type.pk if obj.mulch_layer_type else None
+        return MulchLayerTypeSerializer(obj.mulch_layer_type).data.get("id", None)
 
     def get_en(self, obj: Batchmulchlayer):
         return (
@@ -432,7 +432,7 @@ class BatchSupportedSpeciesSerializer(serializers.ModelSerializer[BatchSupported
         fields = ("id", "en", "fr")
 
     def get_id(self, obj: BatchSupportedSpecies):
-        return obj.tree_type.pk if obj.tree_type else None
+        return TreeTypeSerializer(obj.tree_type).data.get("id", None)
 
     def get_en(self, obj: BatchSupportedSpecies):
         return (
@@ -459,7 +459,7 @@ class BatchSeedSerializer(serializers.ModelSerializer[BatchSeed]):
         fields = ("id", "quantity", "en", "fr")
 
     def get_id(self, obj: BatchSeed):
-        return obj.tree_type.pk if obj.tree_type else None
+        return TreeTypeSerializer(obj.tree_type).data.get("id", None)
 
     def get_en(self, obj: BatchSeed):
         return (
@@ -486,7 +486,7 @@ class BatchSpeciesSerializer(serializers.ModelSerializer[BatchSpecies]):
         fields = ("id", "quantity", "en", "fr")
 
     def get_id(self, obj: BatchSpecies):
-        return obj.tree_type.pk if obj.tree_type else None
+        return TreeTypeSerializer(obj.tree_type).data.get("id", None)
 
     def get_en(self, obj: BatchSpecies):
         return (
