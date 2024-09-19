@@ -121,10 +121,24 @@ class Batchfertilizer(models.Model):
     batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
     fertilizer_type = models.ForeignKey(Fertilizertype, models.DO_NOTHING, blank=True, null=True)
 
+    class Meta:
+        constraints: ClassVar[list[models.UniqueConstraint]] = [
+            models.UniqueConstraint(
+                fields=["batch", "fertilizer_type"], name="unique_fertilizer_per_batch"
+            ),
+        ]
+
 
 class Batchmulchlayer(models.Model):
     batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
     mulch_layer_type = models.ForeignKey("Mulchlayertype", models.DO_NOTHING, blank=True, null=True)
+
+    class Meta:
+        constraints: ClassVar[list[models.UniqueConstraint]] = [
+            models.UniqueConstraint(
+                fields=["batch", "mulch_layer_type"], name="unique_mulch_layer_per_batch"
+            ),
+        ]
 
 
 class TreespeciestypeInternationalization(models.Model):
@@ -143,16 +157,33 @@ class BatchSpecies(models.Model):
     tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
 
+    class Meta:
+        constraints: ClassVar[list[models.UniqueConstraint]] = [
+            models.UniqueConstraint(fields=["batch", "tree_type"], name="unique_species_per_batch"),
+        ]
+
 
 class BatchSeed(models.Model):
     batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
     tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
 
+    class Meta:
+        constraints: ClassVar[list[models.UniqueConstraint]] = [
+            models.UniqueConstraint(fields=["batch", "tree_type"], name="unique_seed_per_batch"),
+        ]
+
 
 class BatchSupportedSpecies(models.Model):
     batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
     tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
+
+    class Meta:
+        constraints: ClassVar[list[models.UniqueConstraint]] = [
+            models.UniqueConstraint(
+                fields=["batch", "tree_type"], name="unique_supported_species_per_batch"
+            ),
+        ]
 
 
 class Contact(models.Model):
@@ -331,6 +362,13 @@ class Sitetreespecies(models.Model):
     site = models.ForeignKey(Site, models.CASCADE, blank=True, null=True)
     tree_type = models.ForeignKey("Treetype", models.DO_NOTHING, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        constraints: ClassVar[list[models.UniqueConstraint]] = [
+            models.UniqueConstraint(
+                fields=["site", "tree_type"], name="unique_tree_species_per_site"
+            ),
+        ]
 
 
 class Widget(models.Model):
