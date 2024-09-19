@@ -9,8 +9,7 @@ import SupportSpeciesSelector from '@components/analytics/SupportSpeciesSelector
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
-import { type BatchDetail, Species } from '@services/api'
-import { Seeds } from '@services/api'
+import { type BatchDetail, type Batchfertilizer, type BatchMulchLayer, type BatchSupportedSpecies, Seeds, Species } from '@services/api'
 import { floorNumberValue } from '@utils/formUtils'
 
 type Props = {
@@ -30,24 +29,25 @@ type EditBatchDto = {
   totalNumberSeed?: number,
   totalPropagation?: number,
   // TODO: image?: File,
-  fertilizerIds: number[],
-  mulchLayerIds: number[],
+  fertilizers: Batchfertilizer[],
+  mulchLayers: BatchMulchLayer[],
   seeds: Seeds[],
   species: Species[],
-  supportedSpecieIds: number[],
+  supportedSpecies: BatchSupportedSpecies[],
 }
+
+const transformToEditBatchDto = (batchDetail: BatchDetail): EditBatchDto => ({
+  ...batchDetail,
+  seeds: batchDetail.seeds.map(seed => new Seeds(seed)),
+  species: batchDetail.species.map(specie => new Species(specie)),
+})
 
 const BatchModal = ({ batchToEdit, handleClose }: Props) => {
   const { t } = useTranslation()
   const { getApiClient } = useApiClient()
   const { openAlertSnackbar } = useContext(SnackbarContext)
 
-  const [batch, setBatch] = useState<EditBatchDto>({
-    ...batchToEdit,
-    fertilizerIds: batchToEdit.fertilizers.map(fertilizer => fertilizer.id),
-    mulchLayerIds: batchToEdit.mulchLayers.map(layer => layer.id),
-    supportedSpecieIds: batchToEdit.supportedSpecies.map(specie => specie.id),
-  })
+  const [batch, setBatch] = useState<EditBatchDto>(transformToEditBatchDto(batchToEdit))
 
   const handleSubmitBatch = async () => {
     const {
@@ -56,9 +56,9 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
       size,
       soilCondition,
       sponsor,
-      fertilizerIds,
-      mulchLayerIds,
-      supportedSpecieIds,
+      fertilizers,
+      mulchLayers,
+      supportedSpecies,
       plantCount,
       survivedCount,
       replaceCount,
@@ -86,11 +86,11 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
         replaceCount,
         totalNumberSeed,
         totalPropagation,
-        fertilizerIds,
-        mulchLayerIds,
+        fertilizers.map(fertilizer => fertilizer.id),
+        mulchLayers.map(layer => layer.id),
         seeds,
         species,
-        supportedSpecieIds,
+        supportedSpecies.map(specie => specie.id),
       )
     } catch {
       openAlertSnackbar(
@@ -112,13 +112,7 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
     handleClose()
   }
 
-  const resetBatch = () =>
-    setBatch({
-      ...batchToEdit,
-      fertilizerIds: batchToEdit.fertilizers.map(fertilizer => fertilizer.id),
-      mulchLayerIds: batchToEdit.mulchLayers.map(layer => layer.id),
-      supportedSpecieIds: batchToEdit.supportedSpecies.map(specie => specie.id),
-    })
+  const resetBatch = () => setBatch(transformToEditBatchDto(batchToEdit))
 
   return (
     <Dialog fullWidth maxWidth='sm' onClose={onClose} open={!!batchToEdit}>
@@ -180,7 +174,6 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
               </div>
             </div>
 
-            TODO: Fill in this field automatically
             <div>
               <TreeSpeciesSelector
                 label='analyticsSite.batch-modal.number-of-trees-label'
@@ -188,10 +181,11 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
                   species =>
                     setBatch(current => ({
                       ...current,
-                      species: species.map(specie => new Species(specie)),
+                      species,
                     })),
                   [],
                 )}
+                species={batch.species}
               />
             </div>
 
@@ -209,40 +203,40 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
               />
             </div>
 
-            TODO: Fill in this field automatically
             <FertilizersSelector
+              fertilizers={batch.fertilizers}
               onChange={useCallback(
                 fertilizers =>
                   setBatch(current => ({
                     ...current,
-                    fertilizerIds: fertilizers.map(fertilizer => fertilizer.id),
+                    fertilizers,
                   })),
                 [],
               )}
             />
 
-            TODO: Fill in this field automatically
             <MulchLayersSelector
+              mulchLayers={batch.mulchLayers}
               onChange={useCallback(
                 mulchLayers =>
                   setBatch(current => ({
                     ...current,
-                    mulchLayerIds: mulchLayers.map(layer => layer.id),
+                    mulchLayers,
                   })),
                 [],
               )}
             />
 
-            TODO: Fill in this field automatically
             <SupportSpeciesSelector
               onChange={useCallback(
                 supportedSpecies =>
                   setBatch(current => ({
                     ...current,
-                    supportedSpecieIds: supportedSpecies.map(specie => specie.id),
+                    supportedSpecies,
                   })),
                 [],
               )}
+              species={batch.supportedSpecies}
             />
 
             <div>
@@ -296,7 +290,6 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
               />
             </div>
 
-            TODO: Fill in this field automatically
             <div>
               <TreeSpeciesSelector
                 label='analyticsSite.batch-modal.seeds-per-species-label'
@@ -304,15 +297,11 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
                   species =>
                     setBatch(current => ({
                       ...current,
-                      seeds: species.map(specie =>
-                        new Seeds({
-                          id: specie.id,
-                          quantity: specie.quantity,
-                        })
-                      ),
+                      seeds: species,
                     })),
                   [],
                 )}
+                species={batch.seeds}
               />
             </div>
 
