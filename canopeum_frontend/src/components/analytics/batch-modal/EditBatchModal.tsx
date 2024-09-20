@@ -345,7 +345,7 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
       <DialogActions>
         <button
           className='btn btn-outline-primary'
-          onClick={() => handleClose()}
+          onClick={() => onClose()}
           type='button'
         >
           {t('generic.cancel')}
