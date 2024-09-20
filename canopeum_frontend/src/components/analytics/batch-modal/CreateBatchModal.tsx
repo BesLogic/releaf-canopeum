@@ -10,7 +10,7 @@ import SupportSpeciesSelector from '@components/analytics/SupportSpeciesSelector
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
-import { type Batchfertilizer, type BatchMulchLayer, type BatchSupportedSpecies, Seeds, type SiteSummary, Species } from '@services/api'
+import type { Batchfertilizer, BatchMulchLayer, BatchSupportedSpecies, Seeds, SiteSummary, Species } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
 import { floorNumberValue } from '@utils/formUtils'
 
@@ -205,10 +205,11 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
                   species =>
                     setBatch(current => ({
                       ...current,
-                      species: species.map(specie => new Species(specie)),
+                      species,
                     })),
                   [],
                 )}
+                species={batch.species}
               />
             </div>
 
@@ -227,6 +228,7 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
             </div>
 
             <FertilizersSelector
+              fertilizers={batch.fertilizers}
               onChange={useCallback(
                 fertilizers =>
                   setBatch(current => ({
@@ -238,6 +240,7 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
             />
 
             <MulchLayersSelector
+              mulchLayers={batch.mulchLayers}
               onChange={useCallback(
                 mulchLayers =>
                   setBatch(current => ({
@@ -257,6 +260,7 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
                   })),
                 [],
               )}
+              species={batch.supportedSpecies}
             />
 
             <div>
@@ -317,10 +321,11 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
                   species =>
                     setBatch(current => ({
                       ...current,
-                      seeds: species.map(specie => new Seeds(specie)),
+                      seeds: species,
                     })),
                   [],
                 )}
+                species={batch.seeds}
               />
             </div>
 
