@@ -376,7 +376,7 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
       <DialogActions>
         <button
           className='btn btn-outline-primary'
-          onClick={() => handleClose()}
+          onClick={() => onClose()}
           type='button'
         >
           {t('generic.cancel')}
