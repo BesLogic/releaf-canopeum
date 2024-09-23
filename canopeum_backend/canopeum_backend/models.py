@@ -122,11 +122,11 @@ class Batchfertilizer(models.Model):
     fertilizer_type = models.ForeignKey(Fertilizertype, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
-        constraints: ClassVar[list[models.UniqueConstraint]] = [
+        constraints = (
             models.UniqueConstraint(
                 fields=["batch", "fertilizer_type"], name="unique_fertilizer_per_batch"
             ),
-        ]
+        )
 
 
 class MulchlayertypeInternationalization(models.Model):
@@ -145,11 +145,11 @@ class Batchmulchlayer(models.Model):
     mulch_layer_type = models.ForeignKey(Mulchlayertype, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
-        constraints: ClassVar[list[models.UniqueConstraint]] = [
+        constraints = (
             models.UniqueConstraint(
                 fields=["batch", "mulch_layer_type"], name="unique_mulch_layer_per_batch"
             ),
-        ]
+        )
 
 
 class TreespeciestypeInternationalization(models.Model):
@@ -169,9 +169,9 @@ class BatchSpecies(models.Model):
     quantity = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        constraints: ClassVar[list[models.UniqueConstraint]] = [
+        constraints = (
             models.UniqueConstraint(fields=["batch", "tree_type"], name="unique_species_per_batch"),
-        ]
+        )
 
 
 class BatchSeed(models.Model):
@@ -180,9 +180,9 @@ class BatchSeed(models.Model):
     quantity = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        constraints: ClassVar[list[models.UniqueConstraint]] = [
+        constraints = (
             models.UniqueConstraint(fields=["batch", "tree_type"], name="unique_seed_per_batch"),
-        ]
+        )
 
 
 class BatchSupportedSpecies(models.Model):
@@ -190,11 +190,11 @@ class BatchSupportedSpecies(models.Model):
     tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
-        constraints: ClassVar[list[models.UniqueConstraint]] = [
+        constraints = (
             models.UniqueConstraint(
                 fields=["batch", "tree_type"], name="unique_supported_species_per_batch"
             ),
-        ]
+        )
 
 
 class Contact(models.Model):
@@ -364,11 +364,11 @@ class Sitetreespecies(models.Model):
     quantity = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        constraints: ClassVar[list[models.UniqueConstraint]] = [
+        constraints = (
             models.UniqueConstraint(
                 fields=["site", "tree_type"], name="unique_tree_species_per_site"
             ),
-        ]
+        )
 
 
 class Widget(models.Model):
