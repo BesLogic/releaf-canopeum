@@ -598,7 +598,7 @@ class SiteSummarySerializer(serializers.ModelSerializer[Site]):
     progress = serializers.SerializerMethodField()
     sponsors = serializers.SerializerMethodField()
     admins = SiteAdminSerializer(source="siteadmin_set", many=True)
-    batches = BatchDetailSerializer(source="batch_set", read_only=True, many=True)
+    batches = serializers.SerializerMethodField()
 
     class Meta:
         model = Site
@@ -633,6 +633,11 @@ class SiteSummarySerializer(serializers.ModelSerializer[Site]):
         batches = Batch.objects.filter(site=obj)
         return [batch.sponsor for batch in batches if batch.sponsor]
 
+    @extend_schema_field(BatchDetailSerializer(many=True))
+    def get_batches(self, obj):
+        batches = obj.batch_set.all().order_by("-updated_at")
+        return BatchDetailSerializer(batches, many=True).data
+
 
 class SiteSummaryDetailSerializer(serializers.ModelSerializer[Site]):
     site_type = SiteTypeSerializer()
@@ -643,7 +648,7 @@ class SiteSummaryDetailSerializer(serializers.ModelSerializer[Site]):
     progress = serializers.SerializerMethodField()
     sponsors = serializers.SerializerMethodField()
     admins = SiteAdminSerializer(source="siteadmin_set", many=True)
-    batches = BatchDetailSerializer(source="batch_set", read_only=True, many=True)
+    batches = serializers.SerializerMethodField()
     weather = serializers.SerializerMethodField()
 
     class Meta:
@@ -684,6 +689,11 @@ class SiteSummaryDetailSerializer(serializers.ModelSerializer[Site]):
     def get_weather(self, obj):
         weather = get_weather_data(obj.coordinate.dd_latitude, obj.coordinate.dd_longitude)
         return WeatherSerializer(weather).data
+
+    @extend_schema_field(BatchDetailSerializer(many=True))
+    def get_batches(self, obj):
+        batches = obj.batch_set.all().order_by("-updated_at")
+        return BatchDetailSerializer(batches, many=True).data
 
 
 class CoordinatesMapSerializer(serializers.ModelSerializer[Coordinate]):
