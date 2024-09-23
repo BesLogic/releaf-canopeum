@@ -7,3 +7,16 @@
     top: 0px;
   }
 }
+
+input[type=number].no-spinner {
+  -webkit-appearance: none; // WebKit browsers
+  appearance: none; // Standard property
+  -moz-appearance: textfield; // Firefox
+
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}

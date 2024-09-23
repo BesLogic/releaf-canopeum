@@ -48,9 +48,15 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
       : onChange([...selected, { option, quantity: 1 }])
   }
 
-  const updateQuantity = (optionIndex: number, quantityVariation: number) => {
+  const updateQuantity = (
+    optionIndex: number,
+    quantity: number,
+    changeType: 'variation' | 'absolute' = 'variation',
+  ) => {
     const updatedOption = { ...selected[optionIndex] }
-    updatedOption.quantity = (updatedOption.quantity ?? 0) + quantityVariation
+    updatedOption.quantity = changeType === 'absolute'
+      ? Math.max(quantity, 1)
+      : (updatedOption.quantity ?? 1) + quantity
 
     const updatedSelected = [...selected]
 
@@ -143,7 +149,14 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
                     <span className='material-symbols-outlined fill-icon icon-xs'>remove</span>
                   </button>
 
-                  <div className='text-center mx-3'>{optionQuantity.quantity}</div>
+                  <input
+                    className='form-control no-spinner'
+                    onChange={event =>
+                      updateQuantity(index, Number(event.target.value), 'absolute')}
+                    style={{ width: '3.5rem', margin: '0 0.5rem' }}
+                    type='number'
+                    value={optionQuantity.quantity}
+                  />
 
                   <button
                     className='btn btn-outline-dark btn-sm icon-button p-1'
