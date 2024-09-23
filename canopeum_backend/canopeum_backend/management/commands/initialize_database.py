@@ -161,8 +161,19 @@ def create_posts_for_site(site):
 
 def create_batch_species_for_batch(batch):
     num_species = random.randint(4, 8)
+    total_tree_types = len(tree_types)
+
+    # Ensure num_species is not greater than the total number
+    # of tree types available to avoid an infinite loop
+    num_species = min(num_species, total_tree_types)
+
+    used_tree_ids = set()
     for _ in range(num_species):
-        tree_type_id = random.randint(1, len(tree_types))
+        while True:
+            tree_type_id = random.randint(1, total_tree_types)
+            if tree_type_id not in used_tree_ids:
+                used_tree_ids.add(tree_type_id)
+                break
         BatchSpecies.objects.create(
             batch=batch,
             tree_type=Treetype.objects.get(pk=tree_type_id),
