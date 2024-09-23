@@ -217,6 +217,7 @@
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
+  "yaml.format.printWidth": 100,
 
   /*
   * Powershell
