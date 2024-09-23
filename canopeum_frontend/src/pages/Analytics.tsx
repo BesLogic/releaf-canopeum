@@ -11,7 +11,7 @@ import { LanguageContext } from '@components/context/LanguageContext'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
 import { coordinateToString } from '@models/types/Coordinate'
-import { type SiteSummary, Species, type User } from '@services/api'
+import type { SiteSummary, User } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
 
 const Analytics = () => {
@@ -53,8 +53,6 @@ const Analytics = () => {
         ? await assetFormatter(data.siteImage)
         : undefined
 
-      const species = data.species.map(specie => new Species(specie))
-
       const {
         dmsLatitude,
         dmsLongitude,
@@ -63,6 +61,7 @@ const Analytics = () => {
         presentation,
         researchPartner,
         size,
+        species,
         visibleOnMap,
       } = data
 
