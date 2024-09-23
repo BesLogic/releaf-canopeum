@@ -91,8 +91,8 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "dprint.dprint"
   },
-  "dprint.path": "node_modules/dprint/dprint",
-  "typescript.tsdk": "node_modules/typescript/lib",
+  "dprint.path": "canopeum_frontend/node_modules/dprint/dprint",
+  "typescript.tsdk": "canopeum_frontend/node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "js/ts.implicitProjectConfig.checkJs": true,
   "javascript.preferences.quoteStyle": "single",
