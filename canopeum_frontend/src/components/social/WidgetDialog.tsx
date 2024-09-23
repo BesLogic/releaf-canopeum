@@ -92,7 +92,7 @@ const WidgetDialog = ({ handleClose, open }: Props) => {
           onClick={() => handleClose('save', innerWidget)}
           type='button'
         >
-          {t('social.widgets.save')}
+          {t('social.widgets.submit')}
         </button>
       </DialogActions>
     </Dialog>
