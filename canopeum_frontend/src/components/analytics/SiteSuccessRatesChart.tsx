@@ -12,18 +12,20 @@ type SiteSummaryChartOptions = {
 }
 
 const buildChartOptions = (siteSummaries: SiteSummary[]) => {
-  // total-functions/no-partial-division -- length checked above
-  const average = siteSummaries.reduce(
-    (accumulator, current) => accumulator + current.progress,
-    0,
-  ) / siteSummaries.length
-
   const options: SiteSummaryChartOptions = {
     groups: [],
     series: [],
     colors: [],
-    average,
+    average: 0,
   }
+  if (siteSummaries.length === 0) return options
+
+  // total-functions/no-partial-division -- length checked above
+  options.average = siteSummaries.reduce(
+    (accumulator, current) => accumulator + current.progress,
+    0,
+  ) / siteSummaries.length
+
   let siteIndex = 0
   for (const site of siteSummaries) {
     // We can't color individual groups, only series.
@@ -35,7 +37,7 @@ const buildChartOptions = (siteSummaries: SiteSummary[]) => {
     strackedSerie[siteIndex] = site.progress
 
     options.colors.push(
-      site.progress > average
+      site.progress > options.average
         ? 'var(--bs-primary)'
         : 'var(--bs-secondary)',
     )
