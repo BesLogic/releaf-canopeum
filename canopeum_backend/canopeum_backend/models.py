@@ -72,8 +72,8 @@ class Asset(models.Model):
 
 class Batch(models.Model):
     site = models.ForeignKey("Site", models.CASCADE, blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
     name = models.TextField(blank=True, null=True)
     sponsor = models.TextField(blank=True, null=True)
     size = models.IntegerField(blank=True, null=True)
