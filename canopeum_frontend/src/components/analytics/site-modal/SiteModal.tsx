@@ -8,7 +8,7 @@ import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
 import { type Coordinate, defaultLatitude, defaultLongitude, extractCoordinate } from '@models/types/Coordinate'
-import type { SiteType } from '@services/api'
+import { type SiteType, Species } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 
 type Props = {
@@ -20,11 +20,6 @@ type Props = {
   readonly siteId: number | undefined,
 }
 
-export type TreeTypeDto = {
-  id: number,
-  quantity: number,
-}
-
 export type SiteDto = {
   siteName?: string,
   siteType?: number,
@@ -33,7 +28,7 @@ export type SiteDto = {
   dmsLongitude: Coordinate,
   presentation?: string,
   size?: number,
-  species: TreeTypeDto[],
+  species: Species[],
   researchPartner?: boolean,
   visibleOnMap?: boolean,
 }
@@ -81,10 +76,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
         : defaultLongitude,
       presentation: siteDetail.description,
       size: Number(siteDetail.size),
-      species: siteDetail.siteTreeSpecies.map(specie => ({
-        id: specie.typeId,
-        quantity: specie.quantity,
-      } as TreeTypeDto)),
+      species: siteDetail.siteTreeSpecies.map(specie => new Species(specie)),
       researchPartner: siteDetail.researchPartnership,
       visibleOnMap: siteDetail.visibleMap,
     })
@@ -210,7 +202,11 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
           <div className='mb-3'>
             <TreeSpeciesSelector
               label='analytics.site-modal.site-tree-species'
-              onChange={newSpecies => setSite(current => ({ ...current, species: newSpecies }))}
+              onChange={species =>
+                setSite(current => ({
+                  ...current,
+                  species,
+                }))}
               species={site.species}
             />
           </div>
