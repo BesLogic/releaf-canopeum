@@ -3464,6 +3464,7 @@ export interface IBatchMulchLayer {
 }
 
 export class BatchSeed implements IBatchSeed {
+  readonly id!: number
   quantity?: number | undefined
   readonly en!: string
   readonly fr!: string;
@@ -3487,6 +3488,7 @@ export class BatchSeed implements IBatchSeed {
           this[property] = _data[property]
         }
       }
+      ;(<any> this).id = _data['id']
       this.quantity = _data['quantity']
       ;(<any> this).en = _data['en']
       ;(<any> this).fr = _data['fr']
@@ -3507,6 +3509,7 @@ export class BatchSeed implements IBatchSeed {
         data[property] = this[property]
       }
     }
+    data['id'] = this.id
     data['quantity'] = this.quantity
     data['en'] = this.en
     data['fr'] = this.fr
@@ -3523,6 +3526,7 @@ export interface IBatchSeed {
 }
 
 export class BatchSpecies implements IBatchSpecies {
+  readonly id!: number
   quantity?: number | undefined
   readonly en!: string
   readonly fr!: string;
@@ -3546,6 +3550,7 @@ export class BatchSpecies implements IBatchSpecies {
           this[property] = _data[property]
         }
       }
+      ;(<any> this).id = _data['id']
       this.quantity = _data['quantity']
       ;(<any> this).en = _data['en']
       ;(<any> this).fr = _data['fr']
@@ -3566,6 +3571,7 @@ export class BatchSpecies implements IBatchSpecies {
         data[property] = this[property]
       }
     }
+    data['id'] = this.id
     data['quantity'] = this.quantity
     data['en'] = this.en
     data['fr'] = this.fr
@@ -5828,7 +5834,6 @@ export interface ISiteType {
 
 export class Sitetreespecies implements ISitetreespecies {
   readonly id!: number
-  readonly typeId!: number
   quantity?: number | undefined
   readonly en!: string
   readonly fr!: string;
@@ -5853,7 +5858,6 @@ export class Sitetreespecies implements ISitetreespecies {
         }
       }
       ;(<any> this).id = _data['id']
-      ;(<any> this).typeId = _data['typeId']
       this.quantity = _data['quantity']
       ;(<any> this).en = _data['en']
       ;(<any> this).fr = _data['fr']
@@ -5875,7 +5879,6 @@ export class Sitetreespecies implements ISitetreespecies {
       }
     }
     data['id'] = this.id
-    data['typeId'] = this.typeId
     data['quantity'] = this.quantity
     data['en'] = this.en
     data['fr'] = this.fr
@@ -5885,7 +5888,6 @@ export class Sitetreespecies implements ISitetreespecies {
 
 export interface ISitetreespecies {
   id: number
-  typeId: number
   quantity?: number | undefined
   en: string
   fr: string

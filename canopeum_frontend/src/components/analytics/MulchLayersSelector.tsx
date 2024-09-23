@@ -19,41 +19,52 @@ const MulchLayersSelector = ({ onChange, mulchLayers }: Props) => {
   const { translateValue } = useContext(LanguageContext)
   const { getApiClient } = useApiClient()
 
-  const [availableMulchLayers, setAvailableMulchLayers] = useState<MulchLayerType[]>([])
+  const [availableMulchLayers, setAvailableMulchLayers] = useState<Map<number, MulchLayerType>>(
+    new Map(),
+  )
   const [options, setOptions] = useState<SelectorOption<number>[]>([])
   const [selected, setSelected] = useState<SelectorOptionQuantity<number>[]>([])
 
-  const fetchMulchLayers = useCallback(
-    async () => {
-      const mulchLayerTypesResponse = await getApiClient().mulchLayerClient.allTypes()
-      setAvailableMulchLayers(mulchLayerTypesResponse)
-      setOptions(mulchLayerTypesResponse.map(mulchLayerType => ({
-        value: mulchLayerType.id,
-        displayText: translateValue(mulchLayerType),
-      })))
-    },
-    [getApiClient, translateValue],
-  )
-
-  useEffect(() => void fetchMulchLayers(), [fetchMulchLayers])
-
   useEffect(() => {
-    if (!mulchLayers) return
+    const fetchMulchLayers = async () => {
+      const mulchLayerTypesResponse = await getApiClient().mulchLayerClient.allTypes()
 
-    setSelected(mulchLayers.map(mulchLayer => ({
-      option: {
-        displayText: translateValue(mulchLayer),
-        value: mulchLayer.id,
-      },
-    })))
-  }, [mulchLayers, translateValue])
+      const mulchLayerMap = new Map<number, MulchLayerType>()
+      const mulchLayerOptions = []
+      for (const currentMulchLayer of mulchLayerTypesResponse) {
+        mulchLayerMap.set(currentMulchLayer.id, currentMulchLayer)
+        mulchLayerOptions.push({
+          value: currentMulchLayer.id,
+          displayText: translateValue(currentMulchLayer),
+        })
+      }
+
+      setAvailableMulchLayers(mulchLayerMap)
+      setOptions(mulchLayerOptions)
+    }
+    void fetchMulchLayers()
+  }, [getApiClient, translateValue])
+
+  useEffect(() =>
+    mulchLayers &&
+    setSelected(
+      mulchLayers.map(mulchLayer => {
+        const matchingMulchLayer = availableMulchLayers.get(mulchLayer.id)
+        if (!matchingMulchLayer) return null
+
+        return {
+          option: {
+            displayText: translateValue(matchingMulchLayer),
+            value: matchingMulchLayer.id,
+          },
+        }
+      }).filter(notEmpty),
+    ), [availableMulchLayers, mulchLayers, translateValue])
 
   const handleChange = useCallback((selectedOptions: SelectorOptionQuantity<number>[]) => {
     const selectedMulchLayers = selectedOptions
       .map(optionQuantity => {
-        const matchingMulchLayer = availableMulchLayers.find(mulchLayerOption =>
-          mulchLayerOption.id === optionQuantity.option.value
-        )
+        const matchingMulchLayer = availableMulchLayers.get(optionQuantity.option.value)
         if (!matchingMulchLayer) return null
 
         return new BatchMulchLayer({
