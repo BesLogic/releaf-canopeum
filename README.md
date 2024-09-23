@@ -54,7 +54,15 @@ For backend
    Install everything under "**WORKSPACE RECOMMENDATIONS**", you can ignore "other recommendations":\
    ![Recommended Extensions](/docs/Recommended_Extensions.png)
 
-4. Set up Django backend and Database: (Skip this section for Frontend only)
+4. Set up Django backend and Database: (Skip this section for Frontend only)\
+   4.1. Add a `canopeum_backend/canopeum_backend/.env` file with the contents:
+
+   ```ini
+   SECRET_KEY_DJANGO_CANOPEUM="not_empty"
+   MYSQL_PASSWORD_CANOPEUM=CanopeumUser12345!@
+   ```
+
+   4.2. Then run:
 
    ```shell
    cd canopeum_backend
