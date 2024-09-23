@@ -457,7 +457,7 @@ class Command(BaseCommand):
             visitor_count=100,
             contact=Contact.objects.create(
                 email="info@canopeum.com",
-                phone="+1 (514) 741-5008",
+                phone="+1 514 741-5008",
                 address="721 Walker avenue, Office 200 Montréal, QC H4C 2H5",
             ),
             image=Asset.objects.first(),
