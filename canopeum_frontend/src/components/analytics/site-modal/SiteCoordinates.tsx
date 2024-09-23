@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { type Coordinate, defaultLatitude, defaultLongitude } from '@models/types/Coordinate'
@@ -9,15 +8,23 @@ type Props = {
   readonly onChange: (latitude: Coordinate, longitude: Coordinate) => void,
 }
 
-const SiteCoordinates = ({ latitude, longitude, onChange }: Props) => {
+const SiteCoordinates = (
+  { latitude = defaultLatitude, longitude = defaultLongitude, onChange }: Props,
+) => {
   const { t } = useTranslation()
-  const [lat, setLat] = useState<Coordinate>(latitude ?? defaultLatitude)
-  const [long, setLong] = useState<Coordinate>(longitude ?? defaultLongitude)
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- onChange is a dependency
-  useEffect(() => onChange(lat, long), [lat, long])
-  useEffect(() => latitude && setLat(latitude), [latitude])
-  useEffect(() => longitude && setLong(longitude), [longitude])
+  const updateCoordinates = (
+    partialCoordinates: Partial<Coordinate>,
+    type: 'latitude' | 'longitude',
+  ) =>
+    onChange(
+      type === 'latitude'
+        ? { ...latitude, ...partialCoordinates }
+        : latitude,
+      type === 'longitude'
+        ? { ...longitude, ...partialCoordinates }
+        : longitude,
+    )
 
   return (
     <>
@@ -34,60 +41,60 @@ const SiteCoordinates = ({ latitude, longitude, onChange }: Props) => {
               className='form-control'
               id='site-dms-latitude-ddd'
               onChange={event =>
-                setLat(current => ({ ...current, degrees: Number(event.target.value) }))}
+                updateCoordinates({ degrees: Number(event.target.value) }, 'latitude')}
               style={{ width: '5rem' }}
               type='number'
-              value={lat.degrees}
+              value={latitude.degrees}
             />
             <span>°</span>
             <input
               className='form-control'
               id='site-dms-latitude-mm'
               onChange={event =>
-                setLat(current => ({ ...current, minutes: Number(event.target.value) }))}
+                updateCoordinates({ minutes: Number(event.target.value) }, 'latitude')}
               style={{ width: '5rem' }}
               type='number'
-              value={lat.minutes}
+              value={latitude.minutes}
             />
             <span>&rsquo;</span>
             <input
               className='form-control'
               id='site-dms-latitude-ss'
               onChange={event =>
-                setLat(current => ({ ...current, seconds: Number(event.target.value) }))}
+                updateCoordinates({ seconds: Number(event.target.value) }, 'latitude')}
               style={{ width: '5rem' }}
               type='number'
-              value={lat.seconds}
+              value={latitude.seconds}
             />
             <span className='d-flex align-items-end'>.</span>
             <input
               className='form-control'
               id='site-dms-latitude-ssss'
               onChange={event =>
-                setLat(current => ({ ...current, miliseconds: Number(event.target.value) }))}
+                updateCoordinates({ miliseconds: Number(event.target.value) }, 'latitude')}
               style={{ width: '5rem' }}
               type='number'
-              value={lat.miliseconds}
+              value={latitude.miliseconds}
             />
             <span>&rdquo;</span>
             <div className='d-flex gap-1 align-items-center text-center'>
               <input
-                checked={lat.cardinal === 'N'}
+                checked={latitude.cardinal === 'N'}
                 className='form-check-input'
                 id='site-dms-latitude-cardinal-n'
                 name='site-dms-latitude-cardinal'
-                onChange={() => setLat(current => ({ ...current, cardinal: 'N' }))}
+                onChange={() => updateCoordinates({ cardinal: 'N' }, 'latitude')}
                 type='radio'
               />
               <label className='form-check-label' htmlFor='site-dms-latitude-cardinal-n'>
                 N
               </label>
               <input
-                checked={lat.cardinal === 'S'}
+                checked={latitude.cardinal === 'S'}
                 className='form-check-input'
                 id='site-dms-latitude-cardinal-s'
                 name='site-dms-latitude-cardinal'
-                onChange={() => setLat(current => ({ ...current, cardinal: 'S' }))}
+                onChange={() => updateCoordinates({ cardinal: 'S' }, 'latitude')}
                 type='radio'
                 value='S'
               />
@@ -106,60 +113,60 @@ const SiteCoordinates = ({ latitude, longitude, onChange }: Props) => {
               className='form-control'
               id='site-dms-longitude-ddd'
               onChange={event =>
-                setLong(current => ({ ...current, degrees: Number(event.target.value) }))}
+                updateCoordinates({ degrees: Number(event.target.value) }, 'longitude')}
               style={{ width: '5rem' }}
               type='number'
-              value={long.degrees}
+              value={longitude.degrees}
             />
             <span>°</span>
             <input
               className='form-control'
               id='site-dms-longitude-mm'
               onChange={event =>
-                setLong(current => ({ ...current, minutes: Number(event.target.value) }))}
+                updateCoordinates({ minutes: Number(event.target.value) }, 'longitude')}
               style={{ width: '5rem' }}
               type='number'
-              value={long.minutes}
+              value={longitude.minutes}
             />
             <span>&rsquo;</span>
             <input
               className='form-control'
               id='site-dms-longitude-ss'
               onChange={event =>
-                setLong(current => ({ ...current, seconds: Number(event.target.value) }))}
+                updateCoordinates({ seconds: Number(event.target.value) }, 'longitude')}
               style={{ width: '5rem' }}
               type='number'
-              value={long.seconds}
+              value={longitude.seconds}
             />
             <span className='d-flex align-items-end'>.</span>
             <input
               className='form-control'
               id='site-dms-longitude-ssss'
               onChange={event =>
-                setLong(current => ({ ...current, miliseconds: Number(event.target.value) }))}
+                updateCoordinates({ miliseconds: Number(event.target.value) }, 'longitude')}
               style={{ width: '5rem' }}
               type='number'
-              value={long.miliseconds}
+              value={longitude.miliseconds}
             />
             <span>&rdquo;</span>
             <div className='d-flex gap-1 align-items-center text-center'>
               <input
-                checked={long.cardinal === 'W'}
+                checked={longitude.cardinal === 'W'}
                 className='form-check-input'
                 id='site-dms-longitude-cardinal-w'
                 name='site-dms-longitude-cardinal'
-                onChange={() => setLong(current => ({ ...current, cardinal: 'W' }))}
+                onChange={() => updateCoordinates({ cardinal: 'W' }, 'longitude')}
                 type='radio'
               />
               <label className='form-check-label' htmlFor='site-dms-longitude-cardinal-w'>
                 W
               </label>
               <input
-                checked={long.cardinal === 'E'}
+                checked={longitude.cardinal === 'E'}
                 className='form-check-input'
                 id='site-dms-longitude-cardinal-e'
                 name='site-dms-longitude-cardinal'
-                onChange={() => setLong(current => ({ ...current, cardinal: 'E' }))}
+                onChange={() => updateCoordinates({ cardinal: 'E' }, 'longitude')}
                 type='radio'
               />
               <label className='form-check-label' htmlFor='site-dms-longitude-cardinal-e'>

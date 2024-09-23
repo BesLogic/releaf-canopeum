@@ -129,9 +129,20 @@ class Batchfertilizer(models.Model):
         ]
 
 
+class MulchlayertypeInternationalization(models.Model):
+    en = models.TextField(db_column="EN", blank=True, null=True)
+    fr = models.TextField(db_column="FR", blank=True, null=True)
+
+
+class Mulchlayertype(models.Model):
+    name = models.ForeignKey(
+        MulchlayertypeInternationalization, models.DO_NOTHING, blank=True, null=True
+    )
+
+
 class Batchmulchlayer(models.Model):
     batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
-    mulch_layer_type = models.ForeignKey("Mulchlayertype", models.DO_NOTHING, blank=True, null=True)
+    mulch_layer_type = models.ForeignKey(Mulchlayertype, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
         constraints: ClassVar[list[models.UniqueConstraint]] = [
@@ -240,17 +251,6 @@ class Coordinate(models.Model):
             dd_longitude=dd_longitude,
             address=formatted_address,
         )
-
-
-class Mulchlayertype(models.Model):
-    name = models.ForeignKey(
-        "MulchlayertypeInternationalization", models.DO_NOTHING, blank=True, null=True
-    )
-
-
-class MulchlayertypeInternationalization(models.Model):
-    en = models.TextField(db_column="EN", blank=True, null=True)
-    fr = models.TextField(db_column="FR", blank=True, null=True)
 
 
 class SitetypeInternationalization(models.Model):
