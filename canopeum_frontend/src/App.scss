@@ -16,13 +16,11 @@ $headings-font-weight: 700;
 
 @import "rsuite/dist/rsuite.min.css";
 
-@import "./assets/styles/GlobalStyles.scss";
-
 @import "../node_modules/bootstrap/scss/variables";
 @import "../node_modules/bootstrap/scss/mixins";
 
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
 
+@import "./assets/styles/GlobalStyles.scss";
+
 $navbar-dark-toggler-border-color: rgba($white, 1);
-$card-bg: $cream;
-$accordion-bg: $cream;
