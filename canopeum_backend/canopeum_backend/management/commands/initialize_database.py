@@ -246,7 +246,6 @@ def create_batches_for_site(site):
         batch = Batch.objects.create(
             name=batch_names[i - 1],
             site=site,
-            created_at=timezone.now(),
             size=random.randint(20, 150),
             sponsor=get_sponsor(),
             soil_condition="Good",
@@ -255,7 +254,6 @@ def create_batches_for_site(site):
             replace_count=plant_count - survived_count,
             total_number_seed=number_of_seed,
             total_propagation=random.randint(0, number_of_seed),
-            updated_at=timezone.now(),
         )
         create_batch_species_for_batch(batch)
         Batchfertilizer.objects.create(
@@ -485,7 +483,6 @@ class Command(BaseCommand):
             body="The season is officially started; "
             + "new plants are starting to grow and our volunteers are very dedicated!",
             share_count=5,
-            created_at=timezone.now(),
         )
         post.media.add(*Asset.objects.filter(asset__contains="canopeum_post_img"))
         create_posts_for_site(site)
