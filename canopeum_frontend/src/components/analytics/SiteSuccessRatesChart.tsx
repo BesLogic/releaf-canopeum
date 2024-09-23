@@ -20,7 +20,7 @@ const buildChartOptions = (siteSummaries: SiteSummary[]) => {
   }
   if (siteSummaries.length === 0) return options
 
-  // eslint-disable-next-line total-functions/no-partial-division -- length checked above
+  // total-functions/no-partial-division -- length checked above
   options.average = siteSummaries.reduce(
     (accumulator, current) => accumulator + current.progress,
     0,
