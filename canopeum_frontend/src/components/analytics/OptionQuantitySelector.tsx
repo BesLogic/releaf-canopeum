@@ -55,8 +55,8 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
   ) => {
     const updatedOption = { ...selected[optionIndex] }
     updatedOption.quantity = changeType === 'absolute'
-      ? quantity
-      : (updatedOption.quantity ?? 0) + quantity
+      ? Math.max(quantity, 1)
+      : (updatedOption.quantity ?? 1) + quantity
 
     const updatedSelected = [...selected]
 
