@@ -9,18 +9,20 @@ module.exports = {
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: ['tsconfig?(.*).json'],
+    // Experimental, but causes pre-commit to actually find the project and avoids OOM
+    EXPERIMENTAL_useProjectService: true,
   },
   ignorePatterns: [
+    // Isn't included in any TSConfig
     '.eslintrc.cjs',
-    'typings.d.ts',
+    'vite.config.ts',
     // Auto-generated
     'src/services/api.ts',
   ],
   rules: {
     'react-refresh/only-export-components': [
       'warn',
-      { allowConstantExport: true },
+      { allowConstantExport: true }, // Works fine in Vite
     ],
     /*
      * Beslogic presets overrides

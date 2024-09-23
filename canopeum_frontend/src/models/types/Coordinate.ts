@@ -34,7 +34,7 @@ export const extractCoordinate = (coordinates: string) => {
   const char2 = coordinates.indexOf("'")
   const char3 = coordinates.indexOf('.')
   const char4 = coordinates.indexOf('"')
-  /* eslint-disable-next-line total-functions/no-unsafe-type-assertion --
+  /* total-functions/no-unsafe-type-assertion --
   NOTE: It should be impossible for the nullish coalescence to happen here,
   We're also type-guarding the string union immediatly after */
   const cardinal = coordinates.at(-1) as Cardinal

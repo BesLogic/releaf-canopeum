@@ -1,1 +1,4 @@
-.env
+# Prevent accidentally comitting files from `npm i` run in invalid location
+node_modules/
+package-lock.json
+!canopeum_frontend/package-lock.json
