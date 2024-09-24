@@ -160,11 +160,11 @@ const EditProfile = () => {
     const newPasswordValid = validateNewPassword()
     const newPasswordConfirmationValid = validateNewPasswordConfirmation()
 
-    return usernameValid &&
-      emailValid &&
-      currentPasswordValid &&
-      newPasswordValid &&
-      newPasswordConfirmationValid
+    return usernameValid
+      && emailValid
+      && currentPasswordValid
+      && newPasswordValid
+      && newPasswordConfirmationValid
   }
 
   const handleCancel = () => {
