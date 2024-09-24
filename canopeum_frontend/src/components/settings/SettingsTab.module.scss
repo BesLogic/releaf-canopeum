@@ -9,5 +9,5 @@
 .selectedSettingsTab {
   border-left: 6px solid map-get($theme-colors, primary);
   // TODO(NicolasDontigny): Export as variable in theme-variables
-  background: #E8F3E9;
+  background: $lightgreen;
 }
