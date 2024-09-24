@@ -249,7 +249,7 @@ def create_batches_for_site(site):
         sponsor = BatchSponsor.objects.create(
             name="Sponsor Test",
             url="https://uilogos.co/",
-            image=Asset.objects.get(asset__contains="batch_logo1"),
+            logo=Asset.objects.get(asset__contains="batch_logo1"),
         )
 
         batch = Batch.objects.create(

@@ -19,6 +19,7 @@ from .models import (
     Batchmulchlayer,
     BatchSeed,
     BatchSpecies,
+    BatchSponsor,
     BatchSupportedSpecies,
     Comment,
     Contact,
@@ -503,12 +504,21 @@ class BatchSpeciesSerializer(serializers.ModelSerializer[BatchSpecies]):
         )
 
 
+class BatchSponsorSerializer(serializers.ModelSerializer[BatchSponsor]):
+    logo = AssetSerializer()
+
+    class Meta:
+        model = BatchSponsor
+        fields = "__all__"
+
+
 class BatchDetailSerializer(serializers.ModelSerializer[Batch]):
     fertilizers = serializers.SerializerMethodField()
     mulch_layers = serializers.SerializerMethodField()
     supported_species = serializers.SerializerMethodField()
     seeds = serializers.SerializerMethodField()
     species = serializers.SerializerMethodField()
+    sponsor = serializers.SerializerMethodField()
     # HACK to allow handling the image with a AssetSerializer separately
     # TODO: Figure out how to feed the image directly to BatchDetailSerializer
     image = AssetSerializer(required=False)
@@ -536,6 +546,10 @@ class BatchDetailSerializer(serializers.ModelSerializer[Batch]):
     @extend_schema_field(BatchSpeciesSerializer(many=True))
     def get_species(self, obj):
         return BatchSpeciesSerializer(obj.batchspecies_set.all(), many=True).data
+
+    @extend_schema_field(BatchSponsorSerializer)
+    def get_sponsor(self, obj: Batch):
+        return BatchSponsorSerializer(obj.sponsor).data
 
 
 class SiteAdminSerializer(serializers.ModelSerializer[Siteadmin]):
@@ -631,7 +645,8 @@ class SiteSummarySerializer(serializers.ModelSerializer[Site]):
 
     def get_sponsors(self, obj) -> list[str]:
         batches = Batch.objects.filter(site=obj)
-        return [batch.sponsor for batch in batches if batch.sponsor]
+        # TODO(NicolasDontigny): include logo and url here
+        return [batch.sponsor.name for batch in batches if batch.sponsor is not None]
 
     @extend_schema_field(BatchDetailSerializer(many=True))
     def get_batches(self, obj):
@@ -683,7 +698,8 @@ class SiteSummaryDetailSerializer(serializers.ModelSerializer[Site]):
 
     def get_sponsors(self, obj) -> list[str]:
         batches = Batch.objects.filter(site=obj)
-        return [batch.sponsor for batch in batches if batch.sponsor]
+        # TODO(NicolasDontigny): Use sponsor logos + urls here?
+        return [batch.sponsor.name for batch in batches if batch.sponsor]
 
     @extend_schema_field(WeatherSerializer)
     def get_weather(self, obj):
