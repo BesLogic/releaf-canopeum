@@ -72,8 +72,8 @@ class Asset(models.Model):
 
 class Batch(models.Model):
     site = models.ForeignKey("Site", models.CASCADE, blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
-    updated_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
     name = models.TextField(blank=True, null=True)
     sponsor = models.TextField(blank=True, null=True)
     size = models.IntegerField(blank=True, null=True)
@@ -121,10 +121,35 @@ class Batchfertilizer(models.Model):
     batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
     fertilizer_type = models.ForeignKey(Fertilizertype, models.DO_NOTHING, blank=True, null=True)
 
+    class Meta:
+        constraints = (
+            models.UniqueConstraint(
+                fields=["batch", "fertilizer_type"], name="unique_fertilizer_per_batch"
+            ),
+        )
+
+
+class MulchlayertypeInternationalization(models.Model):
+    en = models.TextField(db_column="EN", blank=True, null=True)
+    fr = models.TextField(db_column="FR", blank=True, null=True)
+
+
+class Mulchlayertype(models.Model):
+    name = models.ForeignKey(
+        MulchlayertypeInternationalization, models.DO_NOTHING, blank=True, null=True
+    )
+
 
 class Batchmulchlayer(models.Model):
     batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
-    mulch_layer_type = models.ForeignKey("Mulchlayertype", models.DO_NOTHING, blank=True, null=True)
+    mulch_layer_type = models.ForeignKey(Mulchlayertype, models.DO_NOTHING, blank=True, null=True)
+
+    class Meta:
+        constraints = (
+            models.UniqueConstraint(
+                fields=["batch", "mulch_layer_type"], name="unique_mulch_layer_per_batch"
+            ),
+        )
 
 
 class TreespeciestypeInternationalization(models.Model):
@@ -143,16 +168,33 @@ class BatchSpecies(models.Model):
     tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
 
+    class Meta:
+        constraints = (
+            models.UniqueConstraint(fields=["batch", "tree_type"], name="unique_species_per_batch"),
+        )
+
 
 class BatchSeed(models.Model):
     batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
     tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
 
+    class Meta:
+        constraints = (
+            models.UniqueConstraint(fields=["batch", "tree_type"], name="unique_seed_per_batch"),
+        )
+
 
 class BatchSupportedSpecies(models.Model):
     batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
     tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
+
+    class Meta:
+        constraints = (
+            models.UniqueConstraint(
+                fields=["batch", "tree_type"], name="unique_supported_species_per_batch"
+            ),
+        )
 
 
 class Contact(models.Model):
@@ -209,17 +251,6 @@ class Coordinate(models.Model):
             dd_longitude=dd_longitude,
             address=formatted_address,
         )
-
-
-class Mulchlayertype(models.Model):
-    name = models.ForeignKey(
-        "MulchlayertypeInternationalization", models.DO_NOTHING, blank=True, null=True
-    )
-
-
-class MulchlayertypeInternationalization(models.Model):
-    en = models.TextField(db_column="EN", blank=True, null=True)
-    fr = models.TextField(db_column="FR", blank=True, null=True)
 
 
 class SitetypeInternationalization(models.Model):
@@ -331,6 +362,13 @@ class Sitetreespecies(models.Model):
     site = models.ForeignKey(Site, models.CASCADE, blank=True, null=True)
     tree_type = models.ForeignKey("Treetype", models.DO_NOTHING, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        constraints = (
+            models.UniqueConstraint(
+                fields=["site", "tree_type"], name="unique_tree_species_per_site"
+            ),
+        )
 
 
 class Widget(models.Model):

@@ -10,7 +10,7 @@ import SupportSpeciesSelector from '@components/analytics/SupportSpeciesSelector
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
-import { Seeds, type SiteSummary, Species } from '@services/api'
+import type { Batchfertilizer, BatchMulchLayer, BatchSupportedSpecies, Seeds, SiteSummary, Species } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
 import { floorNumberValue } from '@utils/formUtils'
 
@@ -32,11 +32,11 @@ type CreateBatchDto = {
   totalNumberSeed?: number,
   totalPropagation?: number,
   image?: File,
-  fertilizerIds: number[],
-  mulchLayerIds: number[],
+  fertilizers: Batchfertilizer[],
+  mulchLayers: BatchMulchLayer[],
   seeds: Seeds[],
   species: Species[],
-  supportedSpecieIds: number[],
+  supportedSpecies: BatchSupportedSpecies[],
 }
 
 const defaultCreateBatch: CreateBatchDto = {
@@ -45,15 +45,15 @@ const defaultCreateBatch: CreateBatchDto = {
   size: undefined,
   soilCondition: undefined,
   sponsor: undefined,
-  supportedSpecieIds: [],
+  supportedSpecies: [],
   plantCount: undefined,
   survivedCount: undefined,
   replaceCount: undefined,
   totalNumberSeed: undefined,
   totalPropagation: undefined,
   image: undefined,
-  fertilizerIds: [],
-  mulchLayerIds: [],
+  fertilizers: [],
+  mulchLayers: [],
   seeds: [],
   species: [],
 }
@@ -72,9 +72,9 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
       size,
       soilCondition,
       sponsor,
-      fertilizerIds,
-      mulchLayerIds,
-      supportedSpecieIds,
+      fertilizers,
+      mulchLayers,
+      supportedSpecies,
       plantCount,
       survivedCount,
       replaceCount,
@@ -102,11 +102,11 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
         totalNumberSeed,
         totalPropagation,
         batchImage,
-        fertilizerIds,
-        mulchLayerIds,
+        fertilizers.map(fertilizer => fertilizer.id),
+        mulchLayers.map(mulchLayer => mulchLayer.id),
         seeds,
         species,
-        supportedSpecieIds,
+        supportedSpecies.map(supportedSpecie => supportedSpecie.id),
       )
     } catch {
       openAlertSnackbar(
@@ -205,10 +205,11 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
                   species =>
                     setBatch(current => ({
                       ...current,
-                      species: species.map(specie => new Species(specie)),
+                      species,
                     })),
                   [],
                 )}
+                species={batch.species}
               />
             </div>
 
@@ -227,22 +228,24 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
             </div>
 
             <FertilizersSelector
+              fertilizers={batch.fertilizers}
               onChange={useCallback(
                 fertilizers =>
                   setBatch(current => ({
                     ...current,
-                    fertilizerIds: fertilizers.map(fertilizer => fertilizer.id),
+                    fertilizers,
                   })),
                 [],
               )}
             />
 
             <MulchLayersSelector
+              mulchLayers={batch.mulchLayers}
               onChange={useCallback(
                 mulchLayers =>
                   setBatch(current => ({
                     ...current,
-                    mulchLayerIds: mulchLayers.map(layer => layer.id),
+                    mulchLayers,
                   })),
                 [],
               )}
@@ -253,10 +256,11 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
                 supportedSpecies =>
                   setBatch(current => ({
                     ...current,
-                    supportedSpecieIds: supportedSpecies.map(specie => specie.id),
+                    supportedSpecies,
                   })),
                 [],
               )}
+              species={batch.supportedSpecies}
             />
 
             <div>
@@ -317,10 +321,11 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
                   species =>
                     setBatch(current => ({
                       ...current,
-                      seeds: species.map(specie => new Seeds(specie)),
+                      seeds: species,
                     })),
                   [],
                 )}
+                species={batch.seeds}
               />
             </div>
 
@@ -371,7 +376,7 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
       <DialogActions>
         <button
           className='btn btn-outline-primary'
-          onClick={() => handleClose()}
+          onClick={() => onClose()}
           type='button'
         >
           {t('generic.cancel')}

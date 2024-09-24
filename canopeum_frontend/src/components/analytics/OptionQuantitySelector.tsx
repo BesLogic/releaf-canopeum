@@ -28,79 +28,49 @@ export type SelectorOptionQuantity<TValue> = {
 const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
   { id, label, options, selected, withQuantity, onChange }: Props<TValue>,
 ) => {
-  const [availableOptions, setAvailableOptions] = useState(options)
   const [filteredOptions, setFilteredOptions] = useState(options)
-  const [selectedOptions, setSelectedOptions] = useState(selected)
-
   const [isAutocompleteOpen, setIsAutocompleteOpen] = useState(false)
-
   const [searchValue, setSearchValue] = useState('')
-
-  useEffect(() => setAvailableOptions(options), [options])
-  useEffect(() => setFilteredOptions(availableOptions), [availableOptions])
-  // it will loop infinitely if we add onChange
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- comment above
-  useEffect(() => onChange(selectedOptions), [selectedOptions])
 
   useEffect(() =>
     setFilteredOptions(
-      availableOptions.filter(value =>
-        value.displayText.toLowerCase().includes(searchValue.toLowerCase())
-      ),
-    ), [searchValue, availableOptions])
+      options.filter(value => value.displayText.toLowerCase().includes(searchValue.toLowerCase())),
+    ), [searchValue, options])
 
   const onSelect = (option: SelectorOption<TValue>) => {
     setSearchValue('')
-    const existingOption = selectedOptions.find(optionQuantity =>
+    const existingOptionIndex = selected.findIndex(optionQuantity =>
       optionQuantity.option.value === option.value
     )
 
-    if (existingOption) {
-      addQuantity(option)
-
-      return
-    }
-
-    setSelectedOptions(current => [...current, { option, quantity: 0 }])
+    existingOptionIndex >= 0
+      ? updateQuantity(existingOptionIndex, 1)
+      : onChange([...selected, { option, quantity: 1 }])
   }
 
-  const addQuantity = (option: SelectorOption<TValue>) => {
-    const updated = selectedOptions.map(optionQuantity => {
-      if (optionQuantity.option.value === option.value) {
-        if (!optionQuantity.quantity) optionQuantity.quantity = 0
-        optionQuantity.quantity += 1
+  const updateQuantity = (
+    optionIndex: number,
+    quantity: number,
+    changeType: 'variation' | 'absolute' = 'variation',
+  ) => {
+    const updatedOption = { ...selected[optionIndex] }
+    updatedOption.quantity = changeType === 'absolute'
+      ? Math.max(quantity, 1)
+      : (updatedOption.quantity ?? 1) + quantity
 
-        return optionQuantity
-      }
+    const updatedSelected = [...selected]
 
-      return optionQuantity
-    })
+    updatedOption.quantity <= 0
+      ? updatedSelected.splice(optionIndex, 1)
+      : updatedSelected[optionIndex] = updatedOption
 
-    setSelectedOptions(updated)
+    onChange(updatedSelected)
   }
 
-  const subQuantity = (option: SelectorOption<TValue>) => {
-    const updated = selectedOptions.map(optionQuantity => {
-      if (optionQuantity.option.value === option.value) {
-        if (!optionQuantity.quantity) optionQuantity.quantity = 0
-        optionQuantity.quantity -= 1
-
-        return optionQuantity
-      }
-
-      return optionQuantity
-    })
-
-    setSelectedOptions(updated)
-  }
-
-  useEffect((): void => setSelectedOptions(selected), [selected])
-
-  const removeType = (option: SelectorOption<TValue>) => {
-    setSelectedOptions(
-      selectedOptions.filter(optionQuantity => optionQuantity.option.value !== option.value),
-    )
-    setAvailableOptions(current => [...current, option])
+  const removeOption = (optionIndex: number) => {
+    const updatedSelected = [...selected]
+    updatedSelected.splice(optionIndex, 1)
+    onChange(updatedSelected)
   }
 
   return (
@@ -161,7 +131,7 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
       />
 
       <ul className='list-group list-group-flush overflow-hidden mt-1'>
-        {selectedOptions.map(optionQuantity => (
+        {selected.map((optionQuantity, index) => (
           <li
             className='list-group-item row d-flex justify-content-between'
             key={`selected-specie-${optionQuantity.option.value}`}
@@ -173,17 +143,24 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
                 <div className='d-flex justify-content-center align-items-center'>
                   <button
                     className='btn btn-outline-dark btn-sm icon-button p-1'
-                    onClick={() => subQuantity(optionQuantity.option)}
+                    onClick={() => updateQuantity(index, -1)}
                     type='button'
                   >
                     <span className='material-symbols-outlined fill-icon icon-xs'>remove</span>
                   </button>
 
-                  <div className='text-center mx-3'>{optionQuantity.quantity}</div>
+                  <input
+                    className='form-control no-spinner'
+                    onChange={event =>
+                      updateQuantity(index, Number(event.target.value), 'absolute')}
+                    style={{ width: '3.5rem', margin: '0 0.5rem' }}
+                    type='number'
+                    value={optionQuantity.quantity}
+                  />
 
                   <button
                     className='btn btn-outline-dark btn-sm icon-button p-1'
-                    onClick={() => addQuantity(optionQuantity.option)}
+                    onClick={() => updateQuantity(index, 1)}
                     type='button'
                   >
                     <span className='material-symbols-outlined fill-icon icon-xs'>add</span>
@@ -195,7 +172,7 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
             <div className='col-2 d-flex justify-content-end'>
               <button
                 className='unstyled-button icon-button p-0'
-                onClick={() => removeType(optionQuantity.option)}
+                onClick={() => removeOption(index)}
                 type='button'
               >
                 <span className='material-symbols-outlined'>cancel</span>

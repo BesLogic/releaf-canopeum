@@ -1,5 +1,5 @@
 /* eslint-disable max-lines -- disable max-lines */
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import EditBatchModal from '@components/analytics/batch-modal/EditBatchModal'
@@ -34,6 +34,8 @@ const BatchTable = (props: Props) => {
     },
     [getApiClient],
   )
+
+  useEffect(() => setBatches(props.batches), [props.batches])
 
   return (
     <div className='overflow-auto'>

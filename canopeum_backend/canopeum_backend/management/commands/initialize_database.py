@@ -161,8 +161,19 @@ def create_posts_for_site(site):
 
 def create_batch_species_for_batch(batch):
     num_species = random.randint(4, 8)
+    total_tree_types = len(tree_types)
+
+    # Ensure num_species is not greater than the total number
+    # of tree types available to avoid an infinite loop
+    num_species = min(num_species, total_tree_types)
+
+    used_tree_ids = set()
     for _ in range(num_species):
-        tree_type_id = random.randint(1, len(tree_types))
+        while True:
+            tree_type_id = random.randint(1, total_tree_types)
+            if tree_type_id not in used_tree_ids:
+                used_tree_ids.add(tree_type_id)
+                break
         BatchSpecies.objects.create(
             batch=batch,
             tree_type=Treetype.objects.get(pk=tree_type_id),
@@ -235,7 +246,6 @@ def create_batches_for_site(site):
         batch = Batch.objects.create(
             name=batch_names[i - 1],
             site=site,
-            created_at=timezone.now(),
             size=random.randint(20, 150),
             sponsor=get_sponsor(),
             soil_condition="Good",
@@ -244,7 +254,6 @@ def create_batches_for_site(site):
             replace_count=plant_count - survived_count,
             total_number_seed=number_of_seed,
             total_propagation=random.randint(0, number_of_seed),
-            updated_at=timezone.now(),
         )
         create_batch_species_for_batch(batch)
         Batchfertilizer.objects.create(
@@ -474,7 +483,6 @@ class Command(BaseCommand):
             body="The season is officially started; "
             + "new plants are starting to grow and our volunteers are very dedicated!",
             share_count=5,
-            created_at=timezone.now(),
         )
         post.media.add(*Asset.objects.filter(asset__contains="canopeum_post_img"))
         create_posts_for_site(site)
