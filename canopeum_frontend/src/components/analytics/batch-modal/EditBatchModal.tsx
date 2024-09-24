@@ -9,7 +9,7 @@ import SupportSpeciesSelector from '@components/analytics/SupportSpeciesSelector
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
-import { type BatchDetail, type Batchfertilizer, type BatchMulchLayer, type BatchSupportedSpecies, Seeds, Species } from '@services/api'
+import { type BatchDetail, type BatchSupportedSpecies, type FertilizerType, type MulchLayerType, Seeds, Species } from '@services/api'
 import { floorNumberValue } from '@utils/formUtils'
 
 type Props = {
@@ -29,8 +29,8 @@ type EditBatchDto = {
   totalNumberSeed?: number,
   totalPropagation?: number,
   // TODO: image?: File,
-  fertilizers: Batchfertilizer[],
-  mulchLayers: BatchMulchLayer[],
+  fertilizers: FertilizerType[],
+  mulchLayers: MulchLayerType[],
   seeds: Seeds[],
   species: Species[],
   supportedSpecies: BatchSupportedSpecies[],

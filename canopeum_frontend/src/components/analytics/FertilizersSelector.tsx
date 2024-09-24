@@ -4,13 +4,13 @@ import { useTranslation } from 'react-i18next'
 import OptionQuantitySelector, { type SelectorOption, type SelectorOptionQuantity } from '@components/analytics/OptionQuantitySelector'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
-import { Batchfertilizer, type FertilizerType } from '@services/api'
+import { FertilizerType } from '@services/api'
 import { notEmpty } from '@utils/arrayUtils'
 
 type Props = {
   readonly fertilizers?: FertilizerType[],
   // Make sure that onChange is included in a useCallback if part of a component
-  readonly onChange: (selectedFertilizers: Batchfertilizer[]) => void,
+  readonly onChange: (selectedFertilizers: FertilizerType[]) => void,
 }
 
 const FertilizersSelector = ({ onChange, fertilizers }: Props) => {
@@ -66,7 +66,7 @@ const FertilizersSelector = ({ onChange, fertilizers }: Props) => {
         const matchingFertilizer = availableFertilizers.get(optionQuantity.option.value)
         if (!matchingFertilizer) return null
 
-        return new Batchfertilizer({
+        return new FertilizerType({
           ...matchingFertilizer,
         })
       })

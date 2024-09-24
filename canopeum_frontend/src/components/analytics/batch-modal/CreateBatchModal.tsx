@@ -10,7 +10,7 @@ import SupportSpeciesSelector from '@components/analytics/SupportSpeciesSelector
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
-import type { Batchfertilizer, BatchMulchLayer, BatchSupportedSpecies, Seeds, SiteSummary, Species } from '@services/api'
+import type { FertilizerType, MulchLayerType, BatchSponsor, BatchSupportedSpecies, Seeds, SiteSummary, Species } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
 import { floorNumberValue } from '@utils/formUtils'
 
@@ -20,10 +20,16 @@ type Props = {
   readonly handleClose: (reason?: 'create') => void,
 }
 
+type CreateBatchSponsorDto = {
+  name: string,
+  websiteUrl: string,
+  logo: File,
+}
+
 type CreateBatchDto = {
   siteId: number,
   name?: string,
-  sponsor?: string,
+  sponsor?: CreateBatchSponsorDto,
   size?: number,
   soilCondition?: string,
   plantCount?: number,
@@ -32,8 +38,8 @@ type CreateBatchDto = {
   totalNumberSeed?: number,
   totalPropagation?: number,
   image?: File,
-  fertilizers: Batchfertilizer[],
-  mulchLayers: BatchMulchLayer[],
+  fertilizers: FertilizerType[],
+  mulchLayers: MulchLayerType[],
   seeds: Seeds[],
   species: Species[],
   supportedSpecies: BatchSupportedSpecies[],
@@ -65,6 +71,7 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
 
   const [batch, setBatch] = useState<CreateBatchDto>(defaultCreateBatch)
   const [batchImageURL, setBatchImageURL] = useState<string>()
+  const [sponsorLogoUrl, setSponsorLogoUrl] = useState<string>()
 
   const handleSubmitBatch = async () => {
     const {
@@ -128,6 +135,19 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
     setBatchImageURL(URL.createObjectURL(file))
   }
 
+  const onSponsorLogoUpload = (file: File) => {
+    // Update sponsor value here?
+    setBatch(value => ({
+      ...value,
+      sponsor: {
+        name: value.sponsor?.name ?? '',
+        websiteUrl: value.sponsor?.websiteUrl ?? '',
+        logo: file,
+      },
+    }))
+    setSponsorLogoUrl(URL.createObjectURL(file))
+  }
+
   const onClose = () => {
     resetBatch()
     handleClose()
@@ -163,16 +183,42 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
             </div>
 
             <div>
-              <label className='form-label text-capitalize' htmlFor='sponsor'>
-                {t('analyticsSite.batch-modal.sponsor-label')}
+              <label className='form-label text-capitalize' htmlFor='sponsor-name'>
+                {t('analyticsSite.batch-modal.sponsor-name-label')}
               </label>
               <input
                 className='form-control'
-                id='sponsor'
-                onChange={event => setBatch(value => ({ ...value, sponsor: event.target.value }))}
+                id='sponsor-name'
+                onChange={event =>
+                  setBatch(value => ({
+                    ...value,
+                    sponsor: value.sponsor
+                      ? { ...value.sponsor }
+                      : undefined,
+                  }))}
+                type='text'
+                value={batch.sponsor?.name}
+              />
+            </div>
+
+            <div>
+              <label className='form-label text-capitalize' htmlFor='sponsor-website-url'>
+                {t('analyticsSite.batch-modal.sponsor-website-url-label')}
+              </label>
+              <input
+                className='form-control'
+                id='sponsor-website-url'
+                onChange={event => setBatch(value => ({ ...value, - }))}
                 type='text'
                 value={batch.sponsor}
               />
+            </div>
+
+            <div>
+              <label className='form-label text-capitalize' htmlFor='sponsor-logo'>
+                {t('analyticsSite.batch-modal.sponsor-logo-label')}
+              </label>
+              <ImageUpload imageUrl={sponsorLogoUrl} onChange={onSponsorLogoUpload} />
             </div>
 
             <div>

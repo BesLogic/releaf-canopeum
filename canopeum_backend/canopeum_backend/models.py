@@ -236,14 +236,12 @@ class FertilizertypeInternationalization(models.Model):
 
 
 class Fertilizertype(models.Model):
-    name = models.ForeignKey(
-        FertilizertypeInternationalization, models.DO_NOTHING, blank=True, null=True
-    )
+    name = models.ForeignKey(FertilizertypeInternationalization, models.DO_NOTHING)
 
 
 class Batchfertilizer(models.Model):
-    batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
-    fertilizer_type = models.ForeignKey(Fertilizertype, models.DO_NOTHING, blank=True, null=True)
+    batch = models.ForeignKey(Batch, models.CASCADE)
+    fertilizer_type = models.ForeignKey(Fertilizertype, models.RESTRICT)
 
     class Meta:
         constraints = (
@@ -265,8 +263,8 @@ class Mulchlayertype(models.Model):
 
 
 class Batchmulchlayer(models.Model):
-    batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
-    mulch_layer_type = models.ForeignKey(Mulchlayertype, models.DO_NOTHING, blank=True, null=True)
+    batch = models.ForeignKey(Batch, models.CASCADE)
+    mulch_layer_type = models.ForeignKey(Mulchlayertype, models.DO_NOTHING)
 
     class Meta:
         constraints = (

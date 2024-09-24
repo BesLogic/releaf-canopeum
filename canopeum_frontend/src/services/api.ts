@@ -3222,8 +3222,8 @@ export interface IAsset {
 
 export class BatchDetail implements IBatchDetail {
   readonly id!: number
-  readonly fertilizers!: Batchfertilizer[]
-  readonly mulchLayers!: BatchMulchLayer[]
+  readonly fertilizers!: FertilizerType[]
+  readonly mulchLayers!: MulchLayerType[]
   readonly supportedSpecies!: BatchSupportedSpecies[]
   readonly seeds!: BatchSeed[]
   readonly species!: BatchSpecies[]
@@ -3272,13 +3272,13 @@ export class BatchDetail implements IBatchDetail {
       if (Array.isArray(_data['fertilizers'])) {
         ;(<any> this).fertilizers = [] as any
         for (let item of _data['fertilizers']) {
-          ;(<any> this).fertilizers!.push(Batchfertilizer.fromJS(item))
+          ;(<any> this).fertilizers!.push(FertilizerType.fromJS(item))
         }
       }
       if (Array.isArray(_data['mulchLayers'])) {
         ;(<any> this).mulchLayers = [] as any
         for (let item of _data['mulchLayers']) {
-          ;(<any> this).mulchLayers!.push(BatchMulchLayer.fromJS(item))
+          ;(<any> this).mulchLayers!.push(MulchLayerType.fromJS(item))
         }
       }
       if (Array.isArray(_data['supportedSpecies'])) {
@@ -3385,8 +3385,8 @@ export class BatchDetail implements IBatchDetail {
 
 export interface IBatchDetail {
   id: number
-  fertilizers: Batchfertilizer[]
-  mulchLayers: BatchMulchLayer[]
+  fertilizers: FertilizerType[]
+  mulchLayers: MulchLayerType[]
   supportedSpecies: BatchSupportedSpecies[]
   seeds: BatchSeed[]
   species: BatchSpecies[]
@@ -3403,65 +3403,6 @@ export interface IBatchDetail {
   totalNumberSeed?: number | undefined
   totalPropagation?: number | undefined
   site?: number | undefined
-
-  [key: string]: any
-}
-
-export class BatchMulchLayer implements IBatchMulchLayer {
-  readonly id!: string
-  readonly en!: string
-  readonly fr!: string;
-
-  [key: string]: any
-
-  constructor(data?: IBatchMulchLayer) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) {
-          ;(<any> this)[property] = (<any> data)[property]
-        }
-      }
-    }
-  }
-
-  init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) {
-          this[property] = _data[property]
-        }
-      }
-      ;(<any> this).id = _data['id']
-      ;(<any> this).en = _data['en']
-      ;(<any> this).fr = _data['fr']
-    }
-  }
-
-  static fromJS(data: any): BatchMulchLayer {
-    data = typeof data === 'object' ? data : {}
-    let result = new BatchMulchLayer()
-    result.init(data)
-    return result
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {}
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) {
-        data[property] = this[property]
-      }
-    }
-    data['id'] = this.id
-    data['en'] = this.en
-    data['fr'] = this.fr
-    return data
-  }
-}
-
-export interface IBatchMulchLayer {
-  id: string
-  en: string
-  fr: string
 
   [key: string]: any
 }
@@ -3530,7 +3471,7 @@ export interface IBatchSeed {
 }
 
 export class BatchSpecies implements IBatchSpecies {
-  readonly id!: number | undefined
+  readonly id!: number
   quantity?: number | undefined
   readonly en!: string
   readonly fr!: string;
@@ -3584,7 +3525,7 @@ export class BatchSpecies implements IBatchSpecies {
 }
 
 export interface IBatchSpecies {
-  id: number | undefined
+  id: number
   quantity?: number | undefined
   en: string
   fr: string
@@ -3710,65 +3651,6 @@ export class BatchSupportedSpecies implements IBatchSupportedSpecies {
 }
 
 export interface IBatchSupportedSpecies {
-  id: string
-  en: string
-  fr: string
-
-  [key: string]: any
-}
-
-export class Batchfertilizer implements IBatchfertilizer {
-  readonly id!: string
-  readonly en!: string
-  readonly fr!: string;
-
-  [key: string]: any
-
-  constructor(data?: IBatchfertilizer) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) {
-          ;(<any> this)[property] = (<any> data)[property]
-        }
-      }
-    }
-  }
-
-  init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) {
-          this[property] = _data[property]
-        }
-      }
-      ;(<any> this).id = _data['id']
-      ;(<any> this).en = _data['en']
-      ;(<any> this).fr = _data['fr']
-    }
-  }
-
-  static fromJS(data: any): Batchfertilizer {
-    data = typeof data === 'object' ? data : {}
-    let result = new Batchfertilizer()
-    result.init(data)
-    return result
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {}
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) {
-        data[property] = this[property]
-      }
-    }
-    data['id'] = this.id
-    data['en'] = this.en
-    data['fr'] = this.fr
-    return data
-  }
-}
-
-export interface IBatchfertilizer {
   id: string
   en: string
   fr: string
