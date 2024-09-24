@@ -459,7 +459,7 @@ class BatchSeedSerializer(serializers.ModelSerializer[BatchSeed]):
         model = BatchSeed
         fields = ("id", "quantity", "en", "fr")
 
-    def get_id(self, obj: BatchSeed):
+    def get_id(self, obj: BatchSeed) -> int | None:
         return TreeTypeSerializer(obj.tree_type).data.get("id", None)
 
     def get_en(self, obj: BatchSeed):
@@ -486,7 +486,7 @@ class BatchSpeciesSerializer(serializers.ModelSerializer[BatchSpecies]):
         model = BatchSpecies
         fields = ("id", "quantity", "en", "fr")
 
-    def get_id(self, obj: BatchSpecies):
+    def get_id(self, obj: BatchSpecies) -> int | None:
         return TreeTypeSerializer(obj.tree_type).data.get("id", None)
 
     def get_en(self, obj: BatchSpecies):
