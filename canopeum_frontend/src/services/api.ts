@@ -5463,7 +5463,7 @@ export class SiteSocial implements ISiteSocial {
   description?: string | undefined
   contact!: Contact
   announcement!: Announcement
-  readonly sponsors!: string[]
+  readonly sponsors!: BatchSponsor[]
   readonly widget!: Widget[];
 
   [key: string]: any
@@ -5506,7 +5506,7 @@ export class SiteSocial implements ISiteSocial {
       if (Array.isArray(_data['sponsors'])) {
         ;(<any> this).sponsors = [] as any
         for (let item of _data['sponsors']) {
-          ;(<any> this).sponsors!.push(item)
+          ;(<any> this).sponsors!.push(BatchSponsor.fromJS(item))
         }
       }
       if (Array.isArray(_data['widget'])) {
@@ -5543,7 +5543,7 @@ export class SiteSocial implements ISiteSocial {
     if (Array.isArray(this.sponsors)) {
       data['sponsors'] = []
       for (let item of this.sponsors) {
-        data['sponsors'].push(item)
+        data['sponsors'].push(item.toJSON())
       }
     }
     if (Array.isArray(this.widget)) {
@@ -5565,7 +5565,7 @@ export interface ISiteSocial {
   description?: string | undefined
   contact: Contact
   announcement: Announcement
-  sponsors: string[]
+  sponsors: BatchSponsor[]
   widget: Widget[]
 
   [key: string]: any

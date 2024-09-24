@@ -3,6 +3,7 @@ import './SiteSocialHeader.scss'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import BatchSponsorLogo from '@components/batches/BatchSponsorLogo'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { LanguageContext } from '@components/context/LanguageContext'
 import ToggleSwitch from '@components/inputs/ToggleSwitch'
@@ -32,6 +33,8 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
   ])
 
   useEffect(() => setIsPublic(!!site.isPublic), [site])
+
+  console.log('site.sponsors:', site.sponsors)
 
   const onFollowClick = async () => {
     if (!currentUser) return
@@ -131,12 +134,12 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
               <span>{translate('social.site-social-header.sponsors')}:</span>
             </div>
             <div className='row'>
-              {site.sponsors.map(sponsorName => (
+              {site.sponsors.map(sponsor => (
                 <div
                   className='col-12 col-sm-6 col-md-4 col-lg-3 mb-3'
-                  key={`site-${site.id}-sponsor-${sponsorName}`}
+                  key={`site-${site.id}-sponsor-${sponsor.id}`}
                 >
-                  {sponsorName}
+                  <BatchSponsorLogo sponsor={sponsor} />
                 </div>
               ))}
             </div>

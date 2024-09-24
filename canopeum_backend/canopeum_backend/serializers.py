@@ -338,6 +338,14 @@ class AdminUserSitesSerializer(serializers.ModelSerializer[User]):
         return SiteNameSerializer(sites_list, many=True).data
 
 
+class BatchSponsorSerializer(serializers.ModelSerializer[BatchSponsor]):
+    logo = AssetSerializer()
+
+    class Meta:
+        model = BatchSponsor
+        fields = "__all__"
+
+
 class SiteSocialSerializer(serializers.ModelSerializer[Site]):
     site_type = SiteTypeSerializer()
     contact = ContactSerializer()
@@ -361,8 +369,12 @@ class SiteSocialSerializer(serializers.ModelSerializer[Site]):
             "widget",
         )
 
-    def get_sponsors(self, obj) -> list[str]:
-        return self.context.get("sponsors", list[str]())  # type: ignore[no-any-return]
+    @extend_schema_field(BatchSponsorSerializer(many=True))
+    def get_sponsors(self, obj: Site):
+        batches = Batch.objects.filter(site=obj)
+
+        sponsors = [batch.sponsor for batch in batches if batch.sponsor is not None]
+        return BatchSponsorSerializer(sponsors, many=True).data
 
     @extend_schema_field(WidgetSerializer(many=True))
     def get_widget(self, obj):
@@ -504,14 +516,6 @@ class BatchSpeciesSerializer(serializers.ModelSerializer[BatchSpecies]):
         )
 
 
-class BatchSponsorSerializer(serializers.ModelSerializer[BatchSponsor]):
-    logo = AssetSerializer()
-
-    class Meta:
-        model = BatchSponsor
-        fields = "__all__"
-
-
 class BatchDetailSerializer(serializers.ModelSerializer[Batch]):
     fertilizers = serializers.SerializerMethodField()
     mulch_layers = serializers.SerializerMethodField()
@@ -547,9 +551,9 @@ class BatchDetailSerializer(serializers.ModelSerializer[Batch]):
     def get_species(self, obj):
         return BatchSpeciesSerializer(obj.batchspecies_set.all(), many=True).data
 
-    @extend_schema_field(BatchSponsorSerializer)
+    @extend_schema_field(BatchSponsorSerializer(many=False))
     def get_sponsor(self, obj: Batch):
-        return BatchSponsorSerializer(obj.sponsor).data
+        return BatchSponsorSerializer(obj.sponsor, many=False).data
 
 
 class SiteAdminSerializer(serializers.ModelSerializer[Siteadmin]):

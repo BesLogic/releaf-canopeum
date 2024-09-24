@@ -556,10 +556,15 @@ class SiteSocialDetailAPIView(APIView):
 
         self.check_object_permissions(request, site)
 
-        batches = Batch.objects.filter(site=siteId)
-        sponsors = [batch.sponsor for batch in batches]
+        # print("======================================1")
 
-        serializer = SiteSocialSerializer(site, context={"sponsors": sponsors})
+        # batches = Batch.objects.filter(site=siteId)
+
+        # sponsors = [batch.sponsor.logo for batch in batches if batch.sponsor is not None]
+        # print("======================================2")
+
+        # serializer = SiteSocialSerializer(site, context={"sponsors": sponsors})
+        serializer = SiteSocialSerializer(site)
         return Response(serializer.data)
 
 
