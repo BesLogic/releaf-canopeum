@@ -8,8 +8,8 @@
     "mockoon": "mockoon-cli start --data canopeum-mockoon.json",
     "build": "tsc && vite build",
     "eslint": "eslint ./ --ignore-path .gitignore",
-    "lint": "dprint check && npm run eslint",
-    "lint:fix": "dprint fmt && npm run eslint -- --fix",
+    "lint": "cd .. && dprint check && cd canopeum_frontend && npm run eslint",
+    "lint:fix": "cd .. && dprint fmt && cd canopeum_frontend && npm run eslint -- --fix",
     "preview": "vite preview",
     "generate-api-client": "node ./src/config/apiSchemaGenerator.js"
   },
