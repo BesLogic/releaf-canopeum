@@ -140,7 +140,9 @@ export class BatchClient {
   create(
     site?: number | undefined,
     name?: string | null | undefined,
-    sponsor?: string | null | undefined,
+    sponsorName?: string | null | undefined,
+    sponsorWebsiteUrl?: string | null | undefined,
+    sponsorLogo?: FileParameter | null | undefined,
     size?: number | null | undefined,
     soilCondition?: string | null | undefined,
     plantCount?: number | null | undefined,
@@ -167,8 +169,18 @@ export class BatchClient {
     if (name !== null && name !== undefined) {
       content_.append('name', name.toString())
     }
-    if (sponsor !== null && sponsor !== undefined) {
-      content_.append('sponsor', sponsor.toString())
+    if (sponsorName !== null && sponsorName !== undefined) {
+      content_.append('sponsorName', sponsorName.toString())
+    }
+    if (sponsorWebsiteUrl !== null && sponsorWebsiteUrl !== undefined) {
+      content_.append('sponsorWebsiteUrl', sponsorWebsiteUrl.toString())
+    }
+    if (sponsorLogo !== null && sponsorLogo !== undefined) {
+      content_.append(
+        'sponsorLogo',
+        sponsorLogo.data,
+        sponsorLogo.fileName ? sponsorLogo.fileName : 'sponsorLogo',
+      )
     }
     if (size !== null && size !== undefined) {
       content_.append('size', size.toString())
@@ -264,7 +276,9 @@ export class BatchClient {
   update(
     batchId: number,
     name?: string | null | undefined,
-    sponsor?: string | null | undefined,
+    sponsorName?: string | null | undefined,
+    sponsorWebsiteUrl?: string | null | undefined,
+    sponsorLogo?: FileParameter | null | undefined,
     size?: number | null | undefined,
     soilCondition?: string | null | undefined,
     plantCount?: number | null | undefined,
@@ -289,8 +303,18 @@ export class BatchClient {
     if (name !== null && name !== undefined) {
       content_.append('name', name.toString())
     }
-    if (sponsor !== null && sponsor !== undefined) {
-      content_.append('sponsor', sponsor.toString())
+    if (sponsorName !== null && sponsorName !== undefined) {
+      content_.append('sponsorName', sponsorName.toString())
+    }
+    if (sponsorWebsiteUrl !== null && sponsorWebsiteUrl !== undefined) {
+      content_.append('sponsorWebsiteUrl', sponsorWebsiteUrl.toString())
+    }
+    if (sponsorLogo !== null && sponsorLogo !== undefined) {
+      content_.append(
+        'sponsorLogo',
+        sponsorLogo.data,
+        sponsorLogo.fileName ? sponsorLogo.fileName : 'sponsorLogo',
+      )
     }
     if (size !== null && size !== undefined) {
       content_.append('size', size.toString())

@@ -831,7 +831,9 @@ BATCH_CREATE_SCHEMA = {
         "properties": {
             "site": {"type": "number"},
             "name": {"type": "string", "nullable": True},
-            "sponsor": {"type": "string", "nullable": True},
+            "sponsorName": {"type": "string", "nullable": True},
+            "sponsorWebsiteUrl": {"type": "string", "nullable": True},
+            "sponsorLogo": {"type": "string", "format": "binary", "nullable": True},
             "size": {"type": "number", "nullable": True},
             "soilCondition": {"type": "string", "nullable": True},
             "plantCount": {"type": "number", "nullable": True},
@@ -906,6 +908,7 @@ class BatchListAPIView(APIView):
             else:
                 image = asset_serializer.save()
 
+        # TODO(NicolasDontigny): Convert sponsor to serializer here?
         batch_serializer = BatchDetailSerializer(data=request.data)
         if not batch_serializer.is_valid():
             errors.append(batch_serializer.errors)
