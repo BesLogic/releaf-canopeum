@@ -700,10 +700,11 @@ class SiteSummaryDetailSerializer(serializers.ModelSerializer[Site]):
     def get_progress(self, obj) -> float:
         return random.randint(0, 10000) / 100  # noqa: S311
 
-    def get_sponsors(self, obj) -> list[str]:
+    @extend_schema_field(BatchSponsorSerializer(many=True))
+    def get_sponsors(self, obj):
         batches = Batch.objects.filter(site=obj)
-        # TODO(NicolasDontigny): Use sponsor logos + urls here?
-        return [batch.sponsor.name for batch in batches if batch.sponsor]
+        sponsors = [batch.sponsor for batch in batches if batch.sponsor]
+        return BatchSponsorSerializer(sponsors, many=True).data
 
     @extend_schema_field(WeatherSerializer)
     def get_weather(self, obj):

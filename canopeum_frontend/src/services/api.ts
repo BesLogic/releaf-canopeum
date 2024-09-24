@@ -5714,7 +5714,7 @@ export class SiteSummaryDetail implements ISiteSummaryDetail {
   readonly survivedCount!: number
   readonly propagationCount!: number
   visitorCount?: number | undefined
-  readonly sponsors!: string[]
+  readonly sponsors!: BatchSponsor[]
   readonly progress!: number
   admins!: SiteAdmin[]
   readonly batches!: BatchDetail[]
@@ -5760,7 +5760,7 @@ export class SiteSummaryDetail implements ISiteSummaryDetail {
       if (Array.isArray(_data['sponsors'])) {
         ;(<any> this).sponsors = [] as any
         for (let item of _data['sponsors']) {
-          ;(<any> this).sponsors!.push(item)
+          ;(<any> this).sponsors!.push(BatchSponsor.fromJS(item))
         }
       }
       ;(<any> this).progress = _data['progress']
@@ -5805,7 +5805,7 @@ export class SiteSummaryDetail implements ISiteSummaryDetail {
     if (Array.isArray(this.sponsors)) {
       data['sponsors'] = []
       for (let item of this.sponsors) {
-        data['sponsors'].push(item)
+        data['sponsors'].push(item.toJSON())
       }
     }
     data['progress'] = this.progress
@@ -5835,7 +5835,7 @@ export interface ISiteSummaryDetail {
   survivedCount: number
   propagationCount: number
   visitorCount?: number | undefined
-  sponsors: string[]
+  sponsors: BatchSponsor[]
   progress: number
   admins: SiteAdmin[]
   batches: BatchDetail[]
