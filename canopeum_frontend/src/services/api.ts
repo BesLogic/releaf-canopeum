@@ -3224,7 +3224,7 @@ export class BatchDetail implements IBatchDetail {
   readonly id!: number
   readonly fertilizers!: FertilizerType[]
   readonly mulchLayers!: MulchLayerType[]
-  readonly supportedSpecies!: BatchSupportedSpecies[]
+  readonly supportedSpecies!: TreeType[]
   readonly seeds!: BatchSeed[]
   readonly species!: BatchSpecies[]
   readonly sponsor!: BatchSponsor
@@ -3284,7 +3284,7 @@ export class BatchDetail implements IBatchDetail {
       if (Array.isArray(_data['supportedSpecies'])) {
         ;(<any> this).supportedSpecies = [] as any
         for (let item of _data['supportedSpecies']) {
-          ;(<any> this).supportedSpecies!.push(BatchSupportedSpecies.fromJS(item))
+          ;(<any> this).supportedSpecies!.push(TreeType.fromJS(item))
         }
       }
       if (Array.isArray(_data['seeds'])) {
@@ -3387,7 +3387,7 @@ export interface IBatchDetail {
   id: number
   fertilizers: FertilizerType[]
   mulchLayers: MulchLayerType[]
-  supportedSpecies: BatchSupportedSpecies[]
+  supportedSpecies: TreeType[]
   seeds: BatchSeed[]
   species: BatchSpecies[]
   sponsor: BatchSponsor
@@ -3408,10 +3408,9 @@ export interface IBatchDetail {
 }
 
 export class BatchSeed implements IBatchSeed {
-  readonly id!: number | undefined
-  quantity?: number | undefined
-  readonly en!: string
-  readonly fr!: string;
+  readonly id!: number
+  quantity!: number
+  readonly treeType!: TreeType;
 
   [key: string]: any
 
@@ -3422,6 +3421,9 @@ export class BatchSeed implements IBatchSeed {
           ;(<any> this)[property] = (<any> data)[property]
         }
       }
+    }
+    if (!data) {
+      this.treeType = new TreeType()
     }
   }
 
@@ -3434,8 +3436,9 @@ export class BatchSeed implements IBatchSeed {
       }
       ;(<any> this).id = _data['id']
       this.quantity = _data['quantity']
-      ;(<any> this).en = _data['en']
-      ;(<any> this).fr = _data['fr']
+      ;(<any> this).treeType = _data['treeType']
+        ? TreeType.fromJS(_data['treeType'])
+        : new TreeType()
     }
   }
 
@@ -3455,17 +3458,15 @@ export class BatchSeed implements IBatchSeed {
     }
     data['id'] = this.id
     data['quantity'] = this.quantity
-    data['en'] = this.en
-    data['fr'] = this.fr
+    data['treeType'] = this.treeType ? this.treeType.toJSON() : <any> undefined
     return data
   }
 }
 
 export interface IBatchSeed {
-  id: number | undefined
-  quantity?: number | undefined
-  en: string
-  fr: string
+  id: number
+  quantity: number
+  treeType: TreeType
 
   [key: string]: any
 }
@@ -3595,65 +3596,6 @@ export interface IBatchSponsor {
   logo: Asset
   name: string
   url: string
-
-  [key: string]: any
-}
-
-export class BatchSupportedSpecies implements IBatchSupportedSpecies {
-  readonly id!: string
-  readonly en!: string
-  readonly fr!: string;
-
-  [key: string]: any
-
-  constructor(data?: IBatchSupportedSpecies) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) {
-          ;(<any> this)[property] = (<any> data)[property]
-        }
-      }
-    }
-  }
-
-  init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) {
-          this[property] = _data[property]
-        }
-      }
-      ;(<any> this).id = _data['id']
-      ;(<any> this).en = _data['en']
-      ;(<any> this).fr = _data['fr']
-    }
-  }
-
-  static fromJS(data: any): BatchSupportedSpecies {
-    data = typeof data === 'object' ? data : {}
-    let result = new BatchSupportedSpecies()
-    result.init(data)
-    return result
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {}
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) {
-        data[property] = this[property]
-      }
-    }
-    data['id'] = this.id
-    data['en'] = this.en
-    data['fr'] = this.fr
-    return data
-  }
-}
-
-export interface IBatchSupportedSpecies {
-  id: string
-  en: string
-  fr: string
 
   [key: string]: any
 }

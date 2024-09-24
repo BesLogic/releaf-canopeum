@@ -4,14 +4,13 @@ import { useTranslation } from 'react-i18next'
 import OptionQuantitySelector, { type SelectorOption, type SelectorOptionQuantity } from '@components/analytics/OptionQuantitySelector'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
-import type { TreeType } from '@services/api'
-import { BatchSupportedSpecies } from '@services/api'
+import { TreeType } from '@services/api'
 import { notEmpty } from '@utils/arrayUtils'
 
 type Props = {
-  readonly species?: BatchSupportedSpecies[],
+  readonly species?: TreeType[],
   // Make sure that onChange is included in a useCallback if part of a component
-  readonly onChange: (selectedSpecies: BatchSupportedSpecies[]) => void,
+  readonly onChange: (selectedSpecies: TreeType[]) => void,
 }
 
 const SupportSpeciesSelector = ({ onChange, species }: Props) => {
@@ -65,7 +64,7 @@ const SupportSpeciesSelector = ({ onChange, species }: Props) => {
         const matchingSpecie = availableSpecies.get(optionQuantity.option.value)
         if (!matchingSpecie) return null
 
-        return new BatchSupportedSpecies({
+        return new TreeType({
           ...matchingSpecie,
         })
       })

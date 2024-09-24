@@ -10,7 +10,7 @@ import SupportSpeciesSelector from '@components/analytics/SupportSpeciesSelector
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
-import type { FertilizerType, MulchLayerType, BatchSponsor, BatchSupportedSpecies, Seeds, SiteSummary, Species } from '@services/api'
+import type { BatchSponsor, BatchSupportedSpecies, FertilizerType, MulchLayerType, Seeds, SiteSummary, Species } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
 import { floorNumberValue } from '@utils/formUtils'
 
@@ -208,9 +208,9 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
               <input
                 className='form-control'
                 id='sponsor-website-url'
-                onChange={event => setBatch(value => ({ ...value, - }))}
+                onChange={event => setBatch(value => ({ ...value, sponsor: undefined }))}
                 type='text'
-                value={batch.sponsor}
+                value={batch.sponsor?.websiteUrl}
               />
             </div>
 

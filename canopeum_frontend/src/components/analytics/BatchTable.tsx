@@ -300,8 +300,8 @@ const BatchTable = (props: Props) => {
               >
                 <ul>
                   {batch.seeds.map(batchSeed => (
-                    <li key={`batch-${batch.id}-seeds-list-${batchSeed.en}`}>
-                      {translateValue(batchSeed)} x {batchSeed.quantity}
+                    <li key={`batch-${batch.id}-seeds-list-${batchSeed.id}`}>
+                      {translateValue(batchSeed.treeType)} x {batchSeed.quantity}
                     </li>
                   ))}
                 </ul>

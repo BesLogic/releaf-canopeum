@@ -275,8 +275,8 @@ class Batchmulchlayer(models.Model):
 
 
 class BatchSpecies(models.Model):
-    batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
-    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
+    batch = models.ForeignKey(Batch, models.CASCADE)
+    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING)
     quantity = models.IntegerField(blank=True, null=True)
 
     class Meta:
@@ -286,9 +286,9 @@ class BatchSpecies(models.Model):
 
 
 class BatchSeed(models.Model):
-    batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
-    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
-    quantity = models.IntegerField(blank=True, null=True)
+    batch = models.ForeignKey(Batch, models.CASCADE)
+    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING)
+    quantity = models.IntegerField()
 
     class Meta:
         constraints = (
@@ -297,8 +297,8 @@ class BatchSeed(models.Model):
 
 
 class BatchSupportedSpecies(models.Model):
-    batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
-    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
+    batch = models.ForeignKey(Batch, models.CASCADE)
+    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING)
 
     class Meta:
         constraints = (
