@@ -17,6 +17,7 @@ from canopeum_backend.models import (
     Batch,
     Batchfertilizer,
     BatchSpecies,
+    BatchSponsor,
     Comment,
     Contact,
     Coordinate,
@@ -232,6 +233,7 @@ def get_sponsors():
     return sponsors[:number_of_sponsors]
 
 
+# TODO(NicolasDontigny): Create sponsors first, them randomly assign one to a batch
 def get_sponsor():
     index = random.randint(0, len(sponsors) - 1)
     return sponsors[index]
@@ -243,11 +245,18 @@ def create_batches_for_site(site):
         number_of_seed = random.randint(50, 200)
         plant_count = random.randint(0, number_of_seed)
         survived_count = random.randint(0, plant_count)
+
+        sponsor = BatchSponsor.objects.create(
+            name="Sponsor Test",
+            url="https://uilogos.co/",
+            image=Asset.objects.get(asset__contains="batch_logo1"),
+        )
+
         batch = Batch.objects.create(
             name=batch_names[i - 1],
             site=site,
             size=random.randint(20, 150),
-            sponsor=get_sponsor(),
+            sponsor=sponsor,
             soil_condition="Good",
             plant_count=plant_count,
             survived_count=survived_count,
@@ -392,6 +401,13 @@ class Command(BaseCommand):
             "site_img4.jpg",
             "canopeum_post_img1.jpg",
             "canopeum_post_img2.jpg",
+            "batch_logo1.png",
+            "batch_logo2.png",
+            "batch_logo3.png",
+            "batch_logo4.png",
+            "batch_logo5.png",
+            "batch_logo6.png",
+            "batch_logo7.png",
         )
         for file_name in image_file_names:
             with Path.open(seeding_images_path / file_name, "rb") as img_file:
