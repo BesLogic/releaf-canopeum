@@ -29,7 +29,7 @@
   },
   "widgets": {
     "create": "add a new widget",
-    "save": "save",
+    "submit": "submit",
     "cancel": "cancel",
     "max-word": "100 words maximum",
     "title": "widget title"

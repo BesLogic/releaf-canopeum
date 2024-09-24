@@ -371,7 +371,7 @@ const EditProfile = () => {
               onClick={handleSaveProfile}
               type='button'
             >
-              {translate('generic.save')}
+              {translate('generic.submit')}
             </button>
           </div>
         </div>

@@ -302,7 +302,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
           {t('generic.cancel')}
         </button>
         <button className='btn btn-primary' onClick={() => handleClose('save', site)} type='button'>
-          {t('generic.save')}
+          {t('generic.submit')}
         </button>
       </DialogActions>
     </Dialog>
