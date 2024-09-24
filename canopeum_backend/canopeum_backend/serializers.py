@@ -394,30 +394,15 @@ class BatchSeedSerializer(serializers.ModelSerializer[BatchSeed]):
 
 
 class BatchSpeciesSerializer(serializers.ModelSerializer[BatchSpecies]):
-    id = serializers.SerializerMethodField()
-    en = serializers.SerializerMethodField()
-    fr = serializers.SerializerMethodField()
+    tree_type = serializers.SerializerMethodField()
 
     class Meta:
         model = BatchSpecies
-        fields = ("id", "quantity", "en", "fr")
+        fields = ("id", "quantity", "tree_type")
 
-    def get_id(self, obj: BatchSpecies) -> int:
-        return TreeTypeSerializer(obj.tree_type).data.get("id", None)
-
-    def get_en(self, obj: BatchSpecies):
-        return (
-            InternationalizationSerializer(obj.tree_type.name).data.get("en", None)
-            if obj.tree_type
-            else None
-        )
-
-    def get_fr(self, obj: BatchSpecies):
-        return (
-            InternationalizationSerializer(obj.tree_type.name).data.get("fr", None)
-            if obj.tree_type
-            else None
-        )
+    @extend_schema_field(TreeTypeSerializer)
+    def get_tree_type(self, obj: BatchSpecies):
+        return TreeTypeSerializer(obj.tree_type).data
 
 
 class BatchDetailSerializer(serializers.ModelSerializer[Batch]):

@@ -9,7 +9,8 @@ import SupportSpeciesSelector from '@components/analytics/SupportSpeciesSelector
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
-import { type BatchDetail, type BatchSupportedSpecies, type FertilizerType, type MulchLayerType, Seeds, Species } from '@services/api'
+import type { BatchDetail, BatchSponsor, FertilizerType, MulchLayerType, TreeType } from '@services/api'
+import { Seeds, Species } from '@services/api'
 import { floorNumberValue } from '@utils/formUtils'
 
 type Props = {
@@ -20,7 +21,8 @@ type Props = {
 type EditBatchDto = {
   id: number,
   name?: string,
-  sponsor?: string,
+  // Create sponsorDto here
+  sponsor?: BatchSponsor,
   size?: number,
   soilCondition?: string,
   plantCount?: number,
@@ -33,7 +35,7 @@ type EditBatchDto = {
   mulchLayers: MulchLayerType[],
   seeds: Seeds[],
   species: Species[],
-  supportedSpecies: BatchSupportedSpecies[],
+  supportedSpecies: TreeType[],
 }
 
 const transformToEditBatchDto = (batchDetail: BatchDetail): EditBatchDto => ({

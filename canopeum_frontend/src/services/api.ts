@@ -3474,8 +3474,7 @@ export interface IBatchSeed {
 export class BatchSpecies implements IBatchSpecies {
   readonly id!: number
   quantity?: number | undefined
-  readonly en!: string
-  readonly fr!: string;
+  readonly treeType!: TreeType;
 
   [key: string]: any
 
@@ -3486,6 +3485,9 @@ export class BatchSpecies implements IBatchSpecies {
           ;(<any> this)[property] = (<any> data)[property]
         }
       }
+    }
+    if (!data) {
+      this.treeType = new TreeType()
     }
   }
 
@@ -3498,8 +3500,9 @@ export class BatchSpecies implements IBatchSpecies {
       }
       ;(<any> this).id = _data['id']
       this.quantity = _data['quantity']
-      ;(<any> this).en = _data['en']
-      ;(<any> this).fr = _data['fr']
+      ;(<any> this).treeType = _data['treeType']
+        ? TreeType.fromJS(_data['treeType'])
+        : new TreeType()
     }
   }
 
@@ -3519,8 +3522,7 @@ export class BatchSpecies implements IBatchSpecies {
     }
     data['id'] = this.id
     data['quantity'] = this.quantity
-    data['en'] = this.en
-    data['fr'] = this.fr
+    data['treeType'] = this.treeType ? this.treeType.toJSON() : <any> undefined
     return data
   }
 }
@@ -3528,8 +3530,7 @@ export class BatchSpecies implements IBatchSpecies {
 export interface IBatchSpecies {
   id: number
   quantity?: number | undefined
-  en: string
-  fr: string
+  treeType: TreeType
 
   [key: string]: any
 }
