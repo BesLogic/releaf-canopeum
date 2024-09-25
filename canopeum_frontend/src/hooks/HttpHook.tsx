@@ -15,8 +15,8 @@ const useHttp = () => {
 
   const fetchWithAuth = useCallback(async (url: string, options: RequestInit) => {
     // Store token in zustand store?
-    let accessToken = sessionStorage.getItem(STORAGE_ACCESS_TOKEN_KEY) ??
-      localStorage.getItem(STORAGE_ACCESS_TOKEN_KEY)
+    let accessToken = sessionStorage.getItem(STORAGE_ACCESS_TOKEN_KEY)
+      ?? localStorage.getItem(STORAGE_ACCESS_TOKEN_KEY)
 
     const headers = new Headers(options.headers)
     if (!accessToken) {
@@ -27,11 +27,11 @@ const useHttp = () => {
 
     const decodedAccessToken = jwtDecode(accessToken)
     if (
-      !decodedAccessToken.exp ||
-      new Date() > new Date(decodedAccessToken.exp * MILLISECONDS_IN_SECOND)
+      !decodedAccessToken.exp
+      || new Date() > new Date(decodedAccessToken.exp * MILLISECONDS_IN_SECOND)
     ) {
-      const refreshToken = sessionStorage.getItem(STORAGE_REFRESH_TOKEN_KEY) ??
-        localStorage.getItem(STORAGE_REFRESH_TOKEN_KEY)
+      const refreshToken = sessionStorage.getItem(STORAGE_REFRESH_TOKEN_KEY)
+        ?? localStorage.getItem(STORAGE_REFRESH_TOKEN_KEY)
 
       const wasStoredInLocalStorage = !!localStorage.getItem(STORAGE_ACCESS_TOKEN_KEY)
       if (!refreshToken) {
@@ -40,8 +40,8 @@ const useHttp = () => {
 
       const decodedRefreshToken = jwtDecode(refreshToken)
       if (
-        !decodedRefreshToken.exp ||
-        new Date() > new Date(decodedRefreshToken.exp * MILLISECONDS_IN_SECOND)
+        !decodedRefreshToken.exp
+        || new Date() > new Date(decodedRefreshToken.exp * MILLISECONDS_IN_SECOND)
       ) {
         logout()
       }

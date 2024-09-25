@@ -180,8 +180,8 @@ const CreatePostWidget = ({ siteId, addNewPost }: Props) => {
             </span>
           )}
         </div>
-        {files.length > 0 &&
-          (
+        {files.length > 0
+          && (
             <AssetGrid
               isEditable={{ removeFile }}
               medias={files.map(

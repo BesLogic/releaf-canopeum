@@ -82,10 +82,10 @@ const usePostsInfiniteScrolling = () => {
   // Scrolling to the bottom of this container will load more posts
   const onScroll = (scrollableContainerRef: RefObject<HTMLDivElement>) => {
     if (
-      isLoadingFirstPage ||
-      isLoadingMore ||
-      postsAreAllLoaded ||
-      !scrollableContainerRef.current
+      isLoadingFirstPage
+      || isLoadingMore
+      || postsAreAllLoaded
+      || !scrollableContainerRef.current
     ) return
 
     const { scrollTop, scrollHeight, clientHeight } = scrollableContainerRef.current

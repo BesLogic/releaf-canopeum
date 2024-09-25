@@ -138,10 +138,10 @@ const Register = () => {
     const passwordValid = validatePassword()
     const passwordConfirmationValid = validatePasswordConfirmation()
 
-    return usernameValid &&
-      emailValid &&
-      passwordValid &&
-      passwordConfirmationValid
+    return usernameValid
+      && emailValid
+      && passwordValid
+      && passwordConfirmationValid
   }
 
   const onCreateAccountClick = async () => {
