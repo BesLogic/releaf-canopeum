@@ -1,0 +1,10 @@
+@import '../../App.scss';
+
+.admin-site-tabs.nav .nav-link {
+  color: $gray;
+
+  &.active {
+    color: white;
+    border-bottom: 2px solid white;
+  }
+}

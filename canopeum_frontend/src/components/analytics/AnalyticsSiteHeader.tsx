@@ -52,20 +52,12 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
       </div>
 
       <div className='site-info-container pb-4 pt-5 px-5 flex-grow-1'>
-        <div className='d-flex justify-content-between align-items-start'>
-          <div>
-            <h2>{siteSummary.name}</h2>
-            <div className='d-flex align-items-center'>
-              <CustomIconBadge icon='siteTypeCanopeumIcon' />
-              <span className='ms-2'>{translateValue(siteSummary.siteType)}</span>
-            </div>
+        <div>
+          <h2>{siteSummary.name}</h2>
+          <div className='d-flex align-items-center'>
+            <CustomIconBadge icon='siteTypeCanopeumIcon' />
+            <span className='ms-2'>{translateValue(siteSummary.siteType)}</span>
           </div>
-
-          <Link className='nav-link' to={appRoutes.siteSocial(siteSummary.id)}>
-            <button className='btn btn-primary' type='button'>
-              {translate('analyticsSite.social-page')}
-            </button>
-          </Link>
         </div>
 
         <div
