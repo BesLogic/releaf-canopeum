@@ -79,8 +79,8 @@ const SnackbarContextProvider: FunctionComponent<{ readonly children?: ReactNode
         <Snackbar
           TransitionProps={{ onExited: handleExited }}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-          autoHideDuration={snackbarAlertOptions?.autohideDuration ??
-            DEFAULT_SNACKBAR_ALERT_OPTIONS.autohideDuration}
+          autoHideDuration={snackbarAlertOptions?.autohideDuration
+            ?? DEFAULT_SNACKBAR_ALERT_OPTIONS.autohideDuration}
           key={messageInfo
             ? messageInfo.key
             : undefined}
