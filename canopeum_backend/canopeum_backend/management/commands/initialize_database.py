@@ -294,10 +294,12 @@ def create_batches_for_site(site):
             total_propagation=random.randint(0, number_of_seed),
         )
         create_batch_species_for_batch(batch)
-        Batchfertilizer.objects.create(
-            batch=batch,
-            fertilizer_type=Fertilizertype.objects.first(),
-        )
+        fertilizer_type = Fertilizertype.objects.first()
+        if fertilizer_type is not None:
+            Batchfertilizer.objects.create(
+                batch=batch,
+                fertilizer_type=fertilizer_type,
+            )
 
 
 class Command(BaseCommand):
