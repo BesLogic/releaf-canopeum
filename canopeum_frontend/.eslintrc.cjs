@@ -45,19 +45,19 @@ module.exports = {
           // Anything that starts with a dot or src/
           // KEEP IN SYNC WITH canopeum_frontend/tsconfig.json AND canopeum_frontend/vite.config.ts
           [
-            '^(\\.' +
-            '|src/' +
-            '|@assets' +
-            '|@components' +
-            '|@config' +
-            '|@constants' +
-            '|@hooks' +
-            '|@models' +
-            '|@pages' +
-            '|@services' +
-            '|@store' +
-            '|@utils' +
-            ')',
+            '^(\\.'
+            + '|src/'
+            + '|@assets'
+            + '|@components'
+            + '|@config'
+            + '|@constants'
+            + '|@hooks'
+            + '|@models'
+            + '|@pages'
+            + '|@services'
+            + '|@store'
+            + '|@utils'
+            + ')',
           ],
         ],
       },
