@@ -363,6 +363,8 @@ class BatchSponsorSerializer(serializers.ModelSerializer[BatchSponsor]):
             old_logo_asset_to_delete = Asset.objects.get(pk=instance.logo.pk)
             instance.logo = logo_serializer.save()
             if old_logo_asset_to_delete is not None:
+                # TODO(NicolasDontigny): The old image file is not deleted from the media folder;
+                # Figure out if that is something we want to do
                 old_logo_asset_to_delete.delete()
 
         instance.save()

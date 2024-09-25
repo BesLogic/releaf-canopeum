@@ -67,14 +67,16 @@ const BatchTable = (props: Props) => {
                 scope='col'
                 style={{ width: '17.5rem' }}
               >
-                {batch.name}
-                <button
-                  className='unstyled-button text-primary'
-                  onClick={() => setBatchToEdit(batch)}
-                  type='button'
-                >
-                  <span className='material-symbols-outlined fill-icon me-2'>edit</span>
-                </button>
+                <div className='d-flex align-items-center p-1'>
+                  <span>{batch.name}</span>
+                  <button
+                    className='unstyled-button text-primary'
+                    onClick={() => setBatchToEdit(batch)}
+                    type='button'
+                  >
+                    <span className='material-symbols-outlined fill-icon me-2'>edit</span>
+                  </button>
+                </div>
               </th>
             ))}
           </tr>
