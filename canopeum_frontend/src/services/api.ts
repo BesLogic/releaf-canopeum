@@ -5429,7 +5429,6 @@ export class SiteSummary implements ISiteSummary {
   readonly survivedCount!: number
   readonly propagationCount!: number
   visitorCount?: number | undefined
-  readonly sponsors!: string[]
   readonly progress!: number
   admins!: SiteAdmin[]
   readonly batches!: BatchDetail[];
@@ -5447,7 +5446,6 @@ export class SiteSummary implements ISiteSummary {
     if (!data) {
       this.coordinate = new Coordinates()
       this.siteType = new SiteType()
-      this.sponsors = []
       this.admins = []
       this.batches = []
     }
@@ -5470,12 +5468,6 @@ export class SiteSummary implements ISiteSummary {
       ;(<any> this).survivedCount = _data['survivedCount']
       ;(<any> this).propagationCount = _data['propagationCount']
       this.visitorCount = _data['visitorCount']
-      if (Array.isArray(_data['sponsors'])) {
-        ;(<any> this).sponsors = [] as any
-        for (let item of _data['sponsors']) {
-          ;(<any> this).sponsors!.push(item)
-        }
-      }
       ;(<any> this).progress = _data['progress']
       if (Array.isArray(_data['admins'])) {
         this.admins = [] as any
@@ -5514,12 +5506,6 @@ export class SiteSummary implements ISiteSummary {
     data['survivedCount'] = this.survivedCount
     data['propagationCount'] = this.propagationCount
     data['visitorCount'] = this.visitorCount
-    if (Array.isArray(this.sponsors)) {
-      data['sponsors'] = []
-      for (let item of this.sponsors) {
-        data['sponsors'].push(item)
-      }
-    }
     data['progress'] = this.progress
     if (Array.isArray(this.admins)) {
       data['admins'] = []
@@ -5546,7 +5532,6 @@ export interface ISiteSummary {
   survivedCount: number
   propagationCount: number
   visitorCount?: number | undefined
-  sponsors: string[]
   progress: number
   admins: SiteAdmin[]
   batches: BatchDetail[]

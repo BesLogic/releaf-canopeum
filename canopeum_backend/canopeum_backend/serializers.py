@@ -547,7 +547,6 @@ class SiteSummarySerializer(serializers.ModelSerializer[Site]):
     survived_count = serializers.SerializerMethodField()
     propagation_count = serializers.SerializerMethodField()
     progress = serializers.SerializerMethodField()
-    sponsors = serializers.SerializerMethodField()
     admins = SiteAdminSerializer(source="siteadmin_set", many=True)
     batches = serializers.SerializerMethodField()
 
@@ -562,7 +561,6 @@ class SiteSummarySerializer(serializers.ModelSerializer[Site]):
             "survived_count",
             "propagation_count",
             "visitor_count",
-            "sponsors",
             "progress",
             "admins",
             "batches",
@@ -579,11 +577,6 @@ class SiteSummarySerializer(serializers.ModelSerializer[Site]):
 
     def get_progress(self, obj) -> float:
         return random.randint(0, 10000) / 100  # noqa: S311
-
-    def get_sponsors(self, obj) -> list[str]:
-        batches = Batch.objects.filter(site=obj)
-        # TODO(NicolasDontigny): include logo and url here
-        return [batch.sponsor.name for batch in batches if batch.sponsor is not None]
 
     @extend_schema_field(BatchDetailSerializer(many=True))
     def get_batches(self, obj):
