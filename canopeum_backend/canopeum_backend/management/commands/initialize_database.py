@@ -239,6 +239,35 @@ def get_sponsor():
     return sponsors[index]
 
 
+sponsor_names = [
+    "Green Earth Initiative",
+    "EcoRoots Corporation",
+    "Sustainable Growth Group",
+    "Forest Futures Fund",
+    "Green Horizons Alliance",
+    "Tree of Life Foundation",
+    "Evergreen Solutions",
+    "Leaf Legacy Group",
+    "Planet Guardians Inc.",
+    "Roots of Tomorrow",
+    "Nature's Canopy Collective",
+    "Oxygen for All Co.",
+    "Verdant Ventures",
+    "ForestFlow Enterprises",
+    "Seedling Sustainability Co.",
+    "Pure Green Partners",
+    "Branch Out Initiative",
+    "Nature Nurturers",
+    "Earthwise Ecosystems",
+    "Renewed Forest Foundation",
+    "EcoSphere Solutions",
+    "TreeMendously Green",
+    "Reforest Co.",
+    "Grow Green Initiative",
+    "Earthshade Sponsors",
+]
+
+
 def create_batches_for_site(site):
     num_batches = random.randint(3, 8)
     for i in range(num_batches):
@@ -247,9 +276,9 @@ def create_batches_for_site(site):
         survived_count = random.randint(0, plant_count)
 
         sponsor = BatchSponsor.objects.create(
-            name="Sponsor Test",
+            name=sponsor_names.pop(random.randint(0, len(sponsor_names) - 1)),
             url="https://uilogos.co/",
-            logo=Asset.objects.get(asset__contains="batch_logo1"),
+            logo=Asset.objects.get(asset__contains=f"batch_logo{random.randint(1, 7)}"),
         )
 
         batch = Batch.objects.create(
