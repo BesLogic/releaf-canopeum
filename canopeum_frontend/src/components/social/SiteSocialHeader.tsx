@@ -102,10 +102,10 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
                 />
               )}
 
-              {currentUser &&
-                currentUser.role !== 'MegaAdmin' &&
-                isFollowing !== undefined &&
-                (
+              {currentUser
+                && currentUser.role !== 'MegaAdmin'
+                && isFollowing !== undefined
+                && (
                   <button
                     className='btn btn-secondary'
                     onClick={onFollowClick}

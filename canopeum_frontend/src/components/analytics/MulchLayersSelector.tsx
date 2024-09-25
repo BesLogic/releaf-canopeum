@@ -45,8 +45,8 @@ const MulchLayersSelector = ({ onChange, mulchLayers }: Props) => {
   }, [getApiClient, translateValue])
 
   useEffect(() =>
-    mulchLayers &&
-    setSelected(
+    mulchLayers
+    && setSelected(
       mulchLayers.map(mulchLayer => {
         const matchingMulchLayer = availableMulchLayers.get(mulchLayer.id)
         if (!matchingMulchLayer) return null

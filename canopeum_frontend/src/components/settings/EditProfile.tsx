@@ -160,11 +160,11 @@ const EditProfile = () => {
     const newPasswordValid = validateNewPassword()
     const newPasswordConfirmationValid = validateNewPasswordConfirmation()
 
-    return usernameValid &&
-      emailValid &&
-      currentPasswordValid &&
-      newPasswordValid &&
-      newPasswordConfirmationValid
+    return usernameValid
+      && emailValid
+      && currentPasswordValid
+      && newPasswordValid
+      && newPasswordConfirmationValid
   }
 
   const handleCancel = () => {
@@ -371,7 +371,7 @@ const EditProfile = () => {
               onClick={handleSaveProfile}
               type='button'
             >
-              {translate('generic.save')}
+              {translate('generic.submit')}
             </button>
           </div>
         </div>

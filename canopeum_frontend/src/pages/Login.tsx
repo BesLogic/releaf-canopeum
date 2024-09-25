@@ -55,8 +55,8 @@ const Login = () => {
     const emailValid = validateEmail()
     const passwordValid = validatePassword()
 
-    return emailValid &&
-      passwordValid
+    return emailValid
+      && passwordValid
   }
 
   const onLoginClick = async () => {
