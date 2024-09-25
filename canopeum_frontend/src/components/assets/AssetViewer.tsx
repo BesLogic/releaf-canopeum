@@ -34,8 +34,8 @@ const AssetViewer = ({ medias, handleClose, mediaSelectedIndex }: AssetViewerPro
         </div>
       ))}
     </div>
-    {medias.length > 1
-      && (
+    {medias.length > 1 &&
+      (
         <button
           className='carousel-control-prev'
           data-bs-slide='prev'
@@ -46,8 +46,8 @@ const AssetViewer = ({ medias, handleClose, mediaSelectedIndex }: AssetViewerPro
           <span className='visually-hidden'>Previous</span>
         </button>
       )}
-    {medias.length > 1
-      && (
+    {medias.length > 1 &&
+      (
         <button
           className='carousel-control-next'
           data-bs-slide='next'

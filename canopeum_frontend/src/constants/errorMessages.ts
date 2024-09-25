@@ -3,9 +3,9 @@ import type { ApiException } from '@services/api'
 export type ErrorMessage = 'CURRENT_PASSWORD_INVALID' | 'EMAIL_TAKEN' | 'NEW_PASSWORDS_DO_NOT_MATCH'
 
 const isErrorMessageType = (value: string): value is ErrorMessage =>
-  value === 'CURRENT_PASSWORD_INVALID'
-  || value === 'EMAIL_TAKEN'
-  || value === 'NEW_PASSWORDS_DO_NOT_MATCH'
+  value === 'CURRENT_PASSWORD_INVALID' ||
+  value === 'EMAIL_TAKEN' ||
+  value === 'NEW_PASSWORDS_DO_NOT_MATCH'
 
 const mapErrorToTranslationString: Record<ErrorMessage, string> = {
   EMAIL_TAKEN: 'errors.email-taken',

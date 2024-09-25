@@ -45,8 +45,8 @@ const FertilizersSelector = ({ onChange, fertilizers }: Props) => {
   }, [getApiClient, translateValue])
 
   useEffect(() =>
-    fertilizers
-    && setSelected(
+    fertilizers &&
+    setSelected(
       fertilizers.map(fertilizer => {
         const matchingFertilizer = availableFertilizers.get(fertilizer.id)
         if (!matchingFertilizer) return null

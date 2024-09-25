@@ -159,8 +159,8 @@ const SiteSocialPage = () => {
               {currentUser && currentUser.role !== 'User' && (
                 <>
                   <button
-                    className={'btn btn-light text-primary text-capitalize d-flex '
-                      + 'justify-content-center p-3'}
+                    className={'btn btn-light text-primary text-capitalize d-flex ' +
+                      'justify-content-center p-3'}
                     onClick={() => setIsWidgetModalOpen([true, undefined])}
                     type='button'
                   >
