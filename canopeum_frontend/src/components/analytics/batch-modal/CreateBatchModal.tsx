@@ -3,10 +3,11 @@ import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { BatchFormDto } from './BatchForm'
-import BatchForm, { defaultBatchFormDto } from '@components/analytics/batch-modal/BatchForm'
+import BatchForm from '@components/analytics/batch-modal/BatchForm'
 import { SnackbarContext } from '@components/context/SnackbarContext'
+import { DEFAULT_BATCH_FORM_DTO } from '@constants/batchForm.constant'
 import useApiClient from '@hooks/ApiClientHook'
-import type { FertilizerType, MulchLayerType, Seeds, SiteSummaryDetail, Species, TreeType } from '@services/api'
+import type { SiteSummaryDetail } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
 
 type Props = {
@@ -20,7 +21,7 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
   const { getApiClient } = useApiClient()
   const { openAlertSnackbar } = useContext(SnackbarContext)
 
-  const [batch, setBatch] = useState<BatchFormDto>(defaultBatchFormDto)
+  const [batch, setBatch] = useState<BatchFormDto>(DEFAULT_BATCH_FORM_DTO)
 
   const handleBatchChange = (batchFormDto: BatchFormDto) => setBatch(batchFormDto)
 

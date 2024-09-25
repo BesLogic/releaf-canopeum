@@ -2,8 +2,9 @@ import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material
 import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import BatchForm, { type BatchFormDto, defaultBatchFormDto } from '@components/analytics/batch-modal/BatchForm'
+import BatchForm, { type BatchFormDto } from '@components/analytics/batch-modal/BatchForm'
 import { SnackbarContext } from '@components/context/SnackbarContext'
+import { DEFAULT_BATCH_FORM_DTO } from '@constants/batchForm.constant'
 import useApiClient from '@hooks/ApiClientHook'
 import type { BatchDetail } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
@@ -18,7 +19,7 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
   const { getApiClient } = useApiClient()
   const { openAlertSnackbar } = useContext(SnackbarContext)
 
-  const [batch, setBatch] = useState<BatchFormDto>(defaultBatchFormDto)
+  const [batch, setBatch] = useState<BatchFormDto>(DEFAULT_BATCH_FORM_DTO)
 
   const handleBatchChange = (batchFormDto: BatchFormDto) => setBatch(batchFormDto)
 
@@ -83,12 +84,10 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
     handleClose('edit')
   }
 
-  const onClose = () => {
-    handleClose()
-  }
+  const onCancel = () => handleClose()
 
   return (
-    <Dialog fullWidth maxWidth='sm' onClose={onClose} open={!!batchToEdit}>
+    <Dialog fullWidth maxWidth='sm' onClose={onCancel} open={!!batchToEdit}>
       <DialogTitle>
         <div className='fs-5 text-capitalize m-auto text-center'>
           {t('analyticsSite.batch-modal.edit-title')}
@@ -105,7 +104,7 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
       <DialogActions>
         <button
           className='btn btn-outline-primary'
-          onClick={() => onClose()}
+          onClick={() => onCancel()}
           type='button'
         >
           {t('generic.cancel')}

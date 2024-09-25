@@ -34,8 +34,6 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
 
   useEffect(() => setIsPublic(!!site.isPublic), [site])
 
-  console.log('site.sponsors:', site.sponsors)
-
   const onFollowClick = async () => {
     if (!currentUser) return
 

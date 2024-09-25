@@ -7,6 +7,7 @@ import ImageUpload from '@components/analytics/ImageUpload'
 import MulchLayersSelector from '@components/analytics/MulchLayersSelector'
 import SupportSpeciesSelector from '@components/analytics/SupportSpeciesSelector'
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
+import { DEFAULT_BATCH_FORM_DTO } from '@constants/batchForm.constant'
 import { type BatchDetail, type FertilizerType, type MulchLayerType, Seeds, Species, type TreeType } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 import { floorNumberValue } from '@utils/formUtils'
@@ -16,7 +17,7 @@ type Props = {
   readonly handleBatchChange: (batchFormDto: BatchFormDto) => void,
 }
 
-const transformToEditBatchDto = async (batchDetail: BatchDetail): Promise<BatchFormDto> => ({
+const transformToEditBatchDto = (batchDetail: BatchDetail) => ({
   ...batchDetail,
   siteId: batchDetail.site,
   seeds: batchDetail.seeds.map(batchSeed =>
@@ -27,8 +28,6 @@ const transformToEditBatchDto = async (batchDetail: BatchDetail): Promise<BatchF
   ),
   sponsorName: batchDetail.sponsor.name,
   sponsorWebsiteUrl: batchDetail.sponsor.url,
-  // TODO(NicolasDontigny): Load images from DB here?
-  // Prevent uploading new file to the DB if not edited
   sponsorLogo: undefined,
   image: undefined,
 })
@@ -54,40 +53,17 @@ export type BatchFormDto = {
   supportedSpecies: TreeType[],
 }
 
-export const defaultBatchFormDto: BatchFormDto = {
-  siteId: 0,
-  name: undefined,
-  size: undefined,
-  soilCondition: undefined,
-  sponsorName: undefined,
-  sponsorWebsiteUrl: undefined,
-  sponsorLogo: undefined,
-  supportedSpecies: [],
-  plantCount: undefined,
-  survivedCount: undefined,
-  replaceCount: undefined,
-  totalNumberSeed: undefined,
-  totalPropagation: undefined,
-  image: undefined,
-  fertilizers: [],
-  mulchLayers: [],
-  seeds: [],
-  species: [],
-}
-
 const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
   const { t } = useTranslation()
 
-  const [batch, setBatch] = useState<BatchFormDto>(defaultBatchFormDto)
+  const [batch, setBatch] = useState<BatchFormDto>(DEFAULT_BATCH_FORM_DTO)
   const [batchImageURL, setBatchImageURL] = useState<string>()
   const [sponsorLogoUrl, setSponsorLogoUrl] = useState<string>()
 
   useEffect(() => {
     if (!initialBatch) return
 
-    const transformBatchDto = async () => setBatch(await transformToEditBatchDto(initialBatch))
-
-    void transformBatchDto()
+    setBatch(transformToEditBatchDto(initialBatch))
     setSponsorLogoUrl(`${getApiBaseUrl()}${initialBatch.sponsor.logo.asset}`)
 
     if (!initialBatch.image) return
