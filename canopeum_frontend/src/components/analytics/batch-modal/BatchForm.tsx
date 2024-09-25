@@ -70,11 +70,13 @@ const BatchForm = ({ handleBatchChange }: Props) => {
   }, [batch, handleBatchChange])
 
   const onImageUpload = (file: File) => {
+    console.log('onImageUpload:', file)
     setBatch(value => ({ ...value, image: file }))
     setBatchImageURL(URL.createObjectURL(file))
   }
 
   const onSponsorLogoUpload = (file: File) => {
+    console.log('onSponsorLogoUpload:', file)
     // Update sponsor value here?
     setBatch(value => ({
       ...value,
@@ -111,11 +113,7 @@ const BatchForm = ({ handleBatchChange }: Props) => {
           <input
             className='form-control'
             id='sponsor-name'
-            onChange={event =>
-              setBatch(value => ({
-                ...value,
-                sponsorName: event.target.value,
-              }))}
+            onChange={event => setBatch(value => ({ ...value, sponsorName: event.target.value }))}
             type='text'
             value={batch.sponsorName}
           />
@@ -139,7 +137,11 @@ const BatchForm = ({ handleBatchChange }: Props) => {
           <label className='form-label text-capitalize' htmlFor='sponsor-logo'>
             {t('analyticsSite.batch-modal.sponsor-logo-label')}
           </label>
-          <ImageUpload imageUrl={sponsorLogoUrl} onChange={onSponsorLogoUpload} />
+          <ImageUpload
+            id='batch-sponsor-logo-upload'
+            imageUrl={sponsorLogoUrl}
+            onChange={onSponsorLogoUpload}
+          />
         </div>
 
         <div>
@@ -333,7 +335,7 @@ const BatchForm = ({ handleBatchChange }: Props) => {
           <label className='form-label text-capitalize' htmlFor='batch-image'>
             {t('analyticsSite.batch-modal.images-label')}
           </label>
-          <ImageUpload imageUrl={batchImageURL} onChange={onImageUpload} />
+          <ImageUpload id='batch-image-upload' imageUrl={batchImageURL} onChange={onImageUpload} />
         </div>
       </div>
     </form>

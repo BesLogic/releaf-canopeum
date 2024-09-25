@@ -3,6 +3,7 @@
 
 import random
 from decimal import Decimal
+from pprint import pprint
 from typing import Any
 
 from django.contrib.auth.password_validation import validate_password
@@ -281,6 +282,8 @@ class AssetSerializer(serializers.ModelSerializer[Asset]):
         fields = ("id", "asset")
 
     def to_internal_value(self, data):
+        print("===============to_internal_value DATA: ")
+        pprint(data)
         # Map 'image' field to 'asset' field in incoming data
         if "image" in data:
             data["asset"] = data["image"]
@@ -344,6 +347,14 @@ class BatchSponsorSerializer(serializers.ModelSerializer[BatchSponsor]):
     class Meta:
         model = BatchSponsor
         fields = "__all__"
+
+    def create(self, validated_data):
+        logo_data = validated_data.pop("logo")
+        logo_serializer = AssetSerializer(data=logo_data)
+        logo_serializer.is_valid()
+        created_logo = logo_serializer.save()
+
+        return BatchSponsor.objects.create(**validated_data, logo=created_logo)
 
 
 class SiteSocialSerializer(serializers.ModelSerializer[Site]):

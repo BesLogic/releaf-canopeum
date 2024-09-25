@@ -154,7 +154,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
             <label className='form-label text-capitalize' htmlFor='site-image'>
               {t('analytics.site-modal.site-type')}
             </label>
-            <ImageUpload imageUrl={siteImageURL} onChange={onImageUpload} />
+            <ImageUpload id='site-image-upload' imageUrl={siteImageURL} onChange={onImageUpload} />
           </div>
 
           <div className='mb-3'>

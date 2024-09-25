@@ -1,22 +1,17 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
-import { useCallback, useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { BatchFormDto } from './BatchForm'
 import BatchForm from '@components/analytics/batch-modal/BatchForm'
-import FertilizersSelector from '@components/analytics/FertilizersSelector'
-import ImageUpload from '@components/analytics/ImageUpload'
-import MulchLayersSelector from '@components/analytics/MulchLayersSelector'
-import SupportSpeciesSelector from '@components/analytics/SupportSpeciesSelector'
-import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
-import type { FertilizerType, MulchLayerType, Seeds, SiteSummary, Species, TreeType } from '@services/api'
+import type { FertilizerType, MulchLayerType, Seeds, SiteSummaryDetail, Species, TreeType } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
 
 type Props = {
   readonly open: boolean,
-  readonly site: SiteSummary,
+  readonly site: SiteSummaryDetail,
   readonly handleClose: (reason?: 'create') => void,
 }
 
@@ -72,8 +67,6 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
   const [batch, setBatch] = useState<BatchFormDto>(defaultCreateBatch)
 
   const handleBatchChange = (batchFormDto: BatchFormDto) => {
-    console.log('BATCH CHANGE batchFormDto:', batchFormDto)
-
     setBatch(batchFormDto)
   }
 

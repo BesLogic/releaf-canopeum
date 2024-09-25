@@ -68,6 +68,7 @@ from .serializers import (
     AnnouncementSerializer,
     AssetSerializer,
     BatchDetailSerializer,
+    BatchSponsorSerializer,
     ChangePasswordSerializer,
     CommentSerializer,
     ContactSerializer,
@@ -908,13 +909,28 @@ class BatchListAPIView(APIView):
             else:
                 image = asset_serializer.save()
 
+        sponsor = None
+        sponsor_serializer = BatchSponsorSerializer(
+            data={
+                "name": request.data.get("sponsor_name"),
+                "url": request.data.get("sponsor_website_url"),
+                "logo": {
+                    "asset": request.data.get("sponsor_logo"),
+                },
+            }
+        )
+        if not sponsor_serializer.is_valid():
+            errors.append(sponsor_serializer.errors)
+        else:
+            sponsor = sponsor_serializer.save()
+
         # TODO(NicolasDontigny): Convert sponsor to serializer here?
         batch_serializer = BatchDetailSerializer(data=request.data)
         if not batch_serializer.is_valid():
             errors.append(batch_serializer.errors)
         else:
             site = Site.objects.get(pk=request.data.get("site", ""))
-            batch = batch_serializer.save(site=site, image=image)
+            batch = batch_serializer.save(site=site, image=image, sponsor=sponsor)
 
             for fertilizer_id in parsed_fertilizer_ids:
                 batch.add_fertilizer_by_id(fertilizer_id)
