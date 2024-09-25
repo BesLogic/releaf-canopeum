@@ -1,5 +1,5 @@
 /* eslint-disable max-lines -- disable max-lines */
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import FertilizersSelector from '@components/analytics/FertilizersSelector'
@@ -7,14 +7,31 @@ import ImageUpload from '@components/analytics/ImageUpload'
 import MulchLayersSelector from '@components/analytics/MulchLayersSelector'
 import SupportSpeciesSelector from '@components/analytics/SupportSpeciesSelector'
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
-import { SnackbarContext } from '@components/context/SnackbarContext'
-import useApiClient from '@hooks/ApiClientHook'
-import type { FertilizerType, MulchLayerType, Seeds, SiteSummary, Species, TreeType } from '@services/api'
+import { type BatchDetail, type FertilizerType, type MulchLayerType, Seeds, Species, type TreeType } from '@services/api'
+import { getApiBaseUrl } from '@services/apiSettings'
 import { floorNumberValue } from '@utils/formUtils'
 
 type Props = {
+  readonly initialBatch?: BatchDetail,
   readonly handleBatchChange: (batchFormDto: BatchFormDto) => void,
 }
+
+const transformToEditBatchDto = async (batchDetail: BatchDetail): Promise<BatchFormDto> => ({
+  ...batchDetail,
+  siteId: batchDetail.site,
+  seeds: batchDetail.seeds.map(batchSeed =>
+    new Seeds({ id: batchSeed.treeType.id, quantity: batchSeed.quantity })
+  ),
+  species: batchDetail.species.map(batchSpecies =>
+    new Species({ id: batchSpecies.treeType.id, quantity: batchSpecies.quantity })
+  ),
+  sponsorName: batchDetail.sponsor.name,
+  sponsorWebsiteUrl: batchDetail.sponsor.url,
+  // TODO(NicolasDontigny): Load images from DB here?
+  // Prevent uploading new file to the DB if not edited
+  sponsorLogo: undefined,
+  image: undefined,
+})
 
 export type BatchFormDto = {
   siteId: number,
@@ -37,7 +54,7 @@ export type BatchFormDto = {
   supportedSpecies: TreeType[],
 }
 
-const defaultCreateBatch: BatchFormDto = {
+export const defaultBatchFormDto: BatchFormDto = {
   siteId: 0,
   name: undefined,
   size: undefined,
@@ -58,36 +75,39 @@ const defaultCreateBatch: BatchFormDto = {
   species: [],
 }
 
-const BatchForm = ({ handleBatchChange }: Props) => {
+const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
   const { t } = useTranslation()
 
-  const [batch, setBatch] = useState<BatchFormDto>(defaultCreateBatch)
+  const [batch, setBatch] = useState<BatchFormDto>(defaultBatchFormDto)
   const [batchImageURL, setBatchImageURL] = useState<string>()
   const [sponsorLogoUrl, setSponsorLogoUrl] = useState<string>()
 
   useEffect(() => {
-    handleBatchChange(batch)
-  }, [batch, handleBatchChange])
+    if (!initialBatch) return
+
+    const transformBatchDto = async () => setBatch(await transformToEditBatchDto(initialBatch))
+
+    void transformBatchDto()
+    setSponsorLogoUrl(`${getApiBaseUrl()}${initialBatch.sponsor.logo.asset}`)
+
+    if (!initialBatch.image) return
+
+    setBatchImageURL(`${getApiBaseUrl()}${initialBatch.image.asset}`)
+  }, [initialBatch])
+
+  useEffect(() => handleBatchChange(batch), [batch, handleBatchChange])
 
   const onImageUpload = (file: File) => {
-    console.log('onImageUpload:', file)
     setBatch(value => ({ ...value, image: file }))
     setBatchImageURL(URL.createObjectURL(file))
   }
 
   const onSponsorLogoUpload = (file: File) => {
-    console.log('onSponsorLogoUpload:', file)
-    // Update sponsor value here?
     setBatch(value => ({
       ...value,
       sponsorLogo: file,
     }))
     setSponsorLogoUrl(URL.createObjectURL(file))
-  }
-
-  const resetBatch = () => {
-    setBatch({ ...defaultCreateBatch })
-    setBatchImageURL(undefined)
   }
 
   return (

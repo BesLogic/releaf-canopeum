@@ -924,7 +924,6 @@ class BatchListAPIView(APIView):
         else:
             sponsor = sponsor_serializer.save()
 
-        # TODO(NicolasDontigny): Convert sponsor to serializer here?
         batch_serializer = BatchDetailSerializer(data=request.data)
         if not batch_serializer.is_valid():
             errors.append(batch_serializer.errors)
@@ -991,11 +990,30 @@ class BatchDetailAPIView(APIView):
         #     else:
         #         image = asset_serializer.save()
 
+        sponsor = None
+        sponsor_data = {
+            "name": request.data.get("sponsor_name"),
+            "url": request.data.get("sponsor_website_url"),
+        }
+        if request.data.get("sponsor_logo") is not None:
+            sponsor_data["logo"] = {
+                "asset": request.data.get("sponsor_logo"),
+            }
+        sponsor_serializer = BatchSponsorSerializer(
+            batch.sponsor,
+            data=sponsor_data,
+            partial=True,
+        )
+        if not sponsor_serializer.is_valid():
+            errors.append(sponsor_serializer.errors)
+        else:
+            sponsor = sponsor_serializer.save()
+
         batch_serializer = BatchDetailSerializer(batch, data=request.data, partial=True)
         if not batch_serializer.is_valid():
             errors.append(batch_serializer.errors)
         else:
-            batch = batch_serializer.save()
+            batch = batch_serializer.save(sponsor=sponsor)
 
             # Less efficient, but so much easier to just remove all then recreate mappings.
             Batchfertilizer.objects.filter(batch=batch).delete()

@@ -232,10 +232,6 @@ export class BatchClient {
       supportedSpecieIds.forEach(item_ => content_.append('supportedSpecieIds', item_.toString()))
     }
 
-    console.log('==================================')
-    console.log('BODY CONTENT:', content_)
-    console.log('==================================')
-
     let options_: RequestInit = {
       body: content_,
       method: 'POST',
@@ -3267,7 +3263,7 @@ export class BatchDetail implements IBatchDetail {
   replaceCount?: number | undefined
   totalNumberSeed?: number | undefined
   totalPropagation?: number | undefined
-  site?: number | undefined;
+  site!: number;
 
   [key: string]: any
 
@@ -3430,7 +3426,7 @@ export interface IBatchDetail {
   replaceCount?: number | undefined
   totalNumberSeed?: number | undefined
   totalPropagation?: number | undefined
-  site?: number | undefined
+  site: number
 
   [key: string]: any
 }

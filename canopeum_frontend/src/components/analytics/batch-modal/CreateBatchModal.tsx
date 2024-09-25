@@ -3,7 +3,7 @@ import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { BatchFormDto } from './BatchForm'
-import BatchForm from '@components/analytics/batch-modal/BatchForm'
+import BatchForm, { defaultBatchFormDto } from '@components/analytics/batch-modal/BatchForm'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
 import type { FertilizerType, MulchLayerType, Seeds, SiteSummaryDetail, Species, TreeType } from '@services/api'
@@ -15,60 +15,14 @@ type Props = {
   readonly handleClose: (reason?: 'create') => void,
 }
 
-type CreateBatchSponsorDto = {
-  name: string,
-  websiteUrl: string,
-  logo: File,
-}
-
-type CreateBatchDto = {
-  siteId: number,
-  name?: string,
-  sponsor?: CreateBatchSponsorDto,
-  size?: number,
-  soilCondition?: string,
-  plantCount?: number,
-  survivedCount?: number,
-  replaceCount?: number,
-  totalNumberSeed?: number,
-  totalPropagation?: number,
-  image?: File,
-  fertilizers: FertilizerType[],
-  mulchLayers: MulchLayerType[],
-  seeds: Seeds[],
-  species: Species[],
-  supportedSpecies: TreeType[],
-}
-
-const defaultCreateBatch: CreateBatchDto = {
-  siteId: 0,
-  name: undefined,
-  size: undefined,
-  soilCondition: undefined,
-  sponsor: undefined,
-  supportedSpecies: [],
-  plantCount: undefined,
-  survivedCount: undefined,
-  replaceCount: undefined,
-  totalNumberSeed: undefined,
-  totalPropagation: undefined,
-  image: undefined,
-  fertilizers: [],
-  mulchLayers: [],
-  seeds: [],
-  species: [],
-}
-
 const CreateBatchModal = ({ open, site, handleClose }: Props) => {
   const { t } = useTranslation()
   const { getApiClient } = useApiClient()
   const { openAlertSnackbar } = useContext(SnackbarContext)
 
-  const [batch, setBatch] = useState<BatchFormDto>(defaultCreateBatch)
+  const [batch, setBatch] = useState<BatchFormDto>(defaultBatchFormDto)
 
-  const handleBatchChange = (batchFormDto: BatchFormDto) => {
-    setBatch(batchFormDto)
-  }
+  const handleBatchChange = (batchFormDto: BatchFormDto) => setBatch(batchFormDto)
 
   const handleSubmitBatch = async () => {
     const {
@@ -132,23 +86,15 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
     openAlertSnackbar(
       t('analyticsSite.batch-modal.feedback.create-success'),
     )
-    resetBatch()
     handleClose('create')
 
     return true
   }
 
-  const resetBatch = () => {
-    console.log('RESET HERE')
-  }
-
-  const onClose = () => {
-    resetBatch()
-    handleClose()
-  }
+  const handleCancel = () => handleClose()
 
   return (
-    <Dialog fullWidth maxWidth='sm' onClose={onClose} open={open}>
+    <Dialog fullWidth maxWidth='sm' onClose={handleCancel} open={open}>
       <DialogTitle>
         <div className='fs-5 text-capitalize m-auto text-center'>
           {t('analyticsSite.batch-modal.create-title')}
@@ -162,7 +108,7 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
       <DialogActions>
         <button
           className='btn btn-outline-primary'
-          onClick={() => onClose()}
+          onClick={() => handleCancel()}
           type='button'
         >
           {t('generic.cancel')}
