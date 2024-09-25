@@ -40,8 +40,8 @@ const SiteSummaryCard = ({ site, admins, onSiteChange, onSiteEdit }: Props) => {
               </div>
             </Link>
 
-            {currentUser?.role === 'MegaAdmin' &&
-              (
+            {currentUser?.role === 'MegaAdmin'
+              && (
                 <SiteSummaryActions
                   admins={admins}
                   onSiteChange={onSiteChange}
