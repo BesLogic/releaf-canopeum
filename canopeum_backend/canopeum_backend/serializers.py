@@ -151,6 +151,9 @@ class UserSerializer(serializers.ModelSerializer[User]):
         return [siteadmin.site.pk for siteadmin in Siteadmin.objects.filter(user=obj)]
 
     def get_followed_site_ids(self, obj: User) -> list[int]:
+        user_role = self.get_role(obj)
+        if user_role == RoleName.MEGAADMIN:
+            return [site.pk for site in Site.objects.all()]
         return [site_follower.site.pk for site_follower in SiteFollower.objects.filter(user=obj)]
 
 
