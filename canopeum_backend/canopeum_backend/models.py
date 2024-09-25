@@ -199,7 +199,7 @@ class Batch(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     name = models.TextField(blank=True, null=True)
-    sponsor = models.ForeignKey(BatchSponsor, models.CASCADE, null=True)
+    sponsor = models.ForeignKey(BatchSponsor, models.CASCADE)
     size = models.IntegerField(blank=True, null=True)
     soil_condition = models.TextField(blank=True, null=True)
     plant_count = models.IntegerField(blank=True, null=True)
