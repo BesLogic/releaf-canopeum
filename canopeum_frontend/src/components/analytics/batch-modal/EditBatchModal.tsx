@@ -2,9 +2,9 @@ import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material
 import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import BatchForm, { type BatchFormDto } from '@components/analytics/batch-modal/BatchForm'
+import BatchForm from '@components/analytics/batch-modal/BatchForm'
+import { type BatchFormDto, DEFAULT_BATCH_FORM_DTO } from '@components/analytics/batch-modal/batchModal.model'
 import { SnackbarContext } from '@components/context/SnackbarContext'
-import { DEFAULT_BATCH_FORM_DTO } from '@constants/batchForm.constant'
 import useApiClient from '@hooks/ApiClientHook'
 import type { BatchDetail } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'

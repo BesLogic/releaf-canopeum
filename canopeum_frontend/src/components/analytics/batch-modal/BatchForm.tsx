@@ -1,56 +1,19 @@
-/* eslint-disable max-lines -- disable max-lines */
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { type BatchFormDto, DEFAULT_BATCH_FORM_DTO, transformToEditBatchDto } from '@components/analytics/batch-modal/batchModal.model'
 import FertilizersSelector from '@components/analytics/FertilizersSelector'
 import ImageUpload from '@components/analytics/ImageUpload'
 import MulchLayersSelector from '@components/analytics/MulchLayersSelector'
 import SupportSpeciesSelector from '@components/analytics/SupportSpeciesSelector'
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
-import { DEFAULT_BATCH_FORM_DTO } from '@constants/batchForm.constant'
-import { type BatchDetail, type FertilizerType, type MulchLayerType, Seeds, Species, type TreeType } from '@services/api'
+import type { BatchDetail } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 import { floorNumberValue } from '@utils/formUtils'
 
 type Props = {
   readonly initialBatch?: BatchDetail,
   readonly handleBatchChange: (batchFormDto: BatchFormDto) => void,
-}
-
-const transformToEditBatchDto = (batchDetail: BatchDetail) => ({
-  ...batchDetail,
-  siteId: batchDetail.site,
-  seeds: batchDetail.seeds.map(batchSeed =>
-    new Seeds({ id: batchSeed.treeType.id, quantity: batchSeed.quantity })
-  ),
-  species: batchDetail.species.map(batchSpecies =>
-    new Species({ id: batchSpecies.treeType.id, quantity: batchSpecies.quantity })
-  ),
-  sponsorName: batchDetail.sponsor.name,
-  sponsorWebsiteUrl: batchDetail.sponsor.url,
-  sponsorLogo: undefined,
-  image: undefined,
-})
-
-export type BatchFormDto = {
-  siteId: number,
-  name?: string,
-  sponsorName?: string,
-  sponsorWebsiteUrl?: string,
-  sponsorLogo?: File,
-  size?: number,
-  soilCondition?: string,
-  plantCount?: number,
-  survivedCount?: number,
-  replaceCount?: number,
-  totalNumberSeed?: number,
-  totalPropagation?: number,
-  image?: File,
-  fertilizers: FertilizerType[],
-  mulchLayers: MulchLayerType[],
-  seeds: Seeds[],
-  species: Species[],
-  supportedSpecies: TreeType[],
 }
 
 const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
