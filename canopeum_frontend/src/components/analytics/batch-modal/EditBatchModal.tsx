@@ -9,7 +9,8 @@ import SupportSpeciesSelector from '@components/analytics/SupportSpeciesSelector
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
-import { type BatchDetail, type Batchfertilizer, type BatchMulchLayer, type BatchSupportedSpecies, Seeds, Species } from '@services/api'
+import type { BatchDetail, FertilizerType, MulchLayerType, TreeType } from '@services/api'
+import { Seeds, Species } from '@services/api'
 import { floorNumberValue } from '@utils/formUtils'
 
 type Props = {
@@ -29,17 +30,21 @@ type EditBatchDto = {
   totalNumberSeed?: number,
   totalPropagation?: number,
   // TODO: image?: File,
-  fertilizers: Batchfertilizer[],
-  mulchLayers: BatchMulchLayer[],
+  fertilizers: FertilizerType[],
+  mulchLayers: MulchLayerType[],
   seeds: Seeds[],
   species: Species[],
-  supportedSpecies: BatchSupportedSpecies[],
+  supportedSpecies: TreeType[],
 }
 
 const transformToEditBatchDto = (batchDetail: BatchDetail): EditBatchDto => ({
   ...batchDetail,
-  seeds: batchDetail.seeds.map(seed => new Seeds(seed)),
-  species: batchDetail.species.map(specie => new Species(specie)),
+  seeds: batchDetail.seeds.map(batchSeed =>
+    new Seeds({ id: batchSeed.treeType.id, quantity: batchSeed.quantity })
+  ),
+  species: batchDetail.species.map(batchSpecies =>
+    new Species({ id: batchSpecies.treeType.id, quantity: batchSpecies.quantity })
+  ),
 })
 
 const BatchModal = ({ batchToEdit, handleClose }: Props) => {

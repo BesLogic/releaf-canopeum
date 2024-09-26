@@ -10,7 +10,7 @@ import SupportSpeciesSelector from '@components/analytics/SupportSpeciesSelector
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
-import type { Batchfertilizer, BatchMulchLayer, BatchSupportedSpecies, Seeds, SiteSummary, Species } from '@services/api'
+import type { FertilizerType, MulchLayerType, Seeds, SiteSummary, Species, TreeType } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
 import { floorNumberValue } from '@utils/formUtils'
 
@@ -32,11 +32,11 @@ type CreateBatchDto = {
   totalNumberSeed?: number,
   totalPropagation?: number,
   image?: File,
-  fertilizers: Batchfertilizer[],
-  mulchLayers: BatchMulchLayer[],
+  fertilizers: FertilizerType[],
+  mulchLayers: MulchLayerType[],
   seeds: Seeds[],
   species: Species[],
-  supportedSpecies: BatchSupportedSpecies[],
+  supportedSpecies: TreeType[],
 }
 
 const defaultCreateBatch: CreateBatchDto = {

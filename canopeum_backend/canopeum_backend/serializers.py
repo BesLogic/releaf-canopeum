@@ -425,85 +425,28 @@ class BatchMulchLayerSerializer(serializers.ModelSerializer[Batchmulchlayer]):
         )
 
 
-class BatchSupportedSpeciesSerializer(serializers.ModelSerializer[BatchSupportedSpecies]):
-    id = serializers.SerializerMethodField()
-    en = serializers.SerializerMethodField()
-    fr = serializers.SerializerMethodField()
-
-    class Meta:
-        model = BatchSupportedSpecies
-        fields = ("id", "en", "fr")
-
-    def get_id(self, obj: BatchSupportedSpecies):
-        return TreeTypeSerializer(obj.tree_type).data.get("id", None)
-
-    def get_en(self, obj: BatchSupportedSpecies):
-        return (
-            InternationalizationSerializer(obj.tree_type.name).data.get("en", None)
-            if obj.tree_type
-            else None
-        )
-
-    def get_fr(self, obj: BatchSupportedSpecies):
-        return (
-            InternationalizationSerializer(obj.tree_type.name).data.get("fr", None)
-            if obj.tree_type
-            else None
-        )
-
-
 class BatchSeedSerializer(serializers.ModelSerializer[BatchSeed]):
-    id = serializers.SerializerMethodField()
-    en = serializers.SerializerMethodField()
-    fr = serializers.SerializerMethodField()
+    tree_type = serializers.SerializerMethodField()
 
     class Meta:
         model = BatchSeed
-        fields = ("id", "quantity", "en", "fr")
+        fields = ("id", "quantity", "tree_type")
 
-    def get_id(self, obj: BatchSeed):
-        return TreeTypeSerializer(obj.tree_type).data.get("id", None)
-
-    def get_en(self, obj: BatchSeed):
-        return (
-            InternationalizationSerializer(obj.tree_type.name).data.get("en", None)
-            if obj.tree_type
-            else None
-        )
-
-    def get_fr(self, obj: BatchSeed):
-        return (
-            InternationalizationSerializer(obj.tree_type.name).data.get("fr", None)
-            if obj.tree_type
-            else None
-        )
+    @extend_schema_field(TreeTypeSerializer)
+    def get_tree_type(self, obj: BatchSeed):
+        return TreeTypeSerializer(obj.tree_type).data
 
 
 class BatchSpeciesSerializer(serializers.ModelSerializer[BatchSpecies]):
-    id = serializers.SerializerMethodField()
-    en = serializers.SerializerMethodField()
-    fr = serializers.SerializerMethodField()
+    tree_type = serializers.SerializerMethodField()
 
     class Meta:
         model = BatchSpecies
-        fields = ("id", "quantity", "en", "fr")
+        fields = ("id", "quantity", "tree_type")
 
-    def get_id(self, obj: BatchSpecies):
-        return TreeTypeSerializer(obj.tree_type).data.get("id", None)
-
-    def get_en(self, obj: BatchSpecies):
-        return (
-            InternationalizationSerializer(obj.tree_type.name).data.get("en", None)
-            if obj.tree_type
-            else None
-        )
-
-    def get_fr(self, obj: BatchSpecies):
-        return (
-            InternationalizationSerializer(obj.tree_type.name).data.get("fr", None)
-            if obj.tree_type
-            else None
-        )
+    @extend_schema_field(TreeTypeSerializer)
+    def get_tree_type(self, obj: BatchSpecies):
+        return TreeTypeSerializer(obj.tree_type).data
 
 
 class BatchDetailSerializer(serializers.ModelSerializer[Batch]):
@@ -520,25 +463,39 @@ class BatchDetailSerializer(serializers.ModelSerializer[Batch]):
         model = Batch
         fields = "__all__"
 
-    @extend_schema_field(BatchfertilizerSerializer(many=True))
-    def get_fertilizers(self, obj):
-        return BatchfertilizerSerializer(obj.batchfertilizer_set.all(), many=True).data
+    @extend_schema_field(FertilizerTypeSerializer(many=True))
+    def get_fertilizers(self, obj: Batch):
+        batch_fertilizers = Batchfertilizer.objects.filter(batch=obj)
+        fertilizer_types = [
+            batch_fertilizer.fertilizer_type for batch_fertilizer in batch_fertilizers
+        ]
 
-    @extend_schema_field(BatchMulchLayerSerializer(many=True))
-    def get_mulch_layers(self, obj):
-        return BatchMulchLayerSerializer(obj.batchmulchlayer_set.all(), many=True).data
+        return FertilizerTypeSerializer(fertilizer_types, many=True).data
 
-    @extend_schema_field(BatchSupportedSpeciesSerializer(many=True))
-    def get_supported_species(self, obj):
-        return BatchSupportedSpeciesSerializer(obj.batchsupportedspecies_set.all(), many=True).data
+    @extend_schema_field(MulchLayerTypeSerializer(many=True))
+    def get_mulch_layers(self, obj: Batch):
+        batch_mulch_layers = Batchmulchlayer.objects.filter(batch=obj)
+        mulch_layer_types = [
+            batch_mulch_layer.mulch_layer_type for batch_mulch_layer in batch_mulch_layers
+        ]
+        return MulchLayerTypeSerializer(mulch_layer_types, many=True).data
+
+    @extend_schema_field(TreeTypeSerializer(many=True))
+    def get_supported_species(self, obj: Batch):
+        batch_supported_species_list = BatchSupportedSpecies.objects.filter(batch=obj)
+        supported_species_types = [
+            batch_supported_species.tree_type
+            for batch_supported_species in batch_supported_species_list
+        ]
+        return TreeTypeSerializer(supported_species_types, many=True).data
 
     @extend_schema_field(BatchSeedSerializer(many=True))
     def get_seeds(self, obj):
-        return BatchSeedSerializer(obj.batchseed_set.all(), many=True).data
+        return BatchSeedSerializer(BatchSeed.objects.filter(batch=obj), many=True).data
 
     @extend_schema_field(BatchSpeciesSerializer(many=True))
     def get_species(self, obj):
-        return BatchSpeciesSerializer(obj.batchspecies_set.all(), many=True).data
+        return BatchSpeciesSerializer(BatchSpecies.objects.filter(batch=obj), many=True).data
 
 
 class SiteAdminSerializer(serializers.ModelSerializer[Siteadmin]):
