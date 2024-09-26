@@ -3497,7 +3497,7 @@ export interface IBatchSeed {
 
 export class BatchSpecies implements IBatchSpecies {
   readonly id!: number
-  quantity?: number | undefined
+  quantity!: number
   readonly treeType!: TreeType;
 
   [key: string]: any
@@ -3553,7 +3553,7 @@ export class BatchSpecies implements IBatchSpecies {
 
 export interface IBatchSpecies {
   id: number
-  quantity?: number | undefined
+  quantity: number
   treeType: TreeType
 
   [key: string]: any

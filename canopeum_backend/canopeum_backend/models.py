@@ -70,17 +70,6 @@ class Asset(models.Model):
     asset = models.FileField(upload_to=upload_to, null=False)
 
 
-class TreespeciestypeInternationalization(models.Model):
-    en = models.TextField(db_column="EN", blank=True, null=True)
-    fr = models.TextField(db_column="FR", blank=True, null=True)
-
-
-class Treetype(models.Model):
-    name = models.ForeignKey(
-        TreespeciestypeInternationalization, models.DO_NOTHING, blank=True, null=True
-    )
-
-
 class Contact(models.Model):
     address = models.TextField(blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
@@ -274,10 +263,19 @@ class Batchmulchlayer(models.Model):
         )
 
 
+class TreespeciestypeInternationalization(models.Model):
+    en = models.TextField(db_column="EN", blank=True, null=True)
+    fr = models.TextField(db_column="FR", blank=True, null=True)
+
+
+class Treetype(models.Model):
+    name = models.ForeignKey(TreespeciestypeInternationalization, models.DO_NOTHING)
+
+
 class BatchSpecies(models.Model):
     batch = models.ForeignKey(Batch, models.CASCADE)
     tree_type = models.ForeignKey(Treetype, models.DO_NOTHING)
-    quantity = models.IntegerField(blank=True, null=True)
+    quantity = models.IntegerField()
 
     class Meta:
         constraints = (
@@ -322,7 +320,7 @@ class PostAsset(models.Model):
 
 
 class Post(models.Model):
-    site = models.ForeignKey("Site", models.CASCADE, blank=False, null=False)
+    site = models.ForeignKey(Site, models.CASCADE, blank=False, null=False)
     body = models.TextField(blank=False, null=False)
     share_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True, blank=False, null=False)
@@ -365,7 +363,7 @@ class SiteFollower(models.Model):
 
 class Sitetreespecies(models.Model):
     site = models.ForeignKey(Site, models.CASCADE, blank=True, null=True)
-    tree_type = models.ForeignKey("Treetype", models.DO_NOTHING, blank=True, null=True)
+    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
 
     class Meta:

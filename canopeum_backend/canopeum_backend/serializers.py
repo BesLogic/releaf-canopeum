@@ -463,7 +463,6 @@ class BatchDetailSerializer(serializers.ModelSerializer[Batch]):
         mulch_layer_types = [
             batch_mulch_layer.mulch_layer_type for batch_mulch_layer in batch_mulch_layers
         ]
-
         return MulchLayerTypeSerializer(mulch_layer_types, many=True).data
 
     @extend_schema_field(TreeTypeSerializer(many=True))
@@ -473,16 +472,15 @@ class BatchDetailSerializer(serializers.ModelSerializer[Batch]):
             batch_supported_species.tree_type
             for batch_supported_species in batch_supported_species_list
         ]
-
         return TreeTypeSerializer(supported_species_types, many=True).data
 
     @extend_schema_field(BatchSeedSerializer(many=True))
     def get_seeds(self, obj):
-        return BatchSeedSerializer(obj.batchseed_set.all(), many=True).data
+        return BatchSeedSerializer(BatchSeed.objects.filter(batch=obj), many=True).data
 
     @extend_schema_field(BatchSpeciesSerializer(many=True))
     def get_species(self, obj):
-        return BatchSpeciesSerializer(obj.batchspecies_set.all(), many=True).data
+        return BatchSpeciesSerializer(BatchSpecies.objects.filter(batch=obj), many=True).data
 
     @extend_schema_field(BatchSponsorSerializer(many=False))
     def get_sponsor(self, obj: Batch):

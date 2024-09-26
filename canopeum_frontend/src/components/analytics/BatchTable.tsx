@@ -109,9 +109,9 @@ const BatchTable = (props: Props) => {
                 style={{ borderColor: cellBorderColor }}
               >
                 <ul>
-                  {batch.species.map(species => (
-                    <li key={`batch-${batch.id}-treeType-${species.id}`}>
-                      {translateValue(species.treeType)} x {species.quantity}
+                  {batch.species.map(batchSpecies => (
+                    <li key={`batch-${batch.id}-batch-species-${batchSpecies.id}`}>
+                      {translateValue(batchSpecies.treeType)} x {batchSpecies.quantity}
                     </li>
                   ))}
                 </ul>
@@ -300,7 +300,7 @@ const BatchTable = (props: Props) => {
               >
                 <ul>
                   {batch.seeds.map(batchSeed => (
-                    <li key={`batch-${batch.id}-seeds-list-${batchSeed.id}`}>
+                    <li key={`batch-${batch.id}-batch-seed-${batchSeed.id}`}>
                       {translateValue(batchSeed.treeType)} x {batchSeed.quantity}
                     </li>
                   ))}
