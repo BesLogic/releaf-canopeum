@@ -1,11 +1,11 @@
-import { appRoutes } from '@constants/routes.constant'
-import type { RoleEnum } from '@services/api'
 import type { MaterialIcon } from 'material-icons'
 import { useCallback, useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import { AuthenticationContext } from './context/AuthenticationContext'
+import { appRoutes } from '@constants/routes.constant'
+import type { RoleEnum } from '@services/api'
 
 type NavbarItem = {
   icon: MaterialIcon,
@@ -43,6 +43,7 @@ const NAVBAR_ITEMS: NavbarItem[] = [
 ]
 
 const Navbar = () => {
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- Unmarked 3rd party method
   const { i18n: { changeLanguage, language }, t: translate } = useTranslation()
   const [currentLanguage, setCurrentLanguage] = useState(language)
   const { currentUser } = useContext(AuthenticationContext)

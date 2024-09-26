@@ -1,14 +1,14 @@
-import CreateBatch from '@components/analytics/add-batch-modal/CreateBatchModal'
-import AnalyticsSiteHeader from '@components/analytics/AnalyticsSiteHeader'
-import BatchTable from '@components/analytics/BatchTable'
-import { LanguageContext } from '@components/context/LanguageContext'
-import useApiClient from '@hooks/ApiClientHook'
-import type { SiteSummary } from '@services/api'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 
 import LoadingPage from './LoadingPage'
+import AnalyticsSiteHeader from '@components/analytics/AnalyticsSiteHeader'
+import CreateBatchModal from '@components/analytics/batch-modal/CreateBatchModal'
+import BatchTable from '@components/analytics/BatchTable'
+import { LanguageContext } from '@components/context/LanguageContext'
+import useApiClient from '@hooks/ApiClientHook'
+import type { SiteDetailSummary } from '@services/api'
 
 const AnalyticsSite = () => {
   const { t: translate } = useTranslation<'analytics'>()
@@ -16,11 +16,10 @@ const AnalyticsSite = () => {
   const { formatDate } = useContext(LanguageContext)
   const { getApiClient } = useApiClient()
 
-  const [siteSummary, setSiteSummary] = useState<SiteSummary | undefined>()
+  const [siteSummary, setSiteSummary] = useState<SiteDetailSummary | undefined>()
   const [lastModifiedBatchDate, setLastModifiedBatchDate] = useState<Date | undefined>()
 
   const [isCreateBatchOpen, setIsCreateBatchOpen] = useState(false)
-  const [wasCreateBatchOpened, setWasCreateBatchOpened] = useState(false)
 
   const fetchSite = useCallback(
     async (siteId: number) => setSiteSummary(await getApiClient().siteClient.summary(siteId)),
@@ -42,7 +41,7 @@ const AnalyticsSite = () => {
     } else {
       const lastModifiedBatch = siteSummary
         .batches
-        .map(batch => batch.updatedAt)
+        .map(batch => batch.updatedAt ?? new Date())
         .sort((a, b) =>
           a > b
             ? -1
@@ -55,12 +54,6 @@ const AnalyticsSite = () => {
       setLastModifiedBatchDate(undefined)
     }
   }, [siteSummary])
-
-  useEffect(() => {
-    if (!isCreateBatchOpen) return
-
-    setWasCreateBatchOpened(true)
-  }, [isCreateBatchOpen])
 
   if (!siteSummary) {
     return <LoadingPage />
@@ -93,19 +86,17 @@ const AnalyticsSite = () => {
           </button>
         </div>
 
-        <BatchTable batches={siteSummary.batches} />
+        <BatchTable batches={siteSummary.batches} siteId={siteSummary.id} />
       </div>
 
-      {wasCreateBatchOpened && (
-        <CreateBatch
-          handleClose={reason => {
-            setIsCreateBatchOpen(false)
-            if (reason === 'create') void fetchSite(siteSummary.id)
-          }}
-          open={isCreateBatchOpen}
-          site={siteSummary}
-        />
-      )}
+      <CreateBatchModal
+        handleClose={reason => {
+          setIsCreateBatchOpen(false)
+          if (reason === 'create') void fetchSite(siteSummary.id)
+        }}
+        open={isCreateBatchOpen}
+        site={siteSummary}
+      />
     </div>
   )
 }

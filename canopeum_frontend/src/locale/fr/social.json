@@ -26,5 +26,31 @@
   },
   "posts": {
     "post-body-required": "Vous devez saisir un message pour pouvoir publier votre message."
+  },
+  "widgets": {
+    "create": "ajouter un nouveau widget",
+    "submit": "soumettre",
+    "cancel": "annuler",
+    "max-word": "100 mots maximum",
+    "title": "titre du widget"
+  },
+  "contact": {
+    "title": "Contact",
+    "address": "Adresse",
+    "phone": "Téléphone",
+    "email": "Email",
+    "feedback": {
+      "edit-success": "Contact modifié avec succès",
+      "edit-error": "Erreur lors de la modification du contact"
+    }
+  },
+  "announcement": {
+    "title": "Annonce",
+    "body": "Corps",
+    "link": "Lien",
+    "feedback": {
+      "edit-success": "Annonce modifiée avec succès",
+      "edit-error": "Erreur lors de la modification de l'annonce"
+    }
   }
 }

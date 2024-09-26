@@ -1,21 +1,20 @@
 import './AnalyticsSiteHeader.scss'
 
+import { useContext } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
+
 import SiteCountBadge from '@components/analytics/SiteCountBadge'
 import SiteSponsorProgress from '@components/analytics/SiteSponsorProgress'
 import { LanguageContext } from '@components/context/LanguageContext'
 import CustomIconBadge from '@components/CustomIconBadge'
 import { appRoutes } from '@constants/routes.constant'
-import type { SiteSummary } from '@services/api'
-import { useContext } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { getImageNameByWMOCategories } from '@constants/weatherImageMap'
+import type { SiteDetailSummary } from '@services/api'
 
 type Props = {
-  readonly siteSummary: SiteSummary,
+  readonly siteSummary: SiteDetailSummary,
 }
-
-const DUMMY_WEATHER_IMAGE_URL =
-  'https://s3-alpha-sig.figma.com/img/3323/1a79/39fa0b7c7c6287bee10bf03f964802b4?Expires=1714953600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=prNydsvieeG2h4vbOPKOFCA44pA3jp2CCg3NYadugITUgTv0xUoS9M58d4gnX9aUN73bP2cJqAWzeAOYhrMieCcEgx93tmgyHBi3uyTStGR0R~oIz34-KouN7RkchWMpwy6lIMPbaInHSwtwbrnqkkjCl6O0bvQLPZQeOE~E-nqk59fe7eiH47rZHpmOGNZqz8C9x14-4vx8tH5GVWokIqHz1MxOhLoR-o-fGuUDfLR0ZTSJD0uYVtnQoctCboejXlCSVDcEd959ZfwuAIRvyO8xs1RJugq45Su3GtfC7FKHY0pNMzCN~wRoHj1q9Ac~QNe8OSL-HEglV3f2ac-Bcg__'
 
 const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
   const { t: translate } = useTranslation<'analytics'>()
@@ -38,17 +37,17 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
             linear-gradient(
               rgba(0, 0, 0, 0.6),
               rgba(0, 0, 0, 0.6)
-            ), url(${DUMMY_WEATHER_IMAGE_URL})
+            ), url(${getImageNameByWMOCategories(siteSummary.weather.description)})
           `,
         }}
       >
-        <h2 className='text-light'>{translate('analyticsSite.location')}</h2>
+        <h2 className='text-light fs-6 text-center'>{siteSummary.coordinate.address}</h2>
 
-        <span style={{ fontSize: '300%' }}>33°C</span>
+        <span style={{ fontSize: '300%' }}>{`${siteSummary.weather.temperature}°C`}</span>
 
         <div className='d-flex flex-column text-center'>
-          <span>Light Rain</span>
-          <span>Humidity 87%</span>
+          <span>{siteSummary.weather.description}</span>
+          <span>{`Humidity ${siteSummary.weather.humidity}%`}</span>
         </div>
       </div>
 

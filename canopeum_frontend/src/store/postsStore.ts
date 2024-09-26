@@ -1,5 +1,6 @@
-import { Post } from '@services/api'
 import { create } from 'zustand'
+
+import { Post } from '@services/api'
 
 type PostsState = {
   posts: Post[],
@@ -8,6 +9,7 @@ type PostsState = {
 type Action = {
   setPosts: (posts: Post[]) => void,
   addPost: (newPost: Post) => void,
+  deletePost: (postId: number) => void,
   morePostsLoaded: (newPosts: Post[]) => void,
   commentChange: (postId: number, action: 'added' | 'removed') => void,
   toggleLike: (postId: number) => void,
@@ -17,6 +19,7 @@ const usePostsStore = create<Action & PostsState>(set => ({
   posts: [],
   setPosts: posts => set(_state => ({ posts })),
   addPost: newPost => set(state => ({ posts: [newPost, ...state.posts] })),
+  deletePost: postId => set(state => ({ posts: state.posts.filter(post => post.id !== postId) })),
   morePostsLoaded: (newPosts: Post[]) => set(state => ({ posts: [...state.posts, ...newPosts] })),
   commentChange: (postId, action) =>
     set(state => {

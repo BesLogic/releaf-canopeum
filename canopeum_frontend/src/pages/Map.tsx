@@ -1,5 +1,9 @@
 import './Map.scss'
 
+import { useCallback, useEffect, useState } from 'react'
+import ReactMap, { GeolocateControl, Marker, NavigationControl, ScaleControl, type ViewState } from 'react-map-gl/maplibre'
+import { Link } from 'react-router-dom'
+
 import CanopeumPin from '@assets/icons/pins/canopeum-pin.svg'
 import CorporateLotPin from '@assets/icons/pins/corporate-lot-pin.svg'
 import EducationalFacilityPin from '@assets/icons/pins/educational-facility-pin.svg'
@@ -8,12 +12,8 @@ import IndegeniousCommunityPin from '@assets/icons/pins/indegenious-community-pi
 import ParkPin from '@assets/icons/pins/park-pin.svg'
 import { appRoutes } from '@constants/routes.constant'
 import useApiClient from '@hooks/ApiClientHook'
+import type { SiteMap } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
-import { useCallback, useEffect, useState } from 'react'
-import ReactMap, { GeolocateControl, Marker, NavigationControl, ScaleControl, type ViewState } from 'react-map-gl/maplibre'
-import { Link } from 'react-router-dom'
-
-import type { SiteMap } from '../services/api'
 
 const pinMap: Record<number, string> = {
   1: CanopeumPin,
@@ -37,7 +37,7 @@ const Map = () => {
   const { getApiClient } = useApiClient()
 
   const [sites, setSites] = useState<SiteMap[]>([])
-  const [selectedSiteId, setSelectedSiteId] = useState<number | undefined>(undefined)
+  const [selectedSiteId, setSelectedSiteId] = useState<number | undefined>()
 
   const [mapViewState, setMapViewState] = useState({
     longitude: -100,

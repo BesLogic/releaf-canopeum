@@ -43,7 +43,7 @@ urlpatterns = [
     ),
     # Contact
     path(
-        "social/sites/<int:siteId>/contacts/<int:contactId>/",
+        "social/contacts/<int:contactId>/",
         views.ContactDetailAPIView.as_view(),
         name="contact-detail",
     ),

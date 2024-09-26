@@ -2,7 +2,7 @@ import type { ChartsAxisContentProps } from '@mui/x-charts'
 import { BarChart, type BarChartProps } from '@mui/x-charts/BarChart'
 import { useTranslation } from 'react-i18next'
 
-import type { SiteSummary } from '../../services/api'
+import type { SiteSummary } from '@services/api'
 
 type SiteSummaryChartOptions = {
   groups: string[],
@@ -12,18 +12,20 @@ type SiteSummaryChartOptions = {
 }
 
 const buildChartOptions = (siteSummaries: SiteSummary[]) => {
-  // eslint-disable-next-line total-functions/no-partial-division -- length checked above
-  const average = siteSummaries.reduce(
-    (accumulator, current) => accumulator + current.progress,
-    0,
-  ) / siteSummaries.length
-
   const options: SiteSummaryChartOptions = {
     groups: [],
     series: [],
     colors: [],
-    average,
+    average: 0,
   }
+  if (siteSummaries.length === 0) return options
+
+  // total-functions/no-partial-division -- length checked above
+  options.average = siteSummaries.reduce(
+    (accumulator, current) => accumulator + current.progress,
+    0,
+  ) / siteSummaries.length
+
   let siteIndex = 0
   for (const site of siteSummaries) {
     // We can't color individual groups, only series.
@@ -35,7 +37,7 @@ const buildChartOptions = (siteSummaries: SiteSummary[]) => {
     strackedSerie[siteIndex] = site.progress
 
     options.colors.push(
-      site.progress > average
+      site.progress > options.average
         ? 'var(--bs-primary)'
         : 'var(--bs-secondary)',
     )
@@ -57,14 +59,13 @@ const SiteSuccessRatesChart = ({ siteSummaries }: Props) => {
 
   const renderChartTooltip = (props: ChartsAxisContentProps) => {
     const selectedSerie = props.series.find(serie => serie.id === props.axisValue)
-    // value type is known from the context
-    // eslint-disable-next-line total-functions/no-unsafe-type-assertion -- See above
+    // total-functions/no-unsafe-type-assertion -- value type is known from the context
     const data = selectedSerie?.data.find(value => !!value) as number | undefined
 
     return (
       <div className='p-2'>
         <div className='bg-body p-2 border rounded'>
-          <h5 className='border-bottom'>{props.axisValue}</h5>
+          <h5 className='border-bottom'>{String(props.axisValue)}</h5>
           <div style={{ color: selectedSerie?.color }}>{data?.toFixed(1)} %</div>
         </div>
       </div>

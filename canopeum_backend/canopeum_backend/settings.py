@@ -22,11 +22,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-def get_secret(key, default):
+def get_secret(key: str, default: str):
     value = os.getenv(key, default)
-    if os.path.isfile(value):
-        with open(value) as f:
-            return f.read()
+    value_as_path = Path(value)
+    if value_as_path.is_file():
+        return value_as_path.read_text(encoding="utf-8")
     return value
 
 
@@ -97,6 +97,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "djangorestframework_camel_case.middleware.CamelCaseMiddleWare",
 ]
 
 
@@ -124,9 +125,13 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_RENDERER_CLASSES": [
         "djangorestframework_camel_case.render.CamelCaseJSONRenderer",
+        "djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer",
     ],
     "DEFAULT_PARSER_CLASSES": [
-        "rest_framework.parsers.JSONParser",
+        "djangorestframework_camel_case.parser.CamelCaseJSONParser",
+        "djangorestframework_camel_case.parser.CamelCaseFormParser",
+        # TODO: Figure out why this breaks *some* Views' API generation (adds multiple body params)
+        # "djangorestframework_camel_case.parser.CamelCaseMultiPartParser",
     ],
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -168,7 +173,11 @@ SPECTACULAR_SETTINGS = {
 
 DATABASES = {
     "default": dj_database_url.parse(
-        f"mysql://canopeum_user:{get_secret("MYSQL_PASSWORD_CANOPEUM", "")}@{get_secret("MYSQL_HOST_CANOPEUM", "localhost")}:3306/canopeum_db",
+        "mysql://canopeum_user:{}@{}:{}/canopeum_db".format(
+            get_secret("MYSQL_PASSWORD_CANOPEUM", ""),
+            get_secret("MYSQL_HOST_CANOPEUM", "localhost"),
+            get_secret("MYSQL_PORT_CANOPEUM", "3308"),
+        ),
         conn_max_age=600,
         conn_health_checks=True,
     )

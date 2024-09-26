@@ -1,3 +1,7 @@
+import { useCallback, useContext, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Link, useSearchParams } from 'react-router-dom'
+
 import AuthPageLayout from '@components/auth/AuthPageLayout'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { appRoutes } from '@constants/routes.constant'
@@ -5,11 +9,7 @@ import useApiClient from '@hooks/ApiClientHook'
 import type { UserInvitation } from '@services/api'
 import { RegisterUser } from '@services/api'
 import { storeToken } from '@utils/auth.utils'
-import { useCallback, useContext, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Link, useSearchParams } from 'react-router-dom'
-
-import { type InputValidationError, isValidEmail, isValidPassword, mustMatch } from '../utils/validators'
+import { type InputValidationError, isValidEmail, isValidPassword, mustMatch } from '@utils/validators'
 
 const Register = () => {
   const [searchParams, _setSearchParams] = useSearchParams()
@@ -29,7 +29,7 @@ const Register = () => {
     InputValidationError | undefined
   >()
 
-  const [registrationError, setRegistrationError] = useState<string | undefined>(undefined)
+  const [registrationError, setRegistrationError] = useState<string | undefined>()
   const [codeInvalid, setCodeInvalid] = useState(false)
   const [codeExpired, setCodeExpired] = useState(false)
 
@@ -138,10 +138,10 @@ const Register = () => {
     const passwordValid = validatePassword()
     const passwordConfirmationValid = validatePasswordConfirmation()
 
-    return usernameValid &&
-      emailValid &&
-      passwordValid &&
-      passwordConfirmationValid
+    return usernameValid
+      && emailValid
+      && passwordValid
+      && passwordConfirmationValid
   }
 
   const onCreateAccountClick = async () => {

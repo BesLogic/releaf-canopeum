@@ -1,16 +1,16 @@
-import OptionQuantitySelector, { type SelectorOption, type SelectorOptionQuantity } from '@components/analytics/OptionQuantitySelector'
-import { LanguageContext } from '@components/context/LanguageContext'
-import useApiClient from '@hooks/ApiClientHook'
-import type { TreeType } from '@services/api'
-import { Sitetreespecies } from '@services/api'
-import { notEmpty } from '@utils/arrayUtils'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import OptionQuantitySelector, { type SelectorOption, type SelectorOptionQuantity } from '@components/analytics/OptionQuantitySelector'
+import { LanguageContext } from '@components/context/LanguageContext'
+import useApiClient from '@hooks/ApiClientHook'
+import { Species, type TreeType } from '@services/api'
+import { notEmpty } from '@utils/arrayUtils'
+
 type Props = {
-  readonly species?: Sitetreespecies[],
+  readonly species?: Species[],
   // Make sure that onChange is included in a useCallback if part of a component
-  readonly onChange: (selectedSpecies: Sitetreespecies[]) => void,
+  readonly onChange: (selectedSpecies: Species[]) => void,
   readonly label: string,
 }
 
@@ -21,48 +21,54 @@ const TreeSpeciesSelector = (
   const { translateValue } = useContext(LanguageContext)
   const { getApiClient } = useApiClient()
 
-  const [availableSpecies, setAvailableSpecies] = useState<TreeType[]>([])
+  const [availableSpecies, setAvailableSpecies] = useState<Map<number, TreeType>>(new Map())
   const [options, setOptions] = useState<SelectorOption<number>[]>([])
   const [selected, setSelected] = useState<SelectorOptionQuantity<number>[]>([])
 
-  const fetchTreeSpecies = useCallback(
-    async () => {
-      const speciesResponse = await getApiClient().treeClient.species()
-      setAvailableSpecies(speciesResponse)
-      setOptions(speciesResponse.map(treeType => ({
-        value: treeType.id,
-        displayText: translateValue(treeType),
-      })))
-    },
-    [getApiClient, translateValue],
-  )
-
-  useEffect(() => void fetchTreeSpecies(), [fetchTreeSpecies])
-
   useEffect(() => {
-    if (!species) return
+    const fetchTreeSpecies = async () => {
+      const speciesResponse = await getApiClient().treeClient.species()
 
-    setSelected(species.map(specie => ({
-      option: {
-        displayText: translateValue(specie),
-        value: specie.id,
-      },
-      quantity: specie.quantity,
-    })))
-  }, [species, translateValue])
+      const speciesMap = new Map<number, TreeType>()
+      const speciesOptions = []
+      for (const currentSpecies of speciesResponse) {
+        speciesMap.set(currentSpecies.id, currentSpecies)
+        speciesOptions.push({
+          value: currentSpecies.id,
+          displayText: translateValue(currentSpecies),
+        })
+      }
+
+      setAvailableSpecies(speciesMap)
+      setOptions(speciesOptions)
+    }
+    void fetchTreeSpecies()
+  }, [getApiClient, translateValue])
+
+  useEffect(() =>
+    species
+    && setSelected(
+      species.map(specie => {
+        const matchingSpecie = availableSpecies.get(specie.id ?? -1)
+        if (!matchingSpecie) return null
+
+        return {
+          option: {
+            displayText: translateValue(matchingSpecie),
+            value: matchingSpecie.id,
+          },
+          quantity: specie.quantity,
+        }
+      }).filter(notEmpty),
+    ), [availableSpecies, species, translateValue])
 
   const handleChange = useCallback((selectedOptions: SelectorOptionQuantity<number>[]) => {
     const selectedSpecies = selectedOptions
       .map(optionQuantity => {
-        const matchingSpecie = availableSpecies.find(specieOption =>
-          specieOption.id === optionQuantity.option.value
-        )
+        const matchingSpecie = availableSpecies.get(optionQuantity.option.value)
         if (!matchingSpecie) return null
 
-        return new Sitetreespecies({
-          ...matchingSpecie,
-          quantity: optionQuantity.quantity ?? 0,
-        })
+        return new Species({ ...matchingSpecie, quantity: optionQuantity.quantity ?? 0 })
       })
       .filter(notEmpty)
 

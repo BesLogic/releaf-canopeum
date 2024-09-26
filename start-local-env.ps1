@@ -1,77 +1,99 @@
 ## SQL
 # Create volumes
 # Run MySQL container
-$commandsSQLContainer = @"
-docker volume create --name mysql8-data
-docker volume create --name mysql8-conf
+function Start-MySQLContainer {
+  docker volume create --name mysql8-data
+  docker volume create --name mysql8-conf
 
-docker run -d --name mysql --hostname mysql -p 3306:3306 -e MYSQL_DATABASE=canopeum_db -e MYSQL_ROOT_PASSWORD=Canopeum12345!@ -e MYSQL_USER=canopeum_user -e MYSQL_PASSWORD=CanopeumUser12345!@ -v mysql8-data:/var/lib/mysql -v mysql8-conf:/etc/mysql/conf.d mysql:8
-"@
+  # Must specify --all to get stopped containers
+  $ExistingId = docker container list --all --quiet --filter name=mysql
+  if ($ExistingId) {
+    docker container start mysql
+  }
+  else {
+    docker container run --detach --name mysql `
+      --hostname mysql `
+      -p 3308:3306 `
+      --env MYSQL_DATABASE=canopeum_db `
+      --env MYSQL_ROOT_PASSWORD=Canopeum12345!@ `
+      --env MYSQL_USER=canopeum_user `
+      --env MYSQL_PASSWORD=CanopeumUser12345!@ `
+      --volume mysql8-data:/var/lib/mysql `
+      --volume mysql8-conf:/etc/mysql/conf.d mysql:8
+  }
+}
 
 # Backend
-# Acticate virtual environment
-# Install dependencies
-# Run database initialisation
+# Update virtual environment / Install dependencies
 # Run Django server
-$commandsBackend = @"
-cd canopeum_backend
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-python manage.py runserver
-"@
+$commandsBackend = @'
+  cd canopeum_backend
+  uv sync --locked --extra dev
+  uv run manage.py runserver
+'@
 
 # Frontend
 # Install dependencies
 # Run React Vite server
-$commandsFrontend = @"
+$commandsFrontend = @'
 cd canopeum_frontend
 npm install
 npm run dev
-"@
+'@
 
 # Initialize database
-$commandsInitializeDatabase = @"
-python manage.py initialize_database
-"@
+$commandsInitializeDatabase = @'
+  cd canopeum_backend
+  uv run manage.py initialize_database
+  cd ..
+'@
 
-function Show-Menu
-{
+# Generate OpenAPI specs
+$commandsGenerateOpenAPI = @'
+  cd canopeum_frontend
+  npm run generate-api-client
+  cd ..
+'@
+
+function Show-Menu {
   param (
     [string]$Title = 'Run Local Environment'
   )
   Write-Host "================ $Title ================"
 
-  Write-Host "1: Run all services"
-  Write-Host "2: Run MySQL container"
-  Write-Host "3: Run Django server"
-  Write-Host "4: Run React Vite server"
-  Write-Host "5: Initialize database"
-  Write-Host "Q: Quit"
+  Write-Host '1: Run all services'
+  Write-Host '2: Run MySQL container'
+  Write-Host '3: Run Django server'
+  Write-Host '4: Run React Vite server'
+  Write-Host '5: Initialize database'
+  Write-Host '6: Generate OpenAPI specs'
+  Write-Host 'Q: Quit'
 }
 
-do
-{
+do {
   Show-Menu
-  $userInput = Read-Host "Please make a selection"
-  switch ($userInput)
-  {
+  $userInput = Read-Host 'Please make a selection'
+  # Use Invoke-Expression to run in the same window if the command isn't long-running
+  switch ($userInput) {
     '1' {
-      Start-Process powershell -ArgumentList "-NoExit", "-Command", $commandsSQLContainer
-      Start-Process powershell -ArgumentList "-NoExit", "-Command", $commandsBackend
-      Start-Process powershell -ArgumentList "-NoExit", "-Command", $commandsFrontend
+      Start-MySQLContainer
+      Start-Process powershell -ArgumentList '-NoExit', '-Command', $commandsBackend
+      Start-Process powershell -ArgumentList '-NoExit', '-Command', $commandsFrontend
     }
     '2' {
-      Start-Process powershell -ArgumentList "-NoExit", "-Command", $commandsSQLContainer
+      Start-MySQLContainer
     }
     '3' {
-      Start-Process powershell -ArgumentList "-NoExit", "-Command", $commandsBackend
+      Start-Process powershell -ArgumentList '-NoExit', '-Command', $commandsBackend
     }
     '4' {
-      Start-Process powershell -ArgumentList "-NoExit", "-Command", $commandsFrontend
+      Start-Process powershell -ArgumentList '-NoExit', '-Command', $commandsFrontend
     }
     '5' {
-      Start-Process powershell -ArgumentList "-NoExit", "-Command", $commandsInitializeDatabase
+      Invoke-Expression $commandsInitializeDatabase
+    }
+    '6' {
+      Invoke-Expression $commandsGenerateOpenAPI
     }
     'q' {
       break

@@ -25,6 +25,7 @@ const DEFAULT_SNACKBAR_ALERT_OPTIONS: SnackbarAlertOptions = {
 export const SnackbarContext = createContext<ISnackbarContext>({
   openAlertSnackbar: (_message: string, _options?: SnackbarAlertOptions) => {/* empty */},
 })
+SnackbarContext.displayName = 'SnackbarContext'
 
 const SnackbarContextProvider: FunctionComponent<{ readonly children?: ReactNode }> = memo(
   props => {
@@ -34,9 +35,7 @@ const SnackbarContextProvider: FunctionComponent<{ readonly children?: ReactNode
 
     const [snackPack, setSnackPack] = useState<readonly SnackbarMessage[]>([])
     const [open, setOpen] = useState(false)
-    const [messageInfo, setMessageInfo] = useState<SnackbarMessage | undefined>(
-      undefined,
-    )
+    const [messageInfo, setMessageInfo] = useState<SnackbarMessage | undefined>()
 
     useEffect(() => {
       if (snackPack.length > 0 && !messageInfo) {
@@ -80,8 +79,8 @@ const SnackbarContextProvider: FunctionComponent<{ readonly children?: ReactNode
         <Snackbar
           TransitionProps={{ onExited: handleExited }}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-          autoHideDuration={snackbarAlertOptions?.autohideDuration ??
-            DEFAULT_SNACKBAR_ALERT_OPTIONS.autohideDuration}
+          autoHideDuration={snackbarAlertOptions?.autohideDuration
+            ?? DEFAULT_SNACKBAR_ALERT_OPTIONS.autohideDuration}
           key={messageInfo
             ? messageInfo.key
             : undefined}

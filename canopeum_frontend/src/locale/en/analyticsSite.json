@@ -5,7 +5,8 @@
   "sponsors": "Sponsors",
   "add-new-batch": "Add a New Batch",
   "batch-modal": {
-    "title": "Create a New Batch",
+    "create-title": "Create a New Batch",
+    "edit-title": "Edit a Batch",
     "name-label": "Batch Name / ID",
     "sponsor-label": "Sponsor",
     "size-label": "Size of the land",
@@ -23,8 +24,10 @@
     "propagation-label": "Total Propagation",
     "images-label": "Image",
     "feedback": {
-      "success": "Batch created successfully",
-      "error": "Error creating batch"
+      "create-success": "Batch created successfully",
+      "create-error": "Error creating batch",
+      "edit-success": "Batch edited successfully",
+      "edit-error": "Error editing batch"
     }
   }
 }

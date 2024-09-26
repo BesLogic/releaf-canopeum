@@ -1,18 +1,20 @@
+import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import { useCallback, useContext, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
 import ImageUpload from '@components/analytics/ImageUpload'
 import SiteCoordinates from '@components/analytics/site-modal/SiteCoordinates'
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
-import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
-import type { Sitetreespecies, SiteType } from '@services/api'
+import { type Coordinate, defaultLatitude, defaultLongitude, extractCoordinate } from '@models/types/Coordinate'
+import { type SiteType, Species } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
-import { useCallback, useContext, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 
 type Props = {
   readonly open: boolean,
   readonly handleClose: (
-    reason?: 'backdropClick' | 'escapeKeyDown' | 'save',
+    reason: 'backdropClick' | 'escapeKeyDown' | 'save' | 'cancel',
     data?: SiteDto,
   ) => void,
   readonly siteId: number | undefined,
@@ -22,54 +24,21 @@ export type SiteDto = {
   siteName?: string,
   siteType?: number,
   siteImage?: File,
-  dmsLatitude: {
-    degrees?: number,
-    minutes?: number,
-    seconds?: number,
-    miliseconds?: number,
-    cardinal?: string,
-  },
-  dmsLongitude: {
-    degrees?: number,
-    minutes?: number,
-    seconds?: number,
-    miliseconds?: number,
-    cardinal?: string,
-  },
+  dmsLatitude: Coordinate,
+  dmsLongitude: Coordinate,
   presentation?: string,
   size?: number,
-  species: Sitetreespecies[],
+  species: Species[],
   researchPartner?: boolean,
   visibleOnMap?: boolean,
 }
 
 const defaultSiteDto: SiteDto = {
-  dmsLatitude: {
-    cardinal: 'N',
-  },
-  dmsLongitude: {
-    cardinal: 'W',
-  },
+  dmsLatitude: defaultLatitude,
+  dmsLongitude: defaultLongitude,
   species: [],
   researchPartner: true,
   visibleOnMap: true,
-}
-
-const extractCoordinate = (coordinates?: string) => {
-  if (!coordinates) return {}
-
-  const char1 = coordinates.indexOf('°')
-  const char2 = coordinates.indexOf("'")
-  const char3 = coordinates.indexOf('.')
-  const char4 = coordinates.indexOf('"')
-
-  return {
-    degrees: Number(coordinates.slice(0, char1)),
-    minutes: Number(coordinates.slice(char1 + 1, char2)),
-    seconds: Number(coordinates.slice(char2 + 1, char3)),
-    miliseconds: Number(coordinates.slice(char3 + 1, char4)),
-    cardinal: coordinates.at(-1),
-  }
 }
 
 const SiteModal = ({ open, handleClose, siteId }: Props) => {
@@ -82,11 +51,15 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
   const [siteImageURL, setSiteImageURL] = useState<string>()
 
   const fetchSite = useCallback(async () => {
-    if (!siteId) return
+    if (!siteId) {
+      // Clear the image that could come from having opened the modal with a previous site
+      setSiteImageURL(undefined)
+
+      return
+    }
 
     const siteDetail = await getApiClient().siteClient.detail(siteId)
-    const dmsLat = siteDetail.coordinate.dmsLatitude
-    const dmsLong = siteDetail.coordinate.dmsLongitude
+    const { dmsLatitude, dmsLongitude } = siteDetail.coordinate
 
     const imgResponse = await fetch(`${getApiBaseUrl()}${siteDetail.image.asset}`)
     const blob = await imgResponse.blob()
@@ -95,11 +68,15 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
       siteName: siteDetail.name,
       siteType: siteDetail.siteType.id,
       siteImage: new File([blob], 'temp', { type: blob.type }),
-      dmsLatitude: extractCoordinate(dmsLat),
-      dmsLongitude: extractCoordinate(dmsLong),
+      dmsLatitude: dmsLatitude
+        ? extractCoordinate(dmsLatitude)
+        : defaultLatitude,
+      dmsLongitude: dmsLongitude
+        ? extractCoordinate(dmsLongitude)
+        : defaultLongitude,
       presentation: siteDetail.description,
       size: Number(siteDetail.size),
-      species: siteDetail.siteTreeSpecies,
+      species: siteDetail.siteTreeSpecies.map(specie => new Species(specie)),
       researchPartner: siteDetail.researchPartnership,
       visibleOnMap: siteDetail.visibleMap,
     })
@@ -130,7 +107,11 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
     <Dialog fullWidth maxWidth='sm' onClose={(_, reason) => handleClose(reason)} open={open}>
       <DialogTitle>
         <div className='fs-5 text-capitalize m-auto text-center'>
-          {t('analytics.site-modal.create-site')}
+          {t(
+            siteId
+              ? 'analytics.edit-site-info'
+              : 'analytics.create-site',
+          )}
         </div>
       </DialogTitle>
 
@@ -139,6 +120,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
           <div className='mb-3'>
             <label className='form-label text-capitalize' htmlFor='site-name'>
               {t('analytics.site-modal.site-name')}
+              {site.siteName}
             </label>
             <input
               className='form-control'
@@ -158,7 +140,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
               id='site-type'
               onChange={event =>
                 setSite(current => ({ ...current, siteType: Number(event.target.value) }))}
-              value={site.siteType}
+              value={site.siteType ?? availableSiteTypes[0]?.id}
             >
               {availableSiteTypes.map(value => (
                 <option key={`available-specie-${value.id}`} value={value.id}>
@@ -220,7 +202,11 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
           <div className='mb-3'>
             <TreeSpeciesSelector
               label='analytics.site-modal.site-tree-species'
-              onChange={useCallback(species => setSite(current => ({ ...current, species })), [])}
+              onChange={species =>
+                setSite(current => ({
+                  ...current,
+                  species,
+                }))}
               species={site.species}
             />
           </div>
@@ -310,13 +296,13 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
       <DialogActions>
         <button
           className='btn btn-outline-primary'
-          onClick={() => handleClose()}
+          onClick={() => handleClose('cancel')}
           type='button'
         >
           {t('generic.cancel')}
         </button>
         <button className='btn btn-primary' onClick={() => handleClose('save', site)} type='button'>
-          {t('generic.subscribe')}
+          {t('generic.submit')}
         </button>
       </DialogActions>
     </Dialog>

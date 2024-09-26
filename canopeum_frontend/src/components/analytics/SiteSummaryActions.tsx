@@ -1,3 +1,8 @@
+import { type Dispatch, type SetStateAction, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Dropdown, Popover, Whisper } from 'rsuite'
+import type { OverlayTriggerHandle } from 'rsuite/esm/internals/Overlay/OverlayTrigger'
+
 import Checkbox from '@components/Checkbox'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import ConfirmationDialog from '@components/dialogs/ConfirmationDialog'
@@ -5,10 +10,6 @@ import SearchBar from '@components/SearchBar'
 import useApiClient from '@hooks/ApiClientHook'
 import type { SiteSummary, User } from '@services/api'
 import { PatchedSiteAdminUpdateRequest } from '@services/api'
-import { type Dispatch, type SetStateAction, useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Dropdown, Popover, Whisper } from 'rsuite'
-import type { OverlayTriggerHandle } from 'rsuite/esm/internals/Overlay/OverlayTrigger'
 
 type Props = {
   readonly siteSummary: SiteSummary,
@@ -164,7 +165,7 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange, onSiteEdit }: P
           {administratorsSelection}
         </Dropdown.Menu>
         <Dropdown.Item onClick={() => onSiteEdit(siteSummary.id)}>
-          Edit Site Information
+          {translate('analytics.edit-site-info')}
         </Dropdown.Item>
         <Dropdown.Item onClick={onDeleteSiteClick}>Delete</Dropdown.Item>
       </Dropdown.Menu>

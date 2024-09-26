@@ -5,7 +5,8 @@
   "sponsors": "Sponsors",
   "add-new-batch": "Ajouter un Nouveau Lot",
   "batch-modal": {
-    "title": "Créer un Nouveau Lot",
+    "create-title": "Créer un Nouveau Lot",
+    "edit-title": "Modifier un Lot",
     "name-label": "Nom / ID du Lot",
     "sponsor-label": "Sponsor",
     "size-label": "Taille du terrain",
@@ -23,8 +24,10 @@
     "propagation-label": "Propagation totale",
     "images-label": "Image",
     "feedback": {
-      "success": "Lot créé avec succès",
-      "error": "Échec de la création du lot"
+      "create-success": "Lot créé avec succès",
+      "create-error": "Échec de la création du lot",
+      "edit-success": "Lot modifié avec succès",
+      "edit-error": "Échec de la modification du lot"
     }
   }
 }

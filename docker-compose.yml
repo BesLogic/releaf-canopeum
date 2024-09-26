@@ -1,4 +1,3 @@
-version: '3.3'
 services:
   mysql:
     hostname: mysql
@@ -8,6 +7,9 @@ services:
       MYSQL_ROOT_PASSWORD: Canopeum12345!@
       MYSQL_USER: canopeum_user
       MYSQL_PASSWORD: CanopeumUser12345!@
+    ports:
+      # Map the port to a non-default SQL port
+      - 3308:3306
     volumes:
       - mysql8-data:/var/lib/mysql
       - mysql8-conf:/etc/mysql/conf.d
@@ -17,7 +19,7 @@ services:
   backend:
     hostname: backend
     image: ghcr.io/beslogic/canopeum_backend:latest
-    command: python manage.py runserver 0.0.0.0:5001
+    command: uv run manage.py runserver 0.0.0.0:5001
     ports:
       - 5001:8000
     depends_on:
@@ -25,6 +27,7 @@ services:
     environment:
       MYSQL_DATABASE: canopeum_db
       MYSQL_HOST_CANOPEUM: /run/secrets/MYSQL_HOST_CANOPEUM
+      MYSQL_PORT_CANOPEUM: /run/secrets/MYSQL_PORT_CANOPEUM
       MYSQL_USER: canopeum_user
       MYSQL_PASSWORD_CANOPEUM: /run/secrets/MYSQL_PASSWORD_CANOPEUM
       SECRET_KEY_DJANGO_CANOPEUM: /run/secrets/SECRET_KEY_DJANGO_CANOPEUM
@@ -68,6 +71,8 @@ secrets:
   MYSQL_PASSWORD_CANOPEUM:
     external: true
   MYSQL_HOST_CANOPEUM:
+    external: true
+  MYSQL_PORT_CANOPEUM:
     external: true
   SECRET_KEY_DJANGO_CANOPEUM:
     external: true

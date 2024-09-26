@@ -1,12 +1,12 @@
 import re
-from datetime import datetime, timedelta
-from typing import TYPE_CHECKING, ClassVar, override
+from datetime import UTC, datetime, timedelta
+from typing import TYPE_CHECKING, Any, ClassVar, TypeVar, override
 
-# No type stub currently exists for googlemaps
-import googlemaps  # type: ignore[import-untyped]
-import pytz
+import googlemaps
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.http import QueryDict
+from django.utils.datastructures import MultiValueDict as django_MultiValueDict
 from rest_framework.request import Request as drf_Request
 
 from .settings import GOOGLE_API_KEY
@@ -62,7 +62,7 @@ class Announcement(models.Model):
 
 
 def upload_to(_, filename):
-    now = datetime.now(pytz.utc).strftime("%Y%m%d%H%M%S%f")
+    now = datetime.now(UTC).strftime("%Y%m%d%H%M%S%f")
     return f"{now}{filename}"
 
 
@@ -72,8 +72,8 @@ class Asset(models.Model):
 
 class Batch(models.Model):
     site = models.ForeignKey("Site", models.CASCADE, blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
-    updated_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
     name = models.TextField(blank=True, null=True)
     sponsor = models.TextField(blank=True, null=True)
     size = models.IntegerField(blank=True, null=True)
@@ -84,6 +84,26 @@ class Batch(models.Model):
     total_number_seed = models.IntegerField(blank=True, null=True)
     total_propagation = models.IntegerField(blank=True, null=True)
     image = models.ForeignKey(Asset, models.DO_NOTHING, blank=True, null=True)
+
+    def add_fertilizer_by_id(self, pk: int):
+        fertilizer_type = Fertilizertype.objects.get(pk=pk)
+        return Batchfertilizer.objects.create(fertilizer_type=fertilizer_type, batch=self)
+
+    def add_mulch_by_id(self, pk: int):
+        mulch_layer_type = Mulchlayertype.objects.get(pk=pk)
+        return Batchmulchlayer.objects.create(mulch_layer_type=mulch_layer_type, batch=self)
+
+    def add_seed_by_id(self, pk: int, quantity: int):
+        tree_type = Treetype.objects.get(pk=pk)
+        return BatchSeed.objects.create(tree_type=tree_type, quantity=quantity, batch=self)
+
+    def add_specie_by_id(self, pk: int, quantity: int):
+        tree_type = Treetype.objects.get(pk=pk)
+        return BatchSpecies.objects.create(tree_type=tree_type, quantity=quantity, batch=self)
+
+    def add_supported_specie_by_id(self, pk: int):
+        tree_type = Treetype.objects.get(pk=pk)
+        return BatchSupportedSpecies.objects.create(tree_type=tree_type, batch=self)
 
 
 class FertilizertypeInternationalization(models.Model):
@@ -101,10 +121,35 @@ class Batchfertilizer(models.Model):
     batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
     fertilizer_type = models.ForeignKey(Fertilizertype, models.DO_NOTHING, blank=True, null=True)
 
+    class Meta:
+        constraints = (
+            models.UniqueConstraint(
+                fields=["batch", "fertilizer_type"], name="unique_fertilizer_per_batch"
+            ),
+        )
+
+
+class MulchlayertypeInternationalization(models.Model):
+    en = models.TextField(db_column="EN", blank=True, null=True)
+    fr = models.TextField(db_column="FR", blank=True, null=True)
+
+
+class Mulchlayertype(models.Model):
+    name = models.ForeignKey(
+        MulchlayertypeInternationalization, models.DO_NOTHING, blank=True, null=True
+    )
+
 
 class Batchmulchlayer(models.Model):
     batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
-    mulch_layer_type = models.ForeignKey("Mulchlayertype", models.DO_NOTHING, blank=True, null=True)
+    mulch_layer_type = models.ForeignKey(Mulchlayertype, models.DO_NOTHING, blank=True, null=True)
+
+    class Meta:
+        constraints = (
+            models.UniqueConstraint(
+                fields=["batch", "mulch_layer_type"], name="unique_mulch_layer_per_batch"
+            ),
+        )
 
 
 class TreespeciestypeInternationalization(models.Model):
@@ -123,16 +168,33 @@ class BatchSpecies(models.Model):
     tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
 
+    class Meta:
+        constraints = (
+            models.UniqueConstraint(fields=["batch", "tree_type"], name="unique_species_per_batch"),
+        )
+
 
 class BatchSeed(models.Model):
     batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
     tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
 
+    class Meta:
+        constraints = (
+            models.UniqueConstraint(fields=["batch", "tree_type"], name="unique_seed_per_batch"),
+        )
+
 
 class BatchSupportedSpecies(models.Model):
     batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
     tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
+
+    class Meta:
+        constraints = (
+            models.UniqueConstraint(
+                fields=["batch", "tree_type"], name="unique_supported_species_per_batch"
+            ),
+        )
 
 
 class Contact(models.Model):
@@ -160,7 +222,7 @@ class Coordinate(models.Model):
             + float(dms_latitude_split[1]) / 60
             + float(dms_latitude_split[2]) / 3600
         )
-        if dms_latitude_split[4] == "S":
+        if dms_latitude_split[3] == "S":
             dd_latitude *= -1
 
         dms_longitude_split = re.split(LAT_LONG_SEP, dms_longitude)
@@ -169,14 +231,18 @@ class Coordinate(models.Model):
             + float(dms_longitude_split[1]) / 60
             + float(dms_longitude_split[2]) / 3600
         )
-        if dms_longitude_split[4] == "W":
+        if dms_longitude_split[3] == "W":
             dd_longitude *= -1
 
-        formatted_address = (
-            gmaps.reverse_geocode((dd_latitude, dd_longitude), result_type="street_address")[0]  # pyright: ignore[reportAttributeAccessIssue] -- No type stub currently exists
-            if gmaps is not None
-            else ""
-        )
+        if gmaps is not None:
+            data_retrieved = gmaps.reverse_geocode(  # pyright: ignore[reportAttributeAccessIssue] -- No type stub currently exists
+                (dd_latitude, dd_longitude), result_type="street_address"
+            )
+            formatted_address = (
+                data_retrieved[0]["formatted_address"] if data_retrieved else "Custom address"
+            )
+        else:
+            formatted_address = "Unknown address"
 
         return cls.objects.create(
             dms_latitude=dms_latitude,
@@ -185,17 +251,6 @@ class Coordinate(models.Model):
             dd_longitude=dd_longitude,
             address=formatted_address,
         )
-
-
-class Mulchlayertype(models.Model):
-    name = models.ForeignKey(
-        "MulchlayertypeInternationalization", models.DO_NOTHING, blank=True, null=True
-    )
-
-
-class MulchlayertypeInternationalization(models.Model):
-    en = models.TextField(db_column="EN", blank=True, null=True)
-    fr = models.TextField(db_column="FR", blank=True, null=True)
 
 
 class SitetypeInternationalization(models.Model):
@@ -208,7 +263,9 @@ class Sitetype(models.Model):
 
     @override
     def delete(self, using=None, keep_parents=False):
-        self.asset.delete()
+        # TODO: FIXME, should Sitetype subclass Asset
+        # or should it have a foreignkey asset like PostAsset???
+        self.asset.delete()  # type:ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
         return super().delete(using, keep_parents)
 
 
@@ -282,7 +339,7 @@ class Siteadmin(models.Model):
 
 
 def one_week_from_today():
-    return datetime.now(pytz.utc) + timedelta(days=7)
+    return datetime.now(UTC) + timedelta(days=7)
 
 
 class UserInvitation(models.Model):
@@ -292,7 +349,7 @@ class UserInvitation(models.Model):
     assigned_to_sites = models.ManyToManyField(Site)
 
     def is_expired(self) -> bool:
-        return self.expires_at <= datetime.now(pytz.utc)
+        return self.expires_at <= datetime.now(UTC)
 
 
 class SiteFollower(models.Model):
@@ -305,6 +362,13 @@ class Sitetreespecies(models.Model):
     site = models.ForeignKey(Site, models.CASCADE, blank=True, null=True)
     tree_type = models.ForeignKey("Treetype", models.DO_NOTHING, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        constraints = (
+            models.UniqueConstraint(
+                fields=["site", "tree_type"], name="unique_tree_species_per_site"
+            ),
+        )
 
 
 class Widget(models.Model):
@@ -323,8 +387,36 @@ class Internationalization(models.Model):
     fr = models.TextField(db_column="FR", blank=True, null=True)
 
 
+# Everything under here are type overrides
+
+
+_K = TypeVar("_K")
+_V = TypeVar("_V")
+
+
+class MultiValueDict(django_MultiValueDict[_K, _V]):
+    """
+    A custom MultiValueDict type to override the base __getitem__
+    which leads to lots of false-positives.
+    """
+
+    if TYPE_CHECKING:
+        # TODO: Report upstream
+        def __getitem__(self, item: _K) -> _V: ...
+
+
 class Request(drf_Request):
     """A custom Request type to use for parameter annotations."""
 
-    # Override with our own User model
-    user: User  # pyright: ignore[reportIncompatibleMethodOverride]
+    if TYPE_CHECKING:
+        # TODO: Report upstream
+        # Base definition is too vague as `dict[str, Any]`
+        @property
+        def data(self) -> MultiValueDict[str, Any]: ...
+
+        # Tries to type as django.http.request._ImmutableQueryDict wich doesn't exist
+        @property
+        def query_params(self) -> QueryDict: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
+
+        # Override with our own User model
+        user: User  # pyright: ignore[reportIncompatibleMethodOverride]

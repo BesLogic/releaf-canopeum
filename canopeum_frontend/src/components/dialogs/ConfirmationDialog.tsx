@@ -30,6 +30,7 @@ const ConfirmationDialog = ({ actions, children, onClose, open, title }: Props) 
       case 'cancel': {
         buttonClasses += ' btn-outline-dark'
         buttonText = translate('generic.cancel')
+        proceed = false
 
         break
       }

@@ -2,6 +2,7 @@
 # pyright: reportIncompatibleVariableOverride=false
 
 import random
+from decimal import Decimal
 from typing import Any
 
 from django.contrib.auth.password_validation import validate_password
@@ -15,6 +16,7 @@ from .models import (
     Asset,
     Batch,
     Batchfertilizer,
+    Batchmulchlayer,
     BatchSeed,
     BatchSpecies,
     BatchSupportedSpecies,
@@ -38,6 +40,7 @@ from .models import (
     UserInvitation,
     Widget,
 )
+from .utils.weather_service import get_weather_data
 
 
 class IntegerListFieldSerializer(serializers.ListField):
@@ -147,6 +150,9 @@ class UserSerializer(serializers.ModelSerializer[User]):
         return [siteadmin.site.pk for siteadmin in Siteadmin.objects.filter(user=obj)]
 
     def get_followed_site_ids(self, obj: User) -> list[int]:
+        user_role = self.get_role(obj)
+        if user_role == RoleName.MEGAADMIN:
+            return [site.pk for site in Site.objects.all()]
         return [site_follower.site.pk for site_follower in SiteFollower.objects.filter(user=obj)]
 
 
@@ -253,10 +259,14 @@ class ContactSerializer(serializers.ModelSerializer[Contact]):
 class SitetreespeciesSerializer(serializers.ModelSerializer[Sitetreespecies]):
     en = serializers.SerializerMethodField()
     fr = serializers.SerializerMethodField()
+    id = serializers.SerializerMethodField()
 
     class Meta:
         model = Sitetreespecies
         fields = ("id", "quantity", "en", "fr")
+
+    def get_id(self, obj) -> int:
+        return TreeTypeSerializer(obj.tree_type).data.get("id", None)  # type: ignore[no-any-return]
 
     def get_en(self, obj):
         return TreeTypeSerializer(obj.tree_type).data.get("en", None)
@@ -353,10 +363,8 @@ class SiteSocialSerializer(serializers.ModelSerializer[Site]):
             "widget",
         )
 
-    # https://github.com/tfranzel/drf-spectacular/issues/1212
-    @extend_schema_field(list[str])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-    def get_sponsors(self, obj):
-        return self.context.get("sponsors")
+    def get_sponsors(self, obj) -> list[str]:
+        return self.context.get("sponsors", list[str]())  # type: ignore[no-any-return]
 
     @extend_schema_field(WidgetSerializer(many=True))
     def get_widget(self, obj):
@@ -364,6 +372,7 @@ class SiteSocialSerializer(serializers.ModelSerializer[Site]):
 
 
 class BatchfertilizerSerializer(serializers.ModelSerializer[Batchfertilizer]):
+    id = serializers.SerializerMethodField()
     en = serializers.SerializerMethodField()
     fr = serializers.SerializerMethodField()
 
@@ -371,18 +380,26 @@ class BatchfertilizerSerializer(serializers.ModelSerializer[Batchfertilizer]):
         model = Batchfertilizer
         fields = ("id", "en", "fr")
 
+    def get_id(self, obj: Batchfertilizer):
+        return FertilizerTypeSerializer(obj.fertilizer_type).data.get("id", None)
+
     def get_en(self, obj: Batchfertilizer):
-        if obj.fertilizer_type is None:
-            return None
-        return InternationalizationSerializer(obj.fertilizer_type.name).data.get("en", None)
+        return (
+            InternationalizationSerializer(obj.fertilizer_type.name).data.get("en", None)
+            if obj.fertilizer_type
+            else None
+        )
 
     def get_fr(self, obj: Batchfertilizer):
-        if obj.fertilizer_type is None:
-            return None
-        return InternationalizationSerializer(obj.fertilizer_type.name).data.get("fr", None)
+        return (
+            InternationalizationSerializer(obj.fertilizer_type.name).data.get("fr", None)
+            if obj.fertilizer_type
+            else None
+        )
 
 
-class BatchMulchLayerSerializer(serializers.ModelSerializer[Mulchlayertype]):
+class BatchMulchLayerSerializer(serializers.ModelSerializer[Batchmulchlayer]):
+    id = serializers.SerializerMethodField()
     en = serializers.SerializerMethodField()
     fr = serializers.SerializerMethodField()
 
@@ -390,14 +407,26 @@ class BatchMulchLayerSerializer(serializers.ModelSerializer[Mulchlayertype]):
         model = Mulchlayertype
         fields = ("id", "en", "fr")
 
-    def get_en(self, obj):
-        return InternationalizationSerializer(obj.mulch_layer_type.name).data.get("en", None)
+    def get_id(self, obj: Batchmulchlayer):
+        return MulchLayerTypeSerializer(obj.mulch_layer_type).data.get("id", None)
 
-    def get_fr(self, obj):
-        return InternationalizationSerializer(obj.mulch_layer_type.name).data.get("fr", None)
+    def get_en(self, obj: Batchmulchlayer):
+        return (
+            InternationalizationSerializer(obj.mulch_layer_type.name).data.get("en", None)
+            if obj.mulch_layer_type
+            else None
+        )
+
+    def get_fr(self, obj: Batchmulchlayer):
+        return (
+            InternationalizationSerializer(obj.mulch_layer_type.name).data.get("fr", None)
+            if obj.mulch_layer_type
+            else None
+        )
 
 
 class BatchSupportedSpeciesSerializer(serializers.ModelSerializer[BatchSupportedSpecies]):
+    id = serializers.SerializerMethodField()
     en = serializers.SerializerMethodField()
     fr = serializers.SerializerMethodField()
 
@@ -406,97 +435,90 @@ class BatchSupportedSpeciesSerializer(serializers.ModelSerializer[BatchSupported
         fields = ("id", "en", "fr")
 
     def get_id(self, obj: BatchSupportedSpecies):
-        if obj.tree_type is None:
-            return None
-        return obj.tree_type.pk
+        return TreeTypeSerializer(obj.tree_type).data.get("id", None)
 
     def get_en(self, obj: BatchSupportedSpecies):
-        if obj.tree_type is None:
-            return None
-        return InternationalizationSerializer(obj.tree_type.name).data.get("en", None)
+        return (
+            InternationalizationSerializer(obj.tree_type.name).data.get("en", None)
+            if obj.tree_type
+            else None
+        )
 
     def get_fr(self, obj: BatchSupportedSpecies):
-        if obj.tree_type is None:
-            return None
-        return InternationalizationSerializer(obj.tree_type.name).data.get("fr", None)
+        return (
+            InternationalizationSerializer(obj.tree_type.name).data.get("fr", None)
+            if obj.tree_type
+            else None
+        )
 
 
 class BatchSeedSerializer(serializers.ModelSerializer[BatchSeed]):
+    id = serializers.SerializerMethodField()
     en = serializers.SerializerMethodField()
     fr = serializers.SerializerMethodField()
 
     class Meta:
         model = BatchSeed
-        fields = ("quantity", "en", "fr")
+        fields = ("id", "quantity", "en", "fr")
 
-    def get_en(self, obj):
-        if obj.tree_type is None:
-            return None
-        return InternationalizationSerializer(obj.tree_type.name).data.get("en", None)
+    def get_id(self, obj: BatchSeed):
+        return TreeTypeSerializer(obj.tree_type).data.get("id", None)
 
-    def get_fr(self, obj):
-        if obj.tree_type is None:
-            return None
-        return InternationalizationSerializer(obj.tree_type.name).data.get("fr", None)
+    def get_en(self, obj: BatchSeed):
+        return (
+            InternationalizationSerializer(obj.tree_type.name).data.get("en", None)
+            if obj.tree_type
+            else None
+        )
+
+    def get_fr(self, obj: BatchSeed):
+        return (
+            InternationalizationSerializer(obj.tree_type.name).data.get("fr", None)
+            if obj.tree_type
+            else None
+        )
 
 
 class BatchSpeciesSerializer(serializers.ModelSerializer[BatchSpecies]):
+    id = serializers.SerializerMethodField()
     en = serializers.SerializerMethodField()
     fr = serializers.SerializerMethodField()
 
     class Meta:
         model = BatchSpecies
-        fields = ("quantity", "en", "fr")
+        fields = ("id", "quantity", "en", "fr")
+
+    def get_id(self, obj: BatchSpecies):
+        return TreeTypeSerializer(obj.tree_type).data.get("id", None)
 
     def get_en(self, obj: BatchSpecies):
-        if obj.tree_type is None:
-            return None
-        return InternationalizationSerializer(obj.tree_type.name).data.get("en", None)
+        return (
+            InternationalizationSerializer(obj.tree_type.name).data.get("en", None)
+            if obj.tree_type
+            else None
+        )
 
     def get_fr(self, obj: BatchSpecies):
-        if obj.tree_type is None:
-            return None
-        return InternationalizationSerializer(obj.tree_type.name).data.get("fr", None)
+        return (
+            InternationalizationSerializer(obj.tree_type.name).data.get("fr", None)
+            if obj.tree_type
+            else None
+        )
 
 
-class BatchSerializer(serializers.ModelSerializer[Batch]):
-    class Meta:
-        model = Batch
-        fields = "__all__"
-
-
-class BatchAnalyticsSerializer(serializers.ModelSerializer[Batch]):
+class BatchDetailSerializer(serializers.ModelSerializer[Batch]):
     fertilizers = serializers.SerializerMethodField()
     mulch_layers = serializers.SerializerMethodField()
     supported_species = serializers.SerializerMethodField()
     seeds = serializers.SerializerMethodField()
     species = serializers.SerializerMethodField()
-    updated_at = serializers.DateTimeField()
-    created_at = serializers.DateTimeField()
-    image = AssetSerializer()
+    # HACK to allow handling the image with a AssetSerializer separately
+    # TODO: Figure out how to feed the image directly to BatchDetailSerializer
+    image = AssetSerializer(required=False)
 
     class Meta:
         model = Batch
-        fields = (
-            "id",
-            "name",
-            "size",
-            "soil_condition",
-            "sponsor",
-            "fertilizers",
-            "mulch_layers",
-            "supported_species",
-            "plant_count",
-            "survived_count",
-            "replace_count",
-            "total_number_seed",
-            "total_propagation",
-            "seeds",
-            "species",
-            "created_at",
-            "updated_at",
-            "image",
-        )
+        fields = "__all__"
 
     @extend_schema_field(BatchfertilizerSerializer(many=True))
     def get_fertilizers(self, obj):
@@ -553,6 +575,15 @@ class SiteFollowerSerializer(serializers.ModelSerializer[SiteFollower]):
         fields = ("user", "site")
 
 
+class WeatherSerializer(serializers.Serializer[Any]):
+    temperature = serializers.DecimalField(max_digits=4, decimal_places=1)
+    humidity = serializers.DecimalField(max_digits=4, decimal_places=1)
+    description = serializers.CharField()
+
+    class Meta:
+        fields = ("temperature", "humidity", "description")
+
+
 # Note about Any: Generic is the type of "instance", not set here
 class SiteAdminUpdateRequestSerializer(serializers.Serializer[Any]):
     ids = IntegerListFieldSerializer()
@@ -570,7 +601,7 @@ class SiteSummarySerializer(serializers.ModelSerializer[Site]):
     progress = serializers.SerializerMethodField()
     sponsors = serializers.SerializerMethodField()
     admins = SiteAdminSerializer(source="siteadmin_set", many=True)
-    batches = BatchAnalyticsSerializer(source="batch_set", read_only=True, many=True)
+    batches = serializers.SerializerMethodField()
 
     class Meta:
         model = Site
@@ -589,27 +620,83 @@ class SiteSummarySerializer(serializers.ModelSerializer[Site]):
             "batches",
         )
 
-    @extend_schema_field(int)
-    def get_plant_count(self, obj):
+    def get_plant_count(self, obj) -> int:
         return random.randint(100, 200)  # noqa: S311
 
-    @extend_schema_field(int)
-    def get_survived_count(self, obj):
+    def get_survived_count(self, obj) -> int:
         return random.randint(50, 100)  # noqa: S311
 
-    @extend_schema_field(int)
-    def get_propagation_count(self, obj):
+    def get_propagation_count(self, obj) -> int:
         return random.randint(5, 50)  # noqa: S311
 
-    @extend_schema_field(float)
-    def get_progress(self, obj):
-        return random.randint(0, 100)  # noqa: S311
+    def get_progress(self, obj) -> float:
+        return random.randint(0, 10000) / 100  # noqa: S311
 
-    # https://github.com/tfranzel/drf-spectacular/issues/1212
-    @extend_schema_field(list[str])  # type: ignore[arg-type] # pyright: ignore[reportArgumentType]
-    def get_sponsors(self, obj):
+    def get_sponsors(self, obj) -> list[str]:
         batches = Batch.objects.filter(site=obj)
-        return [batch.sponsor for batch in batches]
+        return [batch.sponsor for batch in batches if batch.sponsor]
+
+    @extend_schema_field(BatchDetailSerializer(many=True))
+    def get_batches(self, obj):
+        batches = obj.batch_set.all().order_by("-updated_at")
+        return BatchDetailSerializer(batches, many=True).data
+
+
+class SiteSummaryDetailSerializer(serializers.ModelSerializer[Site]):
+    site_type = SiteTypeSerializer()
+    coordinate = CoordinatesSerializer()
+    plant_count = serializers.SerializerMethodField()
+    survived_count = serializers.SerializerMethodField()
+    propagation_count = serializers.SerializerMethodField()
+    progress = serializers.SerializerMethodField()
+    sponsors = serializers.SerializerMethodField()
+    admins = SiteAdminSerializer(source="siteadmin_set", many=True)
+    batches = serializers.SerializerMethodField()
+    weather = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Site
+        fields = (
+            "id",
+            "name",
+            "coordinate",
+            "site_type",
+            "plant_count",
+            "survived_count",
+            "propagation_count",
+            "visitor_count",
+            "sponsors",
+            "progress",
+            "admins",
+            "batches",
+            "weather",
+        )
+
+    def get_plant_count(self, obj) -> int:
+        return random.randint(100, 200)  # noqa: S311
+
+    def get_survived_count(self, obj) -> int:
+        return random.randint(50, 100)  # noqa: S311
+
+    def get_propagation_count(self, obj) -> int:
+        return random.randint(5, 50)  # noqa: S311
+
+    def get_progress(self, obj) -> float:
+        return random.randint(0, 10000) / 100  # noqa: S311
+
+    def get_sponsors(self, obj) -> list[str]:
+        batches = Batch.objects.filter(site=obj)
+        return [batch.sponsor for batch in batches if batch.sponsor]
+
+    @extend_schema_field(WeatherSerializer)
+    def get_weather(self, obj):
+        weather = get_weather_data(obj.coordinate.dd_latitude, obj.coordinate.dd_longitude)
+        return WeatherSerializer(weather).data
+
+    @extend_schema_field(BatchDetailSerializer(many=True))
+    def get_batches(self, obj):
+        batches = obj.batch_set.all().order_by("-updated_at")
+        return BatchDetailSerializer(batches, many=True).data
 
 
 class CoordinatesMapSerializer(serializers.ModelSerializer[Coordinate]):
@@ -620,12 +707,10 @@ class CoordinatesMapSerializer(serializers.ModelSerializer[Coordinate]):
         model = Coordinate
         fields = ("latitude", "longitude", "address")
 
-    @extend_schema_field(float)
-    def get_latitude(self, obj):
+    def get_latitude(self, obj: Coordinate) -> Decimal | None:
         return obj.dd_latitude
 
-    @extend_schema_field(float)
-    def get_longitude(self, obj):
+    def get_longitude(self, obj: Coordinate) -> Decimal | None:
         return obj.dd_longitude
 
 
@@ -719,11 +804,10 @@ class CommentSerializer(serializers.ModelSerializer[Comment]):
         model = Comment
         fields = ("id", "body", "author_id", "author_username", "created_at")
 
-    @extend_schema_field(int)
-    def get_author_id(self, obj):
+    def get_author_id(self, obj: Comment) -> int:
         return obj.user.id
 
-    def get_author_username(self, obj):
+    def get_author_username(self, obj: Comment):
         return obj.user.username
 
 

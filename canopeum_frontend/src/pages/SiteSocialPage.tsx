@@ -1,29 +1,29 @@
-import { AuthenticationContext } from '@components/context/AuthenticationContext'
-import SiteSocialHeader from '@components/social/SiteSocialHeader'
-import WidgetCard from '@components/social/WidgetCard'
-import WidgetDialog from '@components/social/WidgetDialog'
-import useApiClient from '@hooks/ApiClientHook'
-import type { PageViewMode } from '@models/types/PageViewMode.Type'
 import { CircularProgress } from '@mui/material'
-import { type IWidget, PatchedWidget, type Post, type SiteSocial, Widget } from '@services/api'
-import { ensureError } from '@services/errors'
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 
-import AnnouncementCard from '../components/AnnouncementCard'
-import ContactCard from '../components/ContactCard'
-import CreatePostWidget from '../components/CreatePostWidget'
-import PostCard from '../components/social/PostCard'
-import usePostsInfiniteScrolling from '../hooks/PostsInfiniteScrollingHook'
-import usePostsStore from '../store/postsStore'
 import LoadingPage from './LoadingPage'
+import { AuthenticationContext } from '@components/context/AuthenticationContext'
+import CreatePostWidget from '@components/CreatePostWidget'
+import AnnouncementCard from '@components/social/AnnouncementCard'
+import ContactCard from '@components/social/ContactCard'
+import PostCard from '@components/social/PostCard'
+import SiteSocialHeader from '@components/social/SiteSocialHeader'
+import WidgetCard from '@components/social/WidgetCard'
+import WidgetDialog from '@components/social/WidgetDialog'
+import useApiClient from '@hooks/ApiClientHook'
+import usePostsInfiniteScrolling from '@hooks/PostsInfiniteScrollingHook'
+import type { PageViewMode } from '@models/types/PageViewMode.Type'
+import { type IWidget, PatchedWidget, type Post, type SiteSocial, Widget } from '@services/api'
+import { ensureError } from '@services/errors'
+import usePostsStore from '@store/postsStore'
 
 const SiteSocialPage = () => {
   const { t } = useTranslation()
   const { siteId: siteIdParam } = useParams()
   const { currentUser } = useContext(AuthenticationContext)
-  const { posts, addPost } = usePostsStore()
+  const { posts, addPost, deletePost } = usePostsStore()
   const { getApiClient } = useApiClient()
   const scrollableContainerRef = useRef<HTMLDivElement>(null)
 
@@ -36,7 +36,7 @@ const SiteSocialPage = () => {
   } = usePostsInfiniteScrolling()
 
   const [isLoadingSite, setIsLoadingSite] = useState(true)
-  const [error, setError] = useState<Error | undefined>(undefined)
+  const [error, setError] = useState<Error | undefined>()
   const [site, setSite] = useState<SiteSocial>()
   const [sitePosts, setSitePosts] = useState<Post[]>([])
   const [isWidgetModalOpen, setIsWidgetModalOpen] = useState<[boolean, Widget | undefined]>([
@@ -49,9 +49,9 @@ const SiteSocialPage = () => {
     : 0
 
   const viewMode: PageViewMode = currentUser
-    ? (currentUser.role === 'MegaAdmin' || currentUser.adminSiteIds.includes(siteId))
+    ? ((currentUser.role === 'MegaAdmin' || currentUser.adminSiteIds.includes(siteId))
       ? 'admin'
-      : 'user'
+      : 'user')
     : 'visitor'
 
   const fetchSiteData = useCallback(async (parsedSiteId: number) => {
@@ -97,6 +97,8 @@ const SiteSocialPage = () => {
 
   const addNewPost = (newPost: Post) => addPost(newPost)
 
+  const handleDeletePost = (postId: number) => deletePost(postId)
+
   useEffect((): void => {
     void fetchSiteData(siteId)
     setSiteIds([siteId])
@@ -137,8 +139,16 @@ const SiteSocialPage = () => {
         <div className='row row-gap-1 m-0'>
           <div className='col-12 col-md-6 col-lg-5 col-xl-4'>
             <div className='d-flex flex-column gap-4'>
-              <AnnouncementCard announcement={site.announcement} viewMode={viewMode} />
-              <ContactCard contact={site.contact} viewMode={viewMode} />
+              <AnnouncementCard
+                announcement={site.announcement}
+                onEdit={announcement => setSite(() => ({ ...site, announcement } as SiteSocial))}
+                viewMode={viewMode}
+              />
+              <ContactCard
+                contact={site.contact}
+                onEdit={contact => setSite(() => ({ ...site, contact } as SiteSocial))}
+                viewMode={viewMode}
+              />
               {site.widget.map(widget => (
                 <WidgetCard
                   handleEditClick={() => setIsWidgetModalOpen([true, widget])}
@@ -149,8 +159,8 @@ const SiteSocialPage = () => {
               {currentUser && currentUser.role !== 'User' && (
                 <>
                   <button
-                    className={'btn btn-light text-primary text-capitalize d-flex ' +
-                      'justify-content-center p-3'}
+                    className={'btn btn-light text-primary text-capitalize d-flex '
+                      + 'justify-content-center p-3'}
                     onClick={() => setIsWidgetModalOpen([true, undefined])}
                     type='button'
                   >
@@ -175,15 +185,17 @@ const SiteSocialPage = () => {
                       </div>
                     </div>
                   )
-                  : loadingError
-                  ? (
-                    <div className='card'>
-                      <div className='card-body'>
-                        <span>{loadingError}</span>
+                  : (loadingError
+                    ? (
+                      <div className='card'>
+                        <div className='card-body'>
+                          <span>{loadingError}</span>
+                        </div>
                       </div>
-                    </div>
-                  )
-                  : sitePosts.map(post => <PostCard key={post.id} post={post} />)}
+                    )
+                    : sitePosts.map(post => (
+                      <PostCard deletePost={handleDeletePost} key={post.id} post={post} />
+                    )))}
               </div>
 
               {isLoadingMore && (

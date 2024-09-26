@@ -1,8 +1,9 @@
+import type { FunctionComponent, ReactNode } from 'react'
+import { createContext, memo, useCallback, useMemo, useRef, useState } from 'react'
+
 import useApiClient from '@hooks/ApiClientHook'
 import type { User } from '@services/api'
 import { STORAGE_ACCESS_TOKEN_KEY, STORAGE_REFRESH_TOKEN_KEY } from '@utils/auth.utils'
-import type { FunctionComponent, ReactNode } from 'react'
-import { createContext, memo, useCallback, useMemo, useRef, useState } from 'react'
 
 type IAuthenticationContext = {
   initAuth: () => Promise<void>,
@@ -25,6 +26,7 @@ export const AuthenticationContext = createContext<IAuthenticationContext>({
   isSessionLoaded: false,
   currentUser: undefined,
 })
+AuthenticationContext.displayName = 'AuthenticationContext'
 
 const AuthenticationContextProvider: FunctionComponent<{ readonly children?: ReactNode }> = memo(
   props => {
@@ -48,8 +50,8 @@ const AuthenticationContextProvider: FunctionComponent<{ readonly children?: Rea
       if (isInitiatedRef.current) return
 
       try {
-        const accessToken = sessionStorage.getItem(STORAGE_ACCESS_TOKEN_KEY) ??
-          localStorage.getItem(STORAGE_ACCESS_TOKEN_KEY)
+        const accessToken = sessionStorage.getItem(STORAGE_ACCESS_TOKEN_KEY)
+          ?? localStorage.getItem(STORAGE_ACCESS_TOKEN_KEY)
 
         if (!accessToken) {
           loadSession()

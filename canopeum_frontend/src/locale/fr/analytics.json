@@ -1,6 +1,7 @@
 {
   "title": "Gérer mes Sites",
   "create-site": "Créer un Nouveau Site",
+  "edit-site-info": "Modifier les données d'un Site",
   "average": "moyenne",
   "batches_one": "lot",
   "batches_other": "lots",
@@ -26,6 +27,8 @@
   "unknown": "Inconnu",
   "admins-saved": "Administrateurs sauvegardés avec succès pour {{siteName}}!",
   "unnamed-site": "Site sans nom",
+  "site-save-success": "Site saved successfully",
+  "site-save-error": "Error saving Site",
   "site-deleted": "Le site {{siteName}} a été supprimé avec succès.",
   "site-deleted-error": "Un problème est survenu lors de la tentative de suppression du site {{siteName}}...",
   "success-rate-chart": {
@@ -42,10 +45,11 @@
     "no-admins": "Pas d'administrateurs",
     "visitors": "Visiteurs",
     "unknown": "Inconnu",
-    "admins-saved": "Administrateurs sauvegardés avec succès pour {{siteName}}!"
+    "admins-saved": "Administrateurs sauvegardés avec succès pour {{siteName}}!",
+    "delete-site-confirmation-title": "Suppression du Site",
+    "delete-site-confirmation-message": "Etes vous sur de vouloir supprimer le site {{siteName}}?"
   },
   "site-modal": {
-    "create-site": "créer un site",
     "site-name": "nom du site",
     "site-type": "type de site",
     "site-image": "image du projet ou logo de l'entreprise",

@@ -10,48 +10,43 @@ on:
   pull_request:
     branches:
       - main
+      - production
     paths:
       - "canopeum_backend/**"
       - ".github/workflows/canopeum_backend.yml"
 
+env:
+  # Since the Django mypy extention RUNS the config file, we need a non-empty secret to avoid
+  # ImproperlyConfigured("The SECRET_KEY setting must not be empty.")
+  SECRET_KEY_DJANGO_CANOPEUM: mypy-ext
+
 jobs:
   mypy:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: canopeum_backend
-    strategy:
-      fail-fast: false
-      matrix:
-        os: ["ubuntu-latest", "windows-latest"]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: pip
-          cache-dependency-path: "**/requirements*.txt"
-      - run: pip install -r requirements-dev.txt
+      - name: Install uv using the standalone installer
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      - run: uv sync --locked --extra dev
+      - run: echo "$PWD/.venv/bin" >> $GITHUB_PATH
       - run: mypy . --python-version=3.12
 
   pyright:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: canopeum_backend
-    strategy:
-      fail-fast: false
-      matrix:
-        os: ["ubuntu-latest", "windows-latest"]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: pip
-          cache-dependency-path: "**/requirements*.txt"
-      - run: pip install -r requirements-dev.txt
+      - name: Install uv using the standalone installer
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      - run: uv sync --locked --extra dev
+      - run: echo "$PWD/.venv/bin" >> $GITHUB_PATH
       - uses: jakebailey/pyright-action@v2
         with:
+          version: PATH
           python-version: "3.12"
           working-directory: canopeum_backend

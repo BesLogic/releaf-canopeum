@@ -4,6 +4,9 @@
 
 This project integrates Django backend with React Vite frontend template to create a full-stack web application.
 
+Backlog: <https://github.com/orgs/BesLogic/projects/3/views/1?filterQuery=-status%3ADone>\
+Figma: <https://www.figma.com/design/iKVdInwWsIsxBFxeoGNb6h/Philanthropy-Canopeum>
+
 ## Getting Started
 
 This project has been configured to run in VsCode dev container with all
@@ -26,6 +29,7 @@ For frontend:
 For backend
 
 - [Python 3.12](https://www.python.org/downloads/)
+- [UV](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer)
 - [Docker](https://www.docker.com/get-started/)
 
 ### Installation
@@ -50,47 +54,25 @@ For backend
    Install everything under "**WORKSPACE RECOMMENDATIONS**", you can ignore "other recommendations":\
    ![Recommended Extensions](/docs/Recommended_Extensions.png)
 
-4. Set up a Python 3.12 virtual environment
+4. Set up Django backend and Database: (Skip this section for Frontend only)\
+   4.1. Add a `canopeum_backend/canopeum_backend/.env` file with the contents:
 
-   ```shell
-   cd canopeum_backend
-   python3.12 -m venv .venv
+   ```ini
+   SECRET_KEY_DJANGO_CANOPEUM="not_empty"
+   MYSQL_PASSWORD_CANOPEUM=CanopeumUser12345!@
    ```
 
-   or on Windows if "python3.12" is not a recognized command:
-
-   ```powershell
-   cd canopeum_backend
-   py -3.12 -m venv .venv
-   ```
-
-   Then activate the environment (you need to do this everytime if your editor isn't configured to do so):
-
-   ```shell
-   source .venv/scripts/activate
-   ```
-
-   and on Windows:
-
-   ```powershell
-   .venv/scripts/activate
-   ```
-
-   In VSCode (Windows):
-   `CTRL+Shift+P` (Open Command Palette) > `Python: Select Interpreter`
-   ![VSCode_select_venv](/docs/VSCode_select_venv.png)
-
-5. Set up Django backend and Database: (Skip this section for Frontend only)
+   4.2. Then run:
 
    ```shell
    cd canopeum_backend
    docker compose up
-   python -m pip install -r requirements-dev.txt
-   python manage.py initialize_database
-   python manage.py runserver
+   uv sync --locked --extra dev
+   uv run manage.py initialize_database
+   uv run manage.py runserver
    ```
 
-6. Set up React frontend:
+5. Set up React frontend:
 
    ```shell
    cd canopeum_frontend
@@ -106,7 +88,8 @@ For backend
    npm run mockoon
    ```
 
-7. Linting/Formatting:
+6. Linting/Formatting:
+
    For Frontend: (Dprint & Eslint)
 
    ```shell
@@ -118,8 +101,19 @@ For backend
 
    ```shell
    cd canopeum_backend
-   python ./scripts/checkers.py
+   uv run ./scripts/checkers.py
    ```
+
+   For both: (autofixers)
+
+   ```shell
+   pre-commit run --all
+   ```
+
+### Quickly running the application locally
+
+We've made a `start-local-env.ps1` helper script to ease starting up the application. Feel free to use and improve it.
+TODO: Setup Python debugging of running application to debug backend started by script.
 
 ### Folder Architecture
 
@@ -136,7 +130,7 @@ project_name/
 │   │   ├── myproject/        # Django project settings
 │   │   ├── manage.py         # Django management script
 │   │   └── ...               # Other Django project files
-│   └── requirements.txt      # Python dependencies
+│   └── pyproject.toml        # Python dependencies
 │   └── docker-compose.yml    # File configuration container MySQL
 │
 ├── frontend/                 # React frontend
@@ -168,3 +162,21 @@ project_name/
 │
 └── README.md                 # Project documentation
 ```
+
+## Regenerating the API spec with NSwagStudio
+
+Run `npm run generate-api-client` to generate and replace directly the openapi spec file
+(Hint: Don't forget to be in canopeum_frontend folder to run the command)
+
+<!--
+In case the command stops working and you need to manually regenerate it (prefer fixing the command though):
+1. Open NSwagStudio and close any already open Document (re-openning the same document doesn't clear changes in NSwagStudio)
+1. Open [canopeum.nswag](/docs/canopeum.nswag) with NSwagStudio
+1. Click "Create a local Copy"
+1. Click "Generate Files" (the relative path is already set)
+1. Run `npm run lint:fix`
+
+If you save a modification to the `.nswag` file, DO NOT INCLUDE THE LOCAL COPY OF THE SPEC !
+
+![NSwagStudio Documents](/docs/NSwagStudio_Documents.png)
+-->

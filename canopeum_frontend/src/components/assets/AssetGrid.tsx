@@ -1,7 +1,7 @@
-import type { Asset } from '@services/api'
 import { useState } from 'react'
 
 import AssetViewer from './AssetViewer'
+import type { Asset } from '@services/api'
 
 type Props = {
   readonly medias: Asset[],
@@ -36,8 +36,8 @@ const AssetGrid = ({ medias, isEditable }: Props) => {
                 src={media.asset}
               />
             </div>
-            {isEditable &&
-              (
+            {isEditable
+              && (
                 <button
                   className='unstyled-button'
                   onClick={() => isEditable.removeFile(index)}

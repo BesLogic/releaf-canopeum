@@ -1,12 +1,13 @@
 /* eslint-disable max-lines -- Could be fixed by creating a global Input component */
+import { useContext, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
 import useErrorHandling from '@hooks/ErrorHandlingHook'
 import { ChangePassword, type IPatchedUpdateUser, PatchedUpdateUser } from '@services/api'
 import { type InputValidationError, isValidEmail, isValidPassword, mustMatch } from '@utils/validators'
-import { useContext, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 
 const EditProfile = () => {
   const { t: translate } = useTranslation()
@@ -159,11 +160,11 @@ const EditProfile = () => {
     const newPasswordValid = validateNewPassword()
     const newPasswordConfirmationValid = validateNewPasswordConfirmation()
 
-    return usernameValid &&
-      emailValid &&
-      currentPasswordValid &&
-      newPasswordValid &&
-      newPasswordConfirmationValid
+    return usernameValid
+      && emailValid
+      && currentPasswordValid
+      && newPasswordValid
+      && newPasswordConfirmationValid
   }
 
   const handleCancel = () => {
@@ -370,7 +371,7 @@ const EditProfile = () => {
               onClick={handleSaveProfile}
               type='button'
             >
-              {translate('generic.save')}
+              {translate('generic.submit')}
             </button>
           </div>
         </div>

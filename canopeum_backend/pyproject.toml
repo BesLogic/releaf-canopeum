@@ -1,105 +1,39 @@
-# https://docs.astral.sh/ruff/configuration/
-[tool.ruff]
-target-version = "py312"
-line-length = 100
-preview = true
-# Auto-generated
-exclude = ["canopeum_backend/migrations/*"]
-
-[tool.ruff.lint]
-select = ["ALL"]
-# https://docs.astral.sh/ruff/rules/
-ignore = [
-  ###
-  # Not needed or wanted
-  ###
-  "D1", # pydocstyle Missing doctring
-  "D401", # pydocstyle: non-imperative-mood
-  "EM", # flake8-errmsg
-  "EXE", # flake8-executable
-  # This is often something we can't control: https://github.com/astral-sh/ruff/issues/9497
-  # Also false-positive with positional-only arguments: https://github.com/astral-sh/ruff/issues/3247
-  "FBT003", # flake8-boolean-trap: boolean-positional-value-in-call
-  "INP", # flake8-no-pep420
-  "ISC003", # flake8-implicit-str-concat: explicit-string-concatenation
-  # Short messages are still considered "long" messages
-  "TRY003", # tryceratops : raise-vanilla-args
-  # Don't remove commented code, also too inconsistant
-  "ERA001", # eradicate: commented-out-code
-  # contextlib.suppress is roughly 3x slower than try/except
-  "SIM105", # flake8-simplify: use-contextlib-suppress
-  # Negative performance impact
-  "UP038", # non-pep604-isinstance
-  # Checked by type-checker (pyright)
-  "ANN", # flake-annotations
-  "PGH003", # blanket-type-ignore
-  "TCH", # flake8-type-checking
-  # Already shown by Pylance, checked by pyright, and can be caused by overloads.
-  "ARG002", # Unused method argument
-  # We want D213: multi-line-summary-second-line and D211: no-blank-line-before-class
-  "D203", # pydocstyle: one-blank-line-before-class
-  "D212", # pydocstyle: multi-line-summary-first-line
-  # Allow differentiating between broken (FIXME) and to be done/added/completed (TODO)
-  "TD001", # flake8-todos: invalid-todo-tag
-
-  ###
-  # Conflict with formatter
-  ###
-  "COM812", # missing-trailing-comma
-  "ISC001", # single-line-implicit-string-concatenation
-
-  ###
-  # These should be warnings (https://github.com/astral-sh/ruff/issues/1256 & https://github.com/astral-sh/ruff/issues/1774)
-  ###
-  "FIX", # flake8-fixme
-  # Not all TODOs are worth an issue, this would be better as a warning
-  "TD003", # flake8-todos: missing-todo-link
-
-  # False-positives
-  "TCH004", # https://github.com/astral-sh/ruff/issues/3821
-
-  ###
-  # Specific to this project
-  ###
-  "CPY001", # flake8-copyright, using global copyright
-  "D205", # Not all docstrings have a short description + desrciption
-  "PERF203", # try-except-in-loop, Python 3.11, introduced "zero cost" exception handling
-  "PLR6301", # API Views don't use "self"
-  "TD002", # missing-todo-author, This is a relatively small, low contributors project. Git blame suffice.
-
-  ### FIXME/TODO: I'd normally set them as temporarily warnings, but no warnings in Ruff yet:
-  ### https://github.com/astral-sh/ruff/issues/1256 & https://github.com/astral-sh/ruff/issues/1774):
-  "DJ001", # Avoid using `null=True` on string-based fields
-  "DJ008", # Model does not define `__str__` method: https://docs.astral.sh/ruff/rules/django-model-without-dunder-str/
-  "N803", # Different naming convention between js/json and python. A better/configured middleware could take care of that
+[project]
+name = "Canopeum"
+version = "0.0.0"
+requires-python = ">= 3.12"
+dependencies = [
+  "Django>=5.0.8",
+  # Fix for https://github.com/BesLogic/releaf-canopeum/security/dependabot/25
+  "dj-database-url",
+  "django-cors-headers",
+  "djangorestframework-camel-case",
+  "djangorestframework-simplejwt",
+  # TODO: Bump above 5.3.1 as soon as fixed for https://github.com/BesLogic/releaf-canopeum/security/dependabot/3
+  "djangorestframework>=3.15.2",
+  # Fix for https://github.com/BesLogic/releaf-canopeum/security/dependabot/15
+  "drf-spectacular-sidecar",
+  "drf-spectacular>=0.27.2",
+  # https://github.com/tfranzel/drf-spectacular/pull/1216
+  "googlemaps",
+  "mysqlclient",
+  "openmeteo-requests>=1.3.0",
+  "python-dotenv",
+  "requests-cache>=1.2.1",
+  "retry-requests>=2.0.0",
 ]
-
-[tool.ruff.lint.extend-per-file-ignores]
-"scripts/**" = [
-  # Too many false positives
-  "S603", # subprocess-without-shell-equals-true
-  # Using print instead of logging in scripts files
-  "T201", # print-found
+[project.optional-dependencies]
+dev = [
+  # Tools
+  "mypy", # version taken from [compatible-mypy],
+  "pre-commit==3.8.*",
+  "pyright>=1.1.374",
+  "ruff==0.5.7", # must match .pre-commit-config.yaml
+  # Stubs
+  "django-stubs[compatible-mypy]>=5.0.0",
+  "djangorestframework-stubs[compatible-mypy]>=3.15.0",
+  "types-jsonschema",
 ]
-# https://docs.astral.sh/ruff/settings/#flake8-implicit-str-concat
-[tool.ruff.lint.flake8-implicit-str-concat]
-allow-multiline = false
-
-# https://docs.astral.sh/ruff/settings/#isort
-[tool.ruff.lint.isort]
-combine-as-imports = true
-split-on-trailing-comma = false
-
-# https://docs.astral.sh/ruff/settings/#mccabe
-[tool.ruff.lint.mccabe]
-# Arbitrary to 2 bytes, same as SonarLint
-max-complexity = 15
-
-[tool.ruff.lint.pylint]
-# Arbitrary to 1 byte, same as SonarLint
-max-args = 7
-# At least same as max-complexity
-max-branches = 15
 
 # https://mypy.readthedocs.io/en/stable/config_file.html
 [tool.mypy]
@@ -112,7 +46,7 @@ exclude = [".venv/"]
 plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
 
 strict = true
-# Implicit return types !
+# Implicit return types using pyright ! (mypy doesn't do implicit return types)
 check_untyped_defs = true
 disallow_untyped_calls = false
 disallow_untyped_defs = false
@@ -123,7 +57,13 @@ disallow_incomplete_defs = false
 
 [[tool.mypy.overrides]]
 # Untyped dependencies
-module = ["rest_framework.*"]
+module = [
+  "djangorestframework_camel_case.*",
+  "googlemaps.*",
+  "openmeteo_requests.*",
+  "rest_framework.*",
+  "retry_requests.*",
+]
 ignore_missing_imports = true
 
 [tool.django-stubs]

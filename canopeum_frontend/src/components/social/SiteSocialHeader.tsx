@@ -1,5 +1,8 @@
 import './SiteSocialHeader.scss'
 
+import { useContext, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { LanguageContext } from '@components/context/LanguageContext'
 import ToggleSwitch from '@components/inputs/ToggleSwitch'
@@ -8,8 +11,6 @@ import useApiClient from '@hooks/ApiClientHook'
 import type { PageViewMode } from '@models/types/PageViewMode.Type'
 import { PatchedUpdateSitePublicStatus, type SiteSocial, User } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
-import { useContext, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 
 type Props = {
   readonly viewMode: PageViewMode,
@@ -100,17 +101,20 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
                 />
               )}
 
-              {currentUser && currentUser.role !== 'MegaAdmin' && isFollowing !== undefined && (
-                <button
-                  className='btn btn-secondary'
-                  onClick={onFollowClick}
-                  type='button'
-                >
-                  {isFollowing
-                    ? translate('social.site-social-header.unfollow')
-                    : translate('social.site-social-header.follow')}
-                </button>
-              )}
+              {currentUser
+                && currentUser.role !== 'MegaAdmin'
+                && isFollowing !== undefined
+                && (
+                  <button
+                    className='btn btn-secondary'
+                    onClick={onFollowClick}
+                    type='button'
+                  >
+                    {isFollowing
+                      ? translate('social.site-social-header.unfollow')
+                      : translate('social.site-social-header.follow')}
+                  </button>
+                )}
             </div>
           </div>
 
@@ -128,7 +132,10 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
             </div>
             <div className='row'>
               {site.sponsors.map(sponsorName => (
-                <div className='col-12 col-sm-6 col-md-4 col-lg-3 mb-3' key={sponsorName}>
+                <div
+                  className='col-12 col-sm-6 col-md-4 col-lg-3 mb-3'
+                  key={`site-${site.id}-sponsor-${sponsorName}`}
+                >
                   {sponsorName}
                 </div>
               ))}
