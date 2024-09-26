@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import UploadIcon from '@assets/icons/upload.svg'
 
 type Props = {
+  readonly id: string,
   readonly imageUrl?: string,
   readonly onChange: (file: File) => void,
 }
@@ -14,7 +15,7 @@ const supportedFileTypes = [
   'image/jpeg',
 ]
 
-const ImageUpload = ({ onChange, imageUrl }: Props) => {
+const ImageUpload = ({ id, onChange, imageUrl }: Props) => {
   const { t } = useTranslation()
 
   const handleFileChange = (
@@ -35,10 +36,10 @@ const ImageUpload = ({ onChange, imageUrl }: Props) => {
   }
 
   return (
-    <div id='image-upload'>
+    <div id={id}>
       <label
         className='w-100 d-flex flex-column justify-content-center align-items-center p-4 gap-3'
-        htmlFor='inner-image-upload'
+        htmlFor={`inner-${id}`}
         onDragOver={event => event.preventDefault()}
         onDrop={dropHandler}
         style={{
@@ -56,7 +57,7 @@ const ImageUpload = ({ onChange, imageUrl }: Props) => {
       <input
         accept={supportedFileTypes.join(',')}
         className='d-none'
-        id='inner-image-upload'
+        id={`inner-${id}`}
         onChange={event => handleFileChange(event)}
         type='file'
       />
