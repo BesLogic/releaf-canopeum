@@ -36,6 +36,10 @@ from canopeum_backend.models import (
     User,
 )
 
+seeding_images_path = (
+    Path(canopeum_backend.settings.BASE_DIR) / "canopeum_backend" / "seeding" / "images"
+)
+
 tree_types = [
     ["Balsam Fir", "Sapin baumier"],
     ["Black Maple", "Érable noir"],
@@ -193,52 +197,6 @@ batch_names = [
     "Eight Batch",
 ]
 
-sponsors = [
-    "GreenGrow Solutions",
-    "ArborWorks",
-    "Evergreen Eco",
-    "Rooted Reforestation",
-    "TreeTech Innovations",
-    "Forest Guardians",
-    "LeafyLife Planting",
-    "EcoArbor",
-    "Sapling Services",
-    "Birch & Pine Planters",
-    "Foliage Force",
-    "Canopy Creations",
-    "GrowGreen Reforestation",
-    "Woodland Warriors",
-    "BranchOut Planting",
-    "EcoTree Partners",
-    "Grove Guardians",
-    "Sustainable Sowers",
-    "TimberTech Planting",
-    "Nature's Nurseries",
-    "GreenThumb Reforestation",
-    "Forest Frontiers",
-    "Arbor Alliance",
-    "TreeTrek Planters",
-    "RootRise Reforestation",
-    "LeafLegacy Planting",
-    "EcoRoot Reforestation",
-    "TrunkTrack Planters",
-    "WoodWise Reforestation",
-    "Boreal Bloom Planters",
-]
-
-
-def get_sponsors():
-    number_of_sponsors = random.randint(1, 5)
-    random.shuffle(sponsors)
-    return sponsors[:number_of_sponsors]
-
-
-# TODO(NicolasDontigny): Create sponsors first, them randomly assign one to a batch
-def get_sponsor():
-    index = random.randint(0, len(sponsors) - 1)
-    return sponsors[index]
-
-
 sponsor_names = [
     "Green Earth Initiative",
     "EcoRoots Corporation",
@@ -268,6 +226,22 @@ sponsor_names = [
 ]
 
 
+def create_sponsor_for_batch():
+    image_file_name = f"batch_logo{random.randint(1, 7)}.png"
+
+    with Path.open(seeding_images_path / image_file_name, "rb") as img_file:
+        django_file = File(img_file)
+
+        asset = Asset()
+        asset.asset.save(image_file_name, django_file, save=True)
+
+        return BatchSponsor.objects.create(
+            name=sponsor_names.pop(random.randint(0, len(sponsor_names) - 1)),
+            url="https://uilogos.co/",
+            logo=asset,
+        )
+
+
 def create_batches_for_site(site):
     num_batches = random.randint(3, 8)
     for i in range(num_batches):
@@ -275,11 +249,7 @@ def create_batches_for_site(site):
         plant_count = random.randint(0, number_of_seed)
         survived_count = random.randint(0, plant_count)
 
-        sponsor = BatchSponsor.objects.create(
-            name=sponsor_names.pop(random.randint(0, len(sponsor_names) - 1)),
-            url="https://uilogos.co/",
-            logo=Asset.objects.get(asset__contains=f"batch_logo{random.randint(1, 7)}"),
-        )
+        sponsor = create_sponsor_for_batch()
 
         batch = Batch.objects.create(
             name=batch_names[i - 1],
@@ -422,9 +392,6 @@ class Command(BaseCommand):
             )
 
     def create_assets(self):
-        seeding_images_path = (
-            Path(canopeum_backend.settings.BASE_DIR) / "canopeum_backend" / "seeding" / "images"
-        )
         image_file_names = (
             "site_img1.png",
             "site_img2.jpg",
@@ -432,13 +399,6 @@ class Command(BaseCommand):
             "site_img4.jpg",
             "canopeum_post_img1.jpg",
             "canopeum_post_img2.jpg",
-            "batch_logo1.png",
-            "batch_logo2.png",
-            "batch_logo3.png",
-            "batch_logo4.png",
-            "batch_logo5.png",
-            "batch_logo6.png",
-            "batch_logo7.png",
         )
         for file_name in image_file_names:
             with Path.open(seeding_images_path / file_name, "rb") as img_file:
