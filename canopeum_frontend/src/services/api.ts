@@ -3239,7 +3239,7 @@ export class BatchDetail implements IBatchDetail {
   replaceCount?: number | undefined
   totalNumberSeed?: number | undefined
   totalPropagation?: number | undefined
-  site?: number | undefined;
+  site!: number;
 
   [key: string]: any
 
@@ -3399,7 +3399,7 @@ export interface IBatchDetail {
   replaceCount?: number | undefined
   totalNumberSeed?: number | undefined
   totalPropagation?: number | undefined
-  site?: number | undefined
+  site: number
 
   [key: string]: any
 }
