@@ -57,7 +57,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
 
         <div>
           <label className='form-label text-capitalize' htmlFor='sponsor-name'>
-            {t('analyticsSite.batch-modal.sponsor-name-label')}
+            {t('analyticsSite.batch-modal.sponsor-label')}
           </label>
           <input
             className='form-control'
