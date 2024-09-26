@@ -364,9 +364,9 @@ class SiteFollower(models.Model):
 
 
 class Sitetreespecies(models.Model):
-    site = models.ForeignKey(Site, models.CASCADE, blank=True, null=True)
-    tree_type = models.ForeignKey("Treetype", models.DO_NOTHING, blank=True, null=True)
-    quantity = models.IntegerField(blank=True, null=True)
+    site = models.ForeignKey(Site, models.CASCADE)
+    tree_type = models.ForeignKey("Treetype", models.DO_NOTHING)
+    quantity = models.IntegerField()
 
     class Meta:
         constraints = (

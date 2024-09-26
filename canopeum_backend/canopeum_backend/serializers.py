@@ -597,6 +597,7 @@ class SiteSummarySerializer(serializers.ModelSerializer[Site]):
     site_type = SiteTypeSerializer()
     coordinate = CoordinatesSerializer()
     plant_count = serializers.SerializerMethodField()
+    sponsored_plant_count = serializers.SerializerMethodField()
     survived_count = serializers.SerializerMethodField()
     propagation_count = serializers.SerializerMethodField()
     progress = serializers.SerializerMethodField()
@@ -612,6 +613,7 @@ class SiteSummarySerializer(serializers.ModelSerializer[Site]):
             "coordinate",
             "site_type",
             "plant_count",
+            "sponsored_plant_count",
             "survived_count",
             "propagation_count",
             "visitor_count",
@@ -622,6 +624,10 @@ class SiteSummarySerializer(serializers.ModelSerializer[Site]):
         )
 
     def get_plant_count(self, obj) -> int:
+        site_species = Sitetreespecies.objects.filter(site=obj)
+        return reduce(lambda x, y: x + y.quantity, site_species, 0)
+
+    def get_sponsored_plant_count(self, obj) -> int:
         batches = Batch.objects.filter(site=obj)
         return reduce(lambda x, y: x + y.plant_count(), batches, 0)
 
@@ -648,6 +654,7 @@ class SiteSummaryDetailSerializer(serializers.ModelSerializer[Site]):
     site_type = SiteTypeSerializer()
     coordinate = CoordinatesSerializer()
     plant_count = serializers.SerializerMethodField()
+    sponsored_plant_count = serializers.SerializerMethodField()
     survived_count = serializers.SerializerMethodField()
     propagation_count = serializers.SerializerMethodField()
     progress = serializers.SerializerMethodField()
@@ -664,6 +671,7 @@ class SiteSummaryDetailSerializer(serializers.ModelSerializer[Site]):
             "coordinate",
             "site_type",
             "plant_count",
+            "sponsored_plant_count",
             "survived_count",
             "propagation_count",
             "visitor_count",
@@ -675,6 +683,10 @@ class SiteSummaryDetailSerializer(serializers.ModelSerializer[Site]):
         )
 
     def get_plant_count(self, obj) -> int:
+        site_species = Sitetreespecies.objects.filter(site=obj)
+        return reduce(lambda x, y: x + y.quantity, site_species, 0)
+
+    def get_sponsored_plant_count(self, obj) -> int:
         batches = Batch.objects.filter(site=obj)
         return reduce(lambda x, y: x + y.plant_count(), batches, 0)
 
