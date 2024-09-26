@@ -29,8 +29,6 @@
   "unnamed-site": "Site sans nom",
   "site-save-success": "Site saved successfully",
   "site-save-error": "Error saving Site",
-  "site-deleted": "Le site {{siteName}} a été supprimé avec succès.",
-  "site-deleted-error": "Un problème est survenu lors de la tentative de suppression du site {{siteName}}...",
   "success-rate-chart": {
     "title": "Taux De Réussite Annuel Moyen Par Site"
   },
@@ -47,7 +45,9 @@
     "unknown": "Inconnu",
     "admins-saved": "Administrateurs sauvegardés avec succès pour {{siteName}}!",
     "delete-site-confirmation-title": "Suppression du Site",
-    "delete-site-confirmation-message": "Etes vous sur de vouloir supprimer le site {{siteName}}?"
+    "delete-site-confirmation-message": "Êtes vous sur de vouloir supprimer le site {{siteName}}?",
+    "site-deleted": "Le site {{siteName}} a été supprimé avec succès.",
+    "site-deleted-error": "Un problème est survenu lors de la tentative de suppression du site {{siteName}}..."
   },
   "site-modal": {
     "site-name": "nom du site",

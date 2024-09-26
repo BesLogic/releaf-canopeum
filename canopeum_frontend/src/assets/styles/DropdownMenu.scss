@@ -1,0 +1,8 @@
+.rs-dropdown-item-submenu:hover > .rs-dropdown-item-toggle {
+  background-color: $lightgreen;
+  color: inherit;
+}
+
+.rs-dropdown-item.rs-dropdown-item-focus {
+  background-color: $lightgreen;
+}

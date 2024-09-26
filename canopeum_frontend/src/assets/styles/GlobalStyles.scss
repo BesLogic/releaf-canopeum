@@ -5,6 +5,7 @@
 @import "./Icons.scss";
 @import "./Navbar.scss";
 @import "./Transitions.scss";
+@import "./DropdownMenu.scss";
 
 $cream: #FFFAF5;
 
@@ -49,11 +50,11 @@ body {
 }
 
 .lightgreen-color {
-  color: #E8F3E9;
+  color: $lightgreen;
 }
 
 .bg-lightgreen {
-  background: #E8F3E9;
+  background: $lightgreen;
 }
 
 .bg-cream {
