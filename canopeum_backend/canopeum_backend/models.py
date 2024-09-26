@@ -70,8 +70,115 @@ class Asset(models.Model):
     asset = models.FileField(upload_to=upload_to, null=False)
 
 
+class Contact(models.Model):
+    address = models.TextField(blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    facebook_link = models.URLField(blank=True, null=True)
+    x_link = models.URLField(blank=True, null=True)
+    instagram_link = models.URLField(blank=True, null=True)
+    linkedin_link = models.URLField(blank=True, null=True)
+
+
+class Coordinate(models.Model):
+    dms_latitude = models.TextField(blank=True, null=True)
+    dms_longitude = models.TextField(blank=True, null=True)
+    dd_latitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
+    dd_longitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
+
+    @classmethod
+    def from_dms_lat_long(cls, dms_latitude: str, dms_longitude: str):
+        dms_latitude_split = re.split(LAT_LONG_SEP, dms_latitude)
+        dd_latitude = (
+            float(dms_latitude_split[0])
+            + float(dms_latitude_split[1]) / 60
+            + float(dms_latitude_split[2]) / 3600
+        )
+        if dms_latitude_split[3] == "S":
+            dd_latitude *= -1
+
+        dms_longitude_split = re.split(LAT_LONG_SEP, dms_longitude)
+        dd_longitude = (
+            float(dms_longitude_split[0])
+            + float(dms_longitude_split[1]) / 60
+            + float(dms_longitude_split[2]) / 3600
+        )
+        if dms_longitude_split[3] == "W":
+            dd_longitude *= -1
+
+        if gmaps is not None:
+            data_retrieved = gmaps.reverse_geocode(  # pyright: ignore[reportAttributeAccessIssue] -- No type stub currently exists
+                (dd_latitude, dd_longitude), result_type="street_address"
+            )
+            formatted_address = (
+                data_retrieved[0]["formatted_address"] if data_retrieved else "Custom address"
+            )
+        else:
+            formatted_address = "Unknown address"
+
+        return cls.objects.create(
+            dms_latitude=dms_latitude,
+            dms_longitude=dms_longitude,
+            dd_latitude=dd_latitude,
+            dd_longitude=dd_longitude,
+            address=formatted_address,
+        )
+
+
+class SitetypeInternationalization(models.Model):
+    en = models.TextField(db_column="EN", blank=True, null=True)
+    fr = models.TextField(db_column="FR", blank=True, null=True)
+
+
+class Sitetype(models.Model):
+    name = models.ForeignKey(SitetypeInternationalization, models.DO_NOTHING, blank=True, null=True)
+
+    @override
+    def delete(self, using=None, keep_parents=False):
+        # TODO: FIXME, should Sitetype subclass Asset
+        # or should it have a foreignkey asset like PostAsset???
+        self.asset.delete()  # type:ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
+        return super().delete(using, keep_parents)
+
+
+class Site(models.Model):
+    name = models.TextField()
+    is_public = models.BooleanField(blank=False, null=False, default=False)
+    site_type = models.ForeignKey(Sitetype, models.DO_NOTHING, blank=True, null=True)
+    coordinate = models.ForeignKey(Coordinate, models.SET_NULL, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    size = models.TextField(blank=True, null=True)
+    research_partnership = models.BooleanField(blank=True, null=True)
+    visible_map = models.BooleanField(blank=True, null=True)
+    visitor_count = models.IntegerField(blank=True, null=True)
+    contact = models.ForeignKey(Contact, models.SET_NULL, blank=True, null=True)
+    announcement = models.ForeignKey(Announcement, models.SET_NULL, blank=True, null=True)
+    image = models.ForeignKey(Asset, models.SET_NULL, blank=True, null=True)
+
+    @override
+    def delete(self, using=None, keep_parents=False):
+        # Coordinate
+        if self.coordinate:
+            self.coordinate.delete()
+
+        # Contact
+        if self.contact:
+            self.contact.delete()
+
+        # Announcement
+        if self.announcement:
+            self.announcement.delete()
+
+        # Image
+        if self.image:
+            self.image.delete()
+
+        return super().delete(using, keep_parents)
+
+
 class Batch(models.Model):
-    site = models.ForeignKey("Site", models.CASCADE, blank=True, null=True)
+    site = models.ForeignKey(Site, models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     name = models.TextField(blank=True, null=True)
@@ -197,113 +304,6 @@ class BatchSupportedSpecies(models.Model):
         )
 
 
-class Contact(models.Model):
-    address = models.TextField(blank=True, null=True)
-    email = models.EmailField(blank=True, null=True)
-    phone = models.CharField(max_length=20, blank=True, null=True)
-    facebook_link = models.URLField(blank=True, null=True)
-    x_link = models.URLField(blank=True, null=True)
-    instagram_link = models.URLField(blank=True, null=True)
-    linkedin_link = models.URLField(blank=True, null=True)
-
-
-class Coordinate(models.Model):
-    dms_latitude = models.TextField(blank=True, null=True)
-    dms_longitude = models.TextField(blank=True, null=True)
-    dd_latitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
-    dd_longitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
-    address = models.TextField(blank=True, null=True)
-
-    @classmethod
-    def from_dms_lat_long(cls, dms_latitude: str, dms_longitude: str):
-        dms_latitude_split = re.split(LAT_LONG_SEP, dms_latitude)
-        dd_latitude = (
-            float(dms_latitude_split[0])
-            + float(dms_latitude_split[1]) / 60
-            + float(dms_latitude_split[2]) / 3600
-        )
-        if dms_latitude_split[3] == "S":
-            dd_latitude *= -1
-
-        dms_longitude_split = re.split(LAT_LONG_SEP, dms_longitude)
-        dd_longitude = (
-            float(dms_longitude_split[0])
-            + float(dms_longitude_split[1]) / 60
-            + float(dms_longitude_split[2]) / 3600
-        )
-        if dms_longitude_split[3] == "W":
-            dd_longitude *= -1
-
-        if gmaps is not None:
-            data_retrieved = gmaps.reverse_geocode(  # pyright: ignore[reportAttributeAccessIssue] -- No type stub currently exists
-                (dd_latitude, dd_longitude), result_type="street_address"
-            )
-            formatted_address = (
-                data_retrieved[0]["formatted_address"] if data_retrieved else "Custom address"
-            )
-        else:
-            formatted_address = "Unknown address"
-
-        return cls.objects.create(
-            dms_latitude=dms_latitude,
-            dms_longitude=dms_longitude,
-            dd_latitude=dd_latitude,
-            dd_longitude=dd_longitude,
-            address=formatted_address,
-        )
-
-
-class SitetypeInternationalization(models.Model):
-    en = models.TextField(db_column="EN", blank=True, null=True)
-    fr = models.TextField(db_column="FR", blank=True, null=True)
-
-
-class Sitetype(models.Model):
-    name = models.ForeignKey(SitetypeInternationalization, models.DO_NOTHING, blank=True, null=True)
-
-    @override
-    def delete(self, using=None, keep_parents=False):
-        # TODO: FIXME, should Sitetype subclass Asset
-        # or should it have a foreignkey asset like PostAsset???
-        self.asset.delete()  # type:ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
-        return super().delete(using, keep_parents)
-
-
-class Site(models.Model):
-    name = models.TextField()
-    is_public = models.BooleanField(blank=False, null=False, default=False)
-    site_type = models.ForeignKey("Sitetype", models.DO_NOTHING, blank=True, null=True)
-    coordinate = models.ForeignKey(Coordinate, models.SET_NULL, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-    size = models.TextField(blank=True, null=True)
-    research_partnership = models.BooleanField(blank=True, null=True)
-    visible_map = models.BooleanField(blank=True, null=True)
-    visitor_count = models.IntegerField(blank=True, null=True)
-    contact = models.ForeignKey(Contact, models.SET_NULL, blank=True, null=True)
-    announcement = models.ForeignKey(Announcement, models.SET_NULL, blank=True, null=True)
-    image = models.ForeignKey(Asset, models.SET_NULL, blank=True, null=True)
-
-    @override
-    def delete(self, using=None, keep_parents=False):
-        # Coordinate
-        if self.coordinate:
-            self.coordinate.delete()
-
-        # Contact
-        if self.contact:
-            self.contact.delete()
-
-        # Announcement
-        if self.announcement:
-            self.announcement.delete()
-
-        # Image
-        if self.image:
-            self.image.delete()
-
-        return super().delete(using, keep_parents)
-
-
 # Note: PostAsset must be defined before Post because of a limitation with ManyToManyField type
 # inference using string annotations: https://github.com/typeddjango/django-stubs/issues/1802
 # Can't manually annotate because of: https://github.com/typeddjango/django-stubs/issues/760
@@ -318,10 +318,11 @@ class PostAsset(models.Model):
 
 
 class Post(models.Model):
-    site = models.ForeignKey("Site", models.CASCADE, blank=False, null=False)
+    site = models.ForeignKey(Site, models.CASCADE, blank=False, null=False)
     body = models.TextField(blank=False, null=False)
     share_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True, blank=False, null=False)
+    # TODO(NicolasDontigny): Add created by user?
     # created_by = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
     media = models.ManyToManyField(Asset, through=PostAsset, blank=True)
 
@@ -360,7 +361,7 @@ class SiteFollower(models.Model):
 
 class Sitetreespecies(models.Model):
     site = models.ForeignKey(Site, models.CASCADE, blank=True, null=True)
-    tree_type = models.ForeignKey("Treetype", models.DO_NOTHING, blank=True, null=True)
+    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
 
     class Meta:
