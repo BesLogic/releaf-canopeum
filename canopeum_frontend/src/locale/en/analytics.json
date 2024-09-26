@@ -26,8 +26,6 @@
   "unnamed-site": "Unnamed site",
   "site-save-success": "Site saved successfully",
   "site-save-error": "Error saving Site",
-  "site-deleted": "Site {{siteName}} was successfully deleted.",
-  "site-deleted-error": "There was a problem while trying to delete the site {{siteName}}...",
   "success-rate-chart": {
     "title": "Average Annual Success Rate Per Site"
   },
@@ -44,7 +42,9 @@
     "unknown": "Unknown",
     "admins-saved": "Admins saved successfully for {{siteName}}!",
     "delete-site-confirmation-title": "Delete Site",
-    "delete-site-confirmation-message": "Are you sure you want to delete the site {{siteName}}?"
+    "delete-site-confirmation-message": "Are you sure you want to delete the site {{siteName}}?",
+    "site-deleted": "Site {{siteName}} was successfully deleted.",
+    "site-deleted-error": "There was a problem while trying to delete the site {{siteName}}..."
   },
   "site-modal": {
     "site-name": "site name",
