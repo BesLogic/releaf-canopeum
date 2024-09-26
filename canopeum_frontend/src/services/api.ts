@@ -3251,7 +3251,7 @@ export class BatchDetail implements IBatchDetail {
   readonly supportedSpecies!: TreeType[]
   readonly seeds!: BatchSeed[]
   readonly species!: BatchSpecies[]
-  readonly sponsor!: BatchSponsor
+  sponsor!: BatchSponsor
   image?: Asset
   readonly createdAt!: Date | undefined
   readonly updatedAt!: Date | undefined
@@ -3323,9 +3323,7 @@ export class BatchDetail implements IBatchDetail {
           ;(<any> this).species!.push(BatchSpecies.fromJS(item))
         }
       }
-      ;(<any> this).sponsor = _data['sponsor']
-        ? BatchSponsor.fromJS(_data['sponsor'])
-        : new BatchSponsor()
+      this.sponsor = _data['sponsor'] ? BatchSponsor.fromJS(_data['sponsor']) : new BatchSponsor()
       this.image = _data['image'] ? Asset.fromJS(_data['image']) : <any> undefined
       ;(<any> this).createdAt = _data['createdAt']
         ? new Date(_data['createdAt'].toString())

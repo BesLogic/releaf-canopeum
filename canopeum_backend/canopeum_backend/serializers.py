@@ -2,6 +2,7 @@
 # pyright: reportIncompatibleVariableOverride=false
 
 import random
+from collections.abc import Mapping
 from decimal import Decimal
 from typing import Any
 
@@ -356,10 +357,10 @@ class BatchSponsorSerializer(serializers.ModelSerializer[BatchSponsor]):
 
         return BatchSponsor.objects.create(**validated_data, logo=created_logo)
 
-    def update(self, instance, validated_data):
-        logo_data = validated_data.get("logo")
+    def update(self, instance, validated_data: Mapping[str, Any]):
         instance.name = validated_data.get("name", instance.name)
         instance.url = validated_data.get("url", instance.url)
+        logo_data = validated_data.get("logo")
         if logo_data is not None:
             logo_serializer = AssetSerializer(data=logo_data)
             logo_serializer.is_valid()
@@ -439,7 +440,7 @@ class BatchDetailSerializer(serializers.ModelSerializer[Batch]):
     supported_species = serializers.SerializerMethodField()
     seeds = serializers.SerializerMethodField()
     species = serializers.SerializerMethodField()
-    sponsor = serializers.SerializerMethodField()
+    sponsor = BatchSponsorSerializer()
     # HACK to allow handling the image with a AssetSerializer separately
     # TODO: Figure out how to feed the image directly to BatchDetailSerializer
     image = AssetSerializer(required=False)
@@ -481,10 +482,6 @@ class BatchDetailSerializer(serializers.ModelSerializer[Batch]):
     @extend_schema_field(BatchSpeciesSerializer(many=True))
     def get_species(self, obj):
         return BatchSpeciesSerializer(BatchSpecies.objects.filter(batch=obj), many=True).data
-
-    @extend_schema_field(BatchSponsorSerializer(many=False))
-    def get_sponsor(self, obj: Batch):
-        return BatchSponsorSerializer(obj.sponsor, many=False).data
 
 
 class SiteAdminSerializer(serializers.ModelSerializer[Siteadmin]):

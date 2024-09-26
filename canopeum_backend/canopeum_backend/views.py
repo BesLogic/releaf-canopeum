@@ -834,6 +834,11 @@ BATCH_CREATE_SCHEMA = {
             "name": {"type": "string", "nullable": True},
             "sponsorName": {"type": "string", "nullable": True},
             "sponsorWebsiteUrl": {"type": "string", "nullable": True},
+            # TODO(NicolasDontigny): sponsorLogo should be in the sponsor object, but the generated
+            # typescript api does not correctly type it as a FileParameter type
+            # unless it is a root key
+            # Raise the issue upstream, OR it should be fixed when we figure out how to serialize
+            # multipart/form-data
             "sponsorLogo": {"type": "string", "format": "binary", "nullable": True},
             "size": {"type": "number", "nullable": True},
             "soilCondition": {"type": "string", "nullable": True},
