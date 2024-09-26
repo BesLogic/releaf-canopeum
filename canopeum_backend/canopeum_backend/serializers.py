@@ -3,6 +3,7 @@
 
 import random
 from decimal import Decimal
+from functools import reduce
 from typing import Any
 
 from django.contrib.auth.password_validation import validate_password
@@ -621,7 +622,8 @@ class SiteSummarySerializer(serializers.ModelSerializer[Site]):
         )
 
     def get_plant_count(self, obj) -> int:
-        return random.randint(100, 200)  # noqa: S311
+        batches = Batch.objects.filter(site=obj)
+        return reduce(lambda x, y: x + y.plant_count(), batches, 0)
 
     def get_survived_count(self, obj) -> int:
         return random.randint(50, 100)  # noqa: S311
@@ -673,7 +675,8 @@ class SiteSummaryDetailSerializer(serializers.ModelSerializer[Site]):
         )
 
     def get_plant_count(self, obj) -> int:
-        return random.randint(100, 200)  # noqa: S311
+        batches = Batch.objects.filter(site=obj)
+        return reduce(lambda x, y: x + y.plant_count(), batches, 0)
 
     def get_survived_count(self, obj) -> int:
         return random.randint(50, 100)  # noqa: S311

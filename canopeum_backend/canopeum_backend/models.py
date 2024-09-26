@@ -1,5 +1,6 @@
 import re
 from datetime import UTC, datetime, timedelta
+from functools import reduce
 from typing import TYPE_CHECKING, Any, ClassVar, TypeVar, override
 
 import googlemaps
@@ -78,7 +79,7 @@ class Batch(models.Model):
     sponsor = models.TextField(blank=True, null=True)
     size = models.IntegerField(blank=True, null=True)
     soil_condition = models.TextField(blank=True, null=True)
-    plant_count = models.IntegerField(blank=True, null=True)
+    # plant_count = models.IntegerField(blank=True, null=True)
     survived_count = models.IntegerField(blank=True, null=True)
     replace_count = models.IntegerField(blank=True, null=True)
     total_number_seed = models.IntegerField(blank=True, null=True)
@@ -104,6 +105,10 @@ class Batch(models.Model):
     def add_supported_specie_by_id(self, pk: int):
         tree_type = Treetype.objects.get(pk=pk)
         return BatchSupportedSpecies.objects.create(tree_type=tree_type, batch=self)
+
+    def plant_count(self):
+        batch_species = BatchSpecies.objects.filter(batch=self)
+        return reduce(lambda x, y: x + y.quantity, batch_species, 0)
 
 
 class FertilizertypeInternationalization(models.Model):
@@ -164,9 +169,9 @@ class Treetype(models.Model):
 
 
 class BatchSpecies(models.Model):
-    batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
-    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
-    quantity = models.IntegerField(blank=True, null=True)
+    batch = models.ForeignKey(Batch, models.CASCADE)
+    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING)
+    quantity = models.IntegerField()
 
     class Meta:
         constraints = (
