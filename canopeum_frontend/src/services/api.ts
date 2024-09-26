@@ -1178,7 +1178,7 @@ export class SiteClient {
     return Promise.resolve<boolean>(null as any)
   }
 
-  summary(siteId: number): Promise<SiteDetailSummary> {
+  summary(siteId: number): Promise<SiteSummaryDetail> {
     let url_ = this.baseUrl + '/analytics/sites/{siteId}/summary'
     if (siteId === undefined || siteId === null) {
       throw new Error("The parameter 'siteId' must be defined.")
@@ -1198,7 +1198,7 @@ export class SiteClient {
     })
   }
 
-  protected processSummary(response: Response): Promise<SiteDetailSummary> {
+  protected processSummary(response: Response): Promise<SiteSummaryDetail> {
     const status = response.status
     let _headers: any = {}
     if (response.headers && response.headers.forEach) {
@@ -1210,7 +1210,7 @@ export class SiteClient {
         let resultData200 = _responseText === ''
           ? null
           : JSON.parse(_responseText, this.jsonParseReviver)
-        result200 = SiteDetailSummary.fromJS(resultData200)
+        result200 = SiteSummaryDetail.fromJS(resultData200)
         return result200
       })
     } else if (status !== 200 && status !== 204) {
@@ -1223,7 +1223,7 @@ export class SiteClient {
         )
       })
     }
-    return Promise.resolve<SiteDetailSummary>(null as any)
+    return Promise.resolve<SiteSummaryDetail>(null as any)
   }
 
   map(): Promise<SiteMap[]> {
@@ -3222,14 +3222,14 @@ export interface IAsset {
 
 export class BatchDetail implements IBatchDetail {
   readonly id!: number
-  readonly fertilizers!: Batchfertilizer[]
-  readonly mulchLayers!: BatchMulchLayer[]
-  readonly supportedSpecies!: BatchSupportedSpecies[]
+  readonly fertilizers!: FertilizerType[]
+  readonly mulchLayers!: MulchLayerType[]
+  readonly supportedSpecies!: TreeType[]
   readonly seeds!: BatchSeed[]
   readonly species!: BatchSpecies[]
   image?: Asset
-  createdAt?: Date | undefined
-  updatedAt?: Date | undefined
+  readonly createdAt!: Date | undefined
+  readonly updatedAt!: Date | undefined
   name?: string | undefined
   sponsor?: string | undefined
   size?: number | undefined
@@ -3271,19 +3271,19 @@ export class BatchDetail implements IBatchDetail {
       if (Array.isArray(_data['fertilizers'])) {
         ;(<any> this).fertilizers = [] as any
         for (let item of _data['fertilizers']) {
-          ;(<any> this).fertilizers!.push(Batchfertilizer.fromJS(item))
+          ;(<any> this).fertilizers!.push(FertilizerType.fromJS(item))
         }
       }
       if (Array.isArray(_data['mulchLayers'])) {
         ;(<any> this).mulchLayers = [] as any
         for (let item of _data['mulchLayers']) {
-          ;(<any> this).mulchLayers!.push(BatchMulchLayer.fromJS(item))
+          ;(<any> this).mulchLayers!.push(MulchLayerType.fromJS(item))
         }
       }
       if (Array.isArray(_data['supportedSpecies'])) {
         ;(<any> this).supportedSpecies = [] as any
         for (let item of _data['supportedSpecies']) {
-          ;(<any> this).supportedSpecies!.push(BatchSupportedSpecies.fromJS(item))
+          ;(<any> this).supportedSpecies!.push(TreeType.fromJS(item))
         }
       }
       if (Array.isArray(_data['seeds'])) {
@@ -3299,10 +3299,10 @@ export class BatchDetail implements IBatchDetail {
         }
       }
       this.image = _data['image'] ? Asset.fromJS(_data['image']) : <any> undefined
-      this.createdAt = _data['createdAt']
+      ;(<any> this).createdAt = _data['createdAt']
         ? new Date(_data['createdAt'].toString())
         : <any> undefined
-      this.updatedAt = _data['updatedAt']
+      ;(<any> this).updatedAt = _data['updatedAt']
         ? new Date(_data['updatedAt'].toString())
         : <any> undefined
       this.name = _data['name']
@@ -3382,14 +3382,14 @@ export class BatchDetail implements IBatchDetail {
 
 export interface IBatchDetail {
   id: number
-  fertilizers: Batchfertilizer[]
-  mulchLayers: BatchMulchLayer[]
-  supportedSpecies: BatchSupportedSpecies[]
+  fertilizers: FertilizerType[]
+  mulchLayers: MulchLayerType[]
+  supportedSpecies: TreeType[]
   seeds: BatchSeed[]
   species: BatchSpecies[]
   image?: Asset
-  createdAt?: Date | undefined
-  updatedAt?: Date | undefined
+  createdAt: Date | undefined
+  updatedAt: Date | undefined
   name?: string | undefined
   sponsor?: string | undefined
   size?: number | undefined
@@ -3404,70 +3404,10 @@ export interface IBatchDetail {
   [key: string]: any
 }
 
-export class BatchMulchLayer implements IBatchMulchLayer {
-  readonly id!: number
-  readonly en!: string
-  readonly fr!: string;
-
-  [key: string]: any
-
-  constructor(data?: IBatchMulchLayer) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) {
-          ;(<any> this)[property] = (<any> data)[property]
-        }
-      }
-    }
-  }
-
-  init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) {
-          this[property] = _data[property]
-        }
-      }
-      ;(<any> this).id = _data['id']
-      ;(<any> this).en = _data['en']
-      ;(<any> this).fr = _data['fr']
-    }
-  }
-
-  static fromJS(data: any): BatchMulchLayer {
-    data = typeof data === 'object' ? data : {}
-    let result = new BatchMulchLayer()
-    result.init(data)
-    return result
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {}
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) {
-        data[property] = this[property]
-      }
-    }
-    data['id'] = this.id
-    data['en'] = this.en
-    data['fr'] = this.fr
-    return data
-  }
-}
-
-export interface IBatchMulchLayer {
-  id: number
-  en: string
-  fr: string
-
-  [key: string]: any
-}
-
 export class BatchSeed implements IBatchSeed {
   readonly id!: number
-  quantity?: number | undefined
-  readonly en!: string
-  readonly fr!: string;
+  quantity!: number
+  readonly treeType!: TreeType;
 
   [key: string]: any
 
@@ -3478,6 +3418,9 @@ export class BatchSeed implements IBatchSeed {
           ;(<any> this)[property] = (<any> data)[property]
         }
       }
+    }
+    if (!data) {
+      this.treeType = new TreeType()
     }
   }
 
@@ -3490,8 +3433,9 @@ export class BatchSeed implements IBatchSeed {
       }
       ;(<any> this).id = _data['id']
       this.quantity = _data['quantity']
-      ;(<any> this).en = _data['en']
-      ;(<any> this).fr = _data['fr']
+      ;(<any> this).treeType = _data['treeType']
+        ? TreeType.fromJS(_data['treeType'])
+        : new TreeType()
     }
   }
 
@@ -3511,25 +3455,23 @@ export class BatchSeed implements IBatchSeed {
     }
     data['id'] = this.id
     data['quantity'] = this.quantity
-    data['en'] = this.en
-    data['fr'] = this.fr
+    data['treeType'] = this.treeType ? this.treeType.toJSON() : <any> undefined
     return data
   }
 }
 
 export interface IBatchSeed {
-  quantity?: number | undefined
-  en: string
-  fr: string
+  id: number
+  quantity: number
+  treeType: TreeType
 
   [key: string]: any
 }
 
 export class BatchSpecies implements IBatchSpecies {
   readonly id!: number
-  quantity?: number | undefined
-  readonly en!: string
-  readonly fr!: string;
+  quantity!: number
+  readonly treeType!: TreeType;
 
   [key: string]: any
 
@@ -3540,6 +3482,9 @@ export class BatchSpecies implements IBatchSpecies {
           ;(<any> this)[property] = (<any> data)[property]
         }
       }
+    }
+    if (!data) {
+      this.treeType = new TreeType()
     }
   }
 
@@ -3552,8 +3497,9 @@ export class BatchSpecies implements IBatchSpecies {
       }
       ;(<any> this).id = _data['id']
       this.quantity = _data['quantity']
-      ;(<any> this).en = _data['en']
-      ;(<any> this).fr = _data['fr']
+      ;(<any> this).treeType = _data['treeType']
+        ? TreeType.fromJS(_data['treeType'])
+        : new TreeType()
     }
   }
 
@@ -3573,134 +3519,15 @@ export class BatchSpecies implements IBatchSpecies {
     }
     data['id'] = this.id
     data['quantity'] = this.quantity
-    data['en'] = this.en
-    data['fr'] = this.fr
+    data['treeType'] = this.treeType ? this.treeType.toJSON() : <any> undefined
     return data
   }
 }
 
 export interface IBatchSpecies {
-  quantity?: number | undefined
-  en: string
-  fr: string
-
-  [key: string]: any
-}
-
-export class BatchSupportedSpecies implements IBatchSupportedSpecies {
-  readonly id!: number
-  readonly en!: string
-  readonly fr!: string;
-
-  [key: string]: any
-
-  constructor(data?: IBatchSupportedSpecies) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) {
-          ;(<any> this)[property] = (<any> data)[property]
-        }
-      }
-    }
-  }
-
-  init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) {
-          this[property] = _data[property]
-        }
-      }
-      ;(<any> this).id = _data['id']
-      ;(<any> this).en = _data['en']
-      ;(<any> this).fr = _data['fr']
-    }
-  }
-
-  static fromJS(data: any): BatchSupportedSpecies {
-    data = typeof data === 'object' ? data : {}
-    let result = new BatchSupportedSpecies()
-    result.init(data)
-    return result
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {}
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) {
-        data[property] = this[property]
-      }
-    }
-    data['id'] = this.id
-    data['en'] = this.en
-    data['fr'] = this.fr
-    return data
-  }
-}
-
-export interface IBatchSupportedSpecies {
   id: number
-  en: string
-  fr: string
-
-  [key: string]: any
-}
-
-export class Batchfertilizer implements IBatchfertilizer {
-  readonly id!: number
-  readonly en!: string
-  readonly fr!: string;
-
-  [key: string]: any
-
-  constructor(data?: IBatchfertilizer) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) {
-          ;(<any> this)[property] = (<any> data)[property]
-        }
-      }
-    }
-  }
-
-  init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) {
-          this[property] = _data[property]
-        }
-      }
-      ;(<any> this).id = _data['id']
-      ;(<any> this).en = _data['en']
-      ;(<any> this).fr = _data['fr']
-    }
-  }
-
-  static fromJS(data: any): Batchfertilizer {
-    data = typeof data === 'object' ? data : {}
-    let result = new Batchfertilizer()
-    result.init(data)
-    return result
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {}
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) {
-        data[property] = this[property]
-      }
-    }
-    data['id'] = this.id
-    data['en'] = this.en
-    data['fr'] = this.fr
-    return data
-  }
-}
-
-export interface IBatchfertilizer {
-  id: number
-  en: string
-  fr: string
+  quantity: number
+  treeType: TreeType
 
   [key: string]: any
 }
@@ -5192,145 +5019,6 @@ export interface ISiteAdmin {
   [key: string]: any
 }
 
-export class SiteDetailSummary implements ISiteDetailSummary {
-  readonly id!: number
-  name!: string
-  coordinate!: Coordinates
-  siteType!: SiteType
-  readonly plantCount!: number
-  readonly survivedCount!: number
-  readonly propagationCount!: number
-  visitorCount?: number | undefined
-  readonly sponsors!: string[]
-  readonly progress!: number
-  admins!: SiteAdmin[]
-  readonly batches!: BatchDetail[]
-  readonly weather!: Weather;
-
-  [key: string]: any
-
-  constructor(data?: ISiteDetailSummary) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) {
-          ;(<any> this)[property] = (<any> data)[property]
-        }
-      }
-    }
-    if (!data) {
-      this.coordinate = new Coordinates()
-      this.siteType = new SiteType()
-      this.sponsors = []
-      this.admins = []
-      this.batches = []
-      this.weather = new Weather()
-    }
-  }
-
-  init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) {
-          this[property] = _data[property]
-        }
-      }
-      ;(<any> this).id = _data['id']
-      this.name = _data['name']
-      this.coordinate = _data['coordinate']
-        ? Coordinates.fromJS(_data['coordinate'])
-        : new Coordinates()
-      this.siteType = _data['siteType'] ? SiteType.fromJS(_data['siteType']) : new SiteType()
-      ;(<any> this).plantCount = _data['plantCount']
-      ;(<any> this).survivedCount = _data['survivedCount']
-      ;(<any> this).propagationCount = _data['propagationCount']
-      this.visitorCount = _data['visitorCount']
-      if (Array.isArray(_data['sponsors'])) {
-        ;(<any> this).sponsors = [] as any
-        for (let item of _data['sponsors']) {
-          ;(<any> this).sponsors!.push(item)
-        }
-      }
-      ;(<any> this).progress = _data['progress']
-      if (Array.isArray(_data['admins'])) {
-        this.admins = [] as any
-        for (let item of _data['admins']) {
-          this.admins!.push(SiteAdmin.fromJS(item))
-        }
-      }
-      if (Array.isArray(_data['batches'])) {
-        ;(<any> this).batches = [] as any
-        for (let item of _data['batches']) {
-          ;(<any> this).batches!.push(BatchDetail.fromJS(item))
-        }
-      }
-      ;(<any> this).weather = _data['weather'] ? Weather.fromJS(_data['weather']) : new Weather()
-    }
-  }
-
-  static fromJS(data: any): SiteDetailSummary {
-    data = typeof data === 'object' ? data : {}
-    let result = new SiteDetailSummary()
-    result.init(data)
-    return result
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {}
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) {
-        data[property] = this[property]
-      }
-    }
-    data['id'] = this.id
-    data['name'] = this.name
-    data['coordinate'] = this.coordinate ? this.coordinate.toJSON() : <any> undefined
-    data['siteType'] = this.siteType ? this.siteType.toJSON() : <any> undefined
-    data['plantCount'] = this.plantCount
-    data['survivedCount'] = this.survivedCount
-    data['propagationCount'] = this.propagationCount
-    data['visitorCount'] = this.visitorCount
-    if (Array.isArray(this.sponsors)) {
-      data['sponsors'] = []
-      for (let item of this.sponsors) {
-        data['sponsors'].push(item)
-      }
-    }
-    data['progress'] = this.progress
-    if (Array.isArray(this.admins)) {
-      data['admins'] = []
-      for (let item of this.admins) {
-        data['admins'].push(item.toJSON())
-      }
-    }
-    if (Array.isArray(this.batches)) {
-      data['batches'] = []
-      for (let item of this.batches) {
-        data['batches'].push(item.toJSON())
-      }
-    }
-    data['weather'] = this.weather ? this.weather.toJSON() : <any> undefined
-    return data
-  }
-}
-
-export interface ISiteDetailSummary {
-  id: number
-  name: string
-  coordinate: Coordinates
-  siteType: SiteType
-  plantCount: number
-  survivedCount: number
-  propagationCount: number
-  visitorCount?: number | undefined
-  sponsors: string[]
-  progress: number
-  admins: SiteAdmin[]
-  batches: BatchDetail[]
-  weather: Weather
-
-  [key: string]: any
-}
-
 export class SiteMap implements ISiteMap {
   readonly id!: number
   name!: string
@@ -5769,6 +5457,145 @@ export interface ISiteSummary {
   progress: number
   admins: SiteAdmin[]
   batches: BatchDetail[]
+
+  [key: string]: any
+}
+
+export class SiteSummaryDetail implements ISiteSummaryDetail {
+  readonly id!: number
+  name!: string
+  coordinate!: Coordinates
+  siteType!: SiteType
+  readonly plantCount!: number
+  readonly survivedCount!: number
+  readonly propagationCount!: number
+  visitorCount?: number | undefined
+  readonly sponsors!: string[]
+  readonly progress!: number
+  admins!: SiteAdmin[]
+  readonly batches!: BatchDetail[]
+  readonly weather!: Weather;
+
+  [key: string]: any
+
+  constructor(data?: ISiteSummaryDetail) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) {
+          ;(<any> this)[property] = (<any> data)[property]
+        }
+      }
+    }
+    if (!data) {
+      this.coordinate = new Coordinates()
+      this.siteType = new SiteType()
+      this.sponsors = []
+      this.admins = []
+      this.batches = []
+      this.weather = new Weather()
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) {
+          this[property] = _data[property]
+        }
+      }
+      ;(<any> this).id = _data['id']
+      this.name = _data['name']
+      this.coordinate = _data['coordinate']
+        ? Coordinates.fromJS(_data['coordinate'])
+        : new Coordinates()
+      this.siteType = _data['siteType'] ? SiteType.fromJS(_data['siteType']) : new SiteType()
+      ;(<any> this).plantCount = _data['plantCount']
+      ;(<any> this).survivedCount = _data['survivedCount']
+      ;(<any> this).propagationCount = _data['propagationCount']
+      this.visitorCount = _data['visitorCount']
+      if (Array.isArray(_data['sponsors'])) {
+        ;(<any> this).sponsors = [] as any
+        for (let item of _data['sponsors']) {
+          ;(<any> this).sponsors!.push(item)
+        }
+      }
+      ;(<any> this).progress = _data['progress']
+      if (Array.isArray(_data['admins'])) {
+        this.admins = [] as any
+        for (let item of _data['admins']) {
+          this.admins!.push(SiteAdmin.fromJS(item))
+        }
+      }
+      if (Array.isArray(_data['batches'])) {
+        ;(<any> this).batches = [] as any
+        for (let item of _data['batches']) {
+          ;(<any> this).batches!.push(BatchDetail.fromJS(item))
+        }
+      }
+      ;(<any> this).weather = _data['weather'] ? Weather.fromJS(_data['weather']) : new Weather()
+    }
+  }
+
+  static fromJS(data: any): SiteSummaryDetail {
+    data = typeof data === 'object' ? data : {}
+    let result = new SiteSummaryDetail()
+    result.init(data)
+    return result
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {}
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) {
+        data[property] = this[property]
+      }
+    }
+    data['id'] = this.id
+    data['name'] = this.name
+    data['coordinate'] = this.coordinate ? this.coordinate.toJSON() : <any> undefined
+    data['siteType'] = this.siteType ? this.siteType.toJSON() : <any> undefined
+    data['plantCount'] = this.plantCount
+    data['survivedCount'] = this.survivedCount
+    data['propagationCount'] = this.propagationCount
+    data['visitorCount'] = this.visitorCount
+    if (Array.isArray(this.sponsors)) {
+      data['sponsors'] = []
+      for (let item of this.sponsors) {
+        data['sponsors'].push(item)
+      }
+    }
+    data['progress'] = this.progress
+    if (Array.isArray(this.admins)) {
+      data['admins'] = []
+      for (let item of this.admins) {
+        data['admins'].push(item.toJSON())
+      }
+    }
+    if (Array.isArray(this.batches)) {
+      data['batches'] = []
+      for (let item of this.batches) {
+        data['batches'].push(item.toJSON())
+      }
+    }
+    data['weather'] = this.weather ? this.weather.toJSON() : <any> undefined
+    return data
+  }
+}
+
+export interface ISiteSummaryDetail {
+  id: number
+  name: string
+  coordinate: Coordinates
+  siteType: SiteType
+  plantCount: number
+  survivedCount: number
+  propagationCount: number
+  visitorCount?: number | undefined
+  sponsors: string[]
+  progress: number
+  admins: SiteAdmin[]
+  batches: BatchDetail[]
+  weather: Weather
 
   [key: string]: any
 }

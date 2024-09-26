@@ -8,7 +8,7 @@ import CreateBatchModal from '@components/analytics/batch-modal/CreateBatchModal
 import BatchTable from '@components/analytics/BatchTable'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
-import type { SiteDetailSummary } from '@services/api'
+import type { SiteSummaryDetail } from '@services/api'
 
 const AnalyticsSite = () => {
   const { t: translate } = useTranslation<'analytics'>()
@@ -16,7 +16,7 @@ const AnalyticsSite = () => {
   const { formatDate } = useContext(LanguageContext)
   const { getApiClient } = useApiClient()
 
-  const [siteSummary, setSiteSummary] = useState<SiteDetailSummary | undefined>()
+  const [siteSummary, setSiteSummary] = useState<SiteSummaryDetail | undefined>()
   const [lastModifiedBatchDate, setLastModifiedBatchDate] = useState<Date | undefined>()
 
   const [isCreateBatchOpen, setIsCreateBatchOpen] = useState(false)

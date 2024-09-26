@@ -225,8 +225,8 @@ class Fertilizertype(models.Model):
 
 
 class Batchfertilizer(models.Model):
-    batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
-    fertilizer_type = models.ForeignKey(Fertilizertype, models.DO_NOTHING, blank=True, null=True)
+    batch = models.ForeignKey(Batch, models.CASCADE)
+    fertilizer_type = models.ForeignKey(Fertilizertype, models.DO_NOTHING)
 
     class Meta:
         constraints = (
@@ -248,8 +248,8 @@ class Mulchlayertype(models.Model):
 
 
 class Batchmulchlayer(models.Model):
-    batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
-    mulch_layer_type = models.ForeignKey(Mulchlayertype, models.DO_NOTHING, blank=True, null=True)
+    batch = models.ForeignKey(Batch, models.CASCADE)
+    mulch_layer_type = models.ForeignKey(Mulchlayertype, models.DO_NOTHING)
 
     class Meta:
         constraints = (
@@ -271,9 +271,9 @@ class Treetype(models.Model):
 
 
 class BatchSpecies(models.Model):
-    batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
-    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
-    quantity = models.IntegerField(blank=True, null=True)
+    batch = models.ForeignKey(Batch, models.CASCADE)
+    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING)
+    quantity = models.IntegerField()
 
     class Meta:
         constraints = (
@@ -282,9 +282,9 @@ class BatchSpecies(models.Model):
 
 
 class BatchSeed(models.Model):
-    batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
-    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
-    quantity = models.IntegerField(blank=True, null=True)
+    batch = models.ForeignKey(Batch, models.CASCADE)
+    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING)
+    quantity = models.IntegerField()
 
     class Meta:
         constraints = (
@@ -293,8 +293,8 @@ class BatchSeed(models.Model):
 
 
 class BatchSupportedSpecies(models.Model):
-    batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
-    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
+    batch = models.ForeignKey(Batch, models.CASCADE)
+    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING)
 
     class Meta:
         constraints = (
