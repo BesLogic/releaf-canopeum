@@ -177,12 +177,18 @@ class Site(models.Model):
         return super().delete(using, keep_parents)
 
 
+class BatchSponsor(models.Model):
+    name = models.TextField()
+    url = models.TextField()
+    logo = models.ForeignKey(Asset, models.CASCADE)
+
+
 class Batch(models.Model):
     site = models.ForeignKey(Site, models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     name = models.TextField(blank=True, null=True)
-    sponsor = models.TextField(blank=True, null=True)
+    sponsor = models.ForeignKey(BatchSponsor, models.CASCADE)
     size = models.IntegerField(blank=True, null=True)
     soil_condition = models.TextField(blank=True, null=True)
     plant_count = models.IntegerField(blank=True, null=True)
@@ -219,14 +225,12 @@ class FertilizertypeInternationalization(models.Model):
 
 
 class Fertilizertype(models.Model):
-    name = models.ForeignKey(
-        FertilizertypeInternationalization, models.DO_NOTHING, blank=True, null=True
-    )
+    name = models.ForeignKey(FertilizertypeInternationalization, models.DO_NOTHING)
 
 
 class Batchfertilizer(models.Model):
     batch = models.ForeignKey(Batch, models.CASCADE)
-    fertilizer_type = models.ForeignKey(Fertilizertype, models.DO_NOTHING)
+    fertilizer_type = models.ForeignKey(Fertilizertype, models.RESTRICT)
 
     class Meta:
         constraints = (
@@ -265,9 +269,7 @@ class TreespeciestypeInternationalization(models.Model):
 
 
 class Treetype(models.Model):
-    name = models.ForeignKey(
-        TreespeciestypeInternationalization, models.DO_NOTHING, blank=True, null=True
-    )
+    name = models.ForeignKey(TreespeciestypeInternationalization, models.DO_NOTHING)
 
 
 class BatchSpecies(models.Model):

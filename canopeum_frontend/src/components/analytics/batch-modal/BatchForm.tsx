@@ -21,11 +21,13 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
 
   const [batch, setBatch] = useState<BatchFormDto>(DEFAULT_BATCH_FORM_DTO)
   const [batchImageURL, setBatchImageURL] = useState<string>()
+  const [sponsorLogoUrl, setSponsorLogoUrl] = useState<string>()
 
   useEffect(() => {
     if (!initialBatch) return
 
     setBatch(transformToEditBatchDto(initialBatch))
+    setSponsorLogoUrl(`${getApiBaseUrl()}${initialBatch.sponsor.logo.asset}`)
 
     if (!initialBatch.image) return
 
@@ -37,6 +39,17 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
   const onImageUpload = (file: File) => {
     setBatch(value => ({ ...value, image: file }))
     setBatchImageURL(URL.createObjectURL(file))
+  }
+
+  const onSponsorLogoUpload = (file: File) => {
+    setBatch(value => ({
+      ...value,
+      sponsor: {
+        ...value.sponsor,
+        logo: file,
+      },
+    }))
+    setSponsorLogoUrl(URL.createObjectURL(file))
   }
 
   return (
@@ -57,14 +70,46 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
 
         <div>
           <label className='form-label text-capitalize' htmlFor='sponsor-name'>
-            {t('analyticsSite.batch-modal.sponsor-label')}
+            {t('analyticsSite.batch-modal.sponsor-name-label')}
           </label>
           <input
             className='form-control'
             id='sponsor-name'
-            onChange={event => setBatch(value => ({ ...value, sponsorName: event.target.value }))}
+            onChange={event =>
+              setBatch(value => ({
+                ...value,
+                sponsor: { ...value.sponsor, name: event.target.value },
+              }))}
             type='text'
-            value={batch.sponsorName}
+            value={batch.sponsor?.name}
+          />
+        </div>
+
+        <div>
+          <label className='form-label text-capitalize' htmlFor='sponsor-website-url'>
+            {t('analyticsSite.batch-modal.sponsor-website-url-label')}
+          </label>
+          <input
+            className='form-control'
+            id='sponsor-website-url'
+            onChange={event =>
+              setBatch(value => ({
+                ...value,
+                sponsor: { ...value.sponsor, url: event.target.value },
+              }))}
+            type='text'
+            value={batch.sponsor?.url}
+          />
+        </div>
+
+        <div>
+          <label className='form-label text-capitalize' htmlFor='sponsor-logo'>
+            {t('analyticsSite.batch-modal.sponsor-logo-label')}
+          </label>
+          <ImageUpload
+            id='batch-sponsor-logo-upload'
+            imageUrl={sponsorLogoUrl}
+            onChange={onSponsorLogoUpload}
           />
         </div>
 

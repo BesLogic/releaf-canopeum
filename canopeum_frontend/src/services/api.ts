@@ -140,7 +140,9 @@ export class BatchClient {
   create(
     site?: number | undefined,
     name?: string | null | undefined,
-    sponsor?: string | null | undefined,
+    sponsorName?: string | null | undefined,
+    sponsorWebsiteUrl?: string | null | undefined,
+    sponsorLogo?: FileParameter | null | undefined,
     size?: number | null | undefined,
     soilCondition?: string | null | undefined,
     plantCount?: number | null | undefined,
@@ -167,8 +169,18 @@ export class BatchClient {
     if (name !== null && name !== undefined) {
       content_.append('name', name.toString())
     }
-    if (sponsor !== null && sponsor !== undefined) {
-      content_.append('sponsor', sponsor.toString())
+    if (sponsorName !== null && sponsorName !== undefined) {
+      content_.append('sponsorName', sponsorName.toString())
+    }
+    if (sponsorWebsiteUrl !== null && sponsorWebsiteUrl !== undefined) {
+      content_.append('sponsorWebsiteUrl', sponsorWebsiteUrl.toString())
+    }
+    if (sponsorLogo !== null && sponsorLogo !== undefined) {
+      content_.append(
+        'sponsorLogo',
+        sponsorLogo.data,
+        sponsorLogo.fileName ? sponsorLogo.fileName : 'sponsorLogo',
+      )
     }
     if (size !== null && size !== undefined) {
       content_.append('size', size.toString())
@@ -264,7 +276,9 @@ export class BatchClient {
   update(
     batchId: number,
     name?: string | null | undefined,
-    sponsor?: string | null | undefined,
+    sponsorName?: string | null | undefined,
+    sponsorWebsiteUrl?: string | null | undefined,
+    sponsorLogo?: FileParameter | null | undefined,
     size?: number | null | undefined,
     soilCondition?: string | null | undefined,
     plantCount?: number | null | undefined,
@@ -289,8 +303,18 @@ export class BatchClient {
     if (name !== null && name !== undefined) {
       content_.append('name', name.toString())
     }
-    if (sponsor !== null && sponsor !== undefined) {
-      content_.append('sponsor', sponsor.toString())
+    if (sponsorName !== null && sponsorName !== undefined) {
+      content_.append('sponsorName', sponsorName.toString())
+    }
+    if (sponsorWebsiteUrl !== null && sponsorWebsiteUrl !== undefined) {
+      content_.append('sponsorWebsiteUrl', sponsorWebsiteUrl.toString())
+    }
+    if (sponsorLogo !== null && sponsorLogo !== undefined) {
+      content_.append(
+        'sponsorLogo',
+        sponsorLogo.data,
+        sponsorLogo.fileName ? sponsorLogo.fileName : 'sponsorLogo',
+      )
     }
     if (size !== null && size !== undefined) {
       content_.append('size', size.toString())
@@ -3227,11 +3251,11 @@ export class BatchDetail implements IBatchDetail {
   readonly supportedSpecies!: TreeType[]
   readonly seeds!: BatchSeed[]
   readonly species!: BatchSpecies[]
+  sponsor!: BatchSponsor
   image?: Asset
   readonly createdAt!: Date | undefined
   readonly updatedAt!: Date | undefined
   name?: string | undefined
-  sponsor?: string | undefined
   size?: number | undefined
   soilCondition?: string | undefined
   plantCount?: number | undefined
@@ -3257,6 +3281,7 @@ export class BatchDetail implements IBatchDetail {
       this.supportedSpecies = []
       this.seeds = []
       this.species = []
+      this.sponsor = new BatchSponsor()
     }
   }
 
@@ -3298,6 +3323,7 @@ export class BatchDetail implements IBatchDetail {
           ;(<any> this).species!.push(BatchSpecies.fromJS(item))
         }
       }
+      this.sponsor = _data['sponsor'] ? BatchSponsor.fromJS(_data['sponsor']) : new BatchSponsor()
       this.image = _data['image'] ? Asset.fromJS(_data['image']) : <any> undefined
       ;(<any> this).createdAt = _data['createdAt']
         ? new Date(_data['createdAt'].toString())
@@ -3306,7 +3332,6 @@ export class BatchDetail implements IBatchDetail {
         ? new Date(_data['updatedAt'].toString())
         : <any> undefined
       this.name = _data['name']
-      this.sponsor = _data['sponsor']
       this.size = _data['size']
       this.soilCondition = _data['soilCondition']
       this.plantCount = _data['plantCount']
@@ -3363,11 +3388,11 @@ export class BatchDetail implements IBatchDetail {
         data['species'].push(item.toJSON())
       }
     }
+    data['sponsor'] = this.sponsor ? this.sponsor.toJSON() : <any> undefined
     data['image'] = this.image ? this.image.toJSON() : <any> undefined
     data['createdAt'] = this.createdAt ? this.createdAt.toISOString() : <any> undefined
     data['updatedAt'] = this.updatedAt ? this.updatedAt.toISOString() : <any> undefined
     data['name'] = this.name
-    data['sponsor'] = this.sponsor
     data['size'] = this.size
     data['soilCondition'] = this.soilCondition
     data['plantCount'] = this.plantCount
@@ -3387,11 +3412,11 @@ export interface IBatchDetail {
   supportedSpecies: TreeType[]
   seeds: BatchSeed[]
   species: BatchSpecies[]
+  sponsor: BatchSponsor
   image?: Asset
   createdAt: Date | undefined
   updatedAt: Date | undefined
   name?: string | undefined
-  sponsor?: string | undefined
   size?: number | undefined
   soilCondition?: string | undefined
   plantCount?: number | undefined
@@ -3528,6 +3553,72 @@ export interface IBatchSpecies {
   id: number
   quantity: number
   treeType: TreeType
+
+  [key: string]: any
+}
+
+export class BatchSponsor implements IBatchSponsor {
+  readonly id!: number
+  logo!: Asset
+  name!: string
+  url!: string;
+
+  [key: string]: any
+
+  constructor(data?: IBatchSponsor) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) {
+          ;(<any> this)[property] = (<any> data)[property]
+        }
+      }
+    }
+    if (!data) {
+      this.logo = new Asset()
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) {
+          this[property] = _data[property]
+        }
+      }
+      ;(<any> this).id = _data['id']
+      this.logo = _data['logo'] ? Asset.fromJS(_data['logo']) : new Asset()
+      this.name = _data['name']
+      this.url = _data['url']
+    }
+  }
+
+  static fromJS(data: any): BatchSponsor {
+    data = typeof data === 'object' ? data : {}
+    let result = new BatchSponsor()
+    result.init(data)
+    return result
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {}
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) {
+        data[property] = this[property]
+      }
+    }
+    data['id'] = this.id
+    data['logo'] = this.logo ? this.logo.toJSON() : <any> undefined
+    data['name'] = this.name
+    data['url'] = this.url
+    return data
+  }
+}
+
+export interface IBatchSponsor {
+  id: number
+  logo: Asset
+  name: string
+  url: string
 
   [key: string]: any
 }
@@ -5219,7 +5310,7 @@ export class SiteSocial implements ISiteSocial {
   description?: string | undefined
   contact!: Contact
   announcement!: Announcement
-  readonly sponsors!: string[]
+  readonly sponsors!: BatchSponsor[]
   readonly widget!: Widget[];
 
   [key: string]: any
@@ -5262,7 +5353,7 @@ export class SiteSocial implements ISiteSocial {
       if (Array.isArray(_data['sponsors'])) {
         ;(<any> this).sponsors = [] as any
         for (let item of _data['sponsors']) {
-          ;(<any> this).sponsors!.push(item)
+          ;(<any> this).sponsors!.push(BatchSponsor.fromJS(item))
         }
       }
       if (Array.isArray(_data['widget'])) {
@@ -5299,7 +5390,7 @@ export class SiteSocial implements ISiteSocial {
     if (Array.isArray(this.sponsors)) {
       data['sponsors'] = []
       for (let item of this.sponsors) {
-        data['sponsors'].push(item)
+        data['sponsors'].push(item.toJSON())
       }
     }
     if (Array.isArray(this.widget)) {
@@ -5321,7 +5412,7 @@ export interface ISiteSocial {
   description?: string | undefined
   contact: Contact
   announcement: Announcement
-  sponsors: string[]
+  sponsors: BatchSponsor[]
   widget: Widget[]
 
   [key: string]: any
@@ -5336,7 +5427,6 @@ export class SiteSummary implements ISiteSummary {
   readonly survivedCount!: number
   readonly propagationCount!: number
   visitorCount?: number | undefined
-  readonly sponsors!: string[]
   readonly progress!: number
   admins!: SiteAdmin[]
   readonly batches!: BatchDetail[];
@@ -5354,7 +5444,6 @@ export class SiteSummary implements ISiteSummary {
     if (!data) {
       this.coordinate = new Coordinates()
       this.siteType = new SiteType()
-      this.sponsors = []
       this.admins = []
       this.batches = []
     }
@@ -5377,12 +5466,6 @@ export class SiteSummary implements ISiteSummary {
       ;(<any> this).survivedCount = _data['survivedCount']
       ;(<any> this).propagationCount = _data['propagationCount']
       this.visitorCount = _data['visitorCount']
-      if (Array.isArray(_data['sponsors'])) {
-        ;(<any> this).sponsors = [] as any
-        for (let item of _data['sponsors']) {
-          ;(<any> this).sponsors!.push(item)
-        }
-      }
       ;(<any> this).progress = _data['progress']
       if (Array.isArray(_data['admins'])) {
         this.admins = [] as any
@@ -5421,12 +5504,6 @@ export class SiteSummary implements ISiteSummary {
     data['survivedCount'] = this.survivedCount
     data['propagationCount'] = this.propagationCount
     data['visitorCount'] = this.visitorCount
-    if (Array.isArray(this.sponsors)) {
-      data['sponsors'] = []
-      for (let item of this.sponsors) {
-        data['sponsors'].push(item)
-      }
-    }
     data['progress'] = this.progress
     if (Array.isArray(this.admins)) {
       data['admins'] = []
@@ -5453,7 +5530,6 @@ export interface ISiteSummary {
   survivedCount: number
   propagationCount: number
   visitorCount?: number | undefined
-  sponsors: string[]
   progress: number
   admins: SiteAdmin[]
   batches: BatchDetail[]
@@ -5470,7 +5546,7 @@ export class SiteSummaryDetail implements ISiteSummaryDetail {
   readonly survivedCount!: number
   readonly propagationCount!: number
   visitorCount?: number | undefined
-  readonly sponsors!: string[]
+  readonly sponsors!: BatchSponsor[]
   readonly progress!: number
   admins!: SiteAdmin[]
   readonly batches!: BatchDetail[]
@@ -5516,7 +5592,7 @@ export class SiteSummaryDetail implements ISiteSummaryDetail {
       if (Array.isArray(_data['sponsors'])) {
         ;(<any> this).sponsors = [] as any
         for (let item of _data['sponsors']) {
-          ;(<any> this).sponsors!.push(item)
+          ;(<any> this).sponsors!.push(BatchSponsor.fromJS(item))
         }
       }
       ;(<any> this).progress = _data['progress']
@@ -5561,7 +5637,7 @@ export class SiteSummaryDetail implements ISiteSummaryDetail {
     if (Array.isArray(this.sponsors)) {
       data['sponsors'] = []
       for (let item of this.sponsors) {
-        data['sponsors'].push(item)
+        data['sponsors'].push(item.toJSON())
       }
     }
     data['progress'] = this.progress
@@ -5591,7 +5667,7 @@ export interface ISiteSummaryDetail {
   survivedCount: number
   propagationCount: number
   visitorCount?: number | undefined
-  sponsors: string[]
+  sponsors: BatchSponsor[]
   progress: number
   admins: SiteAdmin[]
   batches: BatchDetail[]
