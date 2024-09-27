@@ -7,6 +7,7 @@ import { type BatchFormDto, DEFAULT_BATCH_FORM_DTO } from '@components/analytics
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
 import type { BatchDetail } from '@services/api'
+import { assetFormatter } from '@utils/assetFormatter'
 
 type Props = {
   readonly batchToEdit: BatchDetail,
@@ -27,7 +28,7 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
       name,
       size,
       soilCondition,
-      sponsorName,
+      sponsor,
       fertilizers,
       mulchLayers,
       supportedSpecies,
@@ -41,11 +42,17 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
       // image,
     } = batch
 
+    const sponsorLogoImage = sponsor?.logo
+      ? await assetFormatter(sponsor.logo)
+      : undefined
+
     try {
       await getApiClient().batchClient.update(
         batchToEdit.id,
         name,
-        sponsorName,
+        sponsor?.name,
+        sponsor?.url,
+        sponsorLogoImage,
         size,
         soilCondition,
         plantCount,

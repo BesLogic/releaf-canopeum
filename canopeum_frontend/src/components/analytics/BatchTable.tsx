@@ -3,6 +3,7 @@ import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import BatchActions from '@components/analytics/BatchActions'
+import BatchSponsorLogo from '@components/batches/BatchSponsorLogo'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
 import type { BatchDetail } from '@services/api'
@@ -90,7 +91,7 @@ const BatchTable = (props: Props) => {
                 key={`batch-${batch.id}-sponsor`}
                 style={{ borderColor: cellBorderColor }}
               >
-                {batch.sponsor}
+                <BatchSponsorLogo sponsor={batch.sponsor} />
               </td>
             ))}
           </tr>
