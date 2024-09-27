@@ -29,7 +29,7 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
       name,
       size,
       soilCondition,
-      sponsorName,
+      sponsor,
       fertilizers,
       mulchLayers,
       supportedSpecies,
@@ -43,6 +43,10 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
       image,
     } = batch
 
+    const sponsorLogoImage = sponsor?.logo
+      ? await assetFormatter(sponsor.logo)
+      : undefined
+
     const batchImage = image
       ? await assetFormatter(image)
       : undefined
@@ -51,7 +55,9 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
       await getApiClient().batchClient.create(
         site.id,
         name,
-        sponsorName,
+        sponsor?.name,
+        sponsor?.url,
+        sponsorLogoImage,
         size,
         soilCondition,
         plantCount,
