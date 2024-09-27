@@ -3,9 +3,11 @@ import { type BatchDetail, type FertilizerType, type MulchLayerType, Seeds, Spec
 export type BatchFormDto = {
   siteId: number,
   name?: string,
-  sponsorName?: string,
-  sponsorWebsiteUrl?: string,
-  sponsorLogo?: File,
+  sponsor?: {
+    name?: string,
+    url?: string,
+    logo?: File,
+  },
   size?: number,
   soilCondition?: string,
   plantCount?: number,
@@ -26,9 +28,11 @@ export const DEFAULT_BATCH_FORM_DTO: BatchFormDto = {
   name: undefined,
   size: undefined,
   soilCondition: undefined,
-  sponsorName: undefined,
-  sponsorWebsiteUrl: undefined,
-  sponsorLogo: undefined,
+  sponsor: {
+    name: undefined,
+    url: undefined,
+    logo: undefined,
+  },
   supportedSpecies: [],
   plantCount: undefined,
   survivedCount: undefined,
@@ -51,5 +55,9 @@ export const transformToEditBatchDto = (batchDetail: BatchDetail): BatchFormDto 
   species: batchDetail.species.map(batchSpecies =>
     new Species({ id: batchSpecies.treeType.id, quantity: batchSpecies.quantity })
   ),
+  sponsor: {
+    name: batchDetail.sponsor.name,
+    url: batchDetail.sponsor.url,
+  },
   image: undefined,
 })

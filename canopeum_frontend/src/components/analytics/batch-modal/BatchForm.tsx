@@ -44,7 +44,10 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
   const onSponsorLogoUpload = (file: File) => {
     setBatch(value => ({
       ...value,
-      sponsorLogo: file,
+      sponsor: {
+        ...value.sponsor,
+        logo: file,
+      },
     }))
     setSponsorLogoUrl(URL.createObjectURL(file))
   }
@@ -72,9 +75,13 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
           <input
             className='form-control'
             id='sponsor-name'
-            onChange={event => setBatch(value => ({ ...value, sponsorName: event.target.value }))}
+            onChange={event =>
+              setBatch(value => ({
+                ...value,
+                sponsor: { ...value.sponsor, name: event.target.value },
+              }))}
             type='text'
-            value={batch.sponsorName}
+            value={batch.sponsor?.name}
           />
         </div>
 
@@ -86,9 +93,12 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
             className='form-control'
             id='sponsor-website-url'
             onChange={event =>
-              setBatch(value => ({ ...value, sponsorWebsiteUrl: event.target.value }))}
+              setBatch(value => ({
+                ...value,
+                sponsor: { ...value.sponsor, url: event.target.value },
+              }))}
             type='text'
-            value={batch.sponsorWebsiteUrl}
+            value={batch.sponsor?.url}
           />
         </div>
 

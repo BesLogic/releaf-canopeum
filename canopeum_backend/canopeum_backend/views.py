@@ -914,16 +914,15 @@ class BatchListAPIView(APIView):
             else:
                 image = asset_serializer.save()
 
+        sponsor_data = {
+            "name": request.data.get("sponsor_name"),
+            "url": request.data.get("sponsor_website_url"),
+            "logo": {
+                "asset": request.data.get("sponsor_logo"),
+            },
+        }
+        sponsor_serializer = BatchSponsorSerializer(data=sponsor_data)
         sponsor = None
-        sponsor_serializer = BatchSponsorSerializer(
-            data={
-                "name": request.data.get("sponsor_name"),
-                "url": request.data.get("sponsor_website_url"),
-                "logo": {
-                    "asset": request.data.get("sponsor_logo"),
-                },
-            }
-        )
         if not sponsor_serializer.is_valid():
             errors.append(sponsor_serializer.errors)
         else:

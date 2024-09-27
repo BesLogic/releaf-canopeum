@@ -440,7 +440,7 @@ class BatchDetailSerializer(serializers.ModelSerializer[Batch]):
     supported_species = serializers.SerializerMethodField()
     seeds = serializers.SerializerMethodField()
     species = serializers.SerializerMethodField()
-    sponsor = BatchSponsorSerializer()
+    sponsor = serializers.SerializerMethodField()
     # HACK to allow handling the image with a AssetSerializer separately
     # TODO: Figure out how to feed the image directly to BatchDetailSerializer
     image = AssetSerializer(required=False)
@@ -482,6 +482,10 @@ class BatchDetailSerializer(serializers.ModelSerializer[Batch]):
     @extend_schema_field(BatchSpeciesSerializer(many=True))
     def get_species(self, obj):
         return BatchSpeciesSerializer(BatchSpecies.objects.filter(batch=obj), many=True).data
+
+    @extend_schema_field(BatchSponsorSerializer)
+    def get_sponsor(self, obj):
+        return BatchSponsorSerializer(BatchSponsor.objects.get(batch=obj)).data
 
 
 class SiteAdminSerializer(serializers.ModelSerializer[Siteadmin]):

@@ -28,9 +28,7 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
       name,
       size,
       soilCondition,
-      sponsorName,
-      sponsorWebsiteUrl,
-      sponsorLogo,
+      sponsor,
       fertilizers,
       mulchLayers,
       supportedSpecies,
@@ -44,16 +42,16 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
       // image,
     } = batch
 
-    const sponsorLogoImage = sponsorLogo
-      ? await assetFormatter(sponsorLogo)
+    const sponsorLogoImage = sponsor?.logo
+      ? await assetFormatter(sponsor.logo)
       : undefined
 
     try {
       await getApiClient().batchClient.update(
         batchToEdit.id,
         name,
-        sponsorName,
-        sponsorWebsiteUrl,
+        sponsor?.name,
+        sponsor?.url,
         sponsorLogoImage,
         size,
         soilCondition,
