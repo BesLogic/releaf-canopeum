@@ -8,11 +8,20 @@
   "social-page": "Page Sociale",
   "sponsors": "Sponsors",
   "add-new-batch": "Ajouter un Nouveau Lot",
+  "edit-batch": "Modifier un Lot",
+  "delete-batch": {
+    "title": "Suppression du Lot",
+    "message": "Êtes vous sur de vouloir supprimer le lot {{batchName}}?",
+    "success": "Lot {{batchName}} supprimé avec succès.",
+    "error": "Un problème est survenu lors de la tentative de suppression du lot {{batchName}}..."
+  },
   "batch-modal": {
     "create-title": "Créer un Nouveau Lot",
     "edit-title": "Modifier un Lot",
     "name-label": "Nom / ID du Lot",
-    "sponsor-label": "Sponsor",
+    "sponsor-name-label": "Sponsor",
+    "sponsor-website-url-label": "Site web du sponsor",
+    "sponsor-logo-label": "Logo du sponsor",
     "size-label": "Taille du terrain",
     "feet-squared": "pi²",
     "number-of-trees-label": "Nombre d'arbres par espèce",

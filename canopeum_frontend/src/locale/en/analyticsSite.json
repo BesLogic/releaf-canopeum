@@ -8,11 +8,20 @@
   "social-page": "Social Page",
   "sponsors": "Sponsors",
   "add-new-batch": "Add a New Batch",
+  "edit-batch": "Edit Batch",
+  "delete-batch": {
+    "title": "Delete Batch",
+    "message": "Are you sure you want to delete {{batchName}} batch?",
+    "success": "Batch {{batchName}} was successfully deleted.",
+    "error": "There was a problem while trying to delete the batch {{batchName}}..."
+  },
   "batch-modal": {
     "create-title": "Create a New Batch",
     "edit-title": "Edit a Batch",
     "name-label": "Batch Name / ID",
-    "sponsor-label": "Sponsor",
+    "sponsor-name-label": "Sponsor",
+    "sponsor-website-url-label": "Sponsor website URL",
+    "sponsor-logo-label": "Sponsor logo",
     "size-label": "Size of the land",
     "feet-squared": "ft²",
     "number-of-trees-label": "Number of Trees per Species",

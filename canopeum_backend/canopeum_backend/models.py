@@ -70,133 +70,6 @@ class Asset(models.Model):
     asset = models.FileField(upload_to=upload_to, null=False)
 
 
-class Batch(models.Model):
-    site = models.ForeignKey("Site", models.CASCADE, blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True, null=True)
-    updated_at = models.DateTimeField(auto_now=True, null=True)
-    name = models.TextField(blank=True, null=True)
-    sponsor = models.TextField(blank=True, null=True)
-    size = models.IntegerField(blank=True, null=True)
-    soil_condition = models.TextField(blank=True, null=True)
-    plant_count = models.IntegerField(blank=True, null=True)
-    survived_count = models.IntegerField(blank=True, null=True)
-    replace_count = models.IntegerField(blank=True, null=True)
-    total_number_seed = models.IntegerField(blank=True, null=True)
-    total_propagation = models.IntegerField(blank=True, null=True)
-    image = models.ForeignKey(Asset, models.DO_NOTHING, blank=True, null=True)
-
-    def add_fertilizer_by_id(self, pk: int):
-        fertilizer_type = Fertilizertype.objects.get(pk=pk)
-        return Batchfertilizer.objects.create(fertilizer_type=fertilizer_type, batch=self)
-
-    def add_mulch_by_id(self, pk: int):
-        mulch_layer_type = Mulchlayertype.objects.get(pk=pk)
-        return Batchmulchlayer.objects.create(mulch_layer_type=mulch_layer_type, batch=self)
-
-    def add_seed_by_id(self, pk: int, quantity: int):
-        tree_type = Treetype.objects.get(pk=pk)
-        return BatchSeed.objects.create(tree_type=tree_type, quantity=quantity, batch=self)
-
-    def add_specie_by_id(self, pk: int, quantity: int):
-        tree_type = Treetype.objects.get(pk=pk)
-        return BatchSpecies.objects.create(tree_type=tree_type, quantity=quantity, batch=self)
-
-    def add_supported_specie_by_id(self, pk: int):
-        tree_type = Treetype.objects.get(pk=pk)
-        return BatchSupportedSpecies.objects.create(tree_type=tree_type, batch=self)
-
-
-class FertilizertypeInternationalization(models.Model):
-    en = models.TextField(db_column="EN", blank=True, null=True)
-    fr = models.TextField(db_column="FR", blank=True, null=True)
-
-
-class Fertilizertype(models.Model):
-    name = models.ForeignKey(
-        FertilizertypeInternationalization, models.DO_NOTHING, blank=True, null=True
-    )
-
-
-class Batchfertilizer(models.Model):
-    batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
-    fertilizer_type = models.ForeignKey(Fertilizertype, models.DO_NOTHING, blank=True, null=True)
-
-    class Meta:
-        constraints = (
-            models.UniqueConstraint(
-                fields=["batch", "fertilizer_type"], name="unique_fertilizer_per_batch"
-            ),
-        )
-
-
-class MulchlayertypeInternationalization(models.Model):
-    en = models.TextField(db_column="EN", blank=True, null=True)
-    fr = models.TextField(db_column="FR", blank=True, null=True)
-
-
-class Mulchlayertype(models.Model):
-    name = models.ForeignKey(
-        MulchlayertypeInternationalization, models.DO_NOTHING, blank=True, null=True
-    )
-
-
-class Batchmulchlayer(models.Model):
-    batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
-    mulch_layer_type = models.ForeignKey(Mulchlayertype, models.DO_NOTHING, blank=True, null=True)
-
-    class Meta:
-        constraints = (
-            models.UniqueConstraint(
-                fields=["batch", "mulch_layer_type"], name="unique_mulch_layer_per_batch"
-            ),
-        )
-
-
-class TreespeciestypeInternationalization(models.Model):
-    en = models.TextField(db_column="EN", blank=True, null=True)
-    fr = models.TextField(db_column="FR", blank=True, null=True)
-
-
-class Treetype(models.Model):
-    name = models.ForeignKey(
-        TreespeciestypeInternationalization, models.DO_NOTHING, blank=True, null=True
-    )
-
-
-class BatchSpecies(models.Model):
-    batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
-    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
-    quantity = models.IntegerField(blank=True, null=True)
-
-    class Meta:
-        constraints = (
-            models.UniqueConstraint(fields=["batch", "tree_type"], name="unique_species_per_batch"),
-        )
-
-
-class BatchSeed(models.Model):
-    batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
-    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
-    quantity = models.IntegerField(blank=True, null=True)
-
-    class Meta:
-        constraints = (
-            models.UniqueConstraint(fields=["batch", "tree_type"], name="unique_seed_per_batch"),
-        )
-
-
-class BatchSupportedSpecies(models.Model):
-    batch = models.ForeignKey(Batch, models.CASCADE, blank=True, null=True)
-    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
-
-    class Meta:
-        constraints = (
-            models.UniqueConstraint(
-                fields=["batch", "tree_type"], name="unique_supported_species_per_batch"
-            ),
-        )
-
-
 class Contact(models.Model):
     address = models.TextField(blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
@@ -272,7 +145,7 @@ class Sitetype(models.Model):
 class Site(models.Model):
     name = models.TextField()
     is_public = models.BooleanField(blank=False, null=False, default=False)
-    site_type = models.ForeignKey("Sitetype", models.DO_NOTHING, blank=True, null=True)
+    site_type = models.ForeignKey(Sitetype, models.DO_NOTHING, blank=True, null=True)
     coordinate = models.ForeignKey(Coordinate, models.SET_NULL, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     size = models.TextField(blank=True, null=True)
@@ -304,6 +177,135 @@ class Site(models.Model):
         return super().delete(using, keep_parents)
 
 
+class BatchSponsor(models.Model):
+    name = models.TextField()
+    url = models.TextField()
+    logo = models.ForeignKey(Asset, models.CASCADE)
+
+
+class Batch(models.Model):
+    site = models.ForeignKey(Site, models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+    name = models.TextField(blank=True, null=True)
+    sponsor = models.ForeignKey(BatchSponsor, models.CASCADE)
+    size = models.IntegerField(blank=True, null=True)
+    soil_condition = models.TextField(blank=True, null=True)
+    plant_count = models.IntegerField(blank=True, null=True)
+    survived_count = models.IntegerField(blank=True, null=True)
+    replace_count = models.IntegerField(blank=True, null=True)
+    total_number_seed = models.IntegerField(blank=True, null=True)
+    total_propagation = models.IntegerField(blank=True, null=True)
+    image = models.ForeignKey(Asset, models.DO_NOTHING, blank=True, null=True)
+
+    def add_fertilizer_by_id(self, pk: int):
+        fertilizer_type = Fertilizertype.objects.get(pk=pk)
+        return Batchfertilizer.objects.create(fertilizer_type=fertilizer_type, batch=self)
+
+    def add_mulch_by_id(self, pk: int):
+        mulch_layer_type = Mulchlayertype.objects.get(pk=pk)
+        return Batchmulchlayer.objects.create(mulch_layer_type=mulch_layer_type, batch=self)
+
+    def add_seed_by_id(self, pk: int, quantity: int):
+        tree_type = Treetype.objects.get(pk=pk)
+        return BatchSeed.objects.create(tree_type=tree_type, quantity=quantity, batch=self)
+
+    def add_specie_by_id(self, pk: int, quantity: int):
+        tree_type = Treetype.objects.get(pk=pk)
+        return BatchSpecies.objects.create(tree_type=tree_type, quantity=quantity, batch=self)
+
+    def add_supported_specie_by_id(self, pk: int):
+        tree_type = Treetype.objects.get(pk=pk)
+        return BatchSupportedSpecies.objects.create(tree_type=tree_type, batch=self)
+
+
+class FertilizertypeInternationalization(models.Model):
+    en = models.TextField(db_column="EN", blank=True, null=True)
+    fr = models.TextField(db_column="FR", blank=True, null=True)
+
+
+class Fertilizertype(models.Model):
+    name = models.ForeignKey(FertilizertypeInternationalization, models.DO_NOTHING)
+
+
+class Batchfertilizer(models.Model):
+    batch = models.ForeignKey(Batch, models.CASCADE)
+    fertilizer_type = models.ForeignKey(Fertilizertype, models.RESTRICT)
+
+    class Meta:
+        constraints = (
+            models.UniqueConstraint(
+                fields=["batch", "fertilizer_type"], name="unique_fertilizer_per_batch"
+            ),
+        )
+
+
+class MulchlayertypeInternationalization(models.Model):
+    en = models.TextField(db_column="EN", blank=True, null=True)
+    fr = models.TextField(db_column="FR", blank=True, null=True)
+
+
+class Mulchlayertype(models.Model):
+    name = models.ForeignKey(
+        MulchlayertypeInternationalization, models.DO_NOTHING, blank=True, null=True
+    )
+
+
+class Batchmulchlayer(models.Model):
+    batch = models.ForeignKey(Batch, models.CASCADE)
+    mulch_layer_type = models.ForeignKey(Mulchlayertype, models.DO_NOTHING)
+
+    class Meta:
+        constraints = (
+            models.UniqueConstraint(
+                fields=["batch", "mulch_layer_type"], name="unique_mulch_layer_per_batch"
+            ),
+        )
+
+
+class TreespeciestypeInternationalization(models.Model):
+    en = models.TextField(db_column="EN", blank=True, null=True)
+    fr = models.TextField(db_column="FR", blank=True, null=True)
+
+
+class Treetype(models.Model):
+    name = models.ForeignKey(TreespeciestypeInternationalization, models.DO_NOTHING)
+
+
+class BatchSpecies(models.Model):
+    batch = models.ForeignKey(Batch, models.CASCADE)
+    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING)
+    quantity = models.IntegerField()
+
+    class Meta:
+        constraints = (
+            models.UniqueConstraint(fields=["batch", "tree_type"], name="unique_species_per_batch"),
+        )
+
+
+class BatchSeed(models.Model):
+    batch = models.ForeignKey(Batch, models.CASCADE)
+    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING)
+    quantity = models.IntegerField()
+
+    class Meta:
+        constraints = (
+            models.UniqueConstraint(fields=["batch", "tree_type"], name="unique_seed_per_batch"),
+        )
+
+
+class BatchSupportedSpecies(models.Model):
+    batch = models.ForeignKey(Batch, models.CASCADE)
+    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING)
+
+    class Meta:
+        constraints = (
+            models.UniqueConstraint(
+                fields=["batch", "tree_type"], name="unique_supported_species_per_batch"
+            ),
+        )
+
+
 # Note: PostAsset must be defined before Post because of a limitation with ManyToManyField type
 # inference using string annotations: https://github.com/typeddjango/django-stubs/issues/1802
 # Can't manually annotate because of: https://github.com/typeddjango/django-stubs/issues/760
@@ -318,10 +320,11 @@ class PostAsset(models.Model):
 
 
 class Post(models.Model):
-    site = models.ForeignKey("Site", models.CASCADE, blank=False, null=False)
+    site = models.ForeignKey(Site, models.CASCADE, blank=False, null=False)
     body = models.TextField(blank=False, null=False)
     share_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True, blank=False, null=False)
+    # TODO(NicolasDontigny): Add created by user?
     # created_by = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
     media = models.ManyToManyField(Asset, through=PostAsset, blank=True)
 
@@ -360,7 +363,7 @@ class SiteFollower(models.Model):
 
 class Sitetreespecies(models.Model):
     site = models.ForeignKey(Site, models.CASCADE, blank=True, null=True)
-    tree_type = models.ForeignKey("Treetype", models.DO_NOTHING, blank=True, null=True)
+    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
 
     class Meta:

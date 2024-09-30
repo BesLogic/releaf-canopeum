@@ -1,61 +1,18 @@
-/* eslint-disable max-lines -- disable max-lines */
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
-import { useCallback, useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import FertilizersSelector from '@components/analytics/FertilizersSelector'
-import ImageUpload from '@components/analytics/ImageUpload'
-import MulchLayersSelector from '@components/analytics/MulchLayersSelector'
-import SupportSpeciesSelector from '@components/analytics/SupportSpeciesSelector'
-import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
+import BatchForm from '@components/analytics/batch-modal/BatchForm'
+import { type BatchFormDto, DEFAULT_BATCH_FORM_DTO } from '@components/analytics/batch-modal/batchModal.model'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
-import type { Batchfertilizer, BatchMulchLayer, BatchSupportedSpecies, Seeds, SiteSummary, Species } from '@services/api'
+import type { SiteSummaryDetail } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
-import { floorNumberValue } from '@utils/formUtils'
 
 type Props = {
   readonly open: boolean,
-  readonly site: SiteSummary,
+  readonly site: SiteSummaryDetail,
   readonly handleClose: (reason?: 'create') => void,
-}
-
-type CreateBatchDto = {
-  siteId: number,
-  name?: string,
-  sponsor?: string,
-  size?: number,
-  soilCondition?: string,
-  plantCount?: number,
-  survivedCount?: number,
-  replaceCount?: number,
-  totalNumberSeed?: number,
-  totalPropagation?: number,
-  image?: File,
-  fertilizers: Batchfertilizer[],
-  mulchLayers: BatchMulchLayer[],
-  seeds: Seeds[],
-  species: Species[],
-  supportedSpecies: BatchSupportedSpecies[],
-}
-
-const defaultCreateBatch: CreateBatchDto = {
-  siteId: 0,
-  name: undefined,
-  size: undefined,
-  soilCondition: undefined,
-  sponsor: undefined,
-  supportedSpecies: [],
-  plantCount: undefined,
-  survivedCount: undefined,
-  replaceCount: undefined,
-  totalNumberSeed: undefined,
-  totalPropagation: undefined,
-  image: undefined,
-  fertilizers: [],
-  mulchLayers: [],
-  seeds: [],
-  species: [],
 }
 
 const CreateBatchModal = ({ open, site, handleClose }: Props) => {
@@ -63,8 +20,9 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
   const { getApiClient } = useApiClient()
   const { openAlertSnackbar } = useContext(SnackbarContext)
 
-  const [batch, setBatch] = useState<CreateBatchDto>(defaultCreateBatch)
-  const [batchImageURL, setBatchImageURL] = useState<string>()
+  const [batch, setBatch] = useState<BatchFormDto>(DEFAULT_BATCH_FORM_DTO)
+
+  const handleBatchChange = (batchFormDto: BatchFormDto) => setBatch(batchFormDto)
 
   const handleSubmitBatch = async () => {
     const {
@@ -85,6 +43,10 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
       image,
     } = batch
 
+    const sponsorLogoImage = sponsor?.logo
+      ? await assetFormatter(sponsor.logo)
+      : undefined
+
     const batchImage = image
       ? await assetFormatter(image)
       : undefined
@@ -93,7 +55,9 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
       await getApiClient().batchClient.create(
         site.id,
         name,
-        sponsor,
+        sponsor?.name,
+        sponsor?.url,
+        sponsorLogoImage,
         size,
         soilCondition,
         plantCount,
@@ -114,32 +78,21 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
         { severity: 'error' },
       )
 
-      return
+      return false
     }
+
     openAlertSnackbar(
       t('analyticsSite.batch-modal.feedback.create-success'),
     )
-    resetBatch()
     handleClose('create')
+
+    return true
   }
 
-  const onImageUpload = (file: File) => {
-    setBatch(value => ({ ...value, image: file }))
-    setBatchImageURL(URL.createObjectURL(file))
-  }
-
-  const onClose = () => {
-    resetBatch()
-    handleClose()
-  }
-
-  const resetBatch = () => {
-    setBatch({ ...defaultCreateBatch })
-    setBatchImageURL(undefined)
-  }
+  const handleCancel = () => handleClose()
 
   return (
-    <Dialog fullWidth maxWidth='sm' onClose={onClose} open={open}>
+    <Dialog fullWidth maxWidth='sm' onClose={handleCancel} open={open}>
       <DialogTitle>
         <div className='fs-5 text-capitalize m-auto text-center'>
           {t('analyticsSite.batch-modal.create-title')}
@@ -147,236 +100,13 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
       </DialogTitle>
 
       <DialogContent className='pb-5'>
-        <form>
-          <div className='d-flex flex-column gap-3'>
-            <div>
-              <label className='form-label' htmlFor='batch-name'>
-                {t('analyticsSite.batch-modal.name-label')}
-              </label>
-              <input
-                className='form-control'
-                id='batch-name'
-                onChange={event => setBatch(value => ({ ...value, name: event.target.value }))}
-                type='text'
-                value={batch.name}
-              />
-            </div>
-
-            <div>
-              <label className='form-label text-capitalize' htmlFor='sponsor'>
-                {t('analyticsSite.batch-modal.sponsor-label')}
-              </label>
-              <input
-                className='form-control'
-                id='sponsor'
-                onChange={event => setBatch(value => ({ ...value, sponsor: event.target.value }))}
-                type='text'
-                value={batch.sponsor}
-              />
-            </div>
-
-            <div>
-              <label className='form-label text-capitalize' htmlFor='size'>
-                {t('analyticsSite.batch-modal.size-label')}
-              </label>
-              <div className='input-group'>
-                <input
-                  className='form-control'
-                  id='size'
-                  min={0}
-                  onChange={event =>
-                    setBatch(value => ({
-                      ...value,
-                      size: Number.parseInt(event.target.value, 10),
-                    }))}
-                  type='number'
-                  value={floorNumberValue(batch.size)}
-                />
-                <span className='input-group-text'>
-                  {t('analyticsSite.batch-modal.feet-squared')}
-                </span>
-              </div>
-            </div>
-
-            <div>
-              <TreeSpeciesSelector
-                label='analyticsSite.batch-modal.number-of-trees-label'
-                onChange={useCallback(
-                  species =>
-                    setBatch(current => ({
-                      ...current,
-                      species,
-                    })),
-                  [],
-                )}
-                species={batch.species}
-              />
-            </div>
-
-            <div>
-              <label className='form-label' htmlFor='soil-condition'>
-                {t('analyticsSite.batch-modal.soil-condition-label')}
-              </label>
-              <input
-                className='form-control'
-                id='soil-condition'
-                onChange={event =>
-                  setBatch(value => ({ ...value, soilCondition: event.target.value }))}
-                type='text'
-                value={batch.soilCondition}
-              />
-            </div>
-
-            <FertilizersSelector
-              fertilizers={batch.fertilizers}
-              onChange={useCallback(
-                fertilizers =>
-                  setBatch(current => ({
-                    ...current,
-                    fertilizers,
-                  })),
-                [],
-              )}
-            />
-
-            <MulchLayersSelector
-              mulchLayers={batch.mulchLayers}
-              onChange={useCallback(
-                mulchLayers =>
-                  setBatch(current => ({
-                    ...current,
-                    mulchLayers,
-                  })),
-                [],
-              )}
-            />
-
-            <SupportSpeciesSelector
-              onChange={useCallback(
-                supportedSpecies =>
-                  setBatch(current => ({
-                    ...current,
-                    supportedSpecies,
-                  })),
-                [],
-              )}
-              species={batch.supportedSpecies}
-            />
-
-            <div>
-              <label className='form-label text-capitalize' htmlFor='total-number-of-plants'>
-                {t('analyticsSite.batch-modal.total-number-of-plants-label')}
-              </label>
-              <input
-                className='form-control'
-                id='total-number-of-plants'
-                onChange={event =>
-                  setBatch(value => ({
-                    ...value,
-                    plantCount: Number.parseInt(event.target.value, 10),
-                  }))}
-                type='number'
-                value={floorNumberValue(batch.plantCount)}
-              />
-            </div>
-
-            <div>
-              <label className='form-label text-capitalize' htmlFor='survived'>
-                {t('analyticsSite.batch-modal.survived-label')}
-              </label>
-              <input
-                className='form-control'
-                id='survived'
-                onChange={event =>
-                  setBatch(value => ({
-                    ...value,
-                    survivedCount: Number.parseInt(event.target.value, 10),
-                  }))}
-                type='number'
-                value={floorNumberValue(batch.survivedCount)}
-              />
-            </div>
-
-            <div>
-              <label className='form-label text-capitalize' htmlFor='replaced'>
-                {t('analyticsSite.batch-modal.replaced-label')}
-              </label>
-              <input
-                className='form-control'
-                id='replaced'
-                onChange={event =>
-                  setBatch(value => ({
-                    ...value,
-                    replaceCount: Number.parseInt(event.target.value, 10),
-                  }))}
-                type='number'
-                value={floorNumberValue(batch.replaceCount)}
-              />
-            </div>
-
-            <div>
-              <TreeSpeciesSelector
-                label='analyticsSite.batch-modal.seeds-per-species-label'
-                onChange={useCallback(
-                  species =>
-                    setBatch(current => ({
-                      ...current,
-                      seeds: species,
-                    })),
-                  [],
-                )}
-                species={batch.seeds}
-              />
-            </div>
-
-            <div>
-              <label className='form-label text-capitalize' htmlFor='totalNumberSeed'>
-                {t('analyticsSite.batch-modal.total-seeds-label')}
-              </label>
-              <input
-                className='form-control'
-                id='totalNumberSeed'
-                onChange={event =>
-                  setBatch(value => ({
-                    ...value,
-                    totalNumberSeed: Number.parseInt(event.target.value, 10),
-                  }))}
-                type='number'
-                value={floorNumberValue(batch.totalNumberSeed)}
-              />
-            </div>
-
-            <div>
-              <label className='form-label text-capitalize' htmlFor='propagation'>
-                {t('analyticsSite.batch-modal.propagation-label')}
-              </label>
-              <input
-                className='form-control'
-                id='propagation'
-                onChange={event =>
-                  setBatch(value => ({
-                    ...value,
-                    totalPropagation: Number.parseInt(event.target.value, 10),
-                  }))}
-                type='number'
-                value={floorNumberValue(batch.totalPropagation)}
-              />
-            </div>
-
-            <div className='mb-3'>
-              <label className='form-label text-capitalize' htmlFor='batch-image'>
-                {t('analyticsSite.batch-modal.images-label')}
-              </label>
-              <ImageUpload imageUrl={batchImageURL} onChange={onImageUpload} />
-            </div>
-          </div>
-        </form>
+        <BatchForm handleBatchChange={handleBatchChange} />
       </DialogContent>
 
       <DialogActions>
         <button
           className='btn btn-outline-primary'
-          onClick={() => onClose()}
+          onClick={() => handleCancel()}
           type='button'
         >
           {t('generic.cancel')}

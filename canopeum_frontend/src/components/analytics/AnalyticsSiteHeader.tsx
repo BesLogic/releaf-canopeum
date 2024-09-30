@@ -5,13 +5,14 @@ import { useTranslation } from 'react-i18next'
 
 import SiteCountBadge from '@components/analytics/SiteCountBadge'
 import SiteSponsorProgress from '@components/analytics/SiteSponsorProgress'
+import BatchSponsorLogo from '@components/batches/BatchSponsorLogo'
 import { LanguageContext } from '@components/context/LanguageContext'
 import CustomIconBadge from '@components/CustomIconBadge'
 import { getImageNameByWMOCategories } from '@constants/weatherImageMap'
-import type { SiteDetailSummary } from '@services/api'
+import type { SiteSummaryDetail } from '@services/api'
 
 type Props = {
-  readonly siteSummary: SiteDetailSummary,
+  readonly siteSummary: SiteSummaryDetail,
 }
 
 const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
@@ -84,15 +85,15 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
           />
         </div>
 
-        <div className='mt-4'>
-          <div
-            className='d-flex align-items-flex-end fw-bold overflow-x-auto'
-            style={{ maxWidth: '800px' }}
-          >
-            <span className='material-symbols-outlined'>group</span>
-            <span className='ms-1 me-2'>{translate('analyticsSite.sponsors')}:</span>
+        <div
+          className='d-flex align-items-center fw-bold overflow-x-auto pb-2 mt-4'
+          style={{ maxWidth: '800px' }}
+        >
+          <span className='material-symbols-outlined'>group</span>
+          <span className='ms-1 me-2'>{translate('analyticsSite.sponsors')}:</span>
+          <div className='d-flex gap-4'>
             {siteSummary.sponsors.map(sponsor => (
-              <span className='me-4' key={sponsor}>{sponsor}</span>
+              <BatchSponsorLogo key={sponsor.id} sponsor={sponsor} />
             ))}
           </div>
         </div>

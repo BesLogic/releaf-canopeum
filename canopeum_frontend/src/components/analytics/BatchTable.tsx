@@ -2,7 +2,8 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import EditBatchModal from '@components/analytics/batch-modal/EditBatchModal'
+import BatchActions from '@components/analytics/BatchActions'
+import BatchSponsorLogo from '@components/batches/BatchSponsorLogo'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
 import type { BatchDetail } from '@services/api'
@@ -23,7 +24,6 @@ const BatchTable = (props: Props) => {
   const { getApiClient } = useApiClient()
 
   const [batches, setBatches] = useState(props.batches)
-  const [batchToEdit, setBatchToEdit] = useState<BatchDetail | null>(null)
 
   const fetchBatch = useCallback(
     async (siteId: number) => {
@@ -66,14 +66,15 @@ const BatchTable = (props: Props) => {
                 scope='col'
                 style={{ width: '17.5rem' }}
               >
-                {batch.name}
-                <button
-                  className='unstyled-button text-primary'
-                  onClick={() => setBatchToEdit(batch)}
-                  type='button'
-                >
-                  <span className='material-symbols-outlined fill-icon me-2'>edit</span>
-                </button>
+                <div className='d-flex justify-content-between align-items-center card-title'>
+                  {batch.name}
+
+                  <BatchActions
+                    batchDetail={batch}
+                    onDelete={() => setBatches(previous => previous.filter(b => b.id !== batch.id))}
+                    onEdit={() => void fetchBatch(props.siteId)}
+                  />
+                </div>
               </th>
             ))}
           </tr>
@@ -90,7 +91,7 @@ const BatchTable = (props: Props) => {
                 key={`batch-${batch.id}-sponsor`}
                 style={{ borderColor: cellBorderColor }}
               >
-                {batch.sponsor}
+                <BatchSponsorLogo sponsor={batch.sponsor} />
               </td>
             ))}
           </tr>
@@ -108,9 +109,9 @@ const BatchTable = (props: Props) => {
                 style={{ borderColor: cellBorderColor }}
               >
                 <ul>
-                  {batch.species.map(type => (
-                    <li key={`batch-${batch.id}-treeType-${type.en}`}>
-                      {translateValue(type)} x {type.quantity}
+                  {batch.species.map(batchSpecies => (
+                    <li key={`batch-${batch.id}-batch-species-${batchSpecies.id}`}>
+                      {translateValue(batchSpecies.treeType)} x {batchSpecies.quantity}
                     </li>
                   ))}
                 </ul>
@@ -299,8 +300,8 @@ const BatchTable = (props: Props) => {
               >
                 <ul>
                   {batch.seeds.map(batchSeed => (
-                    <li key={`batch-${batch.id}-seeds-list-${batchSeed.en}`}>
-                      {translateValue(batchSeed)} x {batchSeed.quantity}
+                    <li key={`batch-${batch.id}-batch-seed-${batchSeed.id}`}>
+                      {translateValue(batchSeed.treeType)} x {batchSeed.quantity}
                     </li>
                   ))}
                 </ul>
@@ -309,15 +310,6 @@ const BatchTable = (props: Props) => {
           </tr>
         </tbody>
       </table>
-      {batchToEdit && (
-        <EditBatchModal
-          batchToEdit={batchToEdit}
-          handleClose={reason => {
-            setBatchToEdit(null)
-            if (reason === 'edit') void fetchBatch(props.siteId)
-          }}
-        />
-      )}
     </div>
   )
 }
