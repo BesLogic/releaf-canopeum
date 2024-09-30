@@ -17,6 +17,7 @@ from canopeum_backend.models import (
     Batch,
     Batchfertilizer,
     BatchSpecies,
+    BatchSponsor,
     Comment,
     Contact,
     Coordinate,
@@ -33,6 +34,10 @@ from canopeum_backend.models import (
     TreespeciestypeInternationalization,
     Treetype,
     User,
+)
+
+seeding_images_path = (
+    Path(canopeum_backend.settings.BASE_DIR) / "canopeum_backend" / "seeding" / "images"
 )
 
 tree_types = [
@@ -192,49 +197,76 @@ batch_names = [
     "Eight Batch",
 ]
 
-sponsors = [
-    "GreenGrow Solutions",
-    "ArborWorks",
-    "Evergreen Eco",
-    "Rooted Reforestation",
-    "TreeTech Innovations",
-    "Forest Guardians",
-    "LeafyLife Planting",
-    "EcoArbor",
-    "Sapling Services",
-    "Birch & Pine Planters",
-    "Foliage Force",
-    "Canopy Creations",
-    "GrowGreen Reforestation",
+sponsor_names = [
+    "Green Earth Initiative",
+    "EcoRoots Corporation",
+    "Sustainable Growth Group",
+    "Forest Futures Fund",
+    "Green Horizons Alliance",
+    "Tree of Life Foundation",
+    "Evergreen Solutions",
+    "Leaf Legacy Group",
+    "Planet Guardians Inc.",
+    "Roots of Tomorrow",
+    "Nature's Canopy Collective",
+    "Oxygen for All Co.",
+    "Verdant Ventures",
+    "ForestFlow Enterprises",
+    "Seedling Sustainability Co.",
+    "Pure Green Partners",
+    "Branch Out Initiative",
+    "Nature Nurturers",
+    "Earthwise Ecosystems",
+    "Renewed Forest Foundation",
+    "EcoSphere Solutions",
+    "TreeMendously Green",
+    "Reforest Co.",
+    "Grow Green Initiative",
+    "Earthshade Sponsors",
+    "GreenBreathe Fund",
+    "Flourishing Forest Foundation",
+    "Sapling Supporters Co.",
+    "Global Green Guardians",
     "Woodland Warriors",
-    "BranchOut Planting",
-    "EcoTree Partners",
-    "Grove Guardians",
-    "Sustainable Sowers",
-    "TimberTech Planting",
-    "Nature's Nurseries",
-    "GreenThumb Reforestation",
-    "Forest Frontiers",
-    "Arbor Alliance",
-    "TreeTrek Planters",
-    "RootRise Reforestation",
-    "LeafLegacy Planting",
-    "EcoRoot Reforestation",
-    "TrunkTrack Planters",
-    "WoodWise Reforestation",
-    "Boreal Bloom Planters",
+    "Sprout Sponsors",
+    "Evergreen Tomorrow Foundation",
+    "Roots & Shoots Initiative",
+    "TreeTop Trust",
+    "LeafLife Partners",
+    "The Canopy Collective",
+    "EcoLeaf Sponsorship",
+    "Pure Planet Patrons",
+    "Oxygen Origins Fund",
+    "The GreenWay Project",
+    "TreeTrail Trust",
+    "ThriveGreen Group",
+    "ForestFront Alliance",
+    "ReTree Sponsors",
+    "EcoPledge Foundation",
+    "Verdant Visions Fund",
+    "BranchRoots Collective",
+    "PlanetGreen Partnerships",
+    "SustainSeed Co.",
+    "NatureSprout Network",
+    "GreenFuture Trust",
+    "TreeLife Alliance",
 ]
 
 
-def get_sponsors():
-    number_of_sponsors = random.randint(1, 5)
-    random.shuffle(sponsors)
-    return sponsors[:number_of_sponsors]
+def create_sponsor_for_batch():
+    image_file_name = f"batch_logo{random.randint(1, 7)}.png"
 
+    with Path.open(seeding_images_path / image_file_name, "rb") as img_file:
+        django_file = File(img_file)
 
-def get_sponsor():
-    index = random.randint(0, len(sponsors) - 1)
-    return sponsors[index]
+        asset = Asset()
+        asset.asset.save(image_file_name, django_file, save=True)
+
+        return BatchSponsor.objects.create(
+            name=sponsor_names.pop(random.randint(0, len(sponsor_names) - 1)),
+            url="https://uilogos.co/",
+            logo=asset,
+        )
 
 
 def create_batches_for_site(site):
@@ -243,11 +275,14 @@ def create_batches_for_site(site):
         number_of_seed = random.randint(50, 200)
         plant_count = random.randint(0, number_of_seed)
         survived_count = random.randint(0, plant_count)
+
+        sponsor = create_sponsor_for_batch()
+
         batch = Batch.objects.create(
             name=batch_names[i - 1],
             site=site,
             size=random.randint(20, 150),
-            sponsor=get_sponsor(),
+            sponsor=sponsor,
             soil_condition="Good",
             plant_count=plant_count,
             survived_count=survived_count,
@@ -256,10 +291,12 @@ def create_batches_for_site(site):
             total_propagation=random.randint(0, number_of_seed),
         )
         create_batch_species_for_batch(batch)
-        Batchfertilizer.objects.create(
-            batch=batch,
-            fertilizer_type=Fertilizertype.objects.first(),
-        )
+        fertilizer_type = Fertilizertype.objects.first()
+        if fertilizer_type is not None:
+            Batchfertilizer.objects.create(
+                batch=batch,
+                fertilizer_type=fertilizer_type,
+            )
 
 
 class Command(BaseCommand):
@@ -382,9 +419,6 @@ class Command(BaseCommand):
             )
 
     def create_assets(self):
-        seeding_images_path = (
-            Path(canopeum_backend.settings.BASE_DIR) / "canopeum_backend" / "seeding" / "images"
-        )
         image_file_names = (
             "site_img1.png",
             "site_img2.jpg",
@@ -466,7 +500,7 @@ class Command(BaseCommand):
             visitor_count=100,
             contact=Contact.objects.create(
                 email="info@canopeum.com",
-                phone="+1 (514) 741-5008",
+                phone="+1 514 741-5008",
                 address="721 Walker avenue, Office 200 Montréal, QC H4C 2H5",
             ),
             image=Asset.objects.first(),

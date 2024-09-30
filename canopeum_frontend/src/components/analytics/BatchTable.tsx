@@ -3,6 +3,7 @@ import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import BatchActions from '@components/analytics/BatchActions'
+import BatchSponsorLogo from '@components/batches/BatchSponsorLogo'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
 import type { BatchDetail } from '@services/api'
@@ -90,7 +91,7 @@ const BatchTable = (props: Props) => {
                 key={`batch-${batch.id}-sponsor`}
                 style={{ borderColor: cellBorderColor }}
               >
-                {batch.sponsor}
+                <BatchSponsorLogo sponsor={batch.sponsor} />
               </td>
             ))}
           </tr>
@@ -108,9 +109,9 @@ const BatchTable = (props: Props) => {
                 style={{ borderColor: cellBorderColor }}
               >
                 <ul>
-                  {batch.species.map(type => (
-                    <li key={`batch-${batch.id}-treeType-${type.en}`}>
-                      {translateValue(type)} x {type.quantity}
+                  {batch.species.map(batchSpecies => (
+                    <li key={`batch-${batch.id}-batch-species-${batchSpecies.id}`}>
+                      {translateValue(batchSpecies.treeType)} x {batchSpecies.quantity}
                     </li>
                   ))}
                 </ul>
@@ -299,8 +300,8 @@ const BatchTable = (props: Props) => {
               >
                 <ul>
                   {batch.seeds.map(batchSeed => (
-                    <li key={`batch-${batch.id}-seeds-list-${batchSeed.en}`}>
-                      {translateValue(batchSeed)} x {batchSeed.quantity}
+                    <li key={`batch-${batch.id}-batch-seed-${batchSeed.id}`}>
+                      {translateValue(batchSeed.treeType)} x {batchSeed.quantity}
                     </li>
                   ))}
                 </ul>

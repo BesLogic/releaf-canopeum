@@ -68,6 +68,7 @@ from .serializers import (
     AnnouncementSerializer,
     AssetSerializer,
     BatchDetailSerializer,
+    BatchSponsorSerializer,
     ChangePasswordSerializer,
     CommentSerializer,
     ContactSerializer,
@@ -556,10 +557,7 @@ class SiteSocialDetailAPIView(APIView):
 
         self.check_object_permissions(request, site)
 
-        batches = Batch.objects.filter(site=siteId)
-        sponsors = [batch.sponsor for batch in batches]
-
-        serializer = SiteSocialSerializer(site, context={"sponsors": sponsors})
+        serializer = SiteSocialSerializer(site)
         return Response(serializer.data)
 
 
@@ -834,7 +832,14 @@ BATCH_CREATE_SCHEMA = {
         "properties": {
             "site": {"type": "number"},
             "name": {"type": "string", "nullable": True},
-            "sponsor": {"type": "string", "nullable": True},
+            "sponsorName": {"type": "string", "nullable": True},
+            "sponsorWebsiteUrl": {"type": "string", "nullable": True},
+            # TODO(NicolasDontigny): sponsorLogo should be in the sponsor object, but the generated
+            # typescript api does not correctly type it as a FileParameter type
+            # unless it is a root key
+            # Raise the issue upstream, OR it should be fixed when we figure out how to serialize
+            # multipart/form-data
+            "sponsorLogo": {"type": "string", "format": "binary", "nullable": True},
             "size": {"type": "number", "nullable": True},
             "soilCondition": {"type": "string", "nullable": True},
             "plantCount": {"type": "number", "nullable": True},
@@ -909,12 +914,26 @@ class BatchListAPIView(APIView):
             else:
                 image = asset_serializer.save()
 
+        sponsor_data = {
+            "name": request.data.get("sponsor_name"),
+            "url": request.data.get("sponsor_website_url"),
+            "logo": {
+                "asset": request.data.get("sponsor_logo"),
+            },
+        }
+        sponsor_serializer = BatchSponsorSerializer(data=sponsor_data)
+        sponsor = None
+        if not sponsor_serializer.is_valid():
+            errors.append(sponsor_serializer.errors)
+        else:
+            sponsor = sponsor_serializer.save()
+
         batch_serializer = BatchDetailSerializer(data=request.data)
         if not batch_serializer.is_valid():
             errors.append(batch_serializer.errors)
         else:
             site = Site.objects.get(pk=request.data.get("site", ""))
-            batch = batch_serializer.save(site=site, image=image)
+            batch = batch_serializer.save(site=site, image=image, sponsor=sponsor)
 
             for fertilizer_id in parsed_fertilizer_ids:
                 batch.add_fertilizer_by_id(fertilizer_id)
@@ -975,11 +994,30 @@ class BatchDetailAPIView(APIView):
         #     else:
         #         image = asset_serializer.save()
 
+        sponsor = None
+        sponsor_data = {
+            "name": request.data.get("sponsor_name"),
+            "url": request.data.get("sponsor_website_url"),
+        }
+        if request.data.get("sponsor_logo") is not None:
+            sponsor_data["logo"] = {
+                "asset": request.data.get("sponsor_logo"),
+            }
+        sponsor_serializer = BatchSponsorSerializer(
+            batch.sponsor,
+            data=sponsor_data,
+            partial=True,
+        )
+        if not sponsor_serializer.is_valid():
+            errors.append(sponsor_serializer.errors)
+        else:
+            sponsor = sponsor_serializer.save()
+
         batch_serializer = BatchDetailSerializer(batch, data=request.data, partial=True)
         if not batch_serializer.is_valid():
             errors.append(batch_serializer.errors)
         else:
-            batch = batch_serializer.save()
+            batch = batch_serializer.save(sponsor=sponsor)
 
             # Less efficient, but so much easier to just remove all then recreate mappings.
             Batchfertilizer.objects.filter(batch=batch).delete()

@@ -4,14 +4,13 @@ import { useTranslation } from 'react-i18next'
 import OptionQuantitySelector, { type SelectorOption, type SelectorOptionQuantity } from '@components/analytics/OptionQuantitySelector'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
-import type { MulchLayerType } from '@services/api'
-import { BatchMulchLayer } from '@services/api'
+import { MulchLayerType } from '@services/api'
 import { notEmpty } from '@utils/arrayUtils'
 
 type Props = {
   readonly mulchLayers?: MulchLayerType[],
   // Make sure that onChange is included in a useCallback if part of a component
-  readonly onChange: (selectedMulchLayers: BatchMulchLayer[]) => void,
+  readonly onChange: (selectedMulchLayers: MulchLayerType[]) => void,
 }
 
 const MulchLayersSelector = ({ onChange, mulchLayers }: Props) => {
@@ -67,7 +66,7 @@ const MulchLayersSelector = ({ onChange, mulchLayers }: Props) => {
         const matchingMulchLayer = availableMulchLayers.get(optionQuantity.option.value)
         if (!matchingMulchLayer) return null
 
-        return new BatchMulchLayer({
+        return new MulchLayerType({
           ...matchingMulchLayer,
         })
       })
