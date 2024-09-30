@@ -273,8 +273,8 @@ def create_batches_for_site(site):
     num_batches = random.randint(3, 8)
     for i in range(num_batches):
         number_of_seed = random.randint(50, 200)
-        plant_count = random.randint(0, number_of_seed)
-        survived_count = random.randint(0, plant_count)
+        survived_count = random.randint(100, 200)
+        replace_count = random.randint(0, 50)
 
         sponsor = create_sponsor_for_batch()
 
@@ -284,9 +284,8 @@ def create_batches_for_site(site):
             size=random.randint(20, 150),
             sponsor=sponsor,
             soil_condition="Good",
-            plant_count=plant_count,
             survived_count=survived_count,
-            replace_count=plant_count - survived_count,
+            replace_count=replace_count,
             total_number_seed=number_of_seed,
             total_propagation=random.randint(0, number_of_seed),
         )
