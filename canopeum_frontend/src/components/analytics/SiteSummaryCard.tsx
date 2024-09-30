@@ -21,6 +21,7 @@ const SiteSummaryCard = ({ site, admins, onSiteChange, onSiteEdit }: Props) => {
   const { t: translate } = useTranslation()
   const { currentUser } = useContext(AuthenticationContext)
 
+  console.log('site:', site)
   const siteAdminsDisplay = site.admins.length > 0
     ? site.admins.map(admin => admin.user.username).join(', ')
     : translate('analytics.site-summary.no-admins')
@@ -115,10 +116,7 @@ const SiteSummaryCard = ({ site, admins, onSiteChange, onSiteEdit }: Props) => {
             </div>
 
             <div className='mt-4'>
-              <SiteSponsorProgress
-                sponsoredPlantCount={site.sponsoredPlantCount}
-                totalPlantCount={site.plantCount}
-              />
+              <SiteSponsorProgress progress={site.sponsorProgress} />
             </div>
           </div>
         </div>

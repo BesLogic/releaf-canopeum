@@ -1,35 +1,11 @@
-import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-const ONE_HUNDRED = 100
-
 type Props = {
-  readonly totalPlantCount: number,
-  readonly sponsoredPlantCount: number,
+  readonly progress: number,
 }
 
-const SiteSponsorProgress = ({ totalPlantCount, sponsoredPlantCount }: Props) => {
+const SiteSponsorProgress = ({ progress }: Props) => {
   const { t: translate } = useTranslation()
-
-  const [sponsoredProgress, setSponsoredProgress] = useState(0)
-
-  useEffect(() => {
-    if (totalPlantCount === 0) {
-      setSponsoredProgress(0)
-
-      return
-    }
-
-    if (sponsoredPlantCount >= totalPlantCount) {
-      setSponsoredProgress(ONE_HUNDRED)
-
-      return
-    }
-
-    /* total-functions/no-unsafe-type-assertion --
-    NOTE: Total plant count checked above, case when 0 is handled */
-    setSponsoredProgress(sponsoredPlantCount / totalPlantCount * ONE_HUNDRED)
-  }, [totalPlantCount, sponsoredPlantCount])
 
   return (
     <div className='d-flex align-items-center'>
@@ -39,15 +15,15 @@ const SiteSponsorProgress = ({ totalPlantCount, sponsoredPlantCount }: Props) =>
         <div
           aria-valuemax={100}
           aria-valuemin={0}
-          aria-valuenow={sponsoredProgress}
+          aria-valuenow={progress}
           className='progress-bar'
           role='progressbar'
-          style={{ width: `${sponsoredProgress}%` }}
+          style={{ width: `${progress}%` }}
         />
       </div>
 
       <span className='text-primary ms-2 fw-bold'>
-        {Math.round(sponsoredProgress)}% {translate('analytics.site-summary.sponsored')}
+        {Math.round(progress)}% {translate('analytics.site-summary.sponsored')}
       </span>
     </div>
   )

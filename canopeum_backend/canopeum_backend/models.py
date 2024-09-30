@@ -157,6 +157,22 @@ class Site(models.Model):
     announcement = models.ForeignKey(Announcement, models.SET_NULL, blank=True, null=True)
     image = models.ForeignKey(Asset, models.SET_NULL, blank=True, null=True)
 
+    def get_plant_count(self):
+        site_species = Sitetreespecies.objects.filter(site=self)
+        return reduce(lambda x, y: x + y.quantity, site_species, 0)
+
+    def get_sponsor_progress(self):
+        total_plant_count = self.get_plant_count()
+        if total_plant_count == 0:
+            return 0
+
+        batches = Batch.objects.filter(site=self)
+        sponsored_plant_count = reduce(lambda x, y: x + y.plant_count(), batches, 0)
+        if sponsored_plant_count >= total_plant_count:
+            return 100
+
+        return sponsored_plant_count / total_plant_count * 100
+
     @override
     def delete(self, using=None, keep_parents=False):
         # Coordinate

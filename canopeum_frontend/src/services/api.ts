@@ -5422,7 +5422,7 @@ export class SiteSummary implements ISiteSummary {
   coordinate!: Coordinates
   siteType!: SiteType
   readonly plantCount!: number
-  readonly sponsoredPlantCount!: number
+  readonly sponsorProgress!: number
   readonly survivedCount!: number
   readonly propagationCount!: number
   visitorCount?: number | undefined
@@ -5461,7 +5461,7 @@ export class SiteSummary implements ISiteSummary {
         : new Coordinates()
       this.siteType = _data['siteType'] ? SiteType.fromJS(_data['siteType']) : new SiteType()
       ;(<any> this).plantCount = _data['plantCount']
-      ;(<any> this).sponsoredPlantCount = _data['sponsoredPlantCount']
+      ;(<any> this).sponsorProgress = _data['sponsorProgress']
       ;(<any> this).survivedCount = _data['survivedCount']
       ;(<any> this).propagationCount = _data['propagationCount']
       this.visitorCount = _data['visitorCount']
@@ -5499,7 +5499,7 @@ export class SiteSummary implements ISiteSummary {
     data['coordinate'] = this.coordinate ? this.coordinate.toJSON() : <any> undefined
     data['siteType'] = this.siteType ? this.siteType.toJSON() : <any> undefined
     data['plantCount'] = this.plantCount
-    data['sponsoredPlantCount'] = this.sponsoredPlantCount
+    data['sponsorProgress'] = this.sponsorProgress
     data['survivedCount'] = this.survivedCount
     data['propagationCount'] = this.propagationCount
     data['visitorCount'] = this.visitorCount
@@ -5525,7 +5525,7 @@ export interface ISiteSummary {
   coordinate: Coordinates
   siteType: SiteType
   plantCount: number
-  sponsoredPlantCount: number
+  sponsorProgress: number
   survivedCount: number
   propagationCount: number
   visitorCount?: number | undefined
@@ -5541,7 +5541,7 @@ export class SiteSummaryDetail implements ISiteSummaryDetail {
   coordinate!: Coordinates
   siteType!: SiteType
   readonly plantCount!: number
-  readonly sponsoredPlantCount!: number
+  readonly sponsorProgress!: number
   readonly survivedCount!: number
   readonly propagationCount!: number
   visitorCount?: number | undefined
@@ -5584,7 +5584,7 @@ export class SiteSummaryDetail implements ISiteSummaryDetail {
         : new Coordinates()
       this.siteType = _data['siteType'] ? SiteType.fromJS(_data['siteType']) : new SiteType()
       ;(<any> this).plantCount = _data['plantCount']
-      ;(<any> this).sponsoredPlantCount = _data['sponsoredPlantCount']
+      ;(<any> this).sponsorProgress = _data['sponsorProgress']
       ;(<any> this).survivedCount = _data['survivedCount']
       ;(<any> this).propagationCount = _data['propagationCount']
       this.visitorCount = _data['visitorCount']
@@ -5629,7 +5629,7 @@ export class SiteSummaryDetail implements ISiteSummaryDetail {
     data['coordinate'] = this.coordinate ? this.coordinate.toJSON() : <any> undefined
     data['siteType'] = this.siteType ? this.siteType.toJSON() : <any> undefined
     data['plantCount'] = this.plantCount
-    data['sponsoredPlantCount'] = this.sponsoredPlantCount
+    data['sponsorProgress'] = this.sponsorProgress
     data['survivedCount'] = this.survivedCount
     data['propagationCount'] = this.propagationCount
     data['visitorCount'] = this.visitorCount
@@ -5662,7 +5662,7 @@ export interface ISiteSummaryDetail {
   coordinate: Coordinates
   siteType: SiteType
   plantCount: number
-  sponsoredPlantCount: number
+  sponsorProgress: number
   survivedCount: number
   propagationCount: number
   visitorCount?: number | undefined
