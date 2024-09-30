@@ -547,7 +547,6 @@ class SiteSummarySerializer(serializers.ModelSerializer[Site]):
     sponsored_plant_count = serializers.SerializerMethodField()
     survived_count = serializers.SerializerMethodField()
     propagation_count = serializers.SerializerMethodField()
-    progress = serializers.SerializerMethodField()
     admins = SiteAdminSerializer(source="siteadmin_set", many=True)
     batches = serializers.SerializerMethodField()
 
@@ -563,7 +562,6 @@ class SiteSummarySerializer(serializers.ModelSerializer[Site]):
             "survived_count",
             "propagation_count",
             "visitor_count",
-            "progress",
             "admins",
             "batches",
         )
@@ -582,9 +580,6 @@ class SiteSummarySerializer(serializers.ModelSerializer[Site]):
     def get_propagation_count(self, obj) -> int:
         return random.randint(5, 50)  # noqa: S311
 
-    def get_progress(self, obj) -> float:
-        return random.randint(0, 10000) / 100  # noqa: S311
-
     @extend_schema_field(BatchDetailSerializer(many=True))
     def get_batches(self, obj):
         batches = obj.batch_set.all().order_by("-updated_at")
@@ -598,7 +593,6 @@ class SiteSummaryDetailSerializer(serializers.ModelSerializer[Site]):
     sponsored_plant_count = serializers.SerializerMethodField()
     survived_count = serializers.SerializerMethodField()
     propagation_count = serializers.SerializerMethodField()
-    progress = serializers.SerializerMethodField()
     sponsors = serializers.SerializerMethodField()
     admins = SiteAdminSerializer(source="siteadmin_set", many=True)
     batches = serializers.SerializerMethodField()
@@ -617,7 +611,6 @@ class SiteSummaryDetailSerializer(serializers.ModelSerializer[Site]):
             "propagation_count",
             "visitor_count",
             "sponsors",
-            "progress",
             "admins",
             "batches",
             "weather",
@@ -636,9 +629,6 @@ class SiteSummaryDetailSerializer(serializers.ModelSerializer[Site]):
 
     def get_propagation_count(self, obj) -> int:
         return random.randint(5, 50)  # noqa: S311
-
-    def get_progress(self, obj) -> float:
-        return random.randint(0, 10000) / 100  # noqa: S311
 
     @extend_schema_field(BatchSponsorSerializer(many=True))
     def get_sponsors(self, obj):

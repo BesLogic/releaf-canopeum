@@ -109,7 +109,10 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
         </div>
 
         <div className='mt-1'>
-          <SiteSponsorProgress progress={siteSummary.progress} />
+          <SiteSponsorProgress
+            sponsoredPlantCount={siteSummary.sponsoredPlantCount}
+            totalPlantCount={siteSummary.plantCount}
+          />
         </div>
       </div>
     </div>
