@@ -1,6 +1,5 @@
 import re
 from datetime import UTC, datetime, timedelta
-from functools import reduce
 from typing import TYPE_CHECKING, Any, ClassVar, TypeVar, override
 
 import googlemaps
@@ -159,7 +158,7 @@ class Site(models.Model):
 
     def get_plant_count(self) -> int:
         site_species = Sitetreespecies.objects.filter(site=self)
-        return reduce(lambda x, y: x + y.quantity, site_species, 0)
+        return sum(specie.quantity for specie in site_species)
 
     def get_sponsor_progress(self) -> float:
         total_plant_count = self.get_plant_count()
@@ -167,7 +166,7 @@ class Site(models.Model):
             return 0
 
         batches = Batch.objects.filter(site=self)
-        sponsored_plant_count = reduce(lambda x, y: x + y.plant_count(), batches, 0)
+        sponsored_plant_count = sum(batch.plant_count() for specie in batches)
         if sponsored_plant_count >= total_plant_count:
             return 100
 
@@ -236,7 +235,7 @@ class Batch(models.Model):
 
     def plant_count(self):
         batch_species = BatchSpecies.objects.filter(batch=self)
-        return reduce(lambda x, y: x + y.quantity, batch_species, 0)
+        return sum(specie.quantity for specie in batch_species)
 
 
 class FertilizertypeInternationalization(models.Model):
