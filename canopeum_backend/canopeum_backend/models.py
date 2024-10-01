@@ -159,7 +159,7 @@ class Site(models.Model):
 
     def get_plant_count(self):
         site_species = Sitetreespecies.objects.filter(site=self)
-        return reduce(lambda x, y: x + y.quantity, site_species, 0)
+        return sum(specie.quantity for specie in site_species)
 
     def get_sponsor_progress(self):
         total_plant_count = self.get_plant_count()
