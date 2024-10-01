@@ -7,8 +7,6 @@
 @import "./Transitions.scss";
 @import "./DropdownMenu.scss";
 
-$cream: #FFFAF5;
-
 $small-width: 540px;
 $medium-width: 720px;
 $large-width: 960px;
@@ -56,6 +54,10 @@ body {
 
 .bg-lightgreen {
   background: $lightgreen;
+}
+
+.cream-color {
+  color: $cream;
 }
 
 .bg-cream {

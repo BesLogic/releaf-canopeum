@@ -1,6 +1,10 @@
 {
   "location": "Localisation",
   "batch-tracking": "Suivi des lots",
+  "site-tabs": {
+    "analytics": "Analytique",
+    "social": "Social"
+  },
   "social-page": "Page Sociale",
   "sponsors": "Sponsors",
   "add-new-batch": "Ajouter un Nouveau Lot",
