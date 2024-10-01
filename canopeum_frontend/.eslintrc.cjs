@@ -72,4 +72,17 @@ module.exports = {
     // https://github.com/cartant/eslint-plugin-etc/issues/63
     'etc/no-implicit-any-catch': 'off',
   },
+  overrides: [
+    {
+      files: 'src/locale/**/*.ts',
+      rules: {
+        // We prefer avoiding line-breaks in translation files
+        'max-len': 'off',
+        // Imports across languages to use the "satisfies" keyword on object literals
+        // We need to apply it directly on object literals to check for excess properties
+        // https://www.typescriptlang.org/docs/handbook/2/objects.html#excess-property-checks
+        'no-autofix/no-relative-import-paths/no-relative-import-paths': 'off',
+      },
+    },
+  ],
 }

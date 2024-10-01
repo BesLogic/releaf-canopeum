@@ -1,27 +1,25 @@
-import analyticsJSON from './analytics.json'
-import analyticsSiteJSON from './analyticsSite.json'
-import authJSON from './auth.json'
-import errorsJSON from './errors.json'
-import genericJSON from './generic.json'
-import homeJSON from './home.json'
-import navbarJSON from './navbar.json'
-import postsJSON from './posts.json'
-import settingsJSON from './settings.json'
-import socialJSON from './social.json'
+import analytics from './analytics'
+import analyticsSite from './analyticsSite'
+import auth from './auth'
+import errors from './errors'
+import generic from './generic'
+import home from './home'
+import navbar from './navbar'
+import posts from './posts'
+import settings from './settings'
+import social from './social'
 
-const enJSON = {
+export default {
   translation: {
-    analytics: { ...analyticsJSON },
-    analyticsSite: { ...analyticsSiteJSON },
-    auth: { ...authJSON },
-    errors: { ...errorsJSON },
-    generic: { ...genericJSON },
-    home: { ...homeJSON },
-    navbar: { ...navbarJSON },
-    posts: { ...postsJSON },
-    settings: { ...settingsJSON },
-    social: { ...socialJSON },
+    analytics,
+    analyticsSite,
+    auth,
+    errors,
+    generic,
+    home,
+    navbar,
+    posts,
+    settings,
+    social,
   },
 }
-
-export default enJSON
