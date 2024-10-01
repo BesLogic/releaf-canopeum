@@ -21,6 +21,14 @@ LAT_LONG_SEP = re.compile(r"°|\'|\"")
 gmaps = googlemaps.Client(key=GOOGLE_API_KEY) if GOOGLE_API_KEY else None
 
 
+class TranslatableModelMixin(models.Model):
+    en = models.TextField(db_column="EN", blank=True, null=True)
+    fr = models.TextField(db_column="FR", blank=True, null=True)
+
+    class Meta:
+        abstract = True
+
+
 class RoleName(models.TextChoices):
     USER = "User"
     SITEMANAGER = "SiteManager"
@@ -126,9 +134,7 @@ class Coordinate(models.Model):
         )
 
 
-class SitetypeInternationalization(models.Model):
-    en = models.TextField(db_column="EN", blank=True, null=True)
-    fr = models.TextField(db_column="FR", blank=True, null=True)
+class SitetypeInternationalization(TranslatableModelMixin): ...
 
 
 class Sitetype(models.Model):
@@ -219,9 +225,7 @@ class Batch(models.Model):
         return BatchSupportedSpecies.objects.create(tree_type=tree_type, batch=self)
 
 
-class FertilizertypeInternationalization(models.Model):
-    en = models.TextField(db_column="EN", blank=True, null=True)
-    fr = models.TextField(db_column="FR", blank=True, null=True)
+class FertilizertypeInternationalization(TranslatableModelMixin): ...
 
 
 class Fertilizertype(models.Model):
@@ -263,9 +267,7 @@ class Batchmulchlayer(models.Model):
         )
 
 
-class TreespeciestypeInternationalization(models.Model):
-    en = models.TextField(db_column="EN", blank=True, null=True)
-    fr = models.TextField(db_column="FR", blank=True, null=True)
+class TreespeciestypeInternationalization(TranslatableModelMixin): ...
 
 
 class Treetype(models.Model):
@@ -385,9 +387,7 @@ class Like(models.Model):
     post = models.ForeignKey(Post, models.CASCADE)
 
 
-class Internationalization(models.Model):
-    en = models.TextField(db_column="EN", blank=True, null=True)
-    fr = models.TextField(db_column="FR", blank=True, null=True)
+class Internationalization(TranslatableModelMixin): ...
 
 
 # Everything under here are type overrides
