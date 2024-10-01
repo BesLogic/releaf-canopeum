@@ -13,4 +13,4 @@ Make sure that the code wasn't copied from elsewhere (check one):
 - [ ] This is your own original code
 - [ ] You have made sure that we have permission to use the copied code and that we follow its licensing
 
-_Add a short description of your changes, including visual aid and useful links_
+_Add a description of your changes, including visual aid and useful links_
