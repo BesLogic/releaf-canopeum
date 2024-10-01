@@ -236,7 +236,7 @@ class Batch(models.Model):
 
     def plant_count(self):
         batch_species = BatchSpecies.objects.filter(batch=self)
-        return reduce(lambda x, y: x + y.quantity, batch_species, 0)
+        return sum(specie.quantity for specie in batch_species)
 
 
 class FertilizertypeInternationalization(models.Model):
