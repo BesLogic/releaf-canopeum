@@ -157,11 +157,11 @@ class Site(models.Model):
     announcement = models.ForeignKey(Announcement, models.SET_NULL, blank=True, null=True)
     image = models.ForeignKey(Asset, models.SET_NULL, blank=True, null=True)
 
-    def get_plant_count(self):
+    def get_plant_count(self) -> int:
         site_species = Sitetreespecies.objects.filter(site=self)
         return reduce(lambda x, y: x + y.quantity, site_species, 0)
 
-    def get_sponsor_progress(self):
+    def get_sponsor_progress(self) -> float:
         total_plant_count = self.get_plant_count()
         if total_plant_count == 0:
             return 0
