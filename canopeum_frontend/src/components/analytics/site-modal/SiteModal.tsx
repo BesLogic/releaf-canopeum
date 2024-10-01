@@ -120,7 +120,6 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
           <div className='mb-3'>
             <label className='form-label text-capitalize' htmlFor='site-name'>
               {t('analytics.site-modal.site-name')}
-              {site.siteName}
             </label>
             <input
               className='form-control'
