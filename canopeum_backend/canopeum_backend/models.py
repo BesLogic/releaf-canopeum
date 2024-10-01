@@ -233,7 +233,7 @@ class Batch(models.Model):
         tree_type = Treetype.objects.get(pk=pk)
         return BatchSupportedSpecies.objects.create(tree_type=tree_type, batch=self)
 
-    def plant_count(self):
+    def plant_count(self) -> int:
         batch_species = BatchSpecies.objects.filter(batch=self)
         return sum(specie.quantity for specie in batch_species)
 
