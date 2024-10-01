@@ -166,7 +166,7 @@ class Site(models.Model):
             return 0
 
         batches = Batch.objects.filter(site=self)
-        sponsored_plant_count = sum(batch.plant_count() for specie in batches)
+        sponsored_plant_count = sum(batch.plant_count() for batch in batches)
         if sponsored_plant_count >= total_plant_count:
             return 100
 
