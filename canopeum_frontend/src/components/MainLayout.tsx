@@ -72,8 +72,6 @@ const MainLayout = () => {
         </Route>
         <Route element={<Map />} path='*' />
 
-        <Route element={<Home />} path='/home' />
-
         {/* The following routes are accessible to Visitors without any authentication */}
         <Route element={<SiteSocialPage />} path='/sites/:siteId/social' />
         <Route element={<PostDetailsPage />} path='/posts/:postId' />

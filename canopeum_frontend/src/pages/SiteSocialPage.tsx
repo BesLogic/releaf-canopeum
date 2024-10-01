@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 
 import LoadingPage from './LoadingPage'
+import SiteAdminTabs from '@components/analytics/SiteAdminTabs'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import CreatePostWidget from '@components/CreatePostWidget'
 import AnnouncementCard from '@components/social/AnnouncementCard'
@@ -130,6 +131,12 @@ const SiteSocialPage = () => {
       ref={scrollableContainerRef}
     >
       <div className='page-container d-flex flex-column gap-4'>
+        {viewMode === 'admin' && (
+          <div className='row m-0'>
+            <SiteAdminTabs siteId={siteId} />
+          </div>
+        )}
+
         <div className='row m-0'>
           <div className='col-12'>
             <SiteSocialHeader site={site} viewMode={viewMode} />
