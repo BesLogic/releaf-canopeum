@@ -4,10 +4,9 @@
 import random
 from collections.abc import Mapping
 from decimal import Decimal
-from typing import Any, TypeVar
+from typing import Any
 
 from django.contrib.auth.password_validation import validate_password
-from django.db import models
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
@@ -44,8 +43,6 @@ from .models import (
     Widget,
 )
 from .utils.weather_service import get_weather_data
-
-_ModelT = TypeVar("_ModelT", bound=models.Model)
 
 
 class IntegerListFieldSerializer(serializers.ListField):
@@ -189,7 +186,8 @@ class InternationalizationSerializer(serializers.ModelSerializer[Any]):
         fields = ("en", "fr")
 
 
-class TranslatableSerializerMixin(serializers.Serializer[_ModelT]):
+# Note about Any: Generic is the type of "instance", not set here
+class TranslatableSerializerMixin(serializers.Serializer[Any]):
     en = serializers.SerializerMethodField()
     fr = serializers.SerializerMethodField()
     __translate_key__ = "name"
@@ -205,25 +203,29 @@ class TranslatableSerializerMixin(serializers.Serializer[_ModelT]):
         return InternationalizationSerializer(getattr(obj, self.__translate_key__)).data.get("fr")
 
 
-class SiteTypeSerializer(TranslatableSerializerMixin[Sitetype]):
+class SiteTypeSerializer(serializers.ModelSerializer[Sitetype], TranslatableSerializerMixin):
     class Meta:
         model = Sitetype
         fields = ("id", *TranslatableSerializerMixin.Meta.fields)
 
 
-class TreeTypeSerializer(TranslatableSerializerMixin[Treetype]):
+class TreeTypeSerializer(serializers.ModelSerializer[Treetype], TranslatableSerializerMixin):
     class Meta:
         model = Treetype
         fields = ("id", *TranslatableSerializerMixin.Meta.fields)
 
 
-class FertilizerTypeSerializer(TranslatableSerializerMixin[Fertilizertype]):
+class FertilizerTypeSerializer(
+    serializers.ModelSerializer[Fertilizertype], TranslatableSerializerMixin
+):
     class Meta:
         model = Fertilizertype
         fields = ("id", *TranslatableSerializerMixin.Meta.fields)
 
 
-class MulchLayerTypeSerializer(TranslatableSerializerMixin[Mulchlayertype]):
+class MulchLayerTypeSerializer(
+    serializers.ModelSerializer[Mulchlayertype], TranslatableSerializerMixin
+):
     class Meta:
         model = Mulchlayertype
         fields = ("id", *TranslatableSerializerMixin.Meta.fields)
@@ -241,7 +243,9 @@ class ContactSerializer(serializers.ModelSerializer[Contact]):
         fields = "__all__"
 
 
-class SitetreespeciesSerializer(TranslatableSerializerMixin[Sitetreespecies]):
+class SitetreespeciesSerializer(
+    serializers.ModelSerializer[Sitetreespecies], TranslatableSerializerMixin
+):
     id = serializers.SerializerMethodField()
     __translate_key__ = "tree_type"
 
