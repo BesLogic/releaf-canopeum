@@ -22,7 +22,7 @@ const buildChartOptions = (siteSummaries: SiteSummary[]) => {
 
   // total-functions/no-partial-division -- length checked above
   options.average = siteSummaries.reduce(
-    (accumulator, current) => accumulator + current.progress,
+    (accumulator, current) => accumulator + current.sponsorProgress,
     0,
   ) / siteSummaries.length
 
@@ -34,10 +34,10 @@ const buildChartOptions = (siteSummaries: SiteSummary[]) => {
     // However, bars will appear really thin, so we use stacked bars to stack
     // 0-height bars on top of each other.
     const strackedSerie = Array.from<number>({ length: siteSummaries.length }).fill(0)
-    strackedSerie[siteIndex] = site.progress
+    strackedSerie[siteIndex] = site.sponsorProgress
 
     options.colors.push(
-      site.progress > options.average
+      site.sponsorProgress > options.average
         ? 'var(--bs-primary)'
         : 'var(--bs-secondary)',
     )
