@@ -21,14 +21,6 @@ LAT_LONG_SEP = re.compile(r"°|\'|\"")
 gmaps = googlemaps.Client(key=GOOGLE_API_KEY) if GOOGLE_API_KEY else None
 
 
-class TranslatableModelMixin(models.Model):
-    en = models.TextField(db_column="EN", blank=True, null=True)
-    fr = models.TextField(db_column="FR", blank=True, null=True)
-
-    class Meta:
-        abstract = True
-
-
 class RoleName(models.TextChoices):
     USER = "User"
     SITEMANAGER = "SiteManager"
@@ -134,11 +126,13 @@ class Coordinate(models.Model):
         )
 
 
-class SitetypeInternationalization(TranslatableModelMixin): ...
+class Internationalization(models.Model):
+    en = models.TextField(db_column="EN", blank=True, null=True)
+    fr = models.TextField(db_column="FR", blank=True, null=True)
 
 
 class Sitetype(models.Model):
-    name = models.ForeignKey(SitetypeInternationalization, models.DO_NOTHING, blank=True, null=True)
+    name = models.ForeignKey(Internationalization, models.DO_NOTHING, blank=True, null=True)
 
     @override
     def delete(self, using=None, keep_parents=False):
@@ -225,11 +219,8 @@ class Batch(models.Model):
         return BatchSupportedSpecies.objects.create(tree_type=tree_type, batch=self)
 
 
-class FertilizertypeInternationalization(TranslatableModelMixin): ...
-
-
 class Fertilizertype(models.Model):
-    name = models.ForeignKey(FertilizertypeInternationalization, models.DO_NOTHING)
+    name = models.ForeignKey(Internationalization, models.DO_NOTHING)
 
 
 class Batchfertilizer(models.Model):
@@ -244,15 +235,8 @@ class Batchfertilizer(models.Model):
         )
 
 
-class MulchlayertypeInternationalization(models.Model):
-    en = models.TextField(db_column="EN", blank=True, null=True)
-    fr = models.TextField(db_column="FR", blank=True, null=True)
-
-
 class Mulchlayertype(models.Model):
-    name = models.ForeignKey(
-        MulchlayertypeInternationalization, models.DO_NOTHING, blank=True, null=True
-    )
+    name = models.ForeignKey(Internationalization, models.DO_NOTHING, blank=True, null=True)
 
 
 class Batchmulchlayer(models.Model):
@@ -267,11 +251,8 @@ class Batchmulchlayer(models.Model):
         )
 
 
-class TreespeciestypeInternationalization(TranslatableModelMixin): ...
-
-
 class Treetype(models.Model):
-    name = models.ForeignKey(TreespeciestypeInternationalization, models.DO_NOTHING)
+    name = models.ForeignKey(Internationalization, models.DO_NOTHING)
 
 
 class BatchSpecies(models.Model):
@@ -385,9 +366,6 @@ class Widget(models.Model):
 class Like(models.Model):
     user = models.ForeignKey(User, models.CASCADE)
     post = models.ForeignKey(Post, models.CASCADE)
-
-
-class Internationalization(TranslatableModelMixin): ...
 
 
 # Everything under here are type overrides
