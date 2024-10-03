@@ -167,9 +167,8 @@ class Site(models.Model):
 
         batches = Batch.objects.filter(site=self)
         sponsored_plant_count = sum(batch.plant_count() for batch in batches)
-        if sponsored_plant_count >= total_plant_count:
-            return 100
 
+        # Note: We don't cap the progress at 100% so it's obvious if there's a data issue
         return sponsored_plant_count / total_plant_count * 100
 
     @override
