@@ -1,4 +1,4 @@
-name: canopeum_frontend
+name: Frontend PR validation
 
 on:
   push:
@@ -6,14 +6,14 @@ on:
       - main
     paths:
       - "canopeum_frontend/**"
-      - ".github/workflows/canopeum_frontend.yml"
+      - ".github/workflows/canopeum_frontend_pr_validation.yml"
   pull_request:
     branches:
       - main
       - production
     paths:
       - "canopeum_frontend/**"
-      - ".github/workflows/canopeum_frontend.yml"
+      - ".github/workflows/canopeum_frontend_pr_validation.yml"
 
 jobs:
   Lint:

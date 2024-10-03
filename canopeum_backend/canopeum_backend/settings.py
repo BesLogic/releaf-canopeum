@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import os
+import sys
 from datetime import timedelta
 from pathlib import Path
 
@@ -170,17 +171,24 @@ SPECTACULAR_SETTINGS = {
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
 DATABASES = {
-    "default": dj_database_url.parse(
-        "mysql://canopeum_user:{}@{}:{}/canopeum_db".format(
-            get_secret("MYSQL_PASSWORD_CANOPEUM", ""),
-            get_secret("MYSQL_HOST_CANOPEUM", "localhost"),
-            get_secret("MYSQL_PORT_CANOPEUM", "3308"),
-        ),
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
+    "default": (
+        # If running Django tests, use an in-memory database,
+        # which is faster and requires less setup
+        # Using conditional instead of TEST dictionary because USER can't be overriden
+        # https://docs.djangoproject.com/en/5.1/topics/testing/overview/#the-test-database
+        {"ENGINE": "django.db.backends.sqlite3", "NAME": ":memory:"}
+        if sys.argv[1] == "test"
+        else dj_database_url.parse(
+            "mysql://canopeum_user:{}@{}:{}/canopeum_db".format(
+                get_secret("MYSQL_PASSWORD_CANOPEUM", ""),
+                get_secret("MYSQL_HOST_CANOPEUM", "localhost"),
+                get_secret("MYSQL_PORT_CANOPEUM", "3308"),
+            ),
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    ),
 }
 
 # Password validation

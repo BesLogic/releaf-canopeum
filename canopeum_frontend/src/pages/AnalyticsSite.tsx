@@ -6,6 +6,7 @@ import LoadingPage from './LoadingPage'
 import AnalyticsSiteHeader from '@components/analytics/AnalyticsSiteHeader'
 import CreateBatchModal from '@components/analytics/batch-modal/CreateBatchModal'
 import BatchTable from '@components/analytics/BatchTable'
+import SiteAdminTabs from '@components/analytics/SiteAdminTabs'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
 import type { SiteSummaryDetail } from '@services/api'
@@ -61,6 +62,8 @@ const AnalyticsSite = () => {
 
   return (
     <div className='page-container d-flex flex-column gap-4'>
+      <SiteAdminTabs siteId={siteSummary.id} />
+
       <AnalyticsSiteHeader siteSummary={siteSummary} />
 
       <div className='bg-cream rounded py-4 px-5'>

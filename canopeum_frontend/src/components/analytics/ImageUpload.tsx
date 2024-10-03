@@ -1,4 +1,6 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions -- custom input label */
+import './ImageUpload.scss'
+
 import type { ChangeEvent, DragEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -51,8 +53,8 @@ const ImageUpload = ({ id, onChange, imageUrl }: Props) => {
         }}
       >
         <img alt='' src={UploadIcon} />
-        <div className='btn btn-outline-primary'>{t('generic.upload')}</div>
-        <div>{t('analytics.image-upload')}</div>
+        <div className='btn btn-outline-primary upload-button'>{t('generic.upload')}</div>
+        <div className='upload-instruction'>{t('analytics.image-upload')}</div>
       </label>
       <input
         accept={supportedFileTypes.join(',')}
