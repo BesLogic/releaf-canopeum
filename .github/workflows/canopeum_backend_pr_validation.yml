@@ -1,4 +1,4 @@
-name: canopeum_backend
+name: Backend PR validation
 
 on:
   push:
@@ -6,14 +6,14 @@ on:
       - main
     paths:
       - "canopeum_backend/**"
-      - ".github/workflows/canopeum_backend.yml"
+      - ".github/workflows/canopeum_backend_pr_validation.yml"
   pull_request:
     branches:
       - main
       - production
     paths:
       - "canopeum_backend/**"
-      - ".github/workflows/canopeum_backend.yml"
+      - ".github/workflows/canopeum_backend_pr_validation.yml"
 
 env:
   # Since the Django mypy extention RUNS the config file, we need a non-empty secret to avoid
@@ -21,6 +21,19 @@ env:
   SECRET_KEY_DJANGO_CANOPEUM: mypy-ext
 
 jobs:
+  django-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: canopeum_backend
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv using the standalone installer
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      - run: uv sync --locked --extra dev
+      - run: echo "$PWD/.venv/bin" >> $GITHUB_PATH
+      - name: Run Django Tests
+        run: python manage.py test
   mypy:
     runs-on: ubuntu-latest
     defaults:
