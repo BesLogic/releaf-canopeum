@@ -1,6 +1,7 @@
 # flake8: noqa: S311 -- Accept random int generation for database seeding
 
 import random
+from collections.abc import Iterable
 from datetime import timedelta
 from pathlib import Path
 
@@ -28,6 +29,7 @@ from canopeum_backend.models import (
     Role,
     Site,
     Siteadmin,
+    Sitetreespecies,
     Sitetype,
     Treetype,
     User,
@@ -266,12 +268,32 @@ def create_sponsor_for_batch():
         )
 
 
+def create_species_for_site(site: Site, batches: Iterable[Batch]):
+    already_added_tree_type: dict[int, Sitetreespecies] = {}
+    for batch in batches:
+        for batch_specie in BatchSpecies.objects.filter(batch=batch):
+            quantity = batch_specie.quantity
+            # Add more to the site's quantity than the batches' quantity
+            # so they don't appear at 100%. Except Canopeum, let's use it as a 100% example
+            if site.name != "Canopeum":
+                quantity += random.randint(0, 50)
+            if batch_specie.tree_type.pk in already_added_tree_type:
+                site_tree_specie = already_added_tree_type[batch_specie.tree_type.pk]
+                site_tree_specie.quantity += quantity
+                site_tree_specie.save()
+            else:
+                site_tree_specie = Sitetreespecies.objects.create(
+                    site=site, tree_type=batch_specie.tree_type, quantity=quantity
+                )
+                already_added_tree_type[batch_specie.tree_type.pk] = site_tree_specie
+
+
 def create_batches_for_site(site):
     num_batches = random.randint(3, 8)
     for i in range(num_batches):
         number_of_seed = random.randint(50, 200)
-        plant_count = random.randint(0, number_of_seed)
-        survived_count = random.randint(0, plant_count)
+        survived_count = random.randint(100, 200)
+        replace_count = random.randint(0, 50)
 
         sponsor = create_sponsor_for_batch()
 
@@ -281,9 +303,8 @@ def create_batches_for_site(site):
             size=random.randint(20, 150),
             sponsor=sponsor,
             soil_condition="Good",
-            plant_count=plant_count,
             survived_count=survived_count,
-            replace_count=plant_count - survived_count,
+            replace_count=replace_count,
             total_number_seed=number_of_seed,
             total_propagation=random.randint(0, number_of_seed),
         )
@@ -294,6 +315,7 @@ def create_batches_for_site(site):
                 batch=batch,
                 fertilizer_type=fertilizer_type,
             )
+        yield batch
 
 
 class Command(BaseCommand):
@@ -349,8 +371,7 @@ class Command(BaseCommand):
         self.create_roles()
         self.create_users()
 
-        self.create_canopeum_site()
-        self.create_other_sites()
+        self.create_sites()
 
         self.create_siteadmins()
         self.stdout.write(self.style.SUCCESS("Data Generated"))
@@ -472,8 +493,9 @@ class Command(BaseCommand):
             role=Role.objects.get(name="User"),
         )
 
-    def create_canopeum_site(self):
-        site = Site.objects.create(
+    def create_sites(self):
+        # Canopeum's site
+        site1 = Site.objects.create(
             name="Canopeum",
             is_public=True,
             site_type=Sitetype.objects.get(name=Internationalization.objects.get(en="Parks")),
@@ -502,15 +524,16 @@ class Command(BaseCommand):
                 link="https://www.canopeum-pos.com",
             ),
         )
-        create_batches_for_site(site)
+        batches = create_batches_for_site(site1)
+        create_species_for_site(site1, batches)
         post = Post.objects.create(
-            site=site,
+            site=site1,
             body="The season is officially started; "
             + "new plants are starting to grow and our volunteers are very dedicated!",
             share_count=5,
         )
         post.media.add(*Asset.objects.filter(asset__contains="canopeum_post_img"))
-        create_posts_for_site(site)
+        create_posts_for_site(site1)
         Comment.objects.create(
             body="Wow, I'm very excited to join the team!",
             user=User.objects.get(email="tyrion@lannister.com"),
@@ -521,8 +544,8 @@ class Command(BaseCommand):
             user=User.objects.get(email="normal@user.com"),
             post=post,
         )
+        # end of Canopeum's site
 
-    def create_other_sites(self):
         site_2 = Site.objects.create(
             name="Maple Grove Retreat",
             is_public=True,
@@ -553,7 +576,8 @@ class Command(BaseCommand):
                 link="https://www.maplegroveretreat.com/events/maple-syrup-festival",
             ),
         )
-        create_batches_for_site(site_2)
+        batches = create_batches_for_site(site_2)
+        create_species_for_site(site_2, batches)
         create_posts_for_site(site_2)
 
         site_3 = Site.objects.create(
@@ -587,7 +611,8 @@ class Command(BaseCommand):
                 link="https://www.lakesideoasis.com/winter-getaway",
             ),
         )
-        create_batches_for_site(site_3)
+        batches = create_batches_for_site(site_3)
+        create_species_for_site(site_3, batches)
         create_posts_for_site(site_3)
 
         site_4 = Site.objects.create(
@@ -621,7 +646,8 @@ class Command(BaseCommand):
                 link="https://www.evergreentrail.com/guided-walks",
             ),
         )
-        create_batches_for_site(site_4)
+        batches = create_batches_for_site(site_4)
+        create_species_for_site(site_4, batches)
         create_posts_for_site(site_4)
 
     def create_siteadmins(self):
