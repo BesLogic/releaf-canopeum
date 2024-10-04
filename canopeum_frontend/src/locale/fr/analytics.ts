@@ -5,6 +5,8 @@ export default {
   'create-site': 'Créer un Nouveau Site',
   'edit-site-info': "Modifier les données d'un Site",
   average: 'moyenne',
+  batch_one: 'lot',
+  batch_other: 'lots',
   sufficient: 'suffisant',
   insufficient: 'insuffisant',
   'table-row-1': 'nom du lot / ID',
@@ -29,9 +31,7 @@ export default {
   'success-rate-chart': {
     title: 'Taux De Réussite Annuel Moyen Par Site',
   },
-  batches: {
-    'batch-tracking': 'Suivi des Lots',
-  },
+  'batch-tracking': 'Suivi des Lots',
   'site-summary': {
     planted: 'Planté',
     survived: 'Survécu',
