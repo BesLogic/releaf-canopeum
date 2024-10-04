@@ -9,6 +9,8 @@ export default {
   },
   comments: {
     'leave-a-comment': 'Laisser un Commentaire',
+    word_one: 'mot',
+    word_other: 'mots',
     comments: 'Commentaires',
     send: 'Envoyer',
     'comment-body-required': 'Votre commentaire ne peut pas être vide.',

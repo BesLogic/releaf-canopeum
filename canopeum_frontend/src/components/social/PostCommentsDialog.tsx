@@ -165,7 +165,7 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose }: Props) => {
                   >
                     <span>{commentBodyNumberOfWords}/{MAXIMUM_WORDS_PER_COMMENT}</span>
                     <span className='ms-1'>
-                      {translate('social.comments.words', { count: MAXIMUM_WORDS_PER_COMMENT })}
+                      {translate('social.comments.word', { count: MAXIMUM_WORDS_PER_COMMENT })}
                     </span>
                   </div>
                 </div>

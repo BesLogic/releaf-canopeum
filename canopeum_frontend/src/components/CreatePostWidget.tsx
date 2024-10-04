@@ -164,7 +164,7 @@ const CreatePostWidget = ({ siteId, addNewPost }: Props) => {
           <div className='max-words end-0 text-end' style={{ bottom: '-1.6rem' }}>
             <span>{postBodyNumberOfWords}/{MAXIMUM_WORDS_PER_POST}</span>
             <span className='ms-1'>
-              {translate('social.comments.words', { count: MAXIMUM_WORDS_PER_POST })}
+              {translate('social.comments.word', { count: MAXIMUM_WORDS_PER_POST })}
             </span>
           </div>
 
