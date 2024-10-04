@@ -82,6 +82,9 @@ module.exports = {
         // We need to apply it directly on object literals to check for excess properties
         // https://www.typescriptlang.org/docs/handbook/2/objects.html#excess-property-checks
         'no-autofix/no-relative-import-paths/no-relative-import-paths': 'off',
+        // i18next uses snake_case for special handling
+        // https://www.i18next.com/translation-function/plurals#singular-plural
+        camelcase: 'off',
       },
     },
   ],
