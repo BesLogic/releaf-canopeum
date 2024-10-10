@@ -1,7 +1,7 @@
 # You can run this locally with `pre-commit run [--all]`
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
@@ -15,7 +15,7 @@ repos:
 
   # You can run this locally with `ruff check --fix || ruff format`
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.5.7 # must match canopeum_backend/pyproject.toml
+    rev: v0.6.9 # must match canopeum_backend/pyproject.toml
     hooks:
       # Run the linter.
       - id: ruff
