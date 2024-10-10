@@ -1,7 +1,7 @@
 # You can run this locally with `pre-commit run [--all]`
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
@@ -63,7 +63,7 @@ repos:
             "eslint-plugin-prefer-arrow@1.2.3",
             "eslint-plugin-regexp@2.6.0",
             "eslint-plugin-simple-import-sort@12.1.1",
-            "eslint-plugin-sonarjs@2.0.3",
+            # "eslint-plugin-sonarjs@2.0.3",
             "eslint-plugin-unicorn@55.0.0",
             # Transitive dependencies of ESLint-Config-Beslogic
             "@typescript-eslint/eslint-plugin@8.8.1", # dependency of typescript-eslint
