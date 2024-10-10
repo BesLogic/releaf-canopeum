@@ -36,40 +36,39 @@ repos:
         pass_filenames: false
         additional_dependencies: [
             "eslint@8.57.0",
-            # Keep these in sync with canopeum_frontend/package.json
-            "eslint-config-beslogic@2.4.14",
-            "eslint-plugin-jsx-a11y@6.8.0",
-            "eslint-plugin-react@7.34.1",
-            "eslint-plugin-react-hooks@4.6.0",
+            # Keep these in sync with canopeum_frontend/package-lock.json
+            "eslint-config-beslogic@3.0.2",
+            "eslint-plugin-jsx-a11y@6.10.0",
+            "eslint-plugin-react@7.36.1",
+            "eslint-plugin-react-hooks@4.6.2",
             "eslint-plugin-react-prefer-function-component@3.3.0",
-            "eslint-plugin-react-refresh@0.4.5",
+            "eslint-plugin-react-refresh@0.4.12",
             # NOTE: Optional, removing to reduce bundle size: exceeds tier max size 250MiB
             # "@eslint-community/eslint-plugin-eslint-comments",
-            # "eslint-plugin-total-functions",
-            # "eslint-plugin-no-autofix",
             # "eslint-import-resolver-typescript",
-            # "eslint-plugin-testing-library",
+            # "eslint-plugin-etc",
             # "eslint-plugin-jest-formatting",
             # "eslint-plugin-jest",
-            # "eslint-plugin-etc",
+            # "eslint-plugin-no-autofix",
+            # "eslint-plugin-sonarjs@2.0.3",
+            # "eslint-plugin-testing-library",
             #
             # pre-commit requires *explicitly* setting all dependencies, which is... annoying
             # (this is to prevent inconsistent dependency ranges and promote repeatability)
             # Dependencies of ESLint-Config-Beslogic
-            "confusing-browser-globals@1.0",
-            "eslint-plugin-autofix@2.0",
+            "@stylistic/eslint-plugin@2.9.0",
+            "confusing-browser-globals@1.0.11",
+            "eslint-plugin-autofix@2.2.0",
             "eslint-plugin-extra-rules@0.0.0-development",
-            "eslint-plugin-import@2.27.3",
-            "eslint-plugin-no-relative-import-paths@1.5.3",
-            "eslint-plugin-prefer-arrow@1.2",
-            "eslint-plugin-regexp@2.0",
-            "eslint-plugin-simple-import-sort@12.0",
-            "eslint-plugin-sonarjs@1.0",
-            "eslint-plugin-unicorn@49.0",
-            "eslint-plugin-unused-imports@3.2",
+            "eslint-plugin-import@2.30.0",
+            "eslint-plugin-no-relative-import-paths@1.5.5",
+            "eslint-plugin-prefer-arrow@1.2.3",
+            "eslint-plugin-regexp@2.6.0",
+            "eslint-plugin-simple-import-sort@12.1.1",
+            "eslint-plugin-unicorn@55.0.0",
             # Transitive dependencies of ESLint-Config-Beslogic
-            "@typescript-eslint/eslint-plugin@7.18", # dependency of typescript-eslint
-            "@typescript-eslint/parser@7.18", # dependency of typescript-eslint
+            "@typescript-eslint/eslint-plugin@8.8.1", # dependency of typescript-eslint
+            "@typescript-eslint/parser@8.8.1", # dependency of typescript-eslint
             "semver@6.3.1", # dependency of eslint-plugin-import
           ]
 

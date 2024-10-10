@@ -9,7 +9,7 @@ import AnalyticsSite from '@pages/AnalyticsSite'
 import Home from '@pages/Home'
 import LoadingPage from '@pages/LoadingPage'
 import Login from '@pages/Login'
-import Map from '@pages/Map'
+import MapPage from '@pages/MapPage'
 import PostDetailsPage from '@pages/PostDetailsPage'
 import Register from '@pages/Register'
 import SiteSocialPage from '@pages/SiteSocialPage'
@@ -70,12 +70,12 @@ const MainLayout = () => {
           <Route element={<UserManagement />} path='/user-management' />
           <Route element={<Utilities />} path='/utilities' />
         </Route>
-        <Route element={<Map />} path='*' />
+        <Route element={<MapPage />} path='*' />
 
         {/* The following routes are accessible to Visitors without any authentication */}
         <Route element={<SiteSocialPage />} path='/sites/:siteId/social' />
         <Route element={<PostDetailsPage />} path='/posts/:postId' />
-        <Route element={<Map />} path='/map' />
+        <Route element={<MapPage />} path='/map' />
       </Route>
     </Routes>
   )
