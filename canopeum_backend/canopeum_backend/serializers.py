@@ -186,64 +186,49 @@ class InternationalizationSerializer(serializers.ModelSerializer[Any]):
         fields = ("en", "fr")
 
 
-class SiteTypeSerializer(serializers.ModelSerializer[Sitetype]):
+# Note about Any: Generic is the type of "instance", not set here
+class TranslatableSerializerMixin(serializers.Serializer[Any]):
     en = serializers.SerializerMethodField()
     fr = serializers.SerializerMethodField()
+    __translate_key__ = "name"
 
+    class Meta:
+        abstract = True
+        fields = ("en", "fr")
+
+    def get_en(self, obj):
+        return InternationalizationSerializer(getattr(obj, self.__translate_key__)).data.get("en")
+
+    def get_fr(self, obj):
+        return InternationalizationSerializer(getattr(obj, self.__translate_key__)).data.get("fr")
+
+
+class SiteTypeSerializer(serializers.ModelSerializer[Sitetype], TranslatableSerializerMixin):
     class Meta:
         model = Sitetype
-        fields = ("id", "en", "fr")
-
-    def get_en(self, obj):
-        return InternationalizationSerializer(obj.name).data.get("en", None)
-
-    def get_fr(self, obj):
-        return InternationalizationSerializer(obj.name).data.get("fr", None)
+        fields = ("id", *TranslatableSerializerMixin.Meta.fields)
 
 
-class TreeTypeSerializer(serializers.ModelSerializer[Treetype]):
-    en = serializers.SerializerMethodField()
-    fr = serializers.SerializerMethodField()
-
+class TreeTypeSerializer(serializers.ModelSerializer[Treetype], TranslatableSerializerMixin):
     class Meta:
         model = Treetype
-        fields = ("id", "en", "fr")
-
-    def get_en(self, obj):
-        return InternationalizationSerializer(obj.name).data.get("en", None)
-
-    def get_fr(self, obj):
-        return InternationalizationSerializer(obj.name).data.get("fr", None)
+        fields = ("id", *TranslatableSerializerMixin.Meta.fields)
 
 
-class FertilizerTypeSerializer(serializers.ModelSerializer[Fertilizertype]):
-    en = serializers.SerializerMethodField()
-    fr = serializers.SerializerMethodField()
-
+class FertilizerTypeSerializer(
+    serializers.ModelSerializer[Fertilizertype], TranslatableSerializerMixin
+):
     class Meta:
         model = Fertilizertype
-        fields = ("id", "en", "fr")
-
-    def get_en(self, obj: Fertilizertype):
-        return InternationalizationSerializer(obj.name).data.get("en", None)
-
-    def get_fr(self, obj: Fertilizertype):
-        return InternationalizationSerializer(obj.name).data.get("fr", None)
+        fields = ("id", *TranslatableSerializerMixin.Meta.fields)
 
 
-class MulchLayerTypeSerializer(serializers.ModelSerializer[Mulchlayertype]):
-    en = serializers.SerializerMethodField()
-    fr = serializers.SerializerMethodField()
-
+class MulchLayerTypeSerializer(
+    serializers.ModelSerializer[Mulchlayertype], TranslatableSerializerMixin
+):
     class Meta:
         model = Mulchlayertype
-        fields = ("id", "en", "fr")
-
-    def get_en(self, obj: Mulchlayertype):
-        return InternationalizationSerializer(obj.name).data.get("en", None)
-
-    def get_fr(self, obj: Mulchlayertype):
-        return InternationalizationSerializer(obj.name).data.get("fr", None)
+        fields = ("id", *TranslatableSerializerMixin.Meta.fields)
 
 
 class AnnouncementSerializer(serializers.ModelSerializer[Announcement]):
@@ -258,23 +243,18 @@ class ContactSerializer(serializers.ModelSerializer[Contact]):
         fields = "__all__"
 
 
-class SitetreespeciesSerializer(serializers.ModelSerializer[Sitetreespecies]):
-    en = serializers.SerializerMethodField()
-    fr = serializers.SerializerMethodField()
+class SitetreespeciesSerializer(
+    serializers.ModelSerializer[Sitetreespecies], TranslatableSerializerMixin
+):
     id = serializers.SerializerMethodField()
+    __translate_key__ = "tree_type"
 
     class Meta:
         model = Sitetreespecies
-        fields = ("id", "quantity", "en", "fr")
+        fields = ("id", "quantity", *TranslatableSerializerMixin.Meta.fields)
 
     def get_id(self, obj) -> int:
         return TreeTypeSerializer(obj.tree_type).data.get("id", None)  # type: ignore[no-any-return]
-
-    def get_en(self, obj):
-        return TreeTypeSerializer(obj.tree_type).data.get("en", None)
-
-    def get_fr(self, obj):
-        return TreeTypeSerializer(obj.tree_type).data.get("fr", None)
 
 
 class AssetSerializer(serializers.ModelSerializer[Asset]):

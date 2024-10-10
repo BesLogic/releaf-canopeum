@@ -23,17 +23,14 @@ from canopeum_backend.models import (
     Contact,
     Coordinate,
     Fertilizertype,
-    FertilizertypeInternationalization,
+    Internationalization,
     Mulchlayertype,
-    MulchlayertypeInternationalization,
     Post,
     Role,
     Site,
     Siteadmin,
     Sitetreespecies,
     Sitetype,
-    SitetypeInternationalization,
-    TreespeciestypeInternationalization,
     Treetype,
     User,
 )
@@ -402,7 +399,7 @@ class Command(BaseCommand):
         ]
         for _ in fertilizer_types:
             Fertilizertype.objects.create(
-                name=FertilizertypeInternationalization.objects.create(en=_[0], fr=_[1])
+                name=Internationalization.objects.create(en=_[0], fr=_[1])
             )
 
     def create_mulch_layer_types(self):
@@ -416,14 +413,12 @@ class Command(BaseCommand):
         ]
         for _ in mulch_layer_types:
             Mulchlayertype.objects.create(
-                name=MulchlayertypeInternationalization.objects.create(en=_[0], fr=_[1])
+                name=Internationalization.objects.create(en=_[0], fr=_[1])
             )
 
     def create_tree_types(self):
         for _ in tree_types:
-            Treetype.objects.create(
-                name=TreespeciestypeInternationalization.objects.create(en=_[0], fr=_[1])
-            )
+            Treetype.objects.create(name=Internationalization.objects.create(en=_[0], fr=_[1]))
 
     def create_site_types(self):
         site_types = [
@@ -435,9 +430,7 @@ class Command(BaseCommand):
         ]
 
         for _ in site_types:
-            Sitetype.objects.create(
-                name=SitetypeInternationalization.objects.create(en=_[0], fr=_[1])
-            )
+            Sitetype.objects.create(name=Internationalization.objects.create(en=_[0], fr=_[1]))
 
     def create_assets(self):
         image_file_names = (
@@ -505,9 +498,7 @@ class Command(BaseCommand):
         site1 = Site.objects.create(
             name="Canopeum",
             is_public=True,
-            site_type=Sitetype.objects.get(
-                name=SitetypeInternationalization.objects.get(en="Parks")
-            ),
+            site_type=Sitetype.objects.get(name=Internationalization.objects.get(en="Parks")),
             coordinate=Coordinate.objects.create(
                 dms_latitude="45°30'06.1\"N",
                 dms_longitude="73°34'02.3\"W",
@@ -558,9 +549,7 @@ class Command(BaseCommand):
         site_2 = Site.objects.create(
             name="Maple Grove Retreat",
             is_public=True,
-            site_type=Sitetype.objects.get(
-                name=SitetypeInternationalization.objects.get(en="Parks")
-            ),
+            site_type=Sitetype.objects.get(name=Internationalization.objects.get(en="Parks")),
             coordinate=Coordinate.objects.create(
                 dms_latitude="46°48'33.6\"N",
                 dms_longitude="71°18'40.0\"W",
@@ -594,9 +583,7 @@ class Command(BaseCommand):
         site_3 = Site.objects.create(
             name="Lakeside Oasis",
             is_public=True,
-            site_type=Sitetype.objects.get(
-                name=SitetypeInternationalization.objects.get(en="Parks")
-            ),
+            site_type=Sitetype.objects.get(name=Internationalization.objects.get(en="Parks")),
             coordinate=Coordinate.objects.create(
                 dms_latitude="48°36'05.0\"N",
                 dms_longitude="71°18'27.0\"W",
@@ -631,9 +618,7 @@ class Command(BaseCommand):
         site_4 = Site.objects.create(
             name="Evergreen Trail",
             is_public=False,
-            site_type=Sitetype.objects.get(
-                name=SitetypeInternationalization.objects.get(en="Parks")
-            ),
+            site_type=Sitetype.objects.get(name=Internationalization.objects.get(en="Parks")),
             coordinate=Coordinate.objects.create(
                 dms_latitude="46°12'30.0\"N",
                 dms_longitude="74°35'30.0\"W",

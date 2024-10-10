@@ -126,13 +126,13 @@ class Coordinate(models.Model):
         )
 
 
-class SitetypeInternationalization(models.Model):
+class Internationalization(models.Model):
     en = models.TextField(db_column="EN", blank=True, null=True)
     fr = models.TextField(db_column="FR", blank=True, null=True)
 
 
 class Sitetype(models.Model):
-    name = models.ForeignKey(SitetypeInternationalization, models.DO_NOTHING, blank=True, null=True)
+    name = models.ForeignKey(Internationalization, models.DO_NOTHING, blank=True, null=True)
 
     @override
     def delete(self, using=None, keep_parents=False):
@@ -237,13 +237,8 @@ class Batch(models.Model):
         return sum(specie.quantity for specie in batch_species)
 
 
-class FertilizertypeInternationalization(models.Model):
-    en = models.TextField(db_column="EN", blank=True, null=True)
-    fr = models.TextField(db_column="FR", blank=True, null=True)
-
-
 class Fertilizertype(models.Model):
-    name = models.ForeignKey(FertilizertypeInternationalization, models.DO_NOTHING)
+    name = models.ForeignKey(Internationalization, models.DO_NOTHING)
 
 
 class Batchfertilizer(models.Model):
@@ -258,15 +253,8 @@ class Batchfertilizer(models.Model):
         )
 
 
-class MulchlayertypeInternationalization(models.Model):
-    en = models.TextField(db_column="EN", blank=True, null=True)
-    fr = models.TextField(db_column="FR", blank=True, null=True)
-
-
 class Mulchlayertype(models.Model):
-    name = models.ForeignKey(
-        MulchlayertypeInternationalization, models.DO_NOTHING, blank=True, null=True
-    )
+    name = models.ForeignKey(Internationalization, models.DO_NOTHING, blank=True, null=True)
 
 
 class Batchmulchlayer(models.Model):
@@ -281,13 +269,8 @@ class Batchmulchlayer(models.Model):
         )
 
 
-class TreespeciestypeInternationalization(models.Model):
-    en = models.TextField(db_column="EN", blank=True, null=True)
-    fr = models.TextField(db_column="FR", blank=True, null=True)
-
-
 class Treetype(models.Model):
-    name = models.ForeignKey(TreespeciestypeInternationalization, models.DO_NOTHING)
+    name = models.ForeignKey(Internationalization, models.DO_NOTHING)
 
 
 class BatchSpecies(models.Model):
@@ -401,11 +384,6 @@ class Widget(models.Model):
 class Like(models.Model):
     user = models.ForeignKey(User, models.CASCADE)
     post = models.ForeignKey(Post, models.CASCADE)
-
-
-class Internationalization(models.Model):
-    en = models.TextField(db_column="EN", blank=True, null=True)
-    fr = models.TextField(db_column="FR", blank=True, null=True)
 
 
 # Everything under here are type overrides
