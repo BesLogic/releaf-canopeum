@@ -37,7 +37,7 @@ repos:
         additional_dependencies: [
             "eslint@8.57.0",
             # Keep these in sync with canopeum_frontend/package-lock.json
-            "eslint-config-beslogic@3.0.0",
+            "eslint-config-beslogic@3.0.2",
             "eslint-plugin-jsx-a11y@6.10.0",
             "eslint-plugin-react@7.36.1",
             "eslint-plugin-react-hooks@4.6.2",
@@ -45,12 +45,13 @@ repos:
             "eslint-plugin-react-refresh@0.4.12",
             # NOTE: Optional, removing to reduce bundle size: exceeds tier max size 250MiB
             # "@eslint-community/eslint-plugin-eslint-comments",
-            # "eslint-plugin-no-autofix",
             # "eslint-import-resolver-typescript",
-            # "eslint-plugin-testing-library",
+            # "eslint-plugin-etc",
             # "eslint-plugin-jest-formatting",
             # "eslint-plugin-jest",
-            # "eslint-plugin-etc",
+            # "eslint-plugin-no-autofix",
+            # "eslint-plugin-sonarjs@2.0.3",
+            # "eslint-plugin-testing-library",
             #
             # pre-commit requires *explicitly* setting all dependencies, which is... annoying
             # (this is to prevent inconsistent dependency ranges and promote repeatability)
@@ -63,7 +64,6 @@ repos:
             "eslint-plugin-prefer-arrow@1.2.3",
             "eslint-plugin-regexp@2.6.0",
             "eslint-plugin-simple-import-sort@12.1.1",
-            # "eslint-plugin-sonarjs@2.0.3",
             "eslint-plugin-unicorn@55.0.0",
             # Transitive dependencies of ESLint-Config-Beslogic
             "@typescript-eslint/eslint-plugin@8.8.1", # dependency of typescript-eslint

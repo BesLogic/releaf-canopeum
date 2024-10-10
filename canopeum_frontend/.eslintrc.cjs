@@ -74,6 +74,9 @@ module.exports = {
     '@typescript-eslint/no-unsafe-member-access': 'warn',
     // Extremely slow rule
     'etc/no-commented-out-code': 'off',
+    // SonarJS rules we can't disalbe per line because of pre-commit
+    'sonarjs/no-duplicate-string': 'off',
+    'sonarjs/no-intrusive-permissions': 'off',
   },
   overrides: [
     {
