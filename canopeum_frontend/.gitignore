@@ -14,6 +14,8 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
+.yalc/
+*.lock
 
 # Distribution directories
 dist/
