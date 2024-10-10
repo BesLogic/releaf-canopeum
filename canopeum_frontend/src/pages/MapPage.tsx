@@ -1,4 +1,4 @@
-import './Map.scss'
+import './MapPage.scss'
 
 import { useCallback, useEffect, useState } from 'react'
 import ReactMap, { GeolocateControl, Marker, NavigationControl, ScaleControl, type ViewState } from 'react-map-gl/maplibre'
@@ -33,7 +33,7 @@ type MarkerEvent = {
   },
 }
 
-const Map = () => {
+const MapPage = () => {
   const { getApiClient } = useApiClient()
 
   const [sites, setSites] = useState<SiteMap[]>([])
@@ -69,6 +69,8 @@ const Map = () => {
   useEffect(() => {
     void fetchData()
 
+    /* eslint-disable-next-line sonarjs/no-intrusive-permissions
+    -- We only ask when the map is rendered */
     navigator.geolocation.getCurrentPosition(position => {
       const { latitude, longitude } = position.coords
       setMapViewState(mvs => ({ ...mvs, latitude, longitude }))
@@ -153,4 +155,4 @@ const Map = () => {
     </div>
   )
 }
-export default Map
+export default MapPage

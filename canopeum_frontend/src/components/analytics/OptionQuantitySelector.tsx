@@ -60,9 +60,11 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
 
     const updatedSelected = [...selected]
 
-    updatedOption.quantity <= 0
-      ? updatedSelected.splice(optionIndex, 1)
-      : updatedSelected[optionIndex] = updatedOption
+    if (updatedOption.quantity <= 0) {
+      updatedSelected.splice(optionIndex, 1)
+    } else {
+      updatedSelected[optionIndex] = updatedOption
+    }
 
     onChange(updatedSelected)
   }
