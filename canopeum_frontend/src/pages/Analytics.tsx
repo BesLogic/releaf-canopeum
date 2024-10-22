@@ -160,7 +160,7 @@ const Analytics = () => {
                 </span>
                 <span className='text-capitalize'>
                   {site.batches.length}{' '}
-                  {translate('analytics.batches', { count: site.batches.length })}
+                  {translate('analytics.batch', { count: site.batches.length })}
                 </span>
               </div>
             </button>
@@ -223,7 +223,7 @@ const Analytics = () => {
         <div className='mt-4'>
           <div className='bg-cream rounded p-3 px-4'>
             <div className='d-flex justify-content-between'>
-              <div className='fs-5'>{translate('analytics.batches.batch-tracking')}</div>
+              <div className='fs-5'>{translate('analytics.batch-tracking')}</div>
               <div>
                 <span>Filters Go Here</span>
               </div>

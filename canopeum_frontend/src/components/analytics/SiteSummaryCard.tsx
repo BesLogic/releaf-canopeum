@@ -115,7 +115,7 @@ const SiteSummaryCard = ({ site, admins, onSiteChange, onSiteEdit }: Props) => {
             </div>
 
             <div className='mt-4'>
-              <SiteSponsorProgress progress={site.progress} />
+              <SiteSponsorProgress progress={site.sponsorProgress} />
             </div>
           </div>
         </div>

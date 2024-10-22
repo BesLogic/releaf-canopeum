@@ -156,6 +156,21 @@ class Site(models.Model):
     announcement = models.ForeignKey(Announcement, models.SET_NULL, blank=True, null=True)
     image = models.ForeignKey(Asset, models.SET_NULL, blank=True, null=True)
 
+    def get_plant_count(self) -> int:
+        site_species = Sitetreespecies.objects.filter(site=self)
+        return sum(specie.quantity for specie in site_species)
+
+    def get_sponsor_progress(self) -> float:
+        total_plant_count = self.get_plant_count()
+        if total_plant_count == 0:
+            return 0
+
+        batches = Batch.objects.filter(site=self)
+        sponsored_plant_count = sum(batch.plant_count() for batch in batches)
+
+        # Note: We don't cap the progress at 100% so it's obvious if there's a data issue
+        return sponsored_plant_count / total_plant_count * 100
+
     @override
     def delete(self, using=None, keep_parents=False):
         # Coordinate
@@ -191,7 +206,6 @@ class Batch(models.Model):
     sponsor = models.ForeignKey(BatchSponsor, models.CASCADE)
     size = models.IntegerField(blank=True, null=True)
     soil_condition = models.TextField(blank=True, null=True)
-    plant_count = models.IntegerField(blank=True, null=True)
     survived_count = models.IntegerField(blank=True, null=True)
     replace_count = models.IntegerField(blank=True, null=True)
     total_number_seed = models.IntegerField(blank=True, null=True)
@@ -217,6 +231,10 @@ class Batch(models.Model):
     def add_supported_specie_by_id(self, pk: int):
         tree_type = Treetype.objects.get(pk=pk)
         return BatchSupportedSpecies.objects.create(tree_type=tree_type, batch=self)
+
+    def plant_count(self) -> int:
+        batch_species = BatchSpecies.objects.filter(batch=self)
+        return sum(specie.quantity for specie in batch_species)
 
 
 class Fertilizertype(models.Model):
@@ -345,9 +363,9 @@ class SiteFollower(models.Model):
 
 
 class Sitetreespecies(models.Model):
-    site = models.ForeignKey(Site, models.CASCADE, blank=True, null=True)
-    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING, blank=True, null=True)
-    quantity = models.IntegerField(blank=True, null=True)
+    site = models.ForeignKey(Site, models.CASCADE)
+    tree_type = models.ForeignKey(Treetype, models.DO_NOTHING)
+    quantity = models.IntegerField()
 
     class Meta:
         constraints = (

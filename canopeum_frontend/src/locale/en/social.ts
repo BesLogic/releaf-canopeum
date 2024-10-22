@@ -7,6 +7,8 @@ export default {
   },
   comments: {
     'leave-a-comment': 'Leave a Comment',
+    word_one: 'word',
+    word_other: 'words',
     comments: 'Comments',
     send: 'Send',
     'comment-body-required': 'Your comment cannot be empty.',

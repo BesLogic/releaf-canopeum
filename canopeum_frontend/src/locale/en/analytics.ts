@@ -3,6 +3,8 @@ export default {
   'create-site': 'Create a New Site',
   'edit-site-info': 'Edit Site Information',
   average: 'average',
+  batch_one: 'batch',
+  batch_other: 'batches',
   sufficient: 'sufficient',
   insufficient: 'insufficient',
   'table-row-1': 'batch name / ID',
@@ -27,9 +29,7 @@ export default {
   'success-rate-chart': {
     title: 'Average Annual Success Rate Per Site',
   },
-  batches: {
-    'batch-tracking': 'Batch Tracking',
-  },
+  'batch-tracking': 'Batch Tracking',
   'site-summary': {
     planted: 'Planted',
     survived: 'Survived',
