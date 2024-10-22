@@ -423,17 +423,20 @@ class Command(BaseCommand):
             )
 
     def create_site_types(self):
-        site_type_names = (
-            ("Parks", "Parcs"),
-            ("Indigenous community", "Communauté Indigène"),
-            ("Educational Facility", "Établissement d'enseignement"),
-            ("Farms Land", "Terres agricoles"),
-            ("Corporate Lot", "Lot d'entreprise"),
-        )
+        # This mapping MUST MATCH pinMap in canopeum_frontend/src/pages/Map.tsx
+        site_type_names = {
+            1: ("Canopeum", "Canopeum"),
+            2: ("Parks", "Parcs"),
+            3: ("Indigenous community", "Communauté Indigène"),
+            4: ("Educational Facility", "Établissement d'enseignement"),
+            5: ("Farms Land", "Terres agricoles"),
+            6: ("Corporate Lot", "Lot d'entreprise"),
+        }
 
-        for name in site_type_names:
+        for site_type_id, name in site_type_names.items():
             Sitetype.objects.create(
-                name=Internationalization.objects.create(en=name[0], fr=name[1])
+                id=site_type_id,
+                name=Internationalization.objects.create(en=name[0], fr=name[1]),
             )
 
     def create_assets(self):
@@ -502,7 +505,7 @@ class Command(BaseCommand):
         site1 = Site.objects.create(
             name="Canopeum",
             is_public=True,
-            site_type=Sitetype.objects.get(name=Internationalization.objects.get(en="Parks")),
+            site_type=Sitetype.objects.get(id=1),
             coordinate=Coordinate.objects.create(
                 dms_latitude="45°30'06.1\"N",
                 dms_longitude="73°34'02.3\"W",
@@ -553,7 +556,7 @@ class Command(BaseCommand):
         site_2 = Site.objects.create(
             name="Maple Grove Retreat",
             is_public=True,
-            site_type=Sitetype.objects.get(name=Internationalization.objects.get(en="Parks")),
+            site_type=Sitetype.objects.get(id=2),
             coordinate=Coordinate.objects.create(
                 dms_latitude="46°48'33.6\"N",
                 dms_longitude="71°18'40.0\"W",
@@ -587,7 +590,7 @@ class Command(BaseCommand):
         site_3 = Site.objects.create(
             name="Lakeside Oasis",
             is_public=True,
-            site_type=Sitetype.objects.get(name=Internationalization.objects.get(en="Parks")),
+            site_type=Sitetype.objects.get(id=3),
             coordinate=Coordinate.objects.create(
                 dms_latitude="48°36'05.0\"N",
                 dms_longitude="71°18'27.0\"W",
@@ -622,7 +625,7 @@ class Command(BaseCommand):
         site_4 = Site.objects.create(
             name="Evergreen Trail",
             is_public=False,
-            site_type=Sitetype.objects.get(name=Internationalization.objects.get(en="Parks")),
+            site_type=Sitetype.objects.get(id=4),
             coordinate=Coordinate.objects.create(
                 dms_latitude="46°12'30.0\"N",
                 dms_longitude="74°35'30.0\"W",
@@ -654,7 +657,7 @@ class Command(BaseCommand):
         create_species_for_site(site_4, batches)
         create_posts_for_site(site_4)
 
-    def create_siteadmins(self):
+    def create_siteadmins(self) -> None:
         Siteadmin.objects.create(
             user=User.objects.get(email="tyrion@lannister.com"),
             site=Site.objects.get(name="Canopeum"),
