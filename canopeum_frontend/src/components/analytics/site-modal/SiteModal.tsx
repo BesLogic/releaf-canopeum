@@ -7,7 +7,7 @@ import SiteCoordinates from '@components/analytics/site-modal/SiteCoordinates'
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
-import { type Coordinate, defaultLatitude, defaultLongitude, extractCoordinate } from '@models/types/Coordinate'
+import { type Coordinate, defaultLatitude, defaultLongitude, extractCoordinate } from '@models/Coordinate'
 import { type SiteType, Species } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 

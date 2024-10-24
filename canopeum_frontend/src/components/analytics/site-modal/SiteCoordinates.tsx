@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
-import { type Coordinate, defaultLatitude, defaultLongitude } from '@models/types/Coordinate'
+import { type Coordinate, defaultLatitude, defaultLongitude } from '@models/Coordinate'
 
 type Props = {
   readonly latitude?: Coordinate,

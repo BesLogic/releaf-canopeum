@@ -6,10 +6,11 @@ import { useTranslation } from 'react-i18next'
 import BatchSponsorLogo from '@components/batches/BatchSponsorLogo'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { LanguageContext } from '@components/context/LanguageContext'
+import IconBadge from '@components/IconBadge'
 import ToggleSwitch from '@components/inputs/ToggleSwitch'
-import PrimaryIconBadge from '@components/PrimaryIconBadge'
 import useApiClient from '@hooks/ApiClientHook'
-import type { PageViewMode } from '@models/types/PageViewMode.Type'
+import type { PageViewMode } from '@models/PageViewMode.type'
+import { getSiteTypeIconKey } from '@models/SiteType'
 import { PatchedUpdateSitePublicStatus, type SiteSocial, User } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 
@@ -120,7 +121,7 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
           </div>
 
           <div className='card-text d-flex flex-row align-items-center gap-1'>
-            <PrimaryIconBadge type='school' />
+            <IconBadge iconKey={getSiteTypeIconKey(site.siteType.id)} />
             <h4 className='fw-bold text-primary mb-0'>{translateValue(site.siteType)}</h4>
           </div>
 
