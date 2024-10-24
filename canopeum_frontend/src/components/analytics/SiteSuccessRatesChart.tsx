@@ -20,7 +20,6 @@ const buildChartOptions = (siteSummaries: SiteSummary[]) => {
   }
   if (siteSummaries.length === 0) return options
 
-  // total-functions/no-partial-division -- length checked above
   options.average = siteSummaries.reduce(
     (accumulator, current) => accumulator + current.sponsorProgress,
     0,
@@ -59,7 +58,6 @@ const SiteSuccessRatesChart = ({ siteSummaries }: Props) => {
 
   const renderChartTooltip = (props: ChartsAxisContentProps) => {
     const selectedSerie = props.series.find(serie => serie.id === props.axisValue)
-    // total-functions/no-unsafe-type-assertion -- value type is known from the context
     const data = selectedSerie?.data.find(value => !!value) as number | undefined
 
     return (
