@@ -423,7 +423,7 @@ class Command(BaseCommand):
             )
 
     def create_site_types(self):
-        # This mapping MUST MATCH pinMap in canopeum_frontend/src/pages/Map.tsx
+        # This mapping MUST MATCH pinMap in canopeum_frontend/src/models/SiteType.ts
         site_type_names = {
             1: ("Canopeum", "Canopeum"),
             2: ("Parks", "Parcs"),

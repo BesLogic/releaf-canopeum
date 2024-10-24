@@ -8,6 +8,7 @@ import { AuthenticationContext } from '@components/context/AuthenticationContext
 import IconBadge from '@components/IconBadge'
 import CustomIcon from '@components/icons/CustomIcon'
 import { appRoutes } from '@constants/routes.constant'
+import { getSiteTypeIconKey } from '@models/SiteType'
 import type { SiteSummary, User } from '@services/api'
 
 type Props = {
@@ -35,7 +36,7 @@ const SiteSummaryCard = ({ site, admins, onSiteChange, onSiteEdit }: Props) => {
           <div className='d-flex justify-content-between align-items-center card-title'>
             <Link className='nav-link flex-grow-1 me-3' to={appRoutes.site(site.id)}>
               <div className='d-flex gap-1 align-items-center flex-grow-1'>
-                <IconBadge iconKey='school' />
+                <IconBadge iconKey={getSiteTypeIconKey(site.siteType.id)} />
                 <h5 className='mb-0 text-ellipsis'>{site.name}</h5>
               </div>
             </Link>
