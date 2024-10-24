@@ -3,7 +3,7 @@
 
 import facebookLogo from '@assets/icons/facebook-regular.svg'
 import canopeumLogo from '@assets/images/Canopeum_Logo.jpg'
-import PrimaryIconBadge from '@components/PrimaryIconBadge'
+import IconBadge from '@components/IconBadge'
 
 const Utilities = () => (
   <div>
@@ -60,10 +60,10 @@ const Utilities = () => (
       <div className='bg-cream rounded-2 px-3 py-2'>
         <h2>Badges</h2>
         <div className='d-flex gap-1'>
-          <PrimaryIconBadge type='school' />
-          <PrimaryIconBadge type='forest' />
-          <PrimaryIconBadge type='workspaces' />
-          <PrimaryIconBadge type='person' />
+          <IconBadge iconKey='school' />
+          <IconBadge iconKey='forest' />
+          <IconBadge iconKey='workspaces' />
+          <IconBadge iconKey='person' />
         </div>
       </div>
       <div className='bg-cream rounded px-3 py-2'>

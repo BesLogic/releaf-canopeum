@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom'
 import SiteSponsorProgress from '@components/analytics/SiteSponsorProgress'
 import SiteSummaryActions from '@components/analytics/SiteSummaryActions'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
+import IconBadge from '@components/IconBadge'
 import CustomIcon from '@components/icons/CustomIcon'
-import PrimaryIconBadge from '@components/PrimaryIconBadge'
 import { appRoutes } from '@constants/routes.constant'
 import type { SiteSummary, User } from '@services/api'
 
@@ -35,7 +35,7 @@ const SiteSummaryCard = ({ site, admins, onSiteChange, onSiteEdit }: Props) => {
           <div className='d-flex justify-content-between align-items-center card-title'>
             <Link className='nav-link flex-grow-1 me-3' to={appRoutes.site(site.id)}>
               <div className='d-flex gap-1 align-items-center flex-grow-1'>
-                <PrimaryIconBadge type='school' />
+                <IconBadge iconKey='school' />
                 <h5 className='mb-0 text-ellipsis'>{site.name}</h5>
               </div>
             </Link>
