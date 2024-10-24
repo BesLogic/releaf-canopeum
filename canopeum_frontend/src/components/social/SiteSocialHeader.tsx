@@ -9,7 +9,7 @@ import { LanguageContext } from '@components/context/LanguageContext'
 import ToggleSwitch from '@components/inputs/ToggleSwitch'
 import PrimaryIconBadge from '@components/PrimaryIconBadge'
 import useApiClient from '@hooks/ApiClientHook'
-import type { PageViewMode } from '@models/types/PageViewMode.Type'
+import type { PageViewMode } from '@models/PageViewMode.type'
 import { PatchedUpdateSitePublicStatus, type SiteSocial, User } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 

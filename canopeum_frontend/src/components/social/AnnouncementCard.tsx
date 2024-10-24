@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import SiteAnnouncementModal from '@components/social/site-modal/SiteAnnouncementModal'
-import type { PageViewMode } from '@models/types/PageViewMode.Type'
+import type { PageViewMode } from '@models/PageViewMode.type'
 import type { Announcement } from '@services/api'
 
 type Props = {
