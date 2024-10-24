@@ -10,10 +10,10 @@ export type BatchFormDto = {
   },
   size?: number,
   soilCondition?: string,
-  plantCount?: number,
+  plantCount: number,
   survivedCount?: number,
   replaceCount?: number,
-  totalNumberSeed?: number,
+  totalNumberSeeds: number,
   totalPropagation?: number,
   image?: File,
   fertilizers: FertilizerType[],
@@ -34,10 +34,10 @@ export const DEFAULT_BATCH_FORM_DTO: BatchFormDto = {
     logo: undefined,
   },
   supportedSpecies: [],
-  plantCount: undefined,
+  plantCount: -1,
   survivedCount: undefined,
   replaceCount: undefined,
-  totalNumberSeed: undefined,
+  totalNumberSeeds: -1,
   totalPropagation: undefined,
   image: undefined,
   fertilizers: [],
@@ -61,3 +61,7 @@ export const transformToEditBatchDto = (batchDetail: BatchDetail): BatchFormDto 
   },
   image: undefined,
 })
+
+// TODO: Make these a generic "sum", which btw should be added to our shared libraries
+export const sum = (values: { quantity?: number }[]) =>
+  values.reduce((previous, current) => previous + (current.quantity ?? 0), 0)

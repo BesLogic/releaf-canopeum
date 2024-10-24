@@ -145,10 +145,8 @@ export class BatchClient {
     sponsorLogo?: FileParameter | null | undefined,
     size?: number | null | undefined,
     soilCondition?: string | null | undefined,
-    plantCount?: number | null | undefined,
     survivedCount?: number | null | undefined,
     replaceCount?: number | null | undefined,
-    totalNumberSeed?: number | null | undefined,
     totalPropagation?: number | null | undefined,
     image?: FileParameter | null | undefined,
     fertilizerIds?: number[] | undefined,
@@ -188,17 +186,12 @@ export class BatchClient {
     if (soilCondition !== null && soilCondition !== undefined) {
       content_.append('soilCondition', soilCondition.toString())
     }
-    if (plantCount !== null && plantCount !== undefined) {
-      content_.append('plantCount', plantCount.toString())
-    }
+
     if (survivedCount !== null && survivedCount !== undefined) {
       content_.append('survivedCount', survivedCount.toString())
     }
     if (replaceCount !== null && replaceCount !== undefined) {
       content_.append('replaceCount', replaceCount.toString())
-    }
-    if (totalNumberSeed !== null && totalNumberSeed !== undefined) {
-      content_.append('totalNumberSeed', totalNumberSeed.toString())
     }
     if (totalPropagation !== null && totalPropagation !== undefined) {
       content_.append('totalPropagation', totalPropagation.toString())
@@ -281,10 +274,8 @@ export class BatchClient {
     sponsorLogo?: FileParameter | null | undefined,
     size?: number | null | undefined,
     soilCondition?: string | null | undefined,
-    plantCount?: number | null | undefined,
     survivedCount?: number | null | undefined,
     replaceCount?: number | null | undefined,
-    totalNumberSeed?: number | null | undefined,
     totalPropagation?: number | null | undefined,
     fertilizerIds?: number[] | undefined,
     mulchLayerIds?: number[] | undefined,
@@ -322,17 +313,12 @@ export class BatchClient {
     if (soilCondition !== null && soilCondition !== undefined) {
       content_.append('soilCondition', soilCondition.toString())
     }
-    if (plantCount !== null && plantCount !== undefined) {
-      content_.append('plantCount', plantCount.toString())
-    }
+
     if (survivedCount !== null && survivedCount !== undefined) {
       content_.append('survivedCount', survivedCount.toString())
     }
     if (replaceCount !== null && replaceCount !== undefined) {
       content_.append('replaceCount', replaceCount.toString())
-    }
-    if (totalNumberSeed !== null && totalNumberSeed !== undefined) {
-      content_.append('totalNumberSeed', totalNumberSeed.toString())
     }
     if (totalPropagation !== null && totalPropagation !== undefined) {
       content_.append('totalPropagation', totalPropagation.toString())
@@ -3260,7 +3246,6 @@ export class BatchDetail implements IBatchDetail {
   soilCondition?: string | undefined
   survivedCount?: number | undefined
   replaceCount?: number | undefined
-  totalNumberSeed?: number | undefined
   totalPropagation?: number | undefined
   site!: number;
 
@@ -3337,7 +3322,6 @@ export class BatchDetail implements IBatchDetail {
       this.soilCondition = _data['soilCondition']
       this.survivedCount = _data['survivedCount']
       this.replaceCount = _data['replaceCount']
-      this.totalNumberSeed = _data['totalNumberSeed']
       this.totalPropagation = _data['totalPropagation']
       this.site = _data['site']
     }
@@ -3397,7 +3381,6 @@ export class BatchDetail implements IBatchDetail {
     data['soilCondition'] = this.soilCondition
     data['survivedCount'] = this.survivedCount
     data['replaceCount'] = this.replaceCount
-    data['totalNumberSeed'] = this.totalNumberSeed
     data['totalPropagation'] = this.totalPropagation
     data['site'] = this.site
     return data
@@ -3420,7 +3403,6 @@ export interface IBatchDetail {
   soilCondition?: string | undefined
   survivedCount?: number | undefined
   replaceCount?: number | undefined
-  totalNumberSeed?: number | undefined
   totalPropagation?: number | undefined
   site: number
 
@@ -5421,7 +5403,6 @@ export class SiteSummary implements ISiteSummary {
   name!: string
   coordinate!: Coordinates
   siteType!: SiteType
-  readonly plantCount!: number
   readonly sponsorProgress!: number
   readonly survivedCount!: number
   readonly propagationCount!: number
@@ -5460,7 +5441,6 @@ export class SiteSummary implements ISiteSummary {
         ? Coordinates.fromJS(_data['coordinate'])
         : new Coordinates()
       this.siteType = _data['siteType'] ? SiteType.fromJS(_data['siteType']) : new SiteType()
-      ;(<any> this).plantCount = _data['plantCount']
       ;(<any> this).sponsorProgress = _data['sponsorProgress']
       ;(<any> this).survivedCount = _data['survivedCount']
       ;(<any> this).propagationCount = _data['propagationCount']
@@ -5498,7 +5478,6 @@ export class SiteSummary implements ISiteSummary {
     data['name'] = this.name
     data['coordinate'] = this.coordinate ? this.coordinate.toJSON() : <any> undefined
     data['siteType'] = this.siteType ? this.siteType.toJSON() : <any> undefined
-    data['plantCount'] = this.plantCount
     data['sponsorProgress'] = this.sponsorProgress
     data['survivedCount'] = this.survivedCount
     data['propagationCount'] = this.propagationCount
@@ -5524,7 +5503,6 @@ export interface ISiteSummary {
   name: string
   coordinate: Coordinates
   siteType: SiteType
-  plantCount: number
   sponsorProgress: number
   survivedCount: number
   propagationCount: number
@@ -5540,7 +5518,6 @@ export class SiteSummaryDetail implements ISiteSummaryDetail {
   name!: string
   coordinate!: Coordinates
   siteType!: SiteType
-  readonly plantCount!: number
   readonly sponsorProgress!: number
   readonly survivedCount!: number
   readonly propagationCount!: number
@@ -5583,7 +5560,6 @@ export class SiteSummaryDetail implements ISiteSummaryDetail {
         ? Coordinates.fromJS(_data['coordinate'])
         : new Coordinates()
       this.siteType = _data['siteType'] ? SiteType.fromJS(_data['siteType']) : new SiteType()
-      ;(<any> this).plantCount = _data['plantCount']
       ;(<any> this).sponsorProgress = _data['sponsorProgress']
       ;(<any> this).survivedCount = _data['survivedCount']
       ;(<any> this).propagationCount = _data['propagationCount']
@@ -5628,7 +5604,6 @@ export class SiteSummaryDetail implements ISiteSummaryDetail {
     data['name'] = this.name
     data['coordinate'] = this.coordinate ? this.coordinate.toJSON() : <any> undefined
     data['siteType'] = this.siteType ? this.siteType.toJSON() : <any> undefined
-    data['plantCount'] = this.plantCount
     data['sponsorProgress'] = this.sponsorProgress
     data['survivedCount'] = this.survivedCount
     data['propagationCount'] = this.propagationCount
@@ -5661,7 +5636,6 @@ export interface ISiteSummaryDetail {
   name: string
   coordinate: Coordinates
   siteType: SiteType
-  plantCount: number
   sponsorProgress: number
   survivedCount: number
   propagationCount: number

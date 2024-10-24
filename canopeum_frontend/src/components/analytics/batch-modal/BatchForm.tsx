@@ -152,6 +152,15 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
         </div>
 
         <div>
+          <label className='form-label text-capitalize' htmlFor='total-number-of-plants'>
+            {t('analyticsSite.batch-modal.total-number-of-plants-label')}:&nbsp;
+          </label>
+          <span id='total-number-of-plants'>
+            {batch.plantCount}
+          </span>
+        </div>
+
+        <div>
           <label className='form-label' htmlFor='soil-condition'>
             {t('analyticsSite.batch-modal.soil-condition-label')}
           </label>
@@ -199,23 +208,6 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
           )}
           species={batch.supportedSpecies}
         />
-
-        <div>
-          <label className='form-label text-capitalize' htmlFor='total-number-of-plants'>
-            {t('analyticsSite.batch-modal.total-number-of-plants-label')}
-          </label>
-          <input
-            className='form-control'
-            id='total-number-of-plants'
-            onChange={event =>
-              setBatch(value => ({
-                ...value,
-                plantCount: Number.parseInt(event.target.value, 10),
-              }))}
-            type='number'
-            value={floorNumberValue(batch.plantCount)}
-          />
-        </div>
 
         <div>
           <label className='form-label text-capitalize' htmlFor='survived'>
@@ -267,20 +259,12 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
         </div>
 
         <div>
-          <label className='form-label text-capitalize' htmlFor='totalNumberSeed'>
-            {t('analyticsSite.batch-modal.total-seeds-label')}
+          <label className='form-label text-capitalize' htmlFor='total-number-seeds'>
+            {t('analyticsSite.batch-modal.total-seeds-label')}:&nbsp;
           </label>
-          <input
-            className='form-control'
-            id='totalNumberSeed'
-            onChange={event =>
-              setBatch(value => ({
-                ...value,
-                totalNumberSeed: Number.parseInt(event.target.value, 10),
-              }))}
-            type='number'
-            value={floorNumberValue(batch.totalNumberSeed)}
-          />
+          <span id='total-number-seeds'>
+            {batch.totalNumberSeeds}
+          </span>
         </div>
 
         <div>
