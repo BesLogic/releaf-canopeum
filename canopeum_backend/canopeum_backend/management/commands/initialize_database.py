@@ -27,6 +27,7 @@ from canopeum_backend.models import (
     Mulchlayertype,
     Post,
     Role,
+    RoleName,
     Site,
     Siteadmin,
     Sitetreespecies,
@@ -456,9 +457,8 @@ class Command(BaseCommand):
                 asset.asset.save(file_name, django_file, save=True)
 
     def create_roles(self):
-        Role.objects.create(name="User")
-        Role.objects.create(name="SiteManager")
-        Role.objects.create(name="MegaAdmin")
+        for role in RoleName:
+            Role.objects.create(name=role)
 
     def create_users(self):
         User.objects.create_user(
@@ -467,37 +467,37 @@ class Command(BaseCommand):
             password="Adminbeslogic!",  # noqa: S106 # MOCK_PASSWORD
             is_staff=True,
             is_superuser=True,
-            role=Role.objects.get(name="MegaAdmin"),
+            role=Role.objects.get(name=RoleName.MegaAdmin),
         )
         User.objects.create_user(
             username="TyrionLannister",
             email="tyrion@lannister.com",
             password="tyrion123",  # noqa: S106 # MOCK_PASSWORD
-            role=Role.objects.get(name="SiteManager"),
+            role=Role.objects.get(name=RoleName.ForestSteward),
         )
         User.objects.create_user(
             username="DaenerysTargaryen",
             email="daenerys@targaryen.com",
             password="daenerys123",  # noqa: S106 # MOCK_PASSWORD
-            role=Role.objects.get(name="SiteManager"),
+            role=Role.objects.get(name=RoleName.ForestSteward),
         )
         User.objects.create_user(
             username="JonSnow",
             email="jon@snow.com",
             password="jon123",  # noqa: S106 # MOCK_PASSWORD
-            role=Role.objects.get(name="SiteManager"),
+            role=Role.objects.get(name=RoleName.ForestSteward),
         )
         User.objects.create_user(
             username="OberynMartell",
             email="oberyn@martell.com",
             password="oberyn123",  # noqa: S106 # MOCK_PASSWORD
-            role=Role.objects.get(name="SiteManager"),
+            role=Role.objects.get(name=RoleName.ForestSteward),
         )
         User.objects.create_user(
             username="NormalUser",
             email="normal@user.com",
             password="normal123",  # noqa: S106 # MOCK_PASSWORD
-            role=Role.objects.get(name="User"),
+            role=Role.objects.get(name=RoleName.User),
         )
 
     def create_sites(self):

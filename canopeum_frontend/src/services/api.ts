@@ -3000,8 +3000,8 @@ export class UserClient {
     return Promise.resolve<User>(null as any)
   }
 
-  allSiteManagers(): Promise<User[]> {
-    let url_ = this.baseUrl + '/users/site-managers'
+  allForestStewards(): Promise<User[]> {
+    let url_ = this.baseUrl + '/users/forest-stewards'
     url_ = url_.replace(/[?&]$/, '')
 
     let options_: RequestInit = {
@@ -3012,11 +3012,11 @@ export class UserClient {
     }
 
     return this.http.fetch(url_, options_).then((_response: Response) => {
-      return this.processAllSiteManagers(_response)
+      return this.processAllForestStewards(_response)
     })
   }
 
-  protected processAllSiteManagers(response: Response): Promise<User[]> {
+  protected processAllForestStewards(response: Response): Promise<User[]> {
     const status = response.status
     let _headers: any = {}
     if (response.headers && response.headers.forEach) {
@@ -4927,7 +4927,7 @@ export interface IRegisterUser {
   [key: string]: any
 }
 
-export type RoleEnum = 'User' | 'SiteManager' | 'MegaAdmin'
+export type RoleEnum = 'User' | 'ForestSteward' | 'MegaAdmin'
 
 export class Site implements ISite {
   readonly id!: number
