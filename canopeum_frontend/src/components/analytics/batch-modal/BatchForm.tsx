@@ -9,6 +9,7 @@ import SupportSpeciesSelector from '@components/analytics/SupportSpeciesSelector
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import type { BatchDetail } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
+import { mapSum } from '@utils/arrayUtils'
 import { floorNumberValue } from '@utils/formUtils'
 
 type Props = {
@@ -144,6 +145,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
                 setBatch(current => ({
                   ...current,
                   species,
+                  plantCount: mapSum(species, 'quantity'),
                 })),
               [],
             )}
@@ -251,6 +253,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
                 setBatch(current => ({
                   ...current,
                   seeds: species,
+                  totalNumberSeeds: mapSum(species, 'quantity'),
                 })),
               [],
             )}

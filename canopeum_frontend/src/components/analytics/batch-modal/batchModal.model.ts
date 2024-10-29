@@ -61,7 +61,3 @@ export const transformToEditBatchDto = (batchDetail: BatchDetail): BatchFormDto 
   },
   image: undefined,
 })
-
-// TODO: Make these a generic "sum", which btw should be added to our shared libraries
-export const sum = (values: { quantity?: number }[]) =>
-  values.reduce((previous, current) => previous + (current.quantity ?? 0), 0)
