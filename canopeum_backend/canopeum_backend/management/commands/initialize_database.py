@@ -305,7 +305,6 @@ def create_batches_for_site(site):
             soil_condition="Good",
             survived_count=survived_count,
             replace_count=replace_count,
-            total_number_seed=number_of_seed,
             total_propagation=random.randint(0, number_of_seed),
         )
         create_batch_species_for_batch(batch)

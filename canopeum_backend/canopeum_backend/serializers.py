@@ -419,7 +419,9 @@ class BatchDetailSerializer(serializers.ModelSerializer[Batch]):
     mulch_layers = serializers.SerializerMethodField()
     supported_species = serializers.SerializerMethodField()
     seeds = serializers.SerializerMethodField()
+    total_number_seeds = serializers.SerializerMethodField()
     species = serializers.SerializerMethodField()
+    plant_count = serializers.SerializerMethodField()
     sponsor = serializers.SerializerMethodField()
     # HACK to allow handling the image with a AssetSerializer separately
     # TODO: Figure out how to feed the image directly to BatchDetailSerializer
@@ -456,15 +458,21 @@ class BatchDetailSerializer(serializers.ModelSerializer[Batch]):
         return TreeTypeSerializer(supported_species_types, many=True).data
 
     @extend_schema_field(BatchSeedSerializer(many=True))
-    def get_seeds(self, obj):
+    def get_seeds(self, obj: Batch):
         return BatchSeedSerializer(BatchSeed.objects.filter(batch=obj), many=True).data
 
+    def get_total_number_seeds(self, obj: Batch) -> int:
+        return obj.get_total_number_seeds()
+
     @extend_schema_field(BatchSpeciesSerializer(many=True))
-    def get_species(self, obj):
+    def get_species(self, obj: Batch):
         return BatchSpeciesSerializer(BatchSpecies.objects.filter(batch=obj), many=True).data
 
+    def get_plant_count(self, obj: Batch) -> int:
+        return obj.get_plant_count()
+
     @extend_schema_field(BatchSponsorSerializer)
-    def get_sponsor(self, obj):
+    def get_sponsor(self, obj: Batch):
         return BatchSponsorSerializer(BatchSponsor.objects.get(batch=obj)).data
 
 
