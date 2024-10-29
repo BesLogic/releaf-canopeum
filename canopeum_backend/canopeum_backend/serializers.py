@@ -1,7 +1,6 @@
 # Pyright does not support duck-typed Meta inner-class
 # pyright: reportIncompatibleVariableOverride=false
 
-import random
 from collections.abc import Mapping
 from decimal import Decimal
 from typing import Any
@@ -559,11 +558,13 @@ class SiteSummarySerializer(serializers.ModelSerializer[Site]):
     def get_sponsor_progress(self, obj: Site) -> float:
         return obj.get_sponsor_progress()
 
-    def get_survived_count(self, obj) -> int:
-        return random.randint(50, 100)  # noqa: S311
+    def get_survived_count(self, obj: Site) -> int:
+        batches = Batch.objects.filter(site=obj)
+        return sum(batch.survived_count or 0 for batch in batches)
 
-    def get_propagation_count(self, obj) -> int:
-        return random.randint(5, 50)  # noqa: S311
+    def get_propagation_count(self, obj: Site) -> int:
+        batches = Batch.objects.filter(site=obj)
+        return sum(batch.total_propagation or 0 for batch in batches)
 
     @extend_schema_field(BatchDetailSerializer(many=True))
     def get_batches(self, obj):
@@ -607,11 +608,13 @@ class SiteSummaryDetailSerializer(serializers.ModelSerializer[Site]):
     def get_sponsor_progress(self, obj: Site) -> float:
         return obj.get_sponsor_progress()
 
-    def get_survived_count(self, obj) -> int:
-        return random.randint(50, 100)  # noqa: S311
+    def get_survived_count(self, obj: Site) -> int:
+        batches = Batch.objects.filter(site=obj)
+        return sum(batch.survived_count or 0 for batch in batches)
 
-    def get_propagation_count(self, obj) -> int:
-        return random.randint(5, 50)  # noqa: S311
+    def get_propagation_count(self, obj: Site) -> int:
+        batches = Batch.objects.filter(site=obj)
+        return sum(batch.total_propagation or 0 for batch in batches)
 
     @extend_schema_field(BatchSponsorSerializer(many=True))
     def get_sponsors(self, obj):
