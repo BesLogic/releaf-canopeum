@@ -21,7 +21,7 @@ const SearchBar = ({ initialValue, onChange }: Props) => {
     setSearchValue(event.target.value)
   }
 
-  const handleKeyUp = (event: KeyboardEvent) => {
+  const handleKey = (event: KeyboardEvent) => {
     event.stopPropagation()
     if (event.key !== 'Enter') return
 
@@ -33,28 +33,26 @@ const SearchBar = ({ initialValue, onChange }: Props) => {
       <input
         className='form-control border-end-0 border rounded-start-pill'
         onChange={handleInputChange}
-        onKeyUp={handleKeyUp}
+        onKeyDown={handleKey}
         type='text'
         value={searchValue}
       />
-      <span className='input-group-append'>
-        <button
-          className='
-            btn
-            btn-outline-secondary
-            bg-cream
-            border-start-0
-            border
-            rounded-end-pill
-            d-flex
-            align-items-center
-          '
-          onClick={() => onChange(searchValue)}
-          type='button'
-        >
-          <span className='material-symbols-outlined fill-icon'>search</span>
-        </button>
-      </span>
+      <button
+        className='
+          input-group-append
+          btn
+          btn-outline-secondary
+          border-start-0
+          border
+          rounded-end-pill
+          d-flex
+          align-items-center
+        '
+        onClick={() => onChange(searchValue)}
+        type='button'
+      >
+        <span className='material-symbols-outlined fill-icon'>search</span>
+      </button>
     </div>
   )
 }

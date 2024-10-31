@@ -101,19 +101,22 @@ const Navbar = () => {
             {isAuthenticated && (NAVBAR_ITEMS.map(item => (
               <li
                 className={`nav-item ${
-                  location.pathname === item.linkTo
-                    ? 'active'
-                    : ''
-                } ${
                   item.roles.includes(currentUser?.role)
                     ? 'd-inline'
                     : 'd-none'
                 }`}
                 key={item.icon}
               >
-                <Link className='nav-link' to={item.linkTo}>
-                  <span className='material-symbols-outlined text-light'>{item.icon}</span>
-                  <span className='nav-link-label text-light'>
+                <Link
+                  className={`nav-link ${
+                    location.pathname === appRoutes.userManagment
+                      ? 'active'
+                      : ''
+                  }`}
+                  to={item.linkTo}
+                >
+                  <span className='material-symbols-outlined'>{item.icon}</span>
+                  <span className='nav-link-label'>
                     {translate(`navbar.${item.label}`)}
                   </span>
                 </Link>
@@ -123,16 +126,17 @@ const Navbar = () => {
 
           <ul className='navbar-nav gap-3'>
             {isAuthenticated && (
-              <li
-                className={`nav-item ${
-                  location.pathname === appRoutes.userManagment
-                    ? 'active'
-                    : ''
-                }`}
-              >
-                <Link className='nav-link' to={appRoutes.userManagment}>
-                  <span className='material-symbols-outlined text-light'>account_circle</span>
-                  <span className='nav-link-label text-light'>{translate('navbar.settings')}</span>
+              <li className='nav-item'>
+                <Link
+                  className={`nav-link ${
+                    location.pathname === appRoutes.userManagment
+                      ? 'active'
+                      : ''
+                  }`}
+                  to={appRoutes.userManagment}
+                >
+                  <span className='material-symbols-outlined'>account_circle</span>
+                  <span className='nav-link-label'>{translate('navbar.settings')}</span>
                 </Link>
               </li>
             )}

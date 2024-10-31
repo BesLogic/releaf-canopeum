@@ -78,3 +78,18 @@
 .navbar-logo {
   padding-bottom: 0.3rem;
 }
+
+/*
+Override .nav in node_modules/bootstrap/scss/_navbar.scss
+with colors of .navbar-dark in  node_modules/bootstrap/scss/_navbar.scss
+to support non-navbar nav
+*/
+.nav-dark.nav-dark,
+.nav.nav[data-bs-theme="dark"] {
+  // scss-docs-start nav-dark-css-vars
+  --#{$prefix}nav-link-color: #{$navbar-dark-color};
+  --#{$prefix}nav-link-hover-color: #{$navbar-dark-hover-color};
+  --#{$prefix}nav-link-disabled-color: #{$navbar-dark-disabled-color};
+  --#{$prefix}nav-underline-link-active-color: #{$navbar-dark-active-color};
+  // scss-docs-end nav-dark-css-vars
+}

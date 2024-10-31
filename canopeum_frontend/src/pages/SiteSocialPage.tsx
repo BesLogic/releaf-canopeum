@@ -116,7 +116,7 @@ const SiteSocialPage = () => {
 
   if (error) {
     return (
-      <div className='bg-cream rounded-2 2 py-2'>
+      <div className='card 2 py-2'>
         <p>{error.message}</p>
       </div>
     )

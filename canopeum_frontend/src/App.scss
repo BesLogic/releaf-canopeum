@@ -1,4 +1,10 @@
-@import "../node_modules/bootstrap/scss/functions";
+@import "rsuite/dist/rsuite.min.css";
+
+:root {
+  --rs-gray-0: #FFFAF5;
+}
+
+// Bootrap (?)
 
 $primary: #007E51;
 $secondary: #F18200;
@@ -8,7 +14,6 @@ $link-decoration: none;
 https://github.com/BesLogic/releaf-canopeum/issues/249 */
 $green: #06C270;
 $lightgreen: #E8F3E9;
-$cream: #FFFAF5;
 
 $font-family-sans-serif: -apple-system, BlinkMacSystemFont, 'Lato', Roboto, 'Helvetica Neue', Arial, sans-serif;
 $font-family-monospace: 'Helvetica Neue', Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
@@ -18,13 +23,15 @@ $headings-font-family: Lato;
 $headings-font-weight: 700;
 
 
-@import "rsuite/dist/rsuite.min.css";
 
-@import "../node_modules/bootstrap/scss/variables";
-@import "../node_modules/bootstrap/scss/mixins";
-
+// Bootstrap variables. Set these first so bootstrap generates the right theme colros
+// $card-bg: #FFFAF5;
+// $accordion-bg: $card-bg;
+$light: #FFFAF5; // Light text color
+$white: #FFFAF5; // Most bg colors
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
-
+// insert our theme's global styles after so we can use its variables
 @import "./assets/styles/GlobalStyles.scss";
+
 
 $navbar-dark-toggler-border-color: rgba($white, 1);

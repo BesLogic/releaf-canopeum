@@ -1,3 +1,5 @@
+import './AuthPageLayout.scss'
+
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -21,7 +23,7 @@ const AuthPageLayout = ({ children }: Props) => {
         d-flex
         flex-column
         align-items-center
-        bg-cream
+        bg-white
         px-3
         py-4
         overflow-y-auto

@@ -1,5 +1,3 @@
-import './SiteAdminTabs.scss'
-
 import { useTranslation } from 'react-i18next'
 import { Link, matchPath, useLocation } from 'react-router-dom'
 
@@ -18,7 +16,7 @@ const SiteAdminTabs = ({ siteId }: Props) => {
 
   return (
     <div className='site-tabs'>
-      <ul className='admin-site-tabs nav justify-content-center gap-2'>
+      <ul className='nav nav-underline nav-dark justify-content-center gap-2'>
         <li className='nav-item'>
           <Link
             className={`nav-link ${

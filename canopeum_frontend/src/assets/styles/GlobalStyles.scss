@@ -31,13 +31,6 @@ body {
   background-image: url('@assets/images/TreeBackground.png');
 }
 
-.login-background {
-  background-image: url('@assets/images/LoginBackground.png');
-  background-position: top;
-  background-size: cover;
-  background-repeat: no-repeat;
-}
-
 .text-small {
   font-size: 90%;
 }
@@ -54,22 +47,6 @@ body {
 
 .bg-lightgreen {
   background: $lightgreen;
-}
-
-.cream-color {
-  color: $cream;
-}
-
-.bg-cream {
-  background-color: $cream;
-}
-
-.card {
-  background-color: $cream;
-}
-
-.accordion-item {
-  background-color: $cream;
 }
 
 .card-title {
