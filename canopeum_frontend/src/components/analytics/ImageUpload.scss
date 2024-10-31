@@ -1,7 +1,12 @@
 @import '../../App.scss';
 
 .upload-button {
-  background-color: var(--bs-body-bg);
+
+  // override .btn's var(--bs-btn-bg)
+  &.btn,
+  & {
+    background-color: var(--bs-body-bg);
+  }
 }
 
 .upload-instruction {
