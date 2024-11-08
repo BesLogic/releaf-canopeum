@@ -15,11 +15,11 @@ const AssetViewer = ({ medias, handleClose, mediaSelectedIndex }: AssetViewerPro
   >
     <div className='carousel-inner'>
       <button
-        className='close-button'
+        className='btn-close text-light shadow-none'
         onClick={handleClose}
         type='button'
       >
-        <span className='material-symbols-outlined'>close</span>
+        <span className='material-symbols-outlined'>cancel</span>
       </button>
       {medias.map((media, index) => (
         <div
