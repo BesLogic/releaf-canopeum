@@ -1,10 +1,5 @@
 @import '../App.scss';
 
-a,
-a:hover {
-  text-decoration: none !important;
-}
-
 #map-page-row-container {
   padding: 0 2rem;
 }
@@ -54,5 +49,6 @@ a:hover {
   .map-site-image {
     border-radius: $border-radius 0 0 $border-radius;
     width: unset;
+    object-fit: cover;
   }
 }

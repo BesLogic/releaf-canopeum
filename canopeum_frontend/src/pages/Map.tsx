@@ -112,12 +112,16 @@ const Map = () => {
         >
           <div className='py-3 d-flex flex-column gap-3'>
             {sites.map(site => (
-              <Link id={`${site.id}`} key={site.id} to={appRoutes.siteSocial(site.id)}>
-                <div
-                  className={`card ${
-                    selectedSiteId === site.id && 'border border-secondary border-5'
-                  }`}
-                  style={{ height: '150px' }}
+              <div
+                className={`card ${
+                  selectedSiteId === site.id && 'border border-secondary border-5'
+                }`}
+                key={site.id}
+              >
+                <Link
+                  className='stretched-link list-group-item-action'
+                  id={`${site.id}`}
+                  to={appRoutes.siteSocial(site.id)}
                 >
                   <div className='row g-0 h-100'>
                     <div className='col-lg-4'>
@@ -144,8 +148,8 @@ const Map = () => {
                       </div>
                     </div>
                   </div>
-                </div>
-              </Link>
+                </Link>
+              </div>
             ))}
           </div>
         </div>
