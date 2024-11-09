@@ -143,7 +143,7 @@
     "editor.defaultFormatter": "vscode.css-language-features"
   },
   "[scss]": {
-    "editor.defaultFormatter": "vscode.css-language-features"
+    "editor.defaultFormatter": "sibiraj-s.vscode-scss-formatter"
   },
   "[postcss]": {
     "editor.defaultFormatter": "vscode.css-language-features"

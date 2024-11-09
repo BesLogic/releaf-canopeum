@@ -8,9 +8,31 @@
 @forward "./assets/styles/Variables.scss";
 @use "./assets/styles/Variables.scss" as *;
 
-// TODO: Configure bootstrap witout using @import
-// https://sass-lang.com/blog/import-is-deprecated/
-@import "../node_modules/bootstrap/scss/bootstrap.scss";
+@use "bootstrap/scss/bootstrap.scss" with (
+  $font-family-sans-serif: $font-family-sans-serif,
+  $font-family-monospace: $font-family-monospace,
+  $font-family-base: $font-family-base,
+  $headings-font-family: $headings-font-family,
+  $headings-font-weight: $headings-font-weight,
+  $border-radius: $border-radius,
+  $link-decoration: $link-decoration,
+  $navbar-brand-margin-end: $navbar-brand-margin-end,
+  $nav-underline-border-width: $nav-underline-border-width,
+  $navbar-nav-link-padding-x: $navbar-nav-link-padding-x,
+  $nav-link-padding-y: $nav-link-padding-y,
+  $primary: $primary,
+  $secondary: $secondary,
+  $success: $success,
+  $info: $info,
+  $warning: $warning,
+  $danger: $danger,
+  $white: $white,
+  $gray-100: $gray-100,
+  $gray-300: $gray-300,
+  $gray-600: $gray-600,
+  $gray-800: $gray-800,
+  $gray-900: $gray-900
+);
 
 // insert our theme's global styles after so we can use its variables
-@import "./assets/styles/GlobalStyles.scss";
+@use "./assets/styles/GlobalStyles.scss";

@@ -1,3 +1,5 @@
+@use "../../../node_modules/bootstrap/scss/bootstrap.scss" as *;
+
 /*
 Override button-variant node_modules/bootstrap/scss/mixins/_buttons.scss
 Bootstrap uses a mixin that causes button colors to have the best calculated contrast

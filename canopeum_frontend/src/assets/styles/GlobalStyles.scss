@@ -1,14 +1,14 @@
+@use "../../../node_modules/bootstrap/scss/bootstrap.scss";
+@use "Variables.scss" as *;
+
 // TODO (Sam. T): Move this file to a GlobalStyles/_index.scss and imported files into same folder
 
-// Import here all global style modules from this same folder
-// TODO (Sam. T): Try to migrate away from @import
-// https://sass-lang.com/blog/import-is-deprecated/
-@import "./Buttons.scss";
-@import "./Card.scss";
-@import "./DropdownMenu.scss";
-@import "./Icons.scss";
-@import "./Nav.scss";
-@import "./Transitions.scss";
+@use "./Buttons.scss";
+@use "./Card.scss";
+@use "./DropdownMenu.scss";
+@use "./Icons.scss";
+@use "./Nav.scss";
+@use "./Transitions.scss";
 
 ::-webkit-scrollbar {
   width: 10px;
@@ -20,12 +20,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: map-get($colors, dark-gray);
+  background-color: map-get(bootstrap.$colors, dark-gray);
   border-radius: 5px;
 }
 
 body {
-  background-image: url('@assets/images/TreeBackground.png');
+  background-image: url("@assets/images/TreeBackground.png");
 }
 
 .text-small {
