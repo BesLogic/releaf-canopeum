@@ -2,8 +2,23 @@
 * Bootstrap variables
 */
 
-$font-family-sans-serif: -apple-system, BlinkMacSystemFont, 'Lato', Roboto, 'Helvetica Neue', Arial, sans-serif;
-$font-family-monospace: 'Helvetica Neue', Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+$font-family-sans-serif: (
+  -apple-system,
+  BlinkMacSystemFont,
+  'Lato',
+  Roboto,
+  'Helvetica Neue',
+  Arial,
+  sans-serif
+);
+$font-family-monospace: (
+  'Helvetica Neue',
+  Monaco,
+  Consolas,
+  'Liberation Mono',
+  'Courier New',
+  monospace
+);
 $font-family-base: $font-family-sans-serif;
 $headings-font-family: Lato;
 $headings-font-weight: 700;
@@ -11,15 +26,14 @@ $headings-font-weight: 700;
 $border-radius: 0.5rem;
 $link-decoration: none;
 
-$primary: #007E51;
-$secondary: #F18200;
-$success: #06C270;
+$primary: #007e51;
+$secondary: #f18200;
+$success: #06c270;
 
-
-$white: #FFFAF5;
+$white: #fffaf5;
 /* TODO: We should reference palette, not direct colors
 https://github.com/BesLogic/releaf-canopeum/issues/249 */
-$cream: #FFFAF5;
+$cream: #fffaf5;
 
 /*
 * Custom variables
@@ -35,4 +49,4 @@ $xxlarge-width: 1600px;
 // TODO (Sam T.): We should configure bootstrap so that
 // our primary-derived color this represents uses the right shade of green.
 // Then use the generated bootstrap scss variable instead of $lightgreen
-$lightgreen: #E8F3E9;
+$lightgreen: #e8f3e9;

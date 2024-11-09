@@ -1,13 +1,13 @@
-@use "Variables.scss" as *;
+@use 'Variables.scss' as *;
 
 // TODO (Sam. T): Move this file to a GlobalStyles/_index.scss and imported files into same folder
 
-@use "Buttons.scss";
-@use "Forms.scss";
-@use "Icons.scss";
-@use "Navbar.scss";
-@use "Transitions.scss";
-@use "DropdownMenu.scss";
+@use 'Buttons.scss';
+@use 'Forms.scss';
+@use 'Icons.scss';
+@use 'Navbar.scss';
+@use 'Transitions.scss';
+@use 'DropdownMenu.scss';
 
 ::-webkit-scrollbar {
   width: 10px;
@@ -24,11 +24,11 @@
 }
 
 body {
-  background-image: url("@assets/images/TreeBackground.png");
+  background-image: url('@assets/images/TreeBackground.png');
 }
 
 .login-background {
-  background-image: url("@assets/images/LoginBackground.png");
+  background-image: url('@assets/images/LoginBackground.png');
   background-position: top;
   background-size: cover;
   background-repeat: no-repeat;

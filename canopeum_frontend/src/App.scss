@@ -2,13 +2,13 @@
 // We can also later override its css vars
 // TODO: Strongly consider to stop using rsuite, we have too many co-existing design systems !
 // (rsuite + mui + bootstrap)
-@use "../node_modules/rsuite/dist/rsuite.min.css";
+@use '../node_modules/rsuite/dist/rsuite.min.css';
 
 // Load variables before Bootsrap so it generates the right theme colors
-@forward "./assets/styles/Variables.scss";
-@use "./assets/styles/Variables.scss" as *;
+@forward './assets/styles/Variables.scss';
+@use './assets/styles/Variables.scss' as *;
 
-@use "../node_modules/bootstrap/scss/bootstrap" with (
+@use '../node_modules/bootstrap/scss/bootstrap' with (
   $font-family-sans-serif: $font-family-sans-serif,
   $font-family-monospace: $font-family-monospace,
   $font-family-base: $font-family-base,
@@ -22,4 +22,4 @@
   $white: $white
 );
 
-@use "./assets/styles/GlobalStyles.scss";
+@use './assets/styles/GlobalStyles.scss';
