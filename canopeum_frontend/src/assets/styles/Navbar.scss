@@ -1,3 +1,10 @@
+.nav-underline {
+  .nav-link {
+    // underline on hover just looks weird if there's already an underline from nav
+    text-decoration: none;
+  }
+}
+
 .navbar {
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
 
