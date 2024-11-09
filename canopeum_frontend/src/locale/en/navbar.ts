@@ -4,5 +4,4 @@ export default {
   map: 'Map',
   utilities: 'Utilities',
   settings: 'Settings',
-  'log-in': 'Log In',
 }

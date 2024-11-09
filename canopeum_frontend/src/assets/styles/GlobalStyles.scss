@@ -1,17 +1,14 @@
+// TODO (Sam. T): Move this file to a GlobalStyles/_index.scss and imported files into same folder
+
 // Import here all global style modules from this same folder
-
+// TODO (Sam. T): Try to migrate away from @import
+// https://sass-lang.com/blog/import-is-deprecated/
 @import "./Buttons.scss";
-@import "./Forms.scss";
-@import "./Icons.scss";
-@import "./Navbar.scss";
-@import "./Transitions.scss";
+@import "./Card.scss";
 @import "./DropdownMenu.scss";
-
-$small-width: 540px;
-$medium-width: 720px;
-$large-width: 960px;
-$xlarge-width: 1200px;
-$xxlarge-width: 1600px;
+@import "./Icons.scss";
+@import "./Nav.scss";
+@import "./Transitions.scss";
 
 ::-webkit-scrollbar {
   width: 10px;
@@ -23,7 +20,7 @@ $xxlarge-width: 1600px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #b8bcc0;
+  background-color: map-get($colors, dark-gray);
   border-radius: 5px;
 }
 
@@ -47,10 +44,6 @@ body {
 
 .bg-lightgreen {
   background: $lightgreen;
-}
-
-.card-title {
-  font-weight: bold;
 }
 
 .page-container {

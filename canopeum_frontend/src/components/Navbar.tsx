@@ -59,23 +59,13 @@ const Navbar = () => {
   }
 
   const { isAuthenticated, logout } = useContext(AuthenticationContext)
-  const navigate = useNavigate()
-
-  const onLoginLogoutbuttonClick = useCallback(() => {
-    if (isAuthenticated) {
-      logout()
-    } else {
-      navigate(appRoutes.login)
-    }
-  }, [isAuthenticated, navigate, logout])
 
   return (
     <nav className='navbar sticky-top navbar-expand-lg navbar-dark bg-primary'>
-      <div className='container-fluid'>
+      <div className='container'>
         <Link className='navbar-brand' to={appRoutes.home}>
           <img
-            alt='Logo'
-            className='navbar-logo'
+            alt='Releaf Logo'
             src='/Releaf_Logo.svg'
             style={{ transition: 'all .5s' }}
           />
@@ -94,79 +84,72 @@ const Navbar = () => {
         </button>
 
         <div
-          className='collapse navbar-collapse justify-content-between w-100 gap-3'
+          className='collapse navbar-collapse justify-content-between w-100'
           id='main-navbar'
         >
-          <ul className='navbar-nav gap-3'>
-            {isAuthenticated && (NAVBAR_ITEMS.map(item => (
-              <li
-                className={`nav-item ${
-                  item.roles.includes(currentUser?.role)
-                    ? 'd-inline'
-                    : 'd-none'
-                }`}
+          <div className='navbar-nav nav-underline'>
+            {isAuthenticated && currentUser && (NAVBAR_ITEMS.filter(item =>
+              item.roles.includes(currentUser.role)
+            ).map(item => (
+              <Link
+                className={`nav-item nav-link ${
+                  // startsWith because we still want to show the active tab for sub-pages
+                  location.pathname.startsWith(item.linkTo)
+                    ? 'active'
+                    : ''}`}
                 key={item.icon}
+                to={item.linkTo}
               >
-                <Link
-                  className={`nav-link ${
-                    location.pathname === appRoutes.userManagment
-                      ? 'active'
-                      : ''
-                  }`}
-                  to={item.linkTo}
-                >
-                  <span className='material-symbols-outlined'>{item.icon}</span>
-                  <span className='nav-link-label'>
-                    {translate(`navbar.${item.label}`)}
-                  </span>
-                </Link>
-              </li>
+                <span className='material-symbols-outlined icon-lg'>{item.icon}</span>
+                <span className='nav-link-label'>
+                  {translate(`navbar.${item.label}`)}
+                </span>
+              </Link>
             )))}
-          </ul>
+          </div>
 
-          <ul className='navbar-nav gap-3'>
+          <div className='navbar-nav nav-underline'>
             {isAuthenticated && (
-              <li className='nav-item'>
-                <Link
-                  className={`nav-link ${
-                    location.pathname === appRoutes.userManagment
-                      ? 'active'
-                      : ''
-                  }`}
-                  to={appRoutes.userManagment}
-                >
-                  <span className='material-symbols-outlined'>account_circle</span>
-                  <span className='nav-link-label'>{translate('navbar.settings')}</span>
-                </Link>
-              </li>
-            )}
-
-            {!isAuthenticated && (
-              <li className='nav-item'>
-                <Link to={appRoutes.login}>
-                  <button
-                    className='btn btn-primary'
-                    onClick={() => onLoginLogoutbuttonClick()}
-                    style={{ width: 100 }}
-                    type='button'
-                  >
-                    {translate('navbar.log-in')}
-                  </button>
-                </Link>
-              </li>
-            )}
-
-            <li className='nav-item'>
-              <button
-                className='btn btn-primary'
-                id='change-language-button'
-                onClick={handleChangeLanguage}
-                type='button'
+              <Link
+                className={`nav-item nav-link ${
+                  location.pathname === appRoutes.userManagment
+                    ? 'active'
+                    : ''
+                }`}
+                to={appRoutes.userManagment}
               >
-                {language}
-              </button>
-            </li>
-          </ul>
+                <span className='material-symbols-outlined icon-lg'>account_circle</span>
+                <span className='nav-link-label'>{translate('navbar.settings')}</span>
+              </Link>
+            )}
+
+            {isAuthenticated
+              ? (
+                <button
+                  className='nav-item btn btn-primary'
+                  onClick={logout}
+                  type='button'
+                >
+                  {translate('auth.log-out')}
+                </button>
+              )
+              : (
+                <Link
+                  className='nav-item btn btn-primary text-decoration-none'
+                  to={appRoutes.login}
+                >
+                  {translate('auth.log-in')}
+                </Link>
+              )}
+
+            <button
+              className='nav-item btn btn-primary'
+              onClick={handleChangeLanguage}
+              type='button'
+            >
+              {language}
+            </button>
+          </div>
         </div>
       </div>
     </nav>

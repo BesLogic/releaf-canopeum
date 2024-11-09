@@ -1,9 +1,19 @@
+/*
+Override button-variant node_modules/bootstrap/scss/mixins/_buttons.scss
+Bootstrap uses a mixin that causes button colors to have the best calculated contrast
+however we still prefer the lighter color for our secondary buttons
+*/
 .btn-secondary {
-  color: #fff;
+  --#{$prefix}btn-color: #{$light};
+  --#{$prefix}btn-hover-color: #{$light};
+  --#{$prefix}btn-active-color: #{$light};
+  --#{$prefix}btn-disabled-color: #{$light};
 }
 
-.btn-secondary:hover {
-  color: #fff;
+// Idem for button-outline-variant
+.btn-outline-secondary {
+  --#{$prefix}btn-hover-color: #{$light};
+  --#{$prefix}btn-active-color: #{$light};
 }
 
 .unstyled-button {

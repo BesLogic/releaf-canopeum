@@ -1,0 +1,8 @@
+// Override rsuite css vars to fit our style
+:root {
+  --rs-gray-0: #{$card-bg};
+}
+
+.card-title {
+  font-weight: bold;
+}

@@ -1,37 +1,16 @@
-@import "rsuite/dist/rsuite.min.css";
+// Load rsuite CSS first because we don't want it to have priority over bootstrap
+// We can also later override its css vars
+// TODO: Strongly consider to stop using rsuite, we have too many co-existing design systems !
+// (rsuite + mui + bootstrap)
+@use "../node_modules/rsuite/dist/rsuite.min.css";
 
-:root {
-  --rs-gray-0: #FFFAF5;
-}
+// Load variables before Bootsrap so it generates the right theme colors
+@forward "./assets/styles/Variables.scss";
+@use "./assets/styles/Variables.scss" as *;
 
-// Bootrap (?)
-
-$primary: #007E51;
-$secondary: #F18200;
-$border-radius: 0.5rem;
-$link-decoration: none;
-/* TODO: We should reference palette, not direct colors
-https://github.com/BesLogic/releaf-canopeum/issues/249 */
-$green: #06C270;
-$lightgreen: #E8F3E9;
-
-$font-family-sans-serif: -apple-system, BlinkMacSystemFont, 'Lato', Roboto, 'Helvetica Neue', Arial, sans-serif;
-$font-family-monospace: 'Helvetica Neue', Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-$font-family-base: $font-family-sans-serif;
-$headings-font-family: Lato;
-
-$headings-font-weight: 700;
-
-
-
-// Bootstrap variables. Set these first so bootstrap generates the right theme colros
-// $card-bg: #FFFAF5;
-// $accordion-bg: $card-bg;
-$light: #FFFAF5; // Light text color
-$white: #FFFAF5; // Most bg colors
+// TODO: Configure bootstrap witout using @import
+// https://sass-lang.com/blog/import-is-deprecated/
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
+
 // insert our theme's global styles after so we can use its variables
 @import "./assets/styles/GlobalStyles.scss";
-
-
-$navbar-dark-toggler-border-color: rgba($white, 1);

@@ -89,7 +89,7 @@ const Login = () => {
           <label htmlFor='email-input'>{translate('auth.email-label')}</label>
           <input
             aria-describedby='email'
-            className={`form-control ${emailError && 'is-invalid'} `}
+            className={`form-control ${emailError && 'is-invalid'}`}
             id='email-input'
             onBlur={() => validateEmail()}
             onChange={event => setEmail(event.target.value)}
@@ -105,7 +105,7 @@ const Login = () => {
         <div className='w-100'>
           <label htmlFor='password-input'>{translate('auth.password-label')}</label>
           <input
-            className={`form-control ${passwordError && 'is-invalid'} `}
+            className={`form-control ${passwordError && 'is-invalid'}`}
             id='password-input'
             onBlur={() => validatePassword()}
             onChange={event => setPassword(event.target.value)}

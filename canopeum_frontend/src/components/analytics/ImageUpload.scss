@@ -1,4 +1,4 @@
-@import '../../App.scss';
+@use '../../App.scss' as *;
 
 .upload-button {
   background-color: var(--bs-body-bg);

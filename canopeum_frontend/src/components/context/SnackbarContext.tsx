@@ -90,7 +90,6 @@ const SnackbarContextProvider: FunctionComponent<{ readonly children?: ReactNode
           <Alert
             onClose={handleClose}
             severity={snackbarAlertOptions?.severity ?? DEFAULT_SNACKBAR_ALERT_OPTIONS.severity}
-            style={{ color: 'white' }}
             sx={{ width: '100%', boxShadow: 3 }}
             variant='filled'
           >

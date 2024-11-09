@@ -1,4 +1,4 @@
-@import '../App.scss';
+@use '../App.scss' as *;
 
 .settings-left-nav-menu {
   margin-bottom: 2rem;

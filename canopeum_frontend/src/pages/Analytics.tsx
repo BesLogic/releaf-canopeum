@@ -225,7 +225,7 @@ const Analytics = () => {
             <div className='d-flex justify-content-between'>
               <div className='fs-5'>{translate('analytics.batch-tracking')}</div>
               <div>
-                <span>Filters Go Here</span>
+                <span>TODO: Filters Go Here</span>
               </div>
             </div>
           </div>

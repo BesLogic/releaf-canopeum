@@ -19,7 +19,8 @@ import Utilities from '@pages/Utilities'
 const NavbarLayout = () => (
   <div className='d-flex flex-column vh-100'>
     <Navbar />
-    <div className='' style={{ height: 'calc(100vh - 63.8px)' }}>
+    {/* TODO: Can we do better than hardcode a number relating to the expected header size here? */}
+    <div className='' style={{ height: 'calc(100vh - 48px)' }}>
       <Outlet />
     </div>
   </div>

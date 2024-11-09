@@ -1,9 +1,9 @@
-@import '../../App.scss';
+@use '../../App.scss' as *;
 
 // Re-export variables to be accessible from .ts
 // This is useful to mix frameworks like applying bootstrap-defined style to MUI
 :export {
   primary: $primary;
   secondary: $secondary;
-  success: map-get($theme-colors, success);
+  success: $success;
 }

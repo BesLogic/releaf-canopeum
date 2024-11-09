@@ -1,0 +1,48 @@
+/*
+* Bootstrap variables
+*/
+
+$font-family-sans-serif: -apple-system, BlinkMacSystemFont, 'Lato', Roboto, 'Helvetica Neue', Arial, sans-serif;
+$font-family-monospace: 'Helvetica Neue', Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+$font-family-base: $font-family-sans-serif;
+$headings-font-family: Lato;
+$headings-font-weight: 700;
+
+$border-radius: 0.5rem;
+$link-decoration: none;
+$navbar-brand-margin-end: 5.5rem;
+// Set the sizes for the main navbar icons
+$nav-underline-border-width: 0.2rem;
+$navbar-nav-link-padding-x: 1.125rem;
+$nav-link-padding-y: $navbar-nav-link-padding-x - $nav-underline-border-width;
+
+$primary: #007E51;
+$secondary: #F18200;
+$success: #06C270;
+$info: #0063F7;
+$warning: #FFCC00;
+$danger: #FF3B3B;
+
+$white: #FFFAF5; // Most bg colors
+$gray-100: #FFFAF5; // Used for $light: Light text color
+
+$gray-300: #969696; // Used for $border-color: Input border color (and used by $body-color-dark)
+$gray-600: #969696; // aka map-get($colors, gray)
+$gray-800: #616161; // aka map-get($colors, dark-gray)
+$gray-900: #433A2E; // Used for $dark and $body-color: Body text color
+
+/*
+* Custom variables
+*/
+
+// TODO (Sam T.): We should try to configure and properly use Bootstrap breakpoints instead
+$small-width: 540px;
+$medium-width: 720px;
+$large-width: 960px;
+$xlarge-width: 1200px;
+$xxlarge-width: 1600px;
+
+// TODO (Sam T.): We should configure bootstrap so that
+// our primary-derived color this represents uses the right shade of green.
+// Then use the generated bootstrap scss variable instead of $lightgreen
+$lightgreen: #E8F3E9;

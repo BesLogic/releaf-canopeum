@@ -1,16 +1,21 @@
+.nav-underline {
+  .nav-link {
+    // underline on hover just looks weird if there's already an underline from nav
+    text-decoration: none;
+
+    // By default bootstrap gives those 0 padding, restore the .nav-link padding
+    padding-right: var(--bs-nav-link-padding-x);
+    padding-left: var(--bs-nav-link-padding-x);
+  }
+}
+
+
 .navbar {
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  padding: 0;
 
   .navbar-toggler .navbar-toggler-icon {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 250, 245, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-  }
-
-  .navbar li {
-    border-bottom: 0.3rem solid transparent;
-  }
-
-  .nav-item.active {
-    border-bottom-color: white;
   }
 
   .nav-item.active .material-symbols-outlined {
@@ -37,8 +42,10 @@
     }
   }
 
-  #change-language-button {
-    min-width: 44px;
+  .navbar-brand,
+  .nav-item:not(.nav-link) {
+    // Compensate all other items for the underlined nav-links appearing higher
+    margin-bottom: var(--bs-nav-underline-border-width);
   }
 
   .nav-link-label {
@@ -61,11 +68,6 @@
 
     .nav-item {
       padding-left: 0.75rem;
-
-      #change-language-button {
-        padding: 0;
-        min-width: 0;
-      }
     }
 
     .nav-link-label {
@@ -73,10 +75,6 @@
       margin-left: 0.5rem;
     }
   }
-}
-
-.navbar-logo {
-  padding-bottom: 0.3rem;
 }
 
 /*

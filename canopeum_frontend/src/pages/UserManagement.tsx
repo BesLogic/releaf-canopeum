@@ -15,20 +15,20 @@ type UserManagementTab = 'editProfile' | 'logout' | 'manageAdmins' | 'termsAndPo
 const tabs: { type: UserManagementTab, translationKey: string, roles?: RoleEnum[] }[] = [
   {
     type: 'editProfile',
-    translationKey: 'edit-profile',
+    translationKey: 'settings.tabs.edit-profile',
   },
   {
     type: 'manageAdmins',
-    translationKey: 'manage-admins',
+    translationKey: 'settings.tabs.manage-admins',
     roles: ['MegaAdmin' as RoleEnum],
   },
   {
     type: 'termsAndPolicies',
-    translationKey: 'terms-and-policies',
+    translationKey: 'settings.tabs.terms-and-policies',
   },
   {
     type: 'logout',
-    translationKey: 'logout',
+    translationKey: 'auth.log-out',
   },
 ]
 
@@ -68,7 +68,7 @@ const UserManagement = () => {
           onClick={() => onTabClick(tab.type)}
           selected={selectedTab === tab.type}
         >
-          {translate(`settings.tabs.${tab.translationKey}`)}
+          {translate(tab.translationKey)}
         </SettingsTab>
       ))
 

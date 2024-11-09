@@ -15,6 +15,7 @@ export default {
   'password-confirmation-error-required': 'Please re-enter your password',
   'password-error-must-match': 'Passwords do not match',
   'log-in': 'Log In',
+  'log-out': 'Log Out',
   'sign-up': 'Sign Up',
   'create-account': 'Create Account',
   'already-have-an-account': 'Already have an account?',

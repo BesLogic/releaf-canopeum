@@ -16,7 +16,7 @@ const SiteAdminTabs = ({ siteId }: Props) => {
 
   return (
     <div className='site-tabs'>
-      <ul className='nav nav-underline nav-dark justify-content-center gap-2'>
+      <ul className='nav nav-underline nav-dark justify-content-center gap-0'>
         <li className='nav-item'>
           <Link
             className={`nav-link ${
