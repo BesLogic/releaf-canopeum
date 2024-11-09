@@ -22,6 +22,8 @@
     "dbaeumer.vscode-eslint",
     "dprint.dprint",
     "meganrogge.template-string-converter",
+    "mrmlnc.vscode-scss",
+    "sibiraj-s.vscode-scss-formatter", // This can likely eventually be replaced by dprint's malva plugin
     // Python/TOML
     "charliermarsh.ruff",
     "ms-python.mypy-type-checker",

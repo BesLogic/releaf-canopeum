@@ -1,4 +1,4 @@
-@import '../../App.scss';
+@use "../../assets/styles/Variables.scss" as *;
 
 .admin-site-tabs.nav .nav-link {
   color: $cream;

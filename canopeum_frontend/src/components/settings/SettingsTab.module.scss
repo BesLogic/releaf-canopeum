@@ -1,4 +1,4 @@
-@import '../../App.scss';
+@use '../../assets/styles/Variables.scss' as *;
 
 .settingsTab {
   border: none;
@@ -7,6 +7,6 @@
 }
 
 .selectedSettingsTab {
-  border-left: 6px solid map-get($theme-colors, primary);
+  border-left: 6px solid $primary;
   background: $lightgreen;
 }

@@ -1,4 +1,4 @@
-@import '../../App.scss';
+@use "../../assets/styles/Variables.scss" as *;
 
 .header-card {
   display: flex;

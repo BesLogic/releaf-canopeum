@@ -1,3 +1,5 @@
+@use "../../assets/styles/Variables.scss" as *;
+
 .rs-dropdown-item-submenu:hover > .rs-dropdown-item-toggle {
   background-color: $lightgreen;
   color: inherit;
