@@ -3,7 +3,8 @@
 
 import facebookLogo from '@assets/icons/facebook-regular.svg'
 import canopeumLogo from '@assets/images/Canopeum_Logo.jpg'
-import PrimaryIconBadge from '@components/PrimaryIconBadge'
+import IconBadge from '@components/IconBadge'
+import { getSiteTypeIconKey, SITE_TYPE_IDS } from '@models/SiteType'
 
 const Utilities = () => (
   <div>
@@ -19,9 +20,7 @@ const Utilities = () => (
         <span className='material-symbols-outlined icon-xl'>pin_drop</span>
         <span className='material-symbols-outlined fill-icon icon-2xl'>account_circle</span>
         <span className='material-symbols-outlined icon-3xl'>account_circle</span>
-        <span className='material-symbols-outlined fill-icon icon-4xl'>eco</span>
-        <span className='material-symbols-outlined'>eco</span>
-        <span className='material-symbols-outlined fill-icon'>sms</span>
+        <span className='material-symbols-outlined fill-icon icon-4xl'>sms</span>
         <span className='material-symbols-outlined'>sms</span>
         <span className='material-symbols-outlined fill-icon'>mood</span>
         <span className='material-symbols-outlined'>mood</span>
@@ -41,29 +40,33 @@ const Utilities = () => (
         <span className='material-symbols-outlined'>add</span>
         <span className='material-symbols-outlined fill-icon'>cancel</span>
         <span className='material-symbols-outlined'>cancel</span>
-        <span className='material-symbols-outlined fill-icon'>source_environment</span>
-        <span className='material-symbols-outlined'>source_environment</span>
         <span className='material-symbols-outlined fill-icon'>location_on</span>
         <span className='material-symbols-outlined'>location_on</span>
         <span className='material-symbols-outlined fill-icon'>person</span>
         <span className='material-symbols-outlined'>person</span>
-        <span className='material-symbols-outlined fill-icon'>forest</span>
-        <span className='material-symbols-outlined'>forest</span>
-        <span className='material-symbols-outlined fill-icon'>workspaces</span>
-        <span className='material-symbols-outlined'>workspaces</span>
-        <span className='material-symbols-outlined fill-icon'>school</span>
-        <span className='material-symbols-outlined'>school</span>
-        <span className='material-symbols-outlined fill-icon'>psychiatry</span>
-        <span className='material-symbols-outlined'>psychiatry</span>
         <img alt='iconHome' className='h-1' src={facebookLogo} />
+
+        <h4>Site Type Icons</h4>
+        {SITE_TYPE_IDS.map(siteTypeId => {
+          const key = getSiteTypeIconKey(siteTypeId)
+
+          return (
+            <>
+              <span className='material-symbols-outlined fill-icon' key={`${key}-fill`}>{key}</span>
+              <span className='material-symbols-outlined' key={key}>{key}</span>
+              <span className='material-symbols-outlined icon-2xl' key={`${key}-2xl`}>{key}</span>
+            </>
+          )
+        })}
       </div>
       <div className='bg-cream rounded-2 px-3 py-2'>
         <h2>Badges</h2>
         <div className='d-flex gap-1'>
-          <PrimaryIconBadge type='school' />
-          <PrimaryIconBadge type='forest' />
-          <PrimaryIconBadge type='workspaces' />
-          <PrimaryIconBadge type='person' />
+          {SITE_TYPE_IDS.map(siteTypeId => {
+            const key = getSiteTypeIconKey(siteTypeId)
+
+            return <IconBadge iconKey={key} key={key} />
+          })}
         </div>
       </div>
       <div className='bg-cream rounded px-3 py-2'>

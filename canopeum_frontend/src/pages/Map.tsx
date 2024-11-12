@@ -4,25 +4,12 @@ import { useCallback, useEffect, useState } from 'react'
 import ReactMap, { GeolocateControl, Marker, NavigationControl, ScaleControl, type ViewState } from 'react-map-gl/maplibre'
 import { Link } from 'react-router-dom'
 
-import CanopeumPin from '@assets/icons/pins/canopeum-pin.svg'
-import CorporateLotPin from '@assets/icons/pins/corporate-lot-pin.svg'
-import EducationalFacilityPin from '@assets/icons/pins/educational-facility-pin.svg'
-import FarmsLandPin from '@assets/icons/pins/farms-land-pin.svg'
-import IndegeniousCommunityPin from '@assets/icons/pins/indegenious-community-pin.svg'
-import ParkPin from '@assets/icons/pins/park-pin.svg'
+import SiteTypePin from '@components/assets/SiteTypePin'
 import { appRoutes } from '@constants/routes.constant'
 import useApiClient from '@hooks/ApiClientHook'
+import { getSiteTypeIconKey, type SiteTypeID } from '@models/SiteType'
 import type { SiteMap } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
-
-const pinMap: Record<number, string> = {
-  1: CanopeumPin,
-  2: ParkPin,
-  3: IndegeniousCommunityPin,
-  4: EducationalFacilityPin,
-  5: FarmsLandPin,
-  6: CorporateLotPin,
-}
 
 type MarkerEvent = {
   target: {
@@ -100,7 +87,7 @@ const Map = () => {
                 onClick={event => onMarkerClick(event, site)}
                 style={{ cursor: 'pointer' }}
               >
-                <img alt='' src={pinMap[site.siteType.id]} />
+                <SiteTypePin siteTypeId={site.siteType.id as SiteTypeID} />
               </Marker>
             ))}
           </ReactMap>
@@ -137,7 +124,9 @@ const Map = () => {
                         <h5>{site.name}</h5>
 
                         <h6 className='d-flex align-items-center text-primary'>
-                          <span className='material-symbols-outlined'>school</span>
+                          <span className='material-symbols-outlined'>
+                            {getSiteTypeIconKey(site.siteType.id)}
+                          </span>
                           <span className='ms-1'>{site.siteType.en}</span>
                         </h6>
 

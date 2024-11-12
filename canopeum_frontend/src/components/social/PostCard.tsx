@@ -13,7 +13,7 @@ import TextExpansion from '@components/inputs/TextExpansion'
 import PostCommentsDialog from '@components/social/PostCommentsDialog'
 import SharePostDialog from '@components/social/SharePostDialog'
 import useApiClient from '@hooks/ApiClientHook'
-import type { PageViewMode } from '@models/types/PageViewMode.Type'
+import type { PageViewMode } from '@models/PageViewMode.type'
 import type { Post } from '@services/api'
 import usePostsStore from '@store/postsStore'
 
