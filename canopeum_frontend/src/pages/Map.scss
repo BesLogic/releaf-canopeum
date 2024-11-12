@@ -1,4 +1,4 @@
-@import '../App.scss';
+@use '../assets/styles/Variables.scss' as *;
 
 #map-page-row-container {
   padding: 0 2rem;

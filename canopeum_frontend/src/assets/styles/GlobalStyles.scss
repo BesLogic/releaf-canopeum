@@ -1,17 +1,13 @@
-// Import here all global style modules from this same folder
+@use 'Variables.scss' as *;
 
-@import "./Buttons.scss";
-@import "./Forms.scss";
-@import "./Icons.scss";
-@import "./Navbar.scss";
-@import "./Transitions.scss";
-@import "./DropdownMenu.scss";
+// TODO (Sam. T): Move this file to a GlobalStyles/_index.scss and imported files into same folder
 
-$small-width: 540px;
-$medium-width: 720px;
-$large-width: 960px;
-$xlarge-width: 1200px;
-$xxlarge-width: 1600px;
+@use 'Buttons.scss';
+@use 'Forms.scss';
+@use 'Icons.scss';
+@use 'Navbar.scss';
+@use 'Transitions.scss';
+@use 'DropdownMenu.scss';
 
 ::-webkit-scrollbar {
   width: 10px;

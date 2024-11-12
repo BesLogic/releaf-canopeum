@@ -1,6 +1,6 @@
-@import "../node_modules/bootstrap/scss/variables";
+@use '../../../node_modules/bootstrap/scss/bootstrap' as *;
 
-$default-text-color: #433A2E;
+$default-text-color: #433a2e;
 
 .form-control::placeholder {
   color: map-get($theme-colors, light-gray);

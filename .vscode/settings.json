@@ -143,7 +143,7 @@
     "editor.defaultFormatter": "vscode.css-language-features"
   },
   "[scss]": {
-    "editor.defaultFormatter": "vscode.css-language-features"
+    "editor.defaultFormatter": "sibiraj-s.vscode-scss-formatter"
   },
   "[postcss]": {
     "editor.defaultFormatter": "vscode.css-language-features"
@@ -154,6 +154,9 @@
   "less.format.spaceAroundSelectorSeparator": true,
   "css.format.spaceAroundSelectorSeparator": true,
   "scss.format.spaceAroundSelectorSeparator": true,
+  "scssFormatter.printWidth": 100,
+  "scssFormatter.singleQuote": true,
+  "scssFormatter.trailingComma": "all",
 
   /*
   * Python
