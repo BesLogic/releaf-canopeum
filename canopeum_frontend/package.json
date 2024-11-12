@@ -41,7 +41,7 @@
   "// eslint-*": "Keep these in sync with .pre-commit-config.yaml",
   "// sass": "Tons of deprecation warnings since 1.77.7 with bootstrap",
   "devDependencies": {
-    "@mockoon/cli": "^8.4.0",
+    "@mockoon/cli": "^9.0.0",
     "@types/react": "^18.2.64",
     "@types/react-dom": "^18.2.21",
     "@types/react-transition-group": "^4.4.10",
