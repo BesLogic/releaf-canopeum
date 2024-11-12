@@ -23,17 +23,11 @@
   background-color: rgba(0, 0, 0, 0.75);
 }
 
-.close-button {
+.carousel .btn-close {
   position: absolute;
-  top: 0.5rem;
-  right: 1rem;
-  font-size: 2rem;
-  color: white;
-  background-color: transparent;
-  cursor: pointer;
-  padding: 0;
+  top: 1rem;
+  right: 1.5rem;
   z-index: 3;
-  border-radius: 50%;
 }
 
 .carousel-inner {
