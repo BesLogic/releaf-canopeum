@@ -51,7 +51,9 @@ const Navbar = () => {
   const location = useLocation()
 
   const handleChangeLanguage = () => {
-    const newLanguage = currentLanguage === 'en' ? 'fr' : 'en'
+    const newLanguage = currentLanguage === 'en'
+? 'fr'
+: 'en'
     setCurrentLanguage(newLanguage)
     void changeLanguage(newLanguage)
   }
@@ -59,17 +61,14 @@ const Navbar = () => {
   const { isAuthenticated, logout } = useContext(AuthenticationContext)
   const navigate = useNavigate()
 
-  const onLoginLogoutbuttonClick = (useCallback(() => {
+  const onLoginLogoutbuttonClick = useCallback(() => {
     if (isAuthenticated) {
       logout()
     } else {
       navigate(appRoutes.login)
     }
-  }, [isAuthenticated, navigate, logout]))
+  }, [isAuthenticated, navigate, logout])
 
-
-
-  
   return (
     <nav className='navbar sticky-top navbar-expand-lg navbar-dark bg-primary'>
       <div className='container-fluid'>
