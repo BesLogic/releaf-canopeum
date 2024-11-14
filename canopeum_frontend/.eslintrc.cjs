@@ -67,7 +67,11 @@ module.exports = {
           ],
         ],
       },
-    ],
+
+
+
+
+      ],
     // Using Bootraps directly without a React wrapper
     // will cause us to have to add classes to React Components
     'react/forbid-component-props': 'off',
