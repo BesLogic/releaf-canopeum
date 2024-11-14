@@ -97,7 +97,11 @@ urlpatterns = [
     path("map/sites/", views.SiteMapListAPIView.as_view(), name="coordinate-list-sites"),
     # User
     path("users/", views.UserListAPIView.as_view(), name="user-list"),
-    path("users/site-managers", views.SiteManagersListAPIView.as_view(), name="site-managers-list"),
+    path(
+        "users/forest-stewards",
+        views.ForestStewardsListAPIView.as_view(),
+        name="forest-stewards-list",
+    ),
     path("users/<int:userId>/", views.UserDetailAPIView.as_view(), name="user-detail"),
     path("users/current_user/", views.UserCurrentUserAPIView.as_view(), name="current-user"),
     path(

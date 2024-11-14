@@ -110,11 +110,11 @@ class RegisterUserSerializer(serializers.ModelSerializer[User]):
                 if user_invitation.is_expired():
                     raise serializers.ValidationError("INVITATION_EXPIRED") from None
 
-                role = Role.objects.get(name="SiteManager")
+                role = Role.objects.get(name=RoleName.ForestSteward)
             except UserInvitation.DoesNotExist:
                 raise serializers.ValidationError("INVITATION_CODE_INVALID") from None
         else:
-            role = Role.objects.get(name="User")
+            role = Role.objects.get(name=RoleName.User)
 
         user = User.objects.create(
             username=self.validated_data["username"],
@@ -144,15 +144,13 @@ class UserSerializer(serializers.ModelSerializer[User]):
         exclude = ("password",)
 
     def get_role(self, obj: User) -> RoleName:
-        role_name = obj.role.name
-        return RoleName.from_string(role_name)  # type: ignore[no-any-return] # mypy false-positive
+        return RoleName.from_string(obj.role.name)  # type: ignore[no-any-return] # mypy false-positive
 
     def get_admin_site_ids(self, obj: User) -> list[int]:
         return [siteadmin.site.pk for siteadmin in Siteadmin.objects.filter(user=obj)]
 
     def get_followed_site_ids(self, obj: User) -> list[int]:
-        user_role = self.get_role(obj)
-        if user_role == RoleName.MEGAADMIN:
+        if obj.role.name == RoleName.MegaAdmin:
             return [site.pk for site in Site.objects.all()]
         return [site_follower.site.pk for site_follower in SiteFollower.objects.filter(user=obj)]
 

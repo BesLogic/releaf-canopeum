@@ -11,7 +11,7 @@ type NavbarItem = {
   icon: MaterialIcon,
   linkTo: string,
   label: string,
-  roles: (RoleEnum | undefined)[],
+  roles: RoleEnum[],
 }
 
 const NAVBAR_ITEMS: NavbarItem[] = [
@@ -19,26 +19,26 @@ const NAVBAR_ITEMS: NavbarItem[] = [
     icon: 'home',
     linkTo: appRoutes.home,
     label: 'home',
-    roles: ['User', 'SiteManager', 'MegaAdmin'],
+    roles: ['User', 'ForestSteward', 'MegaAdmin'],
   },
   {
     icon: 'donut_small',
     linkTo: appRoutes.sites,
     label: 'sites',
-    roles: ['SiteManager', 'MegaAdmin'],
+    roles: ['ForestSteward', 'MegaAdmin'],
   },
   {
     icon: 'pin_drop',
     linkTo: appRoutes.map,
     label: 'map',
-    roles: ['User', 'SiteManager', 'MegaAdmin'],
+    roles: ['User', 'ForestSteward', 'MegaAdmin'],
   },
   // For development purposes
   // {
   //   icon: 'style',
   //   linkTo: appRoutes.utilities,
   //   label: 'utilities',
-  //   roles: ['SiteManager', 'MegaAdmin'],
+  //   roles: ['ForestSteward', 'MegaAdmin'],
   // },
 ]
 
@@ -105,7 +105,7 @@ const Navbar = () => {
                     ? 'active'
                     : ''
                 } ${
-                  item.roles.includes(currentUser?.role)
+                  (currentUser && item.roles.includes(currentUser.role))
                     ? 'd-inline'
                     : 'd-none'
                 }`}

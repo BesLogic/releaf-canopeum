@@ -33,7 +33,7 @@ const Analytics = () => {
   )
 
   const fetchAdmins = useCallback(
-    async () => setAdminList(await getApiClient().userClient.allSiteManagers()),
+    async () => setAdminList(await getApiClient().userClient.allForestStewards()),
     [getApiClient],
   )
 

@@ -1,6 +1,7 @@
 import re
 from datetime import UTC, datetime, timedelta
-from typing import TYPE_CHECKING, Any, ClassVar, TypeVar, override
+from enum import auto
+from typing import TYPE_CHECKING, Any, ClassVar, Literal, TypeVar, cast, override
 
 import googlemaps
 from django.contrib.auth.models import AbstractUser
@@ -22,35 +23,38 @@ gmaps = googlemaps.Client(key=GOOGLE_API_KEY) if GOOGLE_API_KEY else None
 
 
 class RoleName(models.TextChoices):
-    USER = "User"
-    SITEMANAGER = "SiteManager"
-    MEGAADMIN = "MegaAdmin"
+    User = auto()
+    ForestSteward = auto()
+    MegaAdmin = auto()
 
     @classmethod
     def from_string(cls, value: str):
         try:
             return cls(value)
         except ValueError:
-            return cls.USER
+            return cls.User
 
 
 class Role(models.Model):
-    name = models.CharField(
-        max_length=11,
-        choices=RoleName.choices,
-        default=RoleName.USER,
+    # TODO: Request at https://github.com/typeddjango/django-stubs/issues
+    # for "choices" CharField to be understood as the enum type instead of a simple "str"
+    name = cast(
+        Literal["User", "ForestSteward", "MegaAdmin"],
+        models.CharField(max_length=max(len(val) for val in RoleName), choices=RoleName.choices),
     )
 
 
 class User(AbstractUser):
-    email = models.EmailField(
-        verbose_name="email address",
-        max_length=255,
-        unique=True,
-    )
+    email = models.EmailField(verbose_name="email address", max_length=255, unique=True)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS: ClassVar[list[str]] = []
-    role = models.ForeignKey[Role, Role](Role, models.RESTRICT, null=False, default=1)
+    role = models.ForeignKey[Role, Role](
+        Role,
+        models.RESTRICT,
+        null=False,
+        # Role.objects.get(name=RoleName.User).pk, but statically so we don't access DB during init
+        default=1,
+    )
     if TYPE_CHECKING:
         # Missing "id" in "Model" or some base "User" class?
         id: int
