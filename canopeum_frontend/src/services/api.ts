@@ -145,10 +145,8 @@ export class BatchClient {
     sponsorLogo?: FileParameter | null | undefined,
     size?: number | null | undefined,
     soilCondition?: string | null | undefined,
-    plantCount?: number | null | undefined,
     survivedCount?: number | null | undefined,
     replaceCount?: number | null | undefined,
-    totalNumberSeed?: number | null | undefined,
     totalPropagation?: number | null | undefined,
     image?: FileParameter | null | undefined,
     fertilizerIds?: number[] | undefined,
@@ -188,17 +186,11 @@ export class BatchClient {
     if (soilCondition !== null && soilCondition !== undefined) {
       content_.append('soilCondition', soilCondition.toString())
     }
-    if (plantCount !== null && plantCount !== undefined) {
-      content_.append('plantCount', plantCount.toString())
-    }
     if (survivedCount !== null && survivedCount !== undefined) {
       content_.append('survivedCount', survivedCount.toString())
     }
     if (replaceCount !== null && replaceCount !== undefined) {
       content_.append('replaceCount', replaceCount.toString())
-    }
-    if (totalNumberSeed !== null && totalNumberSeed !== undefined) {
-      content_.append('totalNumberSeed', totalNumberSeed.toString())
     }
     if (totalPropagation !== null && totalPropagation !== undefined) {
       content_.append('totalPropagation', totalPropagation.toString())
@@ -281,10 +273,8 @@ export class BatchClient {
     sponsorLogo?: FileParameter | null | undefined,
     size?: number | null | undefined,
     soilCondition?: string | null | undefined,
-    plantCount?: number | null | undefined,
     survivedCount?: number | null | undefined,
     replaceCount?: number | null | undefined,
-    totalNumberSeed?: number | null | undefined,
     totalPropagation?: number | null | undefined,
     fertilizerIds?: number[] | undefined,
     mulchLayerIds?: number[] | undefined,
@@ -322,17 +312,11 @@ export class BatchClient {
     if (soilCondition !== null && soilCondition !== undefined) {
       content_.append('soilCondition', soilCondition.toString())
     }
-    if (plantCount !== null && plantCount !== undefined) {
-      content_.append('plantCount', plantCount.toString())
-    }
     if (survivedCount !== null && survivedCount !== undefined) {
       content_.append('survivedCount', survivedCount.toString())
     }
     if (replaceCount !== null && replaceCount !== undefined) {
       content_.append('replaceCount', replaceCount.toString())
-    }
-    if (totalNumberSeed !== null && totalNumberSeed !== undefined) {
-      content_.append('totalNumberSeed', totalNumberSeed.toString())
     }
     if (totalPropagation !== null && totalPropagation !== undefined) {
       content_.append('totalPropagation', totalPropagation.toString())
@@ -3250,7 +3234,9 @@ export class BatchDetail implements IBatchDetail {
   readonly mulchLayers!: MulchLayerType[]
   readonly supportedSpecies!: TreeType[]
   readonly seeds!: BatchSeed[]
+  readonly totalNumberSeeds!: number
   readonly species!: BatchSpecies[]
+  readonly plantCount!: number
   readonly sponsor!: BatchSponsor
   image?: Asset
   readonly createdAt!: Date | undefined
@@ -3260,7 +3246,6 @@ export class BatchDetail implements IBatchDetail {
   soilCondition?: string | undefined
   survivedCount?: number | undefined
   replaceCount?: number | undefined
-  totalNumberSeed?: number | undefined
   totalPropagation?: number | undefined
   site!: number;
 
@@ -3316,12 +3301,14 @@ export class BatchDetail implements IBatchDetail {
           ;(<any> this).seeds!.push(BatchSeed.fromJS(item))
         }
       }
+      ;(<any> this).totalNumberSeeds = _data['totalNumberSeeds']
       if (Array.isArray(_data['species'])) {
         ;(<any> this).species = [] as any
         for (let item of _data['species']) {
           ;(<any> this).species!.push(BatchSpecies.fromJS(item))
         }
       }
+      ;(<any> this).plantCount = _data['plantCount']
       ;(<any> this).sponsor = _data['sponsor']
         ? BatchSponsor.fromJS(_data['sponsor'])
         : new BatchSponsor()
@@ -3337,7 +3324,6 @@ export class BatchDetail implements IBatchDetail {
       this.soilCondition = _data['soilCondition']
       this.survivedCount = _data['survivedCount']
       this.replaceCount = _data['replaceCount']
-      this.totalNumberSeed = _data['totalNumberSeed']
       this.totalPropagation = _data['totalPropagation']
       this.site = _data['site']
     }
@@ -3382,12 +3368,14 @@ export class BatchDetail implements IBatchDetail {
         data['seeds'].push(item.toJSON())
       }
     }
+    data['totalNumberSeeds'] = this.totalNumberSeeds
     if (Array.isArray(this.species)) {
       data['species'] = []
       for (let item of this.species) {
         data['species'].push(item.toJSON())
       }
     }
+    data['plantCount'] = this.plantCount
     data['sponsor'] = this.sponsor ? this.sponsor.toJSON() : <any> undefined
     data['image'] = this.image ? this.image.toJSON() : <any> undefined
     data['createdAt'] = this.createdAt ? this.createdAt.toISOString() : <any> undefined
@@ -3397,7 +3385,6 @@ export class BatchDetail implements IBatchDetail {
     data['soilCondition'] = this.soilCondition
     data['survivedCount'] = this.survivedCount
     data['replaceCount'] = this.replaceCount
-    data['totalNumberSeed'] = this.totalNumberSeed
     data['totalPropagation'] = this.totalPropagation
     data['site'] = this.site
     return data
@@ -3410,7 +3397,9 @@ export interface IBatchDetail {
   mulchLayers: MulchLayerType[]
   supportedSpecies: TreeType[]
   seeds: BatchSeed[]
+  totalNumberSeeds: number
   species: BatchSpecies[]
+  plantCount: number
   sponsor: BatchSponsor
   image?: Asset
   createdAt: Date | undefined
@@ -3420,7 +3409,6 @@ export interface IBatchDetail {
   soilCondition?: string | undefined
   survivedCount?: number | undefined
   replaceCount?: number | undefined
-  totalNumberSeed?: number | undefined
   totalPropagation?: number | undefined
   site: number
 

@@ -1,7 +1,6 @@
 # Pyright does not support duck-typed Meta inner-class
 # pyright: reportIncompatibleVariableOverride=false
 
-import random
 from collections.abc import Mapping
 from decimal import Decimal
 from typing import Any
@@ -419,7 +418,9 @@ class BatchDetailSerializer(serializers.ModelSerializer[Batch]):
     mulch_layers = serializers.SerializerMethodField()
     supported_species = serializers.SerializerMethodField()
     seeds = serializers.SerializerMethodField()
+    total_number_seeds = serializers.SerializerMethodField()
     species = serializers.SerializerMethodField()
+    plant_count = serializers.SerializerMethodField()
     sponsor = serializers.SerializerMethodField()
     # HACK to allow handling the image with a AssetSerializer separately
     # TODO: Figure out how to feed the image directly to BatchDetailSerializer
@@ -456,15 +457,21 @@ class BatchDetailSerializer(serializers.ModelSerializer[Batch]):
         return TreeTypeSerializer(supported_species_types, many=True).data
 
     @extend_schema_field(BatchSeedSerializer(many=True))
-    def get_seeds(self, obj):
+    def get_seeds(self, obj: Batch):
         return BatchSeedSerializer(BatchSeed.objects.filter(batch=obj), many=True).data
 
+    def get_total_number_seeds(self, obj: Batch) -> int:
+        return obj.get_total_number_seeds()
+
     @extend_schema_field(BatchSpeciesSerializer(many=True))
-    def get_species(self, obj):
+    def get_species(self, obj: Batch):
         return BatchSpeciesSerializer(BatchSpecies.objects.filter(batch=obj), many=True).data
 
+    def get_plant_count(self, obj: Batch) -> int:
+        return obj.get_plant_count()
+
     @extend_schema_field(BatchSponsorSerializer)
-    def get_sponsor(self, obj):
+    def get_sponsor(self, obj: Batch):
         return BatchSponsorSerializer(BatchSponsor.objects.get(batch=obj)).data
 
 
@@ -551,11 +558,13 @@ class SiteSummarySerializer(serializers.ModelSerializer[Site]):
     def get_sponsor_progress(self, obj: Site) -> float:
         return obj.get_sponsor_progress()
 
-    def get_survived_count(self, obj) -> int:
-        return random.randint(50, 100)  # noqa: S311
+    def get_survived_count(self, obj: Site) -> int:
+        batches = Batch.objects.filter(site=obj)
+        return sum(batch.survived_count or 0 for batch in batches)
 
-    def get_propagation_count(self, obj) -> int:
-        return random.randint(5, 50)  # noqa: S311
+    def get_propagation_count(self, obj: Site) -> int:
+        batches = Batch.objects.filter(site=obj)
+        return sum(batch.total_propagation or 0 for batch in batches)
 
     @extend_schema_field(BatchDetailSerializer(many=True))
     def get_batches(self, obj):
@@ -599,11 +608,13 @@ class SiteSummaryDetailSerializer(serializers.ModelSerializer[Site]):
     def get_sponsor_progress(self, obj: Site) -> float:
         return obj.get_sponsor_progress()
 
-    def get_survived_count(self, obj) -> int:
-        return random.randint(50, 100)  # noqa: S311
+    def get_survived_count(self, obj: Site) -> int:
+        batches = Batch.objects.filter(site=obj)
+        return sum(batch.survived_count or 0 for batch in batches)
 
-    def get_propagation_count(self, obj) -> int:
-        return random.randint(5, 50)  # noqa: S311
+    def get_propagation_count(self, obj: Site) -> int:
+        batches = Batch.objects.filter(site=obj)
+        return sum(batch.total_propagation or 0 for batch in batches)
 
     @extend_schema_field(BatchSponsorSerializer(many=True))
     def get_sponsors(self, obj):
