@@ -52,8 +52,8 @@ const Navbar = () => {
 
   const handleChangeLanguage = () => {
     const newLanguage = currentLanguage === 'en'
-? 'fr'
-: 'en'
+      ? 'fr'
+      : 'en'
     setCurrentLanguage(newLanguage)
     void changeLanguage(newLanguage)
   }
