@@ -40,7 +40,7 @@ jobs:
         with:
           default_author: github_actions
       - name: Logging
-        if: !cancelled()
+        if:  ${{ !cancelled() }}
         run: echo "${{toJSON(github.event)}}"
 
   Build:

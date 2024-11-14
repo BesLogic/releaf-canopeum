@@ -84,7 +84,7 @@ jobs:
           args: check --fix
       - uses: astral-sh/ruff-action@v1
         # Format even on lint failure
-        if: !cancelled()
+        if: ${{ !cancelled() }}
         with:
           args: format
       - name: Commit autofixes
