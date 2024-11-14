@@ -5,17 +5,22 @@ module.exports = {
   extends: [
     'beslogic/react',
     'beslogic/typescript',
-    'beslogic/dprint',
+    'beslogic/extra-strict',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    // Experimental, but causes pre-commit to actually find the project and avoids OOM
+    projectService: {
+      allowDefaultProject: ['*/*/*.js', '.eslintrc.cjs'],
+    },
+    // Still needed for plugins that haven't updated to typescript-eslint@8 yet
+    // Namely: eslint-plugin-sonarjs
     EXPERIMENTAL_useProjectService: true,
+    // eslint-disable-next-line no-undef -- false-positive
+    tsconfigRootDir: __dirname,
   },
   ignorePatterns: [
-    // Isn't included in any TSConfig
-    '.eslintrc.cjs',
-    'vite.config.ts',
+    // Not found by the project service. Isn't included in any TSConfig
+    'index.html',
     // Auto-generated
     'src/services/api.ts',
   ],
@@ -24,6 +29,7 @@ module.exports = {
       'warn',
       { allowConstantExport: true }, // Works fine in Vite
     ],
+
     /*
      * Beslogic presets overrides
      */
@@ -61,23 +67,26 @@ module.exports = {
           ],
         ],
       },
-    ],
+
+
+
+
+      ],
     // Using Bootraps directly without a React wrapper
     // will cause us to have to add classes to React Components
     'react/forbid-component-props': 'off',
     '@typescript-eslint/no-unsafe-member-access': 'warn',
-    // There is currently a bug with this rule causing the linter to crash
-    // Until this is fixed or solved, we'll turn this one off to prevent blocking
-    // in PR with the exception
-    // https://github.com/cartant/eslint-plugin-etc/issues/63
-    'etc/no-implicit-any-catch': 'off',
+    // Extremely slow rule
+    'etc/no-commented-out-code': 'off',
   },
   overrides: [
     {
       files: 'src/locale/**/*.ts',
       rules: {
+        // These are not credentials
+        'sonarjs/no-hardcoded-credentials': 'off',
         // We prefer avoiding line-breaks in translation files
-        'max-len': 'off',
+        '@stylistic/max-len': 'off',
         // Imports across languages to use the "satisfies" keyword on object literals
         // We need to apply it directly on object literals to check for excess properties
         // https://www.typescriptlang.org/docs/handbook/2/objects.html#excess-property-checks

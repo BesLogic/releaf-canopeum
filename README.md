@@ -104,12 +104,6 @@ For backend
    uv run ./scripts/checkers.py
    ```
 
-   For both: (autofixers)
-
-   ```shell
-   pre-commit run --all
-   ```
-
 ### Quickly running the application locally
 
 We've made a `start-local-env.ps1` helper script to ease starting up the application. Feel free to use and improve it.
