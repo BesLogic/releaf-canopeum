@@ -41,7 +41,16 @@ jobs:
           default_author: github_actions
       - name: Logging
         if:  ${{ !cancelled() }}
-        run: echo "${{toJSON(github.event)}}"
+        run: echo "${{toJSON(github.actor)}}"
+      - name: Logging
+        if:  ${{ !cancelled() }}
+        run: echo "${{github.actor}}"
+      - name: Logging
+        if:  ${{ !cancelled() }}
+        run: echo "${{github.triggering_actor}}"
+      - name: Logging
+        if:  ${{ !cancelled() }}
+        run: echo "${{toJSON(github)}}"
 
   Build:
     runs-on: ubuntu-latest
