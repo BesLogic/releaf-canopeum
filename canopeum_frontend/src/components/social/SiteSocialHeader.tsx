@@ -13,10 +13,11 @@ import type { PageViewMode } from '@models/PageViewMode.type'
 import { getSiteTypeIconKey } from '@models/SiteType'
 import { PatchedUpdateSitePublicStatus, type SiteSocial, User } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
+import type { ExcludeFunctions } from '@utils/types'
 
 type Props = {
   readonly viewMode: PageViewMode,
-  readonly site: SiteSocial,
+  readonly site: ExcludeFunctions<SiteSocial>,
 }
 
 const SiteSocialHeader = ({ site, viewMode }: Props) => {
@@ -79,7 +80,7 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
         <div
           className='site-social-image'
           style={{
-            backgroundImage: `url('${getApiBaseUrl() + site.image.asset}')`,
+            backgroundImage: `url('${getApiBaseUrl()}${site.image.asset}')`,
           }}
         />
 

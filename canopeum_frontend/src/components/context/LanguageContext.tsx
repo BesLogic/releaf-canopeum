@@ -18,7 +18,7 @@ export const LanguageContext = createContext<ILanguageContext>({
 })
 LanguageContext.displayName = 'LanguageContext'
 
-const { timeZone } = Intl.DateTimeFormat().resolvedOptions()
+const { timeZone } = new Intl.DateTimeFormat().resolvedOptions()
 
 const LanguageContextProvider: FunctionComponent<{ readonly children?: ReactNode }> = memo(
   props => {
@@ -36,7 +36,7 @@ const LanguageContextProvider: FunctionComponent<{ readonly children?: ReactNode
         ...options,
       }
 
-      return Intl.DateTimeFormat(i18n.language, fullOptions).format(date)
+      return new Intl.DateTimeFormat(i18n.language, fullOptions).format(date)
     }, [i18n])
 
     const translateValue = useCallback((translable: Translatable) => translable[i18n.language], [

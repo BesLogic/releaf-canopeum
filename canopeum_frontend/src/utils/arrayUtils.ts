@@ -27,7 +27,8 @@ export const mapSum = <
   values.reduce(
     (previous, current) =>
       previous + (
-        /* total-functions/no-unsafe-type-assertion --
+        //
+        /* @typescript-eslint/no-unsafe-type-assertion --
         The retriction using KeysWithValsOfType ensures the value obtained from the key is of known
         type. We don't want the the objects to be restricted to *only* those value types */
         (current[key] as number | null | undefined) ?? 0

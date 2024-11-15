@@ -181,8 +181,13 @@ const Register = () => {
             <label htmlFor='username-input'>{translate('auth.username-label')}</label>
             <input
               aria-describedby='emailHelp'
-              // eslint-disable-next-line sonarjs/no-duplicate-string -- Create an Input Component?
-              className={`form-control ${usernameError && 'is-invalid'} `}
+              className={`form-control ${
+                usernameError
+                  /* eslint-disable-next-line sonarjs/no-duplicate-string
+                  -- Create an Input Component? */
+                  ? 'is-invalid'
+                  : ''
+              } `}
               id='username-input'
               onBlur={() => validateUsername()}
               onChange={event => setUsername(event.target.value)}
@@ -199,7 +204,11 @@ const Register = () => {
             <label htmlFor='email-input'>{translate('auth.email-label')}</label>
             <input
               aria-describedby='email'
-              className={`form-control ${emailError && 'is-invalid'} `}
+              className={`form-control ${
+                emailError
+                  ? 'is-invalid'
+                  : ''
+              } `}
               disabled={!!userInvitation}
               id='email-input'
               onBlur={() => validateEmail()}
@@ -222,7 +231,11 @@ const Register = () => {
           <div className='w-100'>
             <label htmlFor='password-input'>{translate('auth.password-label')}</label>
             <input
-              className={`form-control ${passwordError && 'is-invalid'} `}
+              className={`form-control ${
+                passwordError
+                  ? 'is-invalid'
+                  : ''
+              } `}
               id='password-input'
               onBlur={() => validatePassword()}
               onChange={event => setPassword(event.target.value)}
@@ -245,7 +258,11 @@ const Register = () => {
               {translate('auth.password-confirmation-label')}
             </label>
             <input
-              className={`form-control ${passwordConfirmationError && 'is-invalid'}`}
+              className={`form-control ${
+                passwordConfirmationError
+                  ? 'is-invalid'
+                  : ''
+              }`}
               id='confirmation-password-input'
               onBlur={() => validatePasswordConfirmation()}
               onChange={event => setPasswordConfirmation(event.target.value)}

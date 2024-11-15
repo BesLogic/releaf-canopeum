@@ -1,3 +1,5 @@
+import type { JSX } from 'react'
+
 import CanopeumPin from '@assets/icons/pins/canopeum-pin.svg'
 import CorporateLotPin from '@assets/icons/pins/corporate-lot-pin.svg'
 import EducationalFacilityPin from '@assets/icons/pins/educational-facility-pin.svg'

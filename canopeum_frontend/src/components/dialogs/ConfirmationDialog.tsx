@@ -19,7 +19,7 @@ const ConfirmationDialog = ({ actions, children, onClose, open, title }: Props) 
     let buttonClasses = 'btn'
     let buttonText = ''
     let proceed = false
-    // eslint-disable-next-line default-case -- Turned off in next eslint-config-beslogic update
+
     switch (action) {
       case 'delete': {
         buttonClasses += ' btn-outline-danger'

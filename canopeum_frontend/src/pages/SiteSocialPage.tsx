@@ -19,6 +19,7 @@ import type { PageViewMode } from '@models/PageViewMode.type'
 import { type IWidget, PatchedWidget, type Post, type SiteSocial, Widget } from '@services/api'
 import { ensureError } from '@services/errors'
 import usePostsStore from '@store/postsStore'
+import type { ExcludeFunctions } from '@utils/types'
 
 const SiteSocialPage = () => {
   const { t } = useTranslation()
@@ -38,7 +39,7 @@ const SiteSocialPage = () => {
 
   const [isLoadingSite, setIsLoadingSite] = useState(true)
   const [error, setError] = useState<Error | undefined>()
-  const [site, setSite] = useState<SiteSocial>()
+  const [site, setSite] = useState<ExcludeFunctions<SiteSocial>>()
   const [sitePosts, setSitePosts] = useState<Post[]>([])
   const [isWidgetModalOpen, setIsWidgetModalOpen] = useState<[boolean, Widget | undefined]>([
     false,
@@ -148,12 +149,12 @@ const SiteSocialPage = () => {
             <div className='d-flex flex-column gap-4'>
               <AnnouncementCard
                 announcement={site.announcement}
-                onEdit={announcement => setSite(() => ({ ...site, announcement } as SiteSocial))}
+                onEdit={announcement => setSite(() => ({ ...site, announcement }))}
                 viewMode={viewMode}
               />
               <ContactCard
                 contact={site.contact}
-                onEdit={contact => setSite(() => ({ ...site, contact } as SiteSocial))}
+                onEdit={contact => setSite(() => ({ ...site, contact }))}
                 viewMode={viewMode}
               />
               {site.widget.map(widget => (

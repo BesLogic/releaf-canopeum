@@ -80,18 +80,23 @@ const MapPage = () => {
             <GeolocateControl position='top-right' />
             <NavigationControl position='top-right' showCompass showZoom visualizePitch />
             <ScaleControl position='bottom-left' unit='metric' />
-            {sites.map(site => (
-              <Marker
-                anchor='bottom'
-                key={`${site.id}-${site.coordinates.latitude}-${site.coordinates.longitude}`}
-                latitude={Number(site.coordinates.latitude)}
-                longitude={Number(site.coordinates.longitude)}
-                onClick={event => onMarkerClick(event, site)}
-                style={{ cursor: 'pointer' }}
-              >
-                <SiteTypePin siteTypeId={site.siteType.id as SiteTypeID} />
-              </Marker>
-            ))}
+            {sites.map(site => {
+              const latitude = Number(site.coordinates.latitude)
+              const longitude = Number(site.coordinates.longitude)
+
+              return (
+                <Marker
+                  anchor='bottom'
+                  key={`${site.id}-${latitude}-${longitude}`}
+                  latitude={latitude}
+                  longitude={longitude}
+                  onClick={event => onMarkerClick(event, site)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <SiteTypePin siteTypeId={site.siteType.id as SiteTypeID} />
+                </Marker>
+              )
+            })}
           </ReactMap>
         </div>
 
@@ -103,7 +108,9 @@ const MapPage = () => {
             {sites.map(site => (
               <div
                 className={`card ${
-                  selectedSiteId === site.id && 'border border-secondary border-5'
+                  selectedSiteId === site.id
+                    ? 'border border-secondary border-5'
+                    : ''
                 }`}
                 key={site.id}
               >
