@@ -1,14 +1,14 @@
-@use "../../../node_modules/bootstrap/scss/bootstrap.scss";
-@use "Variables.scss" as *;
+@use '../../../node_modules/bootstrap/scss/bootstrap.scss';
+@use 'Variables.scss' as *;
 
 // TODO (Sam. T): Move this file to a GlobalStyles/_index.scss and imported files into same folder
 
-@use "./Buttons.scss";
-@use "./Card.scss";
-@use "./DropdownMenu.scss";
-@use "./Icons.scss";
-@use "./Nav.scss";
-@use "./Transitions.scss";
+@use './Buttons.scss';
+@use './Card.scss';
+@use './DropdownMenu.scss';
+@use './Icons.scss';
+@use './Nav.scss';
+@use './Transitions.scss';
 
 ::-webkit-scrollbar {
   width: 10px;
@@ -25,7 +25,7 @@
 }
 
 body {
-  background-image: url("@assets/images/TreeBackground.png");
+  background-image: url('@assets/images/TreeBackground.png');
 }
 
 .text-small {

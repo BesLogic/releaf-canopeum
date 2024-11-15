@@ -1,4 +1,4 @@
-@use "../../../node_modules/bootstrap/scss/bootstrap.scss" as *;
+@use '../../../node_modules/bootstrap/scss/bootstrap.scss' as *;
 
 .nav-underline {
   .nav-link {
@@ -11,7 +11,6 @@
   }
 }
 
-
 .navbar {
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
   padding: 0;
@@ -21,7 +20,11 @@
   }
 
   .nav-item.active .material-symbols-outlined {
-    font-variation-settings: 'FILL' 1, 'wght' 700, 'GRAD' 0, 'opsz' 48;
+    font-variation-settings:
+      'FILL' 1,
+      'wght' 700,
+      'GRAD' 0,
+      'opsz' 48;
   }
 
   .nav-link {
@@ -85,7 +88,7 @@ with colors of .navbar-dark in  node_modules/bootstrap/scss/_navbar.scss
 to support non-navbar nav
 */
 .nav-dark.nav-dark,
-.nav.nav[data-bs-theme="dark"] {
+.nav.nav[data-bs-theme='dark'] {
   // scss-docs-start nav-dark-css-vars
   --#{$prefix}nav-link-color: #{$navbar-dark-color};
   --#{$prefix}nav-link-hover-color: #{$navbar-dark-hover-color};

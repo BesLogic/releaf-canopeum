@@ -1,4 +1,4 @@
-@use "Variables.scss" as *;
+@use 'Variables.scss' as *;
 
 // Re-export variables to be accessible from .ts
 // This is useful to mix frameworks like applying bootstrap-defined style to MUI
