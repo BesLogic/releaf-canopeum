@@ -2,13 +2,12 @@
 @use 'Variables.scss' as *;
 
 // TODO (Sam. T): Move this file to a GlobalStyles/_index.scss and imported files into same folder
-
 @use 'Buttons.scss';
-@use 'Forms.scss';
-@use 'Icons.scss';
-@use 'Navbar.scss';
-@use 'Transitions.scss';
+@use 'Card.scss';
 @use 'DropdownMenu.scss';
+@use 'Icons.scss';
+@use 'Nav.scss';
+@use 'Transitions.scss';
 
 ::-webkit-scrollbar {
   width: 10px;
