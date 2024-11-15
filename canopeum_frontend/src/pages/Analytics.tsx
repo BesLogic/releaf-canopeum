@@ -10,7 +10,7 @@ import { AuthenticationContext } from '@components/context/AuthenticationContext
 import { LanguageContext } from '@components/context/LanguageContext'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
-import { coordinateToString } from '@models/types/Coordinate'
+import { coordinateToString } from '@models/Coordinate'
 import type { SiteSummary, User } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
 
@@ -33,7 +33,7 @@ const Analytics = () => {
   )
 
   const fetchAdmins = useCallback(
-    async () => setAdminList(await getApiClient().userClient.allSiteManagers()),
+    async () => setAdminList(await getApiClient().userClient.allForestStewards()),
     [getApiClient],
   )
 

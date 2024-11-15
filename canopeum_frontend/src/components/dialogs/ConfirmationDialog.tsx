@@ -19,6 +19,7 @@ const ConfirmationDialog = ({ actions, children, onClose, open, title }: Props) 
     let buttonClasses = 'btn'
     let buttonText = ''
     let proceed = false
+
     switch (action) {
       case 'delete': {
         buttonClasses += ' btn-outline-danger'

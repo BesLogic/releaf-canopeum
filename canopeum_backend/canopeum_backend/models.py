@@ -1,6 +1,7 @@
 import re
 from datetime import UTC, datetime, timedelta
-from typing import TYPE_CHECKING, Any, ClassVar, TypeVar, override
+from enum import auto
+from typing import TYPE_CHECKING, Any, ClassVar, Literal, TypeVar, cast, override
 
 import googlemaps
 from django.contrib.auth.models import AbstractUser
@@ -22,35 +23,38 @@ gmaps = googlemaps.Client(key=GOOGLE_API_KEY) if GOOGLE_API_KEY else None
 
 
 class RoleName(models.TextChoices):
-    USER = "User"
-    SITEMANAGER = "SiteManager"
-    MEGAADMIN = "MegaAdmin"
+    User = auto()
+    ForestSteward = auto()
+    MegaAdmin = auto()
 
     @classmethod
     def from_string(cls, value: str):
         try:
             return cls(value)
         except ValueError:
-            return cls.USER
+            return cls.User
 
 
 class Role(models.Model):
-    name = models.CharField(
-        max_length=11,
-        choices=RoleName.choices,
-        default=RoleName.USER,
+    # TODO: Request at https://github.com/typeddjango/django-stubs/issues
+    # for "choices" CharField to be understood as the enum type instead of a simple "str"
+    name = cast(
+        Literal["User", "ForestSteward", "MegaAdmin"],
+        models.CharField(max_length=max(len(val) for val in RoleName), choices=RoleName.choices),
     )
 
 
 class User(AbstractUser):
-    email = models.EmailField(
-        verbose_name="email address",
-        max_length=255,
-        unique=True,
-    )
+    email = models.EmailField(verbose_name="email address", max_length=255, unique=True)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS: ClassVar[list[str]] = []
-    role = models.ForeignKey[Role, Role](Role, models.RESTRICT, null=False, default=1)
+    role = models.ForeignKey[Role, Role](
+        Role,
+        models.RESTRICT,
+        null=False,
+        # Role.objects.get(name=RoleName.User).pk, but statically so we don't access DB during init
+        default=1,
+    )
     if TYPE_CHECKING:
         # Missing "id" in "Model" or some base "User" class?
         id: int
@@ -166,7 +170,7 @@ class Site(models.Model):
             return 0
 
         batches = Batch.objects.filter(site=self)
-        sponsored_plant_count = sum(batch.plant_count() for batch in batches)
+        sponsored_plant_count = sum(batch.get_plant_count() for batch in batches)
 
         # Note: We don't cap the progress at 100% so it's obvious if there's a data issue
         return sponsored_plant_count / total_plant_count * 100
@@ -208,9 +212,12 @@ class Batch(models.Model):
     soil_condition = models.TextField(blank=True, null=True)
     survived_count = models.IntegerField(blank=True, null=True)
     replace_count = models.IntegerField(blank=True, null=True)
-    total_number_seed = models.IntegerField(blank=True, null=True)
     total_propagation = models.IntegerField(blank=True, null=True)
     image = models.ForeignKey(Asset, models.DO_NOTHING, blank=True, null=True)
+
+    @property
+    def total_number_seeds(self):
+        return 100
 
     def add_fertilizer_by_id(self, pk: int):
         fertilizer_type = Fertilizertype.objects.get(pk=pk)
@@ -232,7 +239,11 @@ class Batch(models.Model):
         tree_type = Treetype.objects.get(pk=pk)
         return BatchSupportedSpecies.objects.create(tree_type=tree_type, batch=self)
 
-    def plant_count(self) -> int:
+    def get_total_number_seeds(self) -> int:
+        batch_seeds = BatchSeed.objects.filter(batch=self)
+        return sum(seed.quantity for seed in batch_seeds)
+
+    def get_plant_count(self) -> int:
         batch_species = BatchSpecies.objects.filter(batch=self)
         return sum(specie.quantity for specie in batch_species)
 

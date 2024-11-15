@@ -1,7 +1,6 @@
 # Pyright does not support duck-typed Meta inner-class
 # pyright: reportIncompatibleVariableOverride=false
 
-import random
 from collections.abc import Mapping
 from decimal import Decimal
 from typing import Any
@@ -111,11 +110,11 @@ class RegisterUserSerializer(serializers.ModelSerializer[User]):
                 if user_invitation.is_expired():
                     raise serializers.ValidationError("INVITATION_EXPIRED") from None
 
-                role = Role.objects.get(name="SiteManager")
+                role = Role.objects.get(name=RoleName.ForestSteward)
             except UserInvitation.DoesNotExist:
                 raise serializers.ValidationError("INVITATION_CODE_INVALID") from None
         else:
-            role = Role.objects.get(name="User")
+            role = Role.objects.get(name=RoleName.User)
 
         user = User.objects.create(
             username=self.validated_data["username"],
@@ -145,15 +144,13 @@ class UserSerializer(serializers.ModelSerializer[User]):
         exclude = ("password",)
 
     def get_role(self, obj: User) -> RoleName:
-        role_name = obj.role.name
-        return RoleName.from_string(role_name)  # type: ignore[no-any-return] # mypy false-positive
+        return RoleName.from_string(obj.role.name)  # type: ignore[no-any-return] # mypy false-positive
 
     def get_admin_site_ids(self, obj: User) -> list[int]:
         return [siteadmin.site.pk for siteadmin in Siteadmin.objects.filter(user=obj)]
 
     def get_followed_site_ids(self, obj: User) -> list[int]:
-        user_role = self.get_role(obj)
-        if user_role == RoleName.MEGAADMIN:
+        if obj.role.name == RoleName.MegaAdmin:
             return [site.pk for site in Site.objects.all()]
         return [site_follower.site.pk for site_follower in SiteFollower.objects.filter(user=obj)]
 
@@ -419,7 +416,9 @@ class BatchDetailSerializer(serializers.ModelSerializer[Batch]):
     mulch_layers = serializers.SerializerMethodField()
     supported_species = serializers.SerializerMethodField()
     seeds = serializers.SerializerMethodField()
+    total_number_seeds = serializers.SerializerMethodField()
     species = serializers.SerializerMethodField()
+    plant_count = serializers.SerializerMethodField()
     sponsor = serializers.SerializerMethodField()
     # HACK to allow handling the image with a AssetSerializer separately
     # TODO: Figure out how to feed the image directly to BatchDetailSerializer
@@ -456,15 +455,21 @@ class BatchDetailSerializer(serializers.ModelSerializer[Batch]):
         return TreeTypeSerializer(supported_species_types, many=True).data
 
     @extend_schema_field(BatchSeedSerializer(many=True))
-    def get_seeds(self, obj):
+    def get_seeds(self, obj: Batch):
         return BatchSeedSerializer(BatchSeed.objects.filter(batch=obj), many=True).data
 
+    def get_total_number_seeds(self, obj: Batch) -> int:
+        return obj.get_total_number_seeds()
+
     @extend_schema_field(BatchSpeciesSerializer(many=True))
-    def get_species(self, obj):
+    def get_species(self, obj: Batch):
         return BatchSpeciesSerializer(BatchSpecies.objects.filter(batch=obj), many=True).data
 
+    def get_plant_count(self, obj: Batch) -> int:
+        return obj.get_plant_count()
+
     @extend_schema_field(BatchSponsorSerializer)
-    def get_sponsor(self, obj):
+    def get_sponsor(self, obj: Batch):
         return BatchSponsorSerializer(BatchSponsor.objects.get(batch=obj)).data
 
 
@@ -551,11 +556,13 @@ class SiteSummarySerializer(serializers.ModelSerializer[Site]):
     def get_sponsor_progress(self, obj: Site) -> float:
         return obj.get_sponsor_progress()
 
-    def get_survived_count(self, obj) -> int:
-        return random.randint(50, 100)  # noqa: S311
+    def get_survived_count(self, obj: Site) -> int:
+        batches = Batch.objects.filter(site=obj)
+        return sum(batch.survived_count or 0 for batch in batches)
 
-    def get_propagation_count(self, obj) -> int:
-        return random.randint(5, 50)  # noqa: S311
+    def get_propagation_count(self, obj: Site) -> int:
+        batches = Batch.objects.filter(site=obj)
+        return sum(batch.total_propagation or 0 for batch in batches)
 
     @extend_schema_field(BatchDetailSerializer(many=True))
     def get_batches(self, obj):
@@ -599,11 +606,13 @@ class SiteSummaryDetailSerializer(serializers.ModelSerializer[Site]):
     def get_sponsor_progress(self, obj: Site) -> float:
         return obj.get_sponsor_progress()
 
-    def get_survived_count(self, obj) -> int:
-        return random.randint(50, 100)  # noqa: S311
+    def get_survived_count(self, obj: Site) -> int:
+        batches = Batch.objects.filter(site=obj)
+        return sum(batch.survived_count or 0 for batch in batches)
 
-    def get_propagation_count(self, obj) -> int:
-        return random.randint(5, 50)  # noqa: S311
+    def get_propagation_count(self, obj: Site) -> int:
+        batches = Batch.objects.filter(site=obj)
+        return sum(batch.total_propagation or 0 for batch in batches)
 
     @extend_schema_field(BatchSponsorSerializer(many=True))
     def get_sponsors(self, obj):

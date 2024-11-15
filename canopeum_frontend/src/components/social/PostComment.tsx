@@ -17,7 +17,7 @@ const PostComment = ({ comment, onDelete, siteId }: Props) => {
 
   const canDeleteComment = currentUser && (
     currentUser.role === 'MegaAdmin'
-    || (currentUser.role === 'SiteManager' && currentUser.adminSiteIds.includes(siteId))
+    || (currentUser.role === 'ForestSteward' && currentUser.adminSiteIds.includes(siteId))
     || comment.authorId === currentUser.id
   )
 

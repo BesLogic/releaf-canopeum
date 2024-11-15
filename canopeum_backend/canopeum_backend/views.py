@@ -29,7 +29,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from canopeum_backend.permissions import (
     CurrentUserPermission,
     DeleteCommentPermission,
-    MegaAdminOrSiteManagerPermission,
+    MegaAdminOrForestStewardPermission,
     MegaAdminPermission,
     MegaAdminPermissionReadOnly,
     PublicSiteReadPermission,
@@ -102,9 +102,9 @@ from .serializers import (
 
 
 def get_public_sites_unless_admin(user: User | None):
-    if isinstance(user, User) and user.role.name == "MegaAdmin":
+    if isinstance(user, User) and user.role.name == RoleName.MegaAdmin:
         sites = Site.objects.all()
-    elif isinstance(user, User) and user.role.name == "SiteManager":
+    elif isinstance(user, User) and user.role.name == RoleName.ForestSteward:
         admin_site_ids = [siteadmin.site.pk for siteadmin in Siteadmin.objects.filter(user=user)]
         sites = Site.objects.filter(Q(id__in=admin_site_ids) | Q(is_public=True))
     else:
@@ -113,9 +113,9 @@ def get_public_sites_unless_admin(user: User | None):
 
 
 def get_admin_sites(user: User):
-    if user.role.name == "MegaAdmin":
+    if user.role.name == RoleName.MegaAdmin:
         return Site.objects.all()
-    if isinstance(user, User) and user.role.name == "SiteManager":
+    if isinstance(user, User) and user.role.name == RoleName.ForestSteward:
         admin_site_ids = [siteadmin.site.pk for siteadmin in Siteadmin.objects.filter(user=user)]
         return Site.objects.filter(Q(id__in=admin_site_ids))
 
@@ -182,7 +182,7 @@ class RegisterAPIView(APIView):
 
 
 class TreeSpeciesAPIView(APIView):
-    permission_classes = (MegaAdminOrSiteManagerPermission,)
+    permission_classes = (MegaAdminOrForestStewardPermission,)
 
     @extend_schema(responses=TreeTypeSerializer(many=True), operation_id="tree_species")
     def get(self, request: Request):
@@ -200,7 +200,7 @@ class SiteTypesAPIView(APIView):
 
 
 class FertilizerListAPIView(APIView):
-    permission_classes = (MegaAdminOrSiteManagerPermission,)
+    permission_classes = (MegaAdminOrForestStewardPermission,)
 
     @extend_schema(
         responses=FertilizerTypeSerializer(many=True), operation_id="fertilizer_allTypes"
@@ -212,7 +212,7 @@ class FertilizerListAPIView(APIView):
 
 
 class MulchLayerListAPIView(APIView):
-    permission_classes = (MegaAdminOrSiteManagerPermission,)
+    permission_classes = (MegaAdminOrForestStewardPermission,)
 
     @extend_schema(
         responses=MulchLayerTypeSerializer(many=True), operation_id="mulchLayer_allTypes"
@@ -408,7 +408,7 @@ class SiteSocialDetailPublicStatusAPIView(APIView):
 
 
 class SiteSummaryListAPIView(APIView):
-    permission_classes = (MegaAdminOrSiteManagerPermission,)
+    permission_classes = (MegaAdminOrForestStewardPermission,)
 
     @extend_schema(responses=SiteSummarySerializer(many=True), operation_id="site_summary_all")
     def get(self, request: Request):
@@ -472,7 +472,7 @@ class SiteDetailAdminsAPIView(APIView):
         updated_admin_users_list = User.objects.filter(id__in=admin_ids)
 
         for user in updated_admin_users_list:
-            if user not in existing_admin_users and user.role.name == RoleName.SITEMANAGER:
+            if user not in existing_admin_users and user.role.name == RoleName.ForestSteward:
                 Siteadmin.objects.create(
                     user=user,
                     site=site,
@@ -536,10 +536,10 @@ class AdminUserSitesAPIView(APIView):
         operation_id="admin-user-sites_all",
     )
     def get(self, request: Request):
-        site_manager_users = User.objects.filter(role__name__iexact=RoleName.SITEMANAGER).order_by(
+        forest_stewards = User.objects.filter(role__name__iexact=RoleName.ForestSteward).order_by(
             "username"
         )
-        serializer = AdminUserSitesSerializer(site_manager_users, many=True)
+        serializer = AdminUserSitesSerializer(forest_stewards, many=True)
         return Response(serializer.data)
 
 
@@ -842,10 +842,8 @@ BATCH_CREATE_SCHEMA = {
             "sponsorLogo": {"type": "string", "format": "binary", "nullable": True},
             "size": {"type": "number", "nullable": True},
             "soilCondition": {"type": "string", "nullable": True},
-            "plantCount": {"type": "number", "nullable": True},
             "survivedCount": {"type": "number", "nullable": True},
             "replaceCount": {"type": "number", "nullable": True},
-            "totalNumberSeed": {"type": "number", "nullable": True},
             "totalPropagation": {"type": "number", "nullable": True},
             "image": {"type": "string", "format": "binary", "nullable": True},
             "fertilizerIds": {"type": "array", "items": {"type": "number"}},
@@ -1060,12 +1058,12 @@ class UserListAPIView(APIView):
         return Response(serializer.data)
 
 
-class SiteManagersListAPIView(APIView):
+class ForestStewardsListAPIView(APIView):
     permission_classes = (MegaAdminPermission,)
 
-    @extend_schema(responses=UserSerializer(many=True), operation_id="user_allSiteManagers")
+    @extend_schema(responses=UserSerializer(many=True), operation_id="user_allForestStewards")
     def get(self, request: Request):
-        users = User.objects.filter(role__name__iexact=RoleName.SITEMANAGER).order_by("username")
+        users = User.objects.filter(role__name__iexact=RoleName.ForestSteward).order_by("username")
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
 

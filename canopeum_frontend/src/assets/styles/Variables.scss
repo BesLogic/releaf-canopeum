@@ -2,10 +2,23 @@
 * Bootstrap variables
 */
 
-$font-family-sans-serif: -apple-system, BlinkMacSystemFont, 'Lato', Roboto, 'Helvetica Neue', Arial,
-  sans-serif;
-$font-family-monospace: 'Helvetica Neue', Monaco, Consolas, 'Liberation Mono', 'Courier New',
-  monospace;
+$font-family-sans-serif: (
+  -apple-system,
+  BlinkMacSystemFont,
+  'Lato',
+  Roboto,
+  'Helvetica Neue',
+  Arial,
+  sans-serif
+);
+$font-family-monospace: (
+  'Helvetica Neue',
+  Monaco,
+  Consolas,
+  'Liberation Mono',
+  'Courier New',
+  monospace
+);
 $font-family-base: $font-family-sans-serif;
 $headings-font-family: Lato;
 $headings-font-weight: 700;

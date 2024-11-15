@@ -26,9 +26,8 @@ dependencies = [
 dev = [
   # Tools
   "mypy", # version taken from [compatible-mypy],
-  "pre-commit==3.8.*",
   "pyright>=1.1.374",
-  "ruff==0.6.9", # must match .pre-commit-config.yaml
+  "ruff==0.6.*",
   # Stubs
   "django-stubs[compatible-mypy]>=5.0.0",
   "djangorestframework-stubs[compatible-mypy]>=3.15.0",

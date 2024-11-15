@@ -6,7 +6,7 @@ import instagramLogo from '@assets/icons/instagram-contact-logo.svg'
 import linkedinLogo from '@assets/icons/linkedin-contact-logo.svg'
 import xLogo from '@assets/icons/x-contact-logo.svg'
 import SiteContactModal from '@components/social/site-modal/SiteContactModal'
-import type { PageViewMode } from '@models/types/PageViewMode.Type'
+import type { PageViewMode } from '@models/PageViewMode.type'
 import type { Contact } from '@services/api'
 
 type Props = {
