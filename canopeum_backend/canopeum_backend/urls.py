@@ -2,17 +2,12 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from . import views
 
-urlpatterns =   [
-
-
-
-
-
+urlpatterns = [
     path("admin/", admin.site.urls),
     # Auth
     path("auth/login/", views.LoginAPIView.as_view(), name="login"),
