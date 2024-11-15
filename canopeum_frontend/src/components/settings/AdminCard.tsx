@@ -20,7 +20,6 @@ const AdminCard = ({ admin }: Props) => (
         {admin.sites.map(site => (
           <div className='d-flex align-items-center text-primary' key={site.id}>
             {
-
               /* See TODO
               <span className='material-symbols-outlined'>
                 {getSiteTypeIconKey(site.siteType.id)}
