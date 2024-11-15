@@ -58,6 +58,7 @@ const SiteSuccessRatesChart = ({ siteSummaries }: Props) => {
 
   const renderChartTooltip = (props: ChartsAxisContentProps) => {
     const selectedSerie = props.series.find(serie => serie.id === props.axisValue)
+    // @typescript-eslint/no-unsafe-type-assertion -- value type is known from the context
     const data = selectedSerie?.data.find(value => !!value) as number | undefined
 
     return (

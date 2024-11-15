@@ -291,7 +291,7 @@ const EditProfile = () => {
                         Could be fixed by creating a global Input component */
                         ? 'is-invalid'
                         : ''
-                    } `}
+                    }`}
                     id='password-input'
                     onBlur={() => validateCurrentPassword()}
                     onChange={event => setCurrentPassword(event.target.value)}
@@ -314,7 +314,7 @@ const EditProfile = () => {
                       newPasswordError
                         ? 'is-invalid'
                         : ''
-                    } `}
+                    }`}
                     id='password-input'
                     onBlur={() => validateNewPassword()}
                     onChange={event => setNewPassword(event.target.value)}

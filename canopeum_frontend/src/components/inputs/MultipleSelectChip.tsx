@@ -66,7 +66,7 @@ const MultipleSelectChip = <TValue extends SelectionValueType>(
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
               {
                 // TODO(NicolasDontigny): Find a more efficient way
-                // map values to their display text here
+                // to map values to their display text here
               }
               {selected
                 .map(value => options.find(option => option.value === value))

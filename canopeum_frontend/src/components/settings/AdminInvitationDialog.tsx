@@ -124,7 +124,7 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
               emailError
                 ? 'is-invalid'
                 : ''
-            } `}
+            }`}
             id='email-input'
             onBlur={() => validateEmail()}
             onChange={event => setEmail(event.target.value)}

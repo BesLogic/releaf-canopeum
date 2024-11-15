@@ -187,7 +187,7 @@ const Register = () => {
                   -- Create an Input Component? */
                   ? 'is-invalid'
                   : ''
-              } `}
+              }`}
               id='username-input'
               onBlur={() => validateUsername()}
               onChange={event => setUsername(event.target.value)}
@@ -208,7 +208,7 @@ const Register = () => {
                 emailError
                   ? 'is-invalid'
                   : ''
-              } `}
+              }`}
               disabled={!!userInvitation}
               id='email-input'
               onBlur={() => validateEmail()}
@@ -235,7 +235,7 @@ const Register = () => {
                 passwordError
                   ? 'is-invalid'
                   : ''
-              } `}
+              }`}
               id='password-input'
               onBlur={() => validatePassword()}
               onChange={event => setPassword(event.target.value)}

@@ -93,7 +93,7 @@ const Login = () => {
               emailError
                 ? 'is-invalid'
                 : ''
-            } `}
+            }`}
             id='email-input'
             onBlur={() => validateEmail()}
             onChange={event => setEmail(event.target.value)}
@@ -113,7 +113,7 @@ const Login = () => {
               passwordError
                 ? 'is-invalid'
                 : ''
-            } `}
+            }`}
             id='password-input'
             onBlur={() => validatePassword()}
             onChange={event => setPassword(event.target.value)}
