@@ -36,7 +36,7 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
             linear-gradient(
               rgba(0, 0, 0, 0.6),
               rgba(0, 0, 0, 0.6)
-            ), url(${getImageNameByWMOCategories(siteSummary.weather.description)})
+            ), url(${getImageNameByWMOCategories(siteSummary.weather.description) ?? ''})
           `,
         }}
       >

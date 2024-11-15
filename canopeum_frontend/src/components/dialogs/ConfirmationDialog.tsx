@@ -34,8 +34,7 @@ const ConfirmationDialog = ({ actions, children, onClose, open, title }: Props) 
 
         break
       }
-      // action "ok"
-      default: {
+      case 'ok': {
         buttonClasses += ' btn-outline-primary'
         buttonText = translate('generic.ok')
         proceed = true

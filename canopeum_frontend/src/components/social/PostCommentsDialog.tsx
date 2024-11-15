@@ -152,7 +152,11 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose }: Props) => {
               <div>
                 <div className='position-relative'>
                   <textarea
-                    className={`form-control ${commentBodyError && 'is-invalid'}`}
+                    className={`form-control ${
+                      commentBodyError
+                        ? 'is-invalid'
+                        : ''
+                    }`}
                     id='new-comment-body-input'
                     onBlur={() => validateCommentBody()}
                     onChange={handleCommentBodyChange}

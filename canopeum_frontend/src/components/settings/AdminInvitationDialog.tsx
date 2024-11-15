@@ -120,7 +120,11 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
           <label htmlFor='email-input'>{translate('auth.email-label')}</label>
           <input
             aria-describedby='email'
-            className={`form-control ${emailError && 'is-invalid'}`}
+            className={`form-control ${
+              emailError
+                ? 'is-invalid'
+                : ''
+            }`}
             id='email-input'
             onBlur={() => validateEmail()}
             onChange={event => setEmail(event.target.value)}

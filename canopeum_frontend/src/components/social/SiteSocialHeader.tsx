@@ -12,10 +12,11 @@ import useApiClient from '@hooks/ApiClientHook'
 import type { PageViewMode } from '@models/types/PageViewMode.Type'
 import { PatchedUpdateSitePublicStatus, type SiteSocial, User } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
+import type { ExcludeFunctions } from '@utils/types'
 
 type Props = {
   readonly viewMode: PageViewMode,
-  readonly site: SiteSocial,
+  readonly site: ExcludeFunctions<SiteSocial>,
 }
 
 const SiteSocialHeader = ({ site, viewMode }: Props) => {

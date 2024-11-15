@@ -46,7 +46,7 @@ const ImageUpload = ({ id, onChange, imageUrl }: Props) => {
         onDrop={dropHandler}
         style={{
           border: 'var(--bs-border-width) dashed var(--bs-primary)',
-          backgroundImage: `url(${imageUrl})`,
+          backgroundImage: `url(${imageUrl ?? ''})`,
           backgroundSize: 'contain',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',
