@@ -5,7 +5,6 @@ export default {
     'edit-profile': 'Modifier Mon Profil',
     'manage-admins': 'Gérer les Administrateurs',
     'terms-and-policies': 'Conditions & Politiques',
-    logout: 'Se Déconnecter',
   },
   'edit-profile': {
     title: 'Modifier Mon Profil',
