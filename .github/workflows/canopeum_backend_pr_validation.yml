@@ -89,7 +89,7 @@ jobs:
           args: format
       - name: Commit autofixes
         uses: EndBug/add-and-commit@v9
-        # TODO: Prevent infinite loops,  github.event.head_commit.author.name i snot accessible in this context
+        # TODO: Prevent infinite loops, github.event.head_commit.author.name is not accessible in this context
         # if: ${{ github.event.head_commit.author.name != 'github-actions' }}
         # Push autofixes even on failure
         if: ${{ !cancelled() }}
