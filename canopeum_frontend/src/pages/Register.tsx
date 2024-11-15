@@ -181,7 +181,7 @@ const Register = () => {
             <label htmlFor='username-input'>{translate('auth.username-label')}</label>
             <input
               aria-describedby='emailHelp'
-              // sonarjs/no-duplicate-string -- Create an Input Component?
+              // eslint-disable-next-line sonarjs/no-duplicate-string -- Create an Input Component?
               className={`form-control ${usernameError && 'is-invalid'} `}
               id='username-input'
               onBlur={() => validateUsername()}

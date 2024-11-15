@@ -286,7 +286,7 @@ const EditProfile = () => {
 
                   <input
                     //
-                    /* sonarjs/no-duplicate-string --
+                    /* eslint-disable-next-line sonarjs/no-duplicate-string --
                     Could be fixed by creating a global Input component */
                     className={`form-control ${currentPasswordError && 'is-invalid'} `}
                     id='password-input'

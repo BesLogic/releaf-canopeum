@@ -56,7 +56,7 @@ const MapPage = () => {
   useEffect(() => {
     void fetchData()
 
-    /* sonarjs/no-intrusive-permissions
+    /* eslint-disable-next-line sonarjs/no-intrusive-permissions
     -- We only ask when the map is rendered */
     navigator.geolocation.getCurrentPosition(position => {
       const { latitude, longitude } = position.coords
