@@ -1,7 +1,6 @@
 @use '../../assets/styles/Variables.scss' as *;
 
 .upload-button {
-
   // override .btn's var(--bs-btn-bg)
   &.btn,
   & {
