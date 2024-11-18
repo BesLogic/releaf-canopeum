@@ -20,7 +20,7 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
   const { translateValue } = useContext(LanguageContext)
 
   return (
-    <div className='bg-cream rounded d-flex m-0 header-card'>
+    <div className='card m-0 header-card'>
       <div
         className='
           weather-container
@@ -40,7 +40,7 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
           `,
         }}
       >
-        <h2 className='text-light fs-6 text-center'>{siteSummary.coordinate.address}</h2>
+        <h2 className='fs-6 text-center'>{siteSummary.coordinate.address}</h2>
 
         <span style={{ fontSize: '300%' }}>{`${siteSummary.weather.temperature}°C`}</span>
 

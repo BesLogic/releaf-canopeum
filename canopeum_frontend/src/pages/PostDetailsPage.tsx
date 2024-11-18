@@ -65,7 +65,7 @@ const PostDetailsPage = () => {
   if (!postDetail || postError) {
     return (
       <div className='container py-5'>
-        <div className='bg-cream rounded-2 px-5 py-4'>
+        <div className='card px-5 py-4'>
           <span>{translate('posts.error-loading-post')}</span>
         </div>
       </div>
@@ -75,11 +75,11 @@ const PostDetailsPage = () => {
   return (
     <div className='container py-5'>
       <Link
-        className='mb-3 d-flex align-items-center'
+        className='mb-3 d-flex align-items-center text-light'
         to={appRoutes.siteSocial(postDetail.site.id)}
       >
-        <span className='material-symbols-outlined text-light'>arrow_back</span>
-        <span className=' ms-1 text-light'>{translate('posts.back-to-social')}</span>
+        <span className='material-symbols-outlined'>arrow_back</span>
+        <span className='ms-1'>{translate('posts.back-to-social')}</span>
       </Link>
 
       <PostCard post={postDetail} />

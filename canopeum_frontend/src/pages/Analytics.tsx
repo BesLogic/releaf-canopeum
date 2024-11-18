@@ -215,17 +215,17 @@ const Analytics = () => {
           ))}
         </div>
 
-        <div className='mt-4 bg-cream rounded p-3'>
+        <div className='mt-4 card p-3'>
           <h5>{translate('analytics.success-rate-chart.title')}</h5>
           <SiteSuccessRatesChart siteSummaries={siteSummaries} />
         </div>
 
         <div className='mt-4'>
-          <div className='bg-cream rounded p-3 px-4'>
+          <div className='card p-3 px-4'>
             <div className='d-flex justify-content-between'>
               <div className='fs-5'>{translate('analytics.batch-tracking')}</div>
               <div>
-                <span>Filters Go Here</span>
+                <span>TODO: Filters Go Here</span>
               </div>
             </div>
           </div>

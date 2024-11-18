@@ -3,7 +3,6 @@ export default {
     'edit-profile': 'Edit My Profile',
     'manage-admins': 'Manage Administrators',
     'terms-and-policies': 'Terms & Policies',
-    logout: 'Log Out',
   },
   'edit-profile': {
     title: 'Edit My Profile',

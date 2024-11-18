@@ -6,5 +6,4 @@ export default {
   map: 'Carte',
   utilities: 'Utilitaires',
   settings: 'Paramètres',
-  'log-in': 'Se Connecter',
 } satisfies typeof Shape

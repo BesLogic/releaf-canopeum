@@ -1,13 +1,13 @@
+@use '../../../node_modules/bootstrap/scss/bootstrap.scss';
 @use 'Variables.scss' as *;
 
 // TODO (Sam. T): Move this file to a GlobalStyles/_index.scss and imported files into same folder
-
 @use 'Buttons.scss';
-@use 'Forms.scss';
-@use 'Icons.scss';
-@use 'Navbar.scss';
-@use 'Transitions.scss';
+@use 'Card.scss';
 @use 'DropdownMenu.scss';
+@use 'Icons.scss';
+@use 'Nav.scss';
+@use 'Transitions.scss';
 
 ::-webkit-scrollbar {
   width: 10px;
@@ -19,19 +19,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #b8bcc0;
+  background-color: map-get(bootstrap.$colors, dark-gray);
   border-radius: 5px;
 }
 
 body {
   background-image: url('@assets/images/TreeBackground.png');
-}
-
-.login-background {
-  background-image: url('@assets/images/LoginBackground.png');
-  background-position: top;
-  background-size: cover;
-  background-repeat: no-repeat;
 }
 
 .text-small {
@@ -50,26 +43,6 @@ body {
 
 .bg-lightgreen {
   background: $lightgreen;
-}
-
-.cream-color {
-  color: $cream;
-}
-
-.bg-cream {
-  background-color: $cream;
-}
-
-.card {
-  background-color: $cream;
-}
-
-.accordion-item {
-  background-color: $cream;
-}
-
-.card-title {
-  font-weight: bold;
 }
 
 .page-container {

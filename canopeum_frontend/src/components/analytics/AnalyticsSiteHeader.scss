@@ -1,7 +1,6 @@
 @use '../../assets/styles/Variables.scss' as *;
 
 .header-card {
-  display: flex;
   flex-direction: column;
 
   .weather-container {
@@ -15,7 +14,7 @@
 }
 
 @media screen and (min-width: $large-width) {
-  .header-card {
+  .header-card.header-card {
     flex-direction: row;
 
     .weather-container {

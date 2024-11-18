@@ -41,7 +41,7 @@ const Home = () => {
 
     if (currentUser.followedSiteIds.length === 0 || newsPosts.length === 0) {
       return (
-        <div className='bg-cream rounded-2 px-5 py-4 d-flex flex-column gap-3'>
+        <div className='card px-5 py-4 d-flex flex-column gap-3'>
           <span>{translate('home.no-news')}</span>
         </div>
       )
@@ -63,12 +63,9 @@ const Home = () => {
       ref={listInnerRef}
     >
       <div className='page-container h-100'>
-        <div className='mb-4'>
-          <h1 className='text-light'>
-            {translate('home.title', { username: currentUser.username })}
-          </h1>
-
-          <h6 className='text-light'>{translate('home.subtitle')}</h6>
+        <div className='mb-4 text-light'>
+          <h1>{translate('home.title', { username: currentUser.username })}</h1>
+          <h6>{translate('home.subtitle')}</h6>
         </div>
 
         {renderPosts()}

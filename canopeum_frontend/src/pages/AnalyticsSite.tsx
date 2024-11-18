@@ -66,7 +66,7 @@ const AnalyticsSite = () => {
 
       <AnalyticsSiteHeader siteSummary={siteSummary} />
 
-      <div className='bg-cream rounded py-4 px-5'>
+      <div className='card py-4 px-5'>
         <div className='d-flex justify-content-between mb-3'>
           <h4>{translate('analyticsSite.batch-tracking')} ({siteSummary.batches.length})</h4>
 

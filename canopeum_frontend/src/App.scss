@@ -16,10 +16,23 @@
   $headings-font-weight: $headings-font-weight,
   $border-radius: $border-radius,
   $link-decoration: $link-decoration,
+  $navbar-brand-margin-end: $navbar-brand-margin-end,
+  $nav-underline-border-width: $nav-underline-border-width,
+  $navbar-nav-link-padding-x: $navbar-nav-link-padding-x,
+  $nav-link-padding-y: $nav-link-padding-y,
   $primary: $primary,
   $secondary: $secondary,
   $success: $success,
-  $white: $white
+  $info: $info,
+  $warning: $warning,
+  $danger: $danger,
+  $white: $white,
+  $gray-100: $gray-100,
+  $gray-300: $gray-300,
+  $gray-600: $gray-600,
+  $gray-800: $gray-800,
+  $gray-900: $gray-900
 );
 
+// insert our theme's global styles after so we can use its variables
 @use './assets/styles/GlobalStyles.scss';

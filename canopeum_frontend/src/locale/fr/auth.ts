@@ -17,6 +17,7 @@ export default {
   'password-confirmation-error-required': 'Veuillez entrer à nouveau le mot de passe',
   'password-error-must-match': 'Passwords do not match',
   'log-in': 'Se Connecter',
+  'log-out': 'Se Déconnecter',
   'sign-up': "S'inscrire",
   'create-account': 'Créer mon compte',
   'already-have-an-account': 'Vous avez déjà un compte?',

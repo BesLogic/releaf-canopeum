@@ -10,7 +10,7 @@ const Utilities = () => (
   <div>
     <div className='container mt-2 d-flex flex-column gap-2'>
       <h1>Utilities</h1>
-      <div className='bg-cream rounded-2 px-3 py-2'>
+      <div className='card px-3 py-2'>
         <h2>Icons</h2>
         <span className='material-symbols-outlined fill-icon icon-2xs'>home</span>
         <span className='material-symbols-outlined icon-xs'>home</span>
@@ -59,7 +59,7 @@ const Utilities = () => (
           )
         })}
       </div>
-      <div className='bg-cream rounded-2 px-3 py-2'>
+      <div className='card px-3 py-2'>
         <h2>Badges</h2>
         <div className='d-flex gap-1'>
           {SITE_TYPE_IDS.map(siteTypeId => {
@@ -69,7 +69,7 @@ const Utilities = () => (
           })}
         </div>
       </div>
-      <div className='bg-cream rounded px-3 py-2'>
+      <div className='card px-3 py-2'>
         <h2>Buttons</h2>
         <div className='d-flex gap-1'>
           <button className='btn btn-primary' type='button'>Primary</button>
@@ -93,7 +93,7 @@ const Utilities = () => (
           <button className='btn btn-outline-dark' type='button'>Dark</button>
         </div>
       </div>
-      <div className='bg-cream rounded px-3 py-2'>
+      <div className='card px-3 py-2'>
         <h2>Alerts</h2>
         <div className='alert alert-primary' role='alert'>
           A simple primary alert—check it out!
@@ -102,7 +102,7 @@ const Utilities = () => (
           A simple secondary alert—check it out!
         </div>
       </div>
-      <div className='bg-cream rounded px-3 py-2'>
+      <div className='card px-3 py-2'>
         <h2>Cards</h2>
         <div className='card h-100'>
           <div className='row no-gutters h-100'>
@@ -122,7 +122,7 @@ const Utilities = () => (
           </div>
         </div>
       </div>
-      <div className='bg-cream rounded px-3 py-2'>
+      <div className='card px-3 py-2'>
         <h2>Form</h2>
         <form>
           <div className='form-group'>
@@ -148,7 +148,7 @@ const Utilities = () => (
           <button className='btn btn-primary' type='submit'>Submit</button>
         </form>
       </div>
-      <div className='bg-cream rounded px-3 py-2'>
+      <div className='card px-3 py-2'>
         <h2>Table</h2>
         <table className='table'>
           <thead>
@@ -181,7 +181,7 @@ const Utilities = () => (
           </tbody>
         </table>
       </div>
-      <div className='bg-cream rounded px-3 py-2'>
+      <div className='card px-3 py-2'>
         <h2>Modals</h2>
         <button
           className='btn btn-primary'
@@ -223,7 +223,7 @@ const Utilities = () => (
           </div>
         </div>
       </div>
-      <div className='bg-cream rounded px-3 py-2'>
+      <div className='card px-3 py-2'>
         <div className='accordion' id='accordionPanelsStayOpenExample'>
           <div className='accordion-item'>
             <h2 className='accordion-header' id='panelsStayOpen-headingOne'>
