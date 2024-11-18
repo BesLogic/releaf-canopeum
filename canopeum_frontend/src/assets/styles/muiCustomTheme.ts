@@ -17,8 +17,8 @@ const muiCustomTheme = createTheme({
       contrastText: variables.secondary,
     },
     background: {
-      default: variables.cardBg,
-      paper: variables.cardBg,
+      default: variables.cardBackground,
+      paper: variables.cardBackground,
     },
   },
 })
