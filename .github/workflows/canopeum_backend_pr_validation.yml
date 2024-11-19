@@ -35,7 +35,7 @@ jobs:
           cache-dependency-glob: "canopeum_backend/uv.lock"
       - run: uv sync --locked --extra dev
       - name: Run Django Tests
-        run: python manage.py test
+        run: uv run manage.py test
   mypy:
     runs-on: ubuntu-latest
     defaults:
@@ -85,14 +85,24 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           # Token with Contents permissions to allow retriggering workflow
           token: ${{ secrets.PR_AUTOFIX_PAT }}
-      - run: echo "${{github.event.head_commit.author.name}}"
+      - name: Get Ruff version
+        id: ruff_version
+        # We need an exact value, feature request for any valid range specifier
+        # https://github.com/astral-sh/ruff-action/issues/11
+        run: |
+          $Env:RUFF_VERSION=Select-String -path pyproject.toml -pattern 'ruff ?[=<>~]?= ?(.+?)"' | %{ $_.Matches[0].Groups[1].Value }
+          echo $Env:RUFF_VERSION
+          echo "RUFF_VERSION=$Env:RUFF_VERSION" >> $Env:GITHUB_OUTPUT
+        shell: pwsh
       - uses: astral-sh/ruff-action@v1
         with:
+          version: ${{ steps.ruff_version.outputs.RUFF_VERSION }}
           args: check --fix
       - uses: astral-sh/ruff-action@v1
         # Format even on lint failure
         if: ${{ !cancelled() }}
         with:
+          version: ${{ steps.ruff_version.outputs.RUFF_VERSION }}
           args: format
       - name: Commit autofixes
         uses: EndBug/add-and-commit@v9
