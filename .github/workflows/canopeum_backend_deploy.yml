@@ -10,7 +10,7 @@ on:
 
 jobs:
   Build:
-    runs-on: "ubuntu-latest"
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: canopeum_backend
@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
-      - name: 'login'
+      - name: login
         uses: docker/login-action@v1
         with:
           registry: ghcr.io

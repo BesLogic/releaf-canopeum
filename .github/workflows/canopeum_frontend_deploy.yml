@@ -21,7 +21,7 @@ jobs:
         run: npm ci
       - name: Build project
         run: npm run build
-      - name: 'login'
+      - name: login
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
