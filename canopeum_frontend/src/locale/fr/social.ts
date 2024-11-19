@@ -31,14 +31,15 @@ export default {
     'copy-link': 'Copier le lien',
   },
   posts: {
+    'new-post': 'Nouvelle publication message',
+    'message-placeholder': 'Publier un nouveau message...',
+    publish: 'Publier',
     'post-body-required': 'Vous devez saisir un message pour pouvoir publier votre message.',
   },
   widgets: {
-    create: 'ajouter un nouveau widget',
-    submit: 'soumettre',
-    cancel: 'annuler',
+    create: 'Ajouter un nouveau widget',
     'max-word': '100 mots maximum',
-    title: 'titre du widget',
+    title: 'Titre du widget',
   },
   contact: {
     title: 'Contact',

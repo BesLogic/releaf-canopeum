@@ -83,7 +83,7 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
   return (
     <Dialog fullWidth maxWidth='sm' onClose={onCancel} open={!!batchToEdit}>
       <DialogTitle>
-        <div className='fs-5 text-capitalize m-auto text-center'>
+        <div className='fs-5 m-auto text-center'>
           {t('analyticsSite.batch-modal.edit-title')}
         </div>
       </DialogTitle>

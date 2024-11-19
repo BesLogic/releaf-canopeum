@@ -90,7 +90,7 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
   return (
     <Dialog fullWidth maxWidth='sm' onClose={handleCancel} open={open}>
       <DialogTitle>
-        <div className='fs-5 text-capitalize m-auto text-center'>
+        <div className='fs-5 m-auto text-center'>
           {t('analyticsSite.batch-modal.create-title')}
         </div>
       </DialogTitle>

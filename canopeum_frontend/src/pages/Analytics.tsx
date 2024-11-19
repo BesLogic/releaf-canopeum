@@ -158,7 +158,7 @@ const Analytics = () => {
                     ? formatDate(lastModifiedBatchDate)
                     : 'N/A'}
                 </span>
-                <span className='text-capitalize'>
+                <span>
                   {site.batches.length}{' '}
                   {translate('analytics.batch', { count: site.batches.length })}
                 </span>

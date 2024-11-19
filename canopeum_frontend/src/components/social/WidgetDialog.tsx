@@ -32,7 +32,7 @@ const WidgetDialog = ({ handleClose, open }: Props) => {
       <DialogContent className='pb-5'>
         <form>
           <div className='mb-3'>
-            <label className='form-label text-capitalize' htmlFor='widget-title'>
+            <label className='form-label' htmlFor='widget-title'>
               {t('social.widgets.title')}
             </label>
             <div className='d-flex align-items-center gap-1'>
@@ -58,7 +58,7 @@ const WidgetDialog = ({ handleClose, open }: Props) => {
           <div className='mb-3'>
             <div className='position-relative'>
               <label
-                className='form-label text-capitalize position-absolute'
+                className='form-label position-absolute'
                 htmlFor='widget-body'
                 style={{ bottom: 0, right: 0, marginRight: '.5rem', marginBottom: '.5rem' }}
               >
@@ -85,14 +85,14 @@ const WidgetDialog = ({ handleClose, open }: Props) => {
           onClick={() => handleClose()}
           type='button'
         >
-          {t('social.widgets.cancel')}
+          {t('generic.cancel')}
         </button>
         <button
           className='btn btn-primary'
           onClick={() => handleClose('save', innerWidget)}
           type='button'
         >
-          {t('social.widgets.submit')}
+          {t('generic.submit')}
         </button>
       </DialogActions>
     </Dialog>

@@ -124,7 +124,7 @@ const CreatePostWidget = ({ siteId, addNewPost }: Props) => {
     <div className='card'>
       <div className='card-body rounded-2 d-flex flex-column gap-2'>
         <div className='d-flex justify-content-between'>
-          <h2>New Post</h2>
+          <h2>{translate('social.posts.new-post')}</h2>
 
           <button
             className='btn btn-secondary d-flex align-items-center justify-content-center'
@@ -133,7 +133,7 @@ const CreatePostWidget = ({ siteId, addNewPost }: Props) => {
           >
             {isSendingPost
               ? <CircularProgress color='inherit' size={20} />
-              : 'Publish'}
+              : translate('social.posts.publish')}
           </button>
         </div>
 
@@ -157,7 +157,7 @@ const CreatePostWidget = ({ siteId, addNewPost }: Props) => {
           <textarea
             className='form-control pt-5 overflow-hidden'
             onChange={event => handleCommentBodyChange(event)}
-            placeholder='Post a New Message...'
+            placeholder={translate('social.posts.message-placeholder')}
             style={{ resize: 'none' }}
             value={postBody}
           />

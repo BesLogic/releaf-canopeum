@@ -9,7 +9,7 @@ import useApiClient from '@hooks/ApiClientHook'
 import type { BatchDetail } from '@services/api'
 
 const BATCH_HEADER_CLASS =
-  'text-capitalize position-sticky start-0 table-primary border-1 border-top-0 border-primary'
+  'position-sticky start-0 table-primary border-1 border-top-0 border-primary'
 
 type Props = {
   readonly batches: BatchDetail[],
@@ -47,7 +47,6 @@ const BatchTable = (props: Props) => {
           <tr>
             <th
               className='
-                text-capitalize
                 position-sticky
                 start-0
                 table-primary
@@ -57,7 +56,7 @@ const BatchTable = (props: Props) => {
               scope='row'
               style={{ width: '12.5rem' }}
             >
-              <span className='text-capitalize'>{t('analytics.table-row-1')}</span>
+              {t('analytics.table-row-1')}
             </th>
             {batches.map(batch => (
               <th
@@ -83,7 +82,7 @@ const BatchTable = (props: Props) => {
               className={BATCH_HEADER_CLASS}
               scope='row'
             >
-              <span className='text-capitalize'>{t('analytics.table-row-2')}</span>
+              {t('analytics.table-row-2')}
             </th>
             {batches.map(batch => (
               <td

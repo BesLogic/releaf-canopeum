@@ -70,7 +70,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
         </div>
 
         <div>
-          <label className='form-label text-capitalize' htmlFor='sponsor-name'>
+          <label className='form-label' htmlFor='sponsor-name'>
             {t('analyticsSite.batch-modal.sponsor-name-label')}
           </label>
           <input
@@ -87,7 +87,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
         </div>
 
         <div>
-          <label className='form-label text-capitalize' htmlFor='sponsor-website-url'>
+          <label className='form-label' htmlFor='sponsor-website-url'>
             {t('analyticsSite.batch-modal.sponsor-website-url-label')}
           </label>
           <input
@@ -104,7 +104,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
         </div>
 
         <div>
-          <label className='form-label text-capitalize' htmlFor='sponsor-logo'>
+          <label className='form-label' htmlFor='sponsor-logo'>
             {t('analyticsSite.batch-modal.sponsor-logo-label')}
           </label>
           <ImageUpload
@@ -115,7 +115,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
         </div>
 
         <div>
-          <label className='form-label text-capitalize' htmlFor='size'>
+          <label className='form-label' htmlFor='size'>
             {t('analyticsSite.batch-modal.size-label')}
           </label>
           <div className='input-group'>
@@ -154,7 +154,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
         </div>
 
         <div>
-          <label className='form-label text-capitalize' htmlFor='total-number-of-plants'>
+          <label className='form-label' htmlFor='total-number-of-plants'>
             {t('analyticsSite.batch-modal.total-number-of-plants-label')}:&nbsp;
           </label>
           <span id='total-number-of-plants'>
@@ -212,7 +212,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
         />
 
         <div>
-          <label className='form-label text-capitalize' htmlFor='survived'>
+          <label className='form-label' htmlFor='survived'>
             {t('analyticsSite.batch-modal.survived-label')}
           </label>
           <input
@@ -229,7 +229,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
         </div>
 
         <div>
-          <label className='form-label text-capitalize' htmlFor='replaced'>
+          <label className='form-label' htmlFor='replaced'>
             {t('analyticsSite.batch-modal.replaced-label')}
           </label>
           <input
@@ -262,7 +262,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
         </div>
 
         <div>
-          <label className='form-label text-capitalize' htmlFor='total-number-seeds'>
+          <label className='form-label' htmlFor='total-number-seeds'>
             {t('analyticsSite.batch-modal.total-seeds-label')}:&nbsp;
           </label>
           <span id='total-number-seeds'>
@@ -271,7 +271,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
         </div>
 
         <div>
-          <label className='form-label text-capitalize' htmlFor='propagation'>
+          <label className='form-label' htmlFor='propagation'>
             {t('analyticsSite.batch-modal.propagation-label')}
           </label>
           <input
@@ -288,7 +288,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
         </div>
 
         <div className='mb-3'>
-          <label className='form-label text-capitalize' htmlFor='batch-image'>
+          <label className='form-label' htmlFor='batch-image'>
             {t('analyticsSite.batch-modal.images-label')}
           </label>
           <ImageUpload id='batch-image-upload' imageUrl={batchImageURL} onChange={onImageUpload} />
