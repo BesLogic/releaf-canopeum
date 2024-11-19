@@ -28,10 +28,12 @@ jobs:
         working-directory: canopeum_backend
     steps:
       - uses: actions/checkout@v4
-      - name: Install uv using the standalone installer
-        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+          cache-dependency-glob: "canopeum_backend/uv.lock"
       - run: uv sync --locked --extra dev
-      - run: echo "$PWD/.venv/bin" >> $GITHUB_PATH
       - name: Run Django Tests
         run: python manage.py test
   mypy:
@@ -41,11 +43,13 @@ jobs:
         working-directory: canopeum_backend
     steps:
       - uses: actions/checkout@v4
-      - name: Install uv using the standalone installer
-        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+          cache-dependency-glob: "canopeum_backend/uv.lock"
       - run: uv sync --locked --extra dev
-      - run: echo "$PWD/.venv/bin" >> $GITHUB_PATH
-      - run: mypy . --python-version=3.12
+      - run: uv run mypy . --python-version=3.12
 
   pyright:
     runs-on: ubuntu-latest
@@ -54,8 +58,11 @@ jobs:
         working-directory: canopeum_backend
     steps:
       - uses: actions/checkout@v4
-      - name: Install uv using the standalone installer
-        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+          cache-dependency-glob: "canopeum_backend/uv.lock"
       - run: uv sync --locked --extra dev
       - run: echo "$PWD/.venv/bin" >> $GITHUB_PATH
       - uses: jakebailey/pyright-action@v2
@@ -65,7 +72,7 @@ jobs:
           working-directory: canopeum_backend
 
   Ruff-Autofixes:
-    runs-on: unbuntu-latest
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: canopeum_backend
