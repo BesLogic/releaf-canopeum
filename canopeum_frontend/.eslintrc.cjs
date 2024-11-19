@@ -49,8 +49,8 @@ module.exports = {
           ['^'],
           // Relative imports.
           // Anything that starts with a dot or src/
-          // KEEP IN SYNC WITH canopeum_frontend/tsconfig.json AND canopeum_frontend/vite.config.ts
           [
+            // KEEP IN SYNC WITH canopeum_frontend/tsconfig.json & canopeum_frontend/vite.config.ts
             '^(\\.'
             + '|src/'
             + '|@assets'
