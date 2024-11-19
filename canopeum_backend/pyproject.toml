@@ -27,7 +27,7 @@ dev = [
   # Tools
   "mypy", # version taken from [compatible-mypy],
   "pyright>=1.1.374",
-  "ruff==0.6.*",
+  "ruff~=0.7.4",
   # Stubs
   "django-stubs[compatible-mypy]>=5.0.0",
   "djangorestframework-stubs[compatible-mypy]>=3.15.0",
