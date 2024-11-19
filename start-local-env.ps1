@@ -28,7 +28,7 @@ function Start-MySQLContainer {
 # Run Django server
 $commandsBackend = @'
   cd canopeum_backend
-  uv sync --locked --extra dev
+  uv sync --locked
   uv run manage.py runserver
 '@
 

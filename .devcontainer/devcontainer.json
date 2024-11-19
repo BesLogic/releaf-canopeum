@@ -14,7 +14,7 @@
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "pip3 install --user -e canopeum_backend[dev]",
   // https://github.com/astral-sh/uv/issues/5964
-  // "postCreateCommand": "cd canopeum_backend && uv sync --locked --extra dev",
+  // "postCreateCommand": "cd canopeum_backend && uv sync --locked",
   "features": {
     "ghcr.io/devcontainers/features/node:1": {}
   },

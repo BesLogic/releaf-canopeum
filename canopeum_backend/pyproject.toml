@@ -22,7 +22,7 @@ dependencies = [
   "requests-cache>=1.2.1",
   "retry-requests>=2.0.0",
 ]
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
   # Tools
   "mypy", # version taken from [compatible-mypy],
