@@ -9,7 +9,7 @@ WORKDIR /app
 COPY 'pyproject.toml' /app/
 COPY 'uv.lock' /app/
 
-RUN uv sync --locked
+RUN uv sync --locked --no-dev
 
 COPY . /app/
 

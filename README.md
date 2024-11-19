@@ -67,7 +67,7 @@ For backend
    ```shell
    cd canopeum_backend
    docker compose up
-   uv sync --locked --extra dev
+   uv sync --locked
    uv run manage.py initialize_database
    uv run manage.py runserver
    ```

@@ -33,7 +33,7 @@ jobs:
         with:
           enable-cache: true
           cache-dependency-glob: "canopeum_backend/uv.lock"
-      - run: uv sync --locked --extra dev
+      - run: uv sync --locked
       - name: Run Django Tests
         run: uv run manage.py test
   mypy:
@@ -48,7 +48,7 @@ jobs:
         with:
           enable-cache: true
           cache-dependency-glob: "canopeum_backend/uv.lock"
-      - run: uv sync --locked --extra dev
+      - run: uv sync --locked
       - run: uv run mypy . --python-version=3.12
 
   pyright:
@@ -63,7 +63,7 @@ jobs:
         with:
           enable-cache: true
           cache-dependency-glob: "canopeum_backend/uv.lock"
-      - run: uv sync --locked --extra dev
+      - run: uv sync --locked
       - run: echo "$PWD/.venv/bin" >> $GITHUB_PATH
       - uses: jakebailey/pyright-action@v2
         with:
