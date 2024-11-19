@@ -29,7 +29,7 @@ const PostComment = ({ comment, onDelete, siteId }: Props) => {
 
           <div className='d-flex flex-column'>
             <span className='fw-bold'>{comment.authorUsername}</span>
-            <span className='text-muted text-small'>
+            <span className='text-muted s fs-small'>
               {formatDate(comment.createdAt, { dateStyle: 'short' })}
             </span>
           </div>
