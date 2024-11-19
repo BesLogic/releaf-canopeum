@@ -47,7 +47,6 @@ const BatchTable = (props: Props) => {
           <tr>
             <th
               className='
-                text-capitalize
                 position-sticky
                 start-0
                 table-primary

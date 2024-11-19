@@ -77,7 +77,7 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
 
   return (
     <div className='position-relative'>
-      <label className='form-label text-capitalize' htmlFor={id}>
+      <label className='form-label' htmlFor={id}>
         {label}
       </label>
 
