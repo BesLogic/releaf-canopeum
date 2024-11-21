@@ -300,23 +300,23 @@ class UpdateSitePublicStatusSerializer(serializers.Serializer[Any]):
         fields = ("is_public",)
 
 
-class SiteNameSerializer(serializers.ModelSerializer[Site]):
+class SiteAdminSiteInfoSerializer(serializers.ModelSerializer[Site]):
     class Meta:
         model = Site
-        fields = ("id", "name")
+        fields = ("id", "name", "site_type")
 
 
-class AdminUserSitesSerializer(serializers.ModelSerializer[User]):
+class SiteAdminsSerializer(serializers.ModelSerializer[User]):
     sites = serializers.SerializerMethodField()
 
     class Meta:
         model = User
         fields = ("id", "username", "email", "sites")
 
-    @extend_schema_field(SiteNameSerializer(many=True))
+    @extend_schema_field(SiteAdminSiteInfoSerializer(many=True))
     def get_sites(self, obj):
         sites_list = [siteadmin.site for siteadmin in obj.siteadmin_set.all()]
-        return SiteNameSerializer(sites_list, many=True).data
+        return SiteAdminSiteInfoSerializer(sites_list, many=True).data
 
 
 class BatchSponsorSerializer(serializers.ModelSerializer[BatchSponsor]):

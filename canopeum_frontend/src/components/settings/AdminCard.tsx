@@ -1,7 +1,8 @@
-import type { AdminUserSites } from '@services/api'
+import { getSiteTypeIconKey } from '@models/SiteType'
+import type { SiteAdmins } from '@services/api'
 
 type Props = {
-  readonly admin: AdminUserSites,
+  readonly admin: SiteAdmins,
 }
 
 const AdminCard = ({ admin }: Props) => (
@@ -19,14 +20,9 @@ const AdminCard = ({ admin }: Props) => (
       <div className='card-text mt-3 d-flex flex-column gap-1'>
         {admin.sites.map(site => (
           <div className='d-flex align-items-center text-primary' key={site.id}>
-            {
-              //
-              /* See TODO
-              <span className='material-symbols-outlined'>
-                {getSiteTypeIconKey(site.siteType.id)}
-              </span> */
-            }
-            (TODO: Add site icon here)
+            <span className='material-symbols-outlined'>
+              {getSiteTypeIconKey(site.siteType ?? 0)}
+            </span>
             <span className='ms-1'>{site.name}</span>
           </div>
         ))}
