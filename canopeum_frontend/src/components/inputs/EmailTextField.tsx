@@ -1,4 +1,4 @@
-import { type FC, type InputHTMLAttributes, useState } from 'react'
+import { type InputHTMLAttributes, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { isValidEmail } from '@utils/validators'
@@ -10,7 +10,7 @@ type Props = {
   readonly isValid: (valid: boolean) => void,
 }
 
-const EmailTextField: FC<Props> = props => {
+const EmailTextField = (props: Props) => {
   const { t } = useTranslation()
   const [error, setError] = useState<string | null>(null)
 
@@ -31,6 +31,7 @@ const EmailTextField: FC<Props> = props => {
       {/* eslint-disable react/jsx-props-no-spreading -- Needed for custom input */}
       <input
         {...props.attributes}
+        className='form-control'
         onChange={event => handleChange(event.target.value)}
         type='email'
         value={props.value}
