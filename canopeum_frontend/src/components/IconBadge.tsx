@@ -15,7 +15,7 @@ const IconBadge = (props: Props) => {
   return (
     <div
       className={`${bgColor} text-center rounded-circle`}
-      style={{ height: '2em', width: '2em' }}
+      style={{ height: '2em', width: '2em', minWidth: '2em' }}
     >
       <span
         className='material-symbols-outlined text-light align-middle'

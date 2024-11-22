@@ -182,7 +182,7 @@ const SiteSocialPage = () => {
           </div>
 
           <div className='col-12 col-md-6 col-lg-7 col-xl-8'>
-            <div className='rounded-2 d-flex flex-column gap-4'>
+            <div className='d-flex flex-column gap-4'>
               {viewMode === 'admin' && <CreatePostWidget addNewPost={addNewPost} siteId={siteId} />}
               <div className='d-flex flex-column gap-4'>
                 {isLoadingFirstPage
