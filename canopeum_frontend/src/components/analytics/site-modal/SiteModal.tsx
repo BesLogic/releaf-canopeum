@@ -7,9 +7,10 @@ import SiteCoordinates from '@components/analytics/site-modal/SiteCoordinates'
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
-import { type Coordinate, defaultLatitude, defaultLongitude, extractCoordinate } from '@models/Coordinate'
+import { type DefaultCoordinate, defaultLatitude, defaultLongitude, extractCoordinate } from '@models/Coordinate'
 import { type SiteType, Species } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
+import { mapSum } from '@utils/arrayUtils'
 
 type Props = {
   readonly open: boolean,
@@ -24,8 +25,8 @@ export type SiteDto = {
   siteName?: string,
   siteType?: number,
   siteImage?: File,
-  dmsLatitude: Coordinate,
-  dmsLongitude: Coordinate,
+  dmsLatitude: DefaultCoordinate,
+  dmsLongitude: DefaultCoordinate,
   presentation?: string,
   size?: number,
   species: Species[],
@@ -46,7 +47,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
   const { getApiClient } = useApiClient()
   const { translateValue } = useContext(LanguageContext)
 
-  const [site, setSite] = useState<SiteDto>(defaultSiteDto)
+  const [site, setSite] = useState(defaultSiteDto)
   const [availableSiteTypes, setAvailableSiteTypes] = useState<SiteType[]>([])
   const [siteImageURL, setSiteImageURL] = useState<string>()
 
@@ -106,7 +107,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
   return (
     <Dialog fullWidth maxWidth='sm' onClose={(_, reason) => handleClose(reason)} open={open}>
       <DialogTitle>
-        <div className='fs-5 text-capitalize m-auto text-center'>
+        <div className='fs-5 m-auto text-center'>
           {t(
             siteId
               ? 'analytics.edit-site-info'
@@ -116,9 +117,9 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
       </DialogTitle>
 
       <DialogContent className='pb-5'>
-        <form>
-          <div className='mb-3'>
-            <label className='form-label text-capitalize' htmlFor='site-name'>
+        <form className='d-flex flex-column gap-3'>
+          <div>
+            <label className='form-label' htmlFor='site-name'>
               {t('analytics.site-modal.site-name')}
             </label>
             <input
@@ -130,8 +131,8 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
             />
           </div>
 
-          <div className='mb-3'>
-            <label className='form-label text-capitalize' htmlFor='site-type'>
+          <div>
+            <label className='form-label' htmlFor='site-type'>
               {t('analytics.site-modal.site-type')}
             </label>
             <select
@@ -149,28 +150,26 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
             </select>
           </div>
 
-          <div className='mb-3'>
-            <label className='form-label text-capitalize' htmlFor='site-image'>
+          <div>
+            <label className='form-label' htmlFor='site-image'>
               {t('analytics.site-modal.site-type')}
             </label>
             <ImageUpload id='site-image-upload' imageUrl={siteImageURL} onChange={onImageUpload} />
           </div>
 
-          <div className='mb-3'>
-            <SiteCoordinates
-              latitude={site.dmsLatitude}
-              longitude={site.dmsLongitude}
-              onChange={(latitude, longitude) =>
-                setSite(current => ({
-                  ...current,
-                  dmsLatitude: latitude,
-                  dmsLongitude: longitude,
-                }))}
-            />
-          </div>
+          <SiteCoordinates
+            latitude={site.dmsLatitude}
+            longitude={site.dmsLongitude}
+            onChange={(latitude, longitude) =>
+              setSite(current => ({
+                ...current,
+                dmsLatitude: latitude,
+                dmsLongitude: longitude,
+              }))}
+          />
 
-          <div className='mb-3'>
-            <label className='form-label text-capitalize' htmlFor='site-presentation'>
+          <div>
+            <label className='form-label' htmlFor='site-presentation'>
               {t('analytics.site-modal.site-presentation')}
             </label>
             <textarea
@@ -181,8 +180,8 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
             />
           </div>
 
-          <div className='mb-3'>
-            <label className='form-label text-capitalize' htmlFor='site-size'>
+          <div>
+            <label className='form-label' htmlFor='site-size'>
               {t('analytics.site-modal.site-size')}
             </label>
             <div className='input-group'>
@@ -198,27 +197,32 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
             </div>
           </div>
 
-          <div className='mb-3'>
-            <TreeSpeciesSelector
-              label='analytics.site-modal.site-tree-species'
-              onChange={species =>
-                setSite(current => ({
-                  ...current,
-                  species,
-                }))}
-              species={site.species}
-            />
+          <TreeSpeciesSelector
+            label='analytics.site-modal.site-tree-species'
+            onChange={species =>
+              setSite(current => ({
+                ...current,
+                species,
+              }))}
+            species={site.species}
+          />
+
+          <div>
+            <label className='form-label'>
+              {t('analyticsSite.batch-modal.total-number-of-plants-label')}:&nbsp;
+            </label>
+            <span>{mapSum(site.species, 'quantity')}</span>
           </div>
 
-          <div className='mb-3'>
-            <label className='form-label text-capitalize' htmlFor='site-research-partner'>
+          <div>
+            <label className='form-label' htmlFor='site-research-partner'>
               {t('analytics.site-modal.site-research-partner')}
             </label>
             <div
-              className='d-flex gap-1 align-items-center text-center justify-content-evenly'
+              className='d-flex'
               id='site-research-partner'
             >
-              <div className='form-check form-check-inline'>
+              <div className='col form-check form-check-inline'>
                 <input
                   checked={!!site.researchPartner}
                   className='form-check-input'
@@ -226,14 +230,13 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
                   name='research-partner'
                   onChange={() => setSite(current => ({ ...current, researchPartner: true }))}
                   type='radio'
-                  value='yes'
                 />
                 <label className='form-check-label' htmlFor='research-partner-yes'>
                   {t('analytics.site-modal.yes')}
                 </label>
               </div>
 
-              <div className='form-check form-check-inline'>
+              <div className='col form-check form-check-inline'>
                 <input
                   checked={!site.researchPartner}
                   className='form-check-input'
@@ -241,24 +244,25 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
                   name='research-partner'
                   onChange={() => setSite(current => ({ ...current, researchPartner: false }))}
                   type='radio'
-                  value='no'
                 />
                 <label className='form-check-label' htmlFor='research-partner-no'>
                   {t('analytics.site-modal.no')}
                 </label>
               </div>
+
+              <div className='col' /> {/* spacer */}
             </div>
           </div>
 
-          <div className='mb-3'>
-            <label className='form-label text-capitalize' htmlFor='site-map-visibility'>
+          <div>
+            <label className='form-label' htmlFor='site-map-visibility'>
               {t('analytics.site-modal.site-map-visibility')}
             </label>
             <div
-              className='d-flex gap-1 align-items-center text-center justify-content-evenly'
+              className='d-flex'
               id='site-map-visibility'
             >
-              <div className='form-check form-check-inline'>
+              <div className='col form-check form-check-inline'>
                 <input
                   checked={!!site.visibleOnMap}
                   className='form-check-input'
@@ -266,14 +270,13 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
                   name='map-visibility'
                   onChange={() => setSite(current => ({ ...current, visibleOnMap: true }))}
                   type='radio'
-                  value='visible'
                 />
                 <label className='form-check-label' htmlFor='map-visible'>
                   {t('analytics.site-modal.visible')}
                 </label>
               </div>
 
-              <div className='form-check form-check-inline'>
+              <div className='col form-check form-check-inline'>
                 <input
                   checked={!site.visibleOnMap}
                   className='form-check-input'
@@ -281,12 +284,13 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
                   name='map-visibility'
                   onChange={() => setSite(current => ({ ...current, visibleOnMap: false }))}
                   type='radio'
-                  value='invisible'
                 />
                 <label className='form-check-label' htmlFor='map-invisible'>
                   {t('analytics.site-modal.invisible')}
                 </label>
               </div>
+
+              <div className='col' /> {/* spacer */}
             </div>
           </div>
         </form>
