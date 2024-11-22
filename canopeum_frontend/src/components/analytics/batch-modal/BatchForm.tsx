@@ -55,7 +55,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
 
   return (
     <form className='d-flex flex-column gap-3'>
-      <div className='mb-3'>
+      <div>
         <label className='form-label' htmlFor='batch-name'>
           {t('analyticsSite.batch-modal.name-label')}
         </label>
