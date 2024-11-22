@@ -3,7 +3,6 @@ import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { SnackbarContext } from '@components/context/SnackbarContext'
-import { APP_CONFIG } from '@config/config'
 import { appRoutes } from '@constants/routes.constant'
 import type { Post } from '@services/api'
 
@@ -20,7 +19,8 @@ const SharePostDialog = ({ onClose, open, post }: Props) => {
   const [shareUrl, setShareUrl] = useState('')
 
   useEffect(
-    () => setShareUrl(`${APP_CONFIG.appBaseUrl}${appRoutes.postDetail(post.id)}`),
+    () =>
+      setShareUrl(`${globalThis.location.host}${appRoutes.postDetail(post.id)}`),
     [post],
   )
 

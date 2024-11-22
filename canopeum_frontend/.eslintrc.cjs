@@ -55,7 +55,6 @@ module.exports = {
             + '|src/'
             + '|@assets'
             + '|@components'
-            + '|@config'
             + '|@constants'
             + '|@hooks'
             + '|@models'

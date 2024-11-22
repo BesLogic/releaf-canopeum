@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import MultipleSelectChip, { type SelectionItem } from '@components/inputs/MultipleSelectChip'
-import { APP_CONFIG } from '@config/config'
 import useApiClient from '@hooks/ApiClientHook'
 import useErrorHandling from '@hooks/ErrorHandlingHook'
 import { CreateUserInvitation } from '@services/api'
@@ -72,7 +71,7 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
       })
       const response = await getApiClient().userInvitationClient.create(createUserInvitation)
 
-      setInvitationLink(`${APP_CONFIG.appBaseUrl}/register?code=${response.code}`)
+      setInvitationLink(`${globalThis.location.host}register?code=${response.code}`)
     } catch (error: unknown) {
       const errorMessage = getErrorMessage(
         error,

@@ -12,7 +12,6 @@ export default ({ mode }: { mode: string }) => {
         // KEEP IN SYNC WITH canopeum_frontend/.eslintrc.cjs AND canopeum_frontend/tsconfig.json
         '@assets': '/src/assets',
         '@components': '/src/components',
-        '@config': '/src/config',
         '@constants': '/src/constants',
         '@hooks': '/src/hooks',
         '@models': '/src/models',

@@ -159,7 +159,6 @@ const PostCard = ({ post, deletePost }: Props) => {
             type='button'
           >
             <span className='material-symbols-outlined text-primary'>share</span>
-            <div>{post.shareCount}</div>
           </button>
         </div>
       </div>
