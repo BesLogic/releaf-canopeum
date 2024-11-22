@@ -69,10 +69,7 @@ const BatchActions = ({ onEdit, onDelete, batchDetail }: Props) => {
           className='bg-lightgreen text-center rounded-circle unstyled-button'
           type='button'
         >
-          <span
-            className='material-symbols-outlined text-primary align-middle'
-            style={{ fontSize: 24 }}
-          >
+          <span className='material-symbols-outlined text-primary align-middle'>
             more_horiz
           </span>
         </button>

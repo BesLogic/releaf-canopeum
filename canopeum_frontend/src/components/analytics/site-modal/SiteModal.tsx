@@ -106,16 +106,14 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
   return (
     <Dialog fullWidth maxWidth='sm' onClose={(_, reason) => handleClose(reason)} open={open}>
       <DialogTitle>
-        <div className='fs-5 text-capitalize m-auto text-center'>
-          {t(
-            siteId
-              ? 'analytics.edit-site-info'
-              : 'analytics.create-site',
-          )}
-        </div>
+        {t(
+          siteId
+            ? 'analytics.edit-site-info'
+            : 'analytics.create-site',
+        )}
       </DialogTitle>
 
-      <DialogContent className='pb-5'>
+      <DialogContent>
         <form>
           <div className='mb-3'>
             <label className='form-label text-capitalize' htmlFor='site-name'>

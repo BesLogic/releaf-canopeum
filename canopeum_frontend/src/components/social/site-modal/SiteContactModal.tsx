@@ -55,7 +55,7 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
   return (
     <Dialog fullWidth maxWidth='sm' onClose={() => handleClose(null)} open={isOpen}>
       <DialogTitle>{t('social.contact.title')}</DialogTitle>
-      <DialogContent className='pb-5'>
+      <DialogContent>
         <form className='d-flex flex-column'>
           <div className='d-flex flex-column gap-4'>
             <div>

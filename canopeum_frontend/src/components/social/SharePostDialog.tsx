@@ -34,7 +34,7 @@ const SharePostDialog = ({ onClose, open, post }: Props) => {
   return (
     <Dialog fullWidth maxWidth='sm' onClose={onClose} open={open}>
       <DialogTitle>{translate('social.share-dialog.title')}</DialogTitle>
-      <DialogContent className='pb-5'>
+      <DialogContent>
         <div>
           <div>
             <span>{translate('social.share-dialog.message')}</span>
