@@ -1,9 +1,9 @@
 <!--
-Thank you for your contribution to Beslogic's <project_name> repo.
+Thank you for your contribution to Beslogic's Releaf / Canopeum repo.
 Before submitting this PR, please make sure:
 -->
 
-- [ ] The project passes automated tests (build, linting, etc.).
+- [ ] The project passes automated tests locally (build, linting, etc.).
 - [ ] You updated the project's documentation with new changes.
 - [ ] You've [linked](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword) any issue this PR closes
 - [ ] You reviewed your own PR and made sure there's no test/debug code or any obvious mistakes.
