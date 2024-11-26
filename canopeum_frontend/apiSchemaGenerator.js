@@ -6,7 +6,7 @@ import * as url from 'node:url'
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 const schemaUrl = 'http://127.0.0.1:8000/api/schema/'
 const outputPath = path.join(__dirname, 'openapi.yaml')
-const nswagPath = path.join(__dirname, '../../..', 'docs/canopeum.nswag')
+const nswagPath = path.join(__dirname, '..', 'docs', 'canopeum.nswag')
 
 const response = await fetch(schemaUrl)
 if (!response.ok) {

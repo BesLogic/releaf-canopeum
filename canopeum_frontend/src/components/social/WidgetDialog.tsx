@@ -29,7 +29,7 @@ const WidgetDialog = ({ handleClose, open }: Props) => {
       onClose={(_, reason) => handleClose(reason)}
       open={open[0]}
     >
-      <DialogContent className='pb-5'>
+      <DialogContent>
         <form>
           <div className='mb-3'>
             <label className='form-label' htmlFor='widget-title'>

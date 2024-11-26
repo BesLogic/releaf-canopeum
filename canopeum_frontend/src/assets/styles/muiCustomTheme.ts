@@ -21,6 +21,22 @@ const muiCustomTheme = createTheme({
       paper: variables.cardBackground,
     },
   },
+  components: {
+    MuiDialogActions: {
+      styleOverrides: {
+        spacing: {
+          justifyContent: 'space-around',
+        },
+      },
+    },
+    MuiDialogTitle: {
+      styleOverrides: {
+        root: {
+          textAlign: 'center',
+        },
+      },
+    },
+  },
 })
 
 export default muiCustomTheme

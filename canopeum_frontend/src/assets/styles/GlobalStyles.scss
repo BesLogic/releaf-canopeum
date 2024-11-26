@@ -27,8 +27,9 @@ body {
   background-image: url('@assets/images/TreeBackground.png');
 }
 
-.text-small {
-  font-size: 90%;
+// Named after https://getbootstrap.com/docs/5.2/utilities/text/#font-size
+.fs-small {
+  font-size: 0.875rem;
 }
 
 .text-ellipsis {

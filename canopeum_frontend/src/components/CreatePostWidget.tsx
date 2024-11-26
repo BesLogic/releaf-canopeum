@@ -122,7 +122,7 @@ const CreatePostWidget = ({ siteId, addNewPost }: Props) => {
 
   return (
     <div className='card'>
-      <div className='card-body rounded-2 d-flex flex-column gap-2'>
+      <div className='card-body d-flex flex-column gap-2'>
         <div className='d-flex justify-content-between'>
           <h2>{translate('social.posts.new-post')}</h2>
 

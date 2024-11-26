@@ -106,16 +106,14 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
   return (
     <Dialog fullWidth maxWidth='sm' onClose={(_, reason) => handleClose(reason)} open={open}>
       <DialogTitle>
-        <div className='fs-5 m-auto text-center'>
-          {t(
-            siteId
-              ? 'analytics.edit-site-info'
-              : 'analytics.create-site',
-          )}
-        </div>
+        {t(
+          siteId
+            ? 'analytics.edit-site-info'
+            : 'analytics.create-site',
+        )}
       </DialogTitle>
 
-      <DialogContent className='pb-5'>
+      <DialogContent>
         <form>
           <div className='mb-3'>
             <label className='form-label' htmlFor='site-name'>
@@ -215,10 +213,10 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
               {t('analytics.site-modal.site-research-partner')}
             </label>
             <div
-              className='d-flex gap-1 align-items-center text-center justify-content-evenly'
+              className='d-flex'
               id='site-research-partner'
             >
-              <div className='form-check form-check-inline'>
+              <div className='col form-check form-check-inline'>
                 <input
                   checked={!!site.researchPartner}
                   className='form-check-input'
@@ -232,7 +230,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
                 </label>
               </div>
 
-              <div className='form-check form-check-inline'>
+              <div className='col form-check form-check-inline'>
                 <input
                   checked={!site.researchPartner}
                   className='form-check-input'
@@ -245,6 +243,8 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
                   {t('analytics.site-modal.no')}
                 </label>
               </div>
+
+              <div className='col' /> {/* spacer */}
             </div>
           </div>
 
@@ -253,10 +253,10 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
               {t('analytics.site-modal.site-map-visibility')}
             </label>
             <div
-              className='d-flex gap-1 align-items-center text-center justify-content-evenly'
+              className='d-flex'
               id='site-map-visibility'
             >
-              <div className='form-check form-check-inline'>
+              <div className='col form-check form-check-inline'>
                 <input
                   checked={!!site.visibleOnMap}
                   className='form-check-input'
@@ -270,7 +270,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
                 </label>
               </div>
 
-              <div className='form-check form-check-inline'>
+              <div className='col form-check form-check-inline'>
                 <input
                   checked={!site.visibleOnMap}
                   className='form-check-input'
@@ -283,6 +283,8 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
                   {t('analytics.site-modal.invisible')}
                 </label>
               </div>
+
+              <div className='col' /> {/* spacer */}
             </div>
           </div>
         </form>

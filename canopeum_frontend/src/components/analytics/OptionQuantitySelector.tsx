@@ -135,7 +135,7 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
       <ul className='list-group list-group-flush overflow-hidden mt-1'>
         {selected.map((optionQuantity, index) => (
           <li
-            className='list-group-item row d-flex justify-content-between'
+            className='list-group-item row d-flex align-items-center justify-content-between'
             key={`selected-specie-${optionQuantity.option.value}`}
           >
             <div className='col-6'>{optionQuantity.option.displayText}</div>

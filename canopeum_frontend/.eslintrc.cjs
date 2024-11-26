@@ -10,7 +10,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
     projectService: {
-      allowDefaultProject: ['*/*/*.js', '.eslintrc.cjs'],
+      allowDefaultProject: ['*/*/*.js', '.eslintrc.cjs', 'apiSchemaGenerator.js'],
     },
     // Still needed for plugins that haven't updated to typescript-eslint@8 yet
     // Namely: eslint-plugin-sonarjs
@@ -49,13 +49,12 @@ module.exports = {
           ['^'],
           // Relative imports.
           // Anything that starts with a dot or src/
-          // KEEP IN SYNC WITH canopeum_frontend/tsconfig.json AND canopeum_frontend/vite.config.ts
           [
+            // KEEP IN SYNC WITH canopeum_frontend/tsconfig.json & canopeum_frontend/vite.config.ts
             '^(\\.'
             + '|src/'
             + '|@assets'
             + '|@components'
-            + '|@config'
             + '|@constants'
             + '|@hooks'
             + '|@models'

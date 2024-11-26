@@ -59,10 +59,7 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
           </div>
         </div>
 
-        <div
-          className='row justify-content-between mt-4 row-gap-3'
-          style={{ maxWidth: '880px' }}
-        >
+        <div className='row mt-4 row-gap-3'>
           <SiteCountBadge
             count={siteSummary.plantCount}
             icon='sitePlantedIcon'
@@ -87,7 +84,7 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
 
         <div
           className='d-flex align-items-center fw-bold overflow-x-auto pb-2 mt-4'
-          style={{ maxWidth: '800px' }}
+          style={{ maxWidth: '800px' }} // TODO: Magic number
         >
           <span className='material-symbols-outlined'>group</span>
           <span className='ms-1 me-2'>{translate('analyticsSite.sponsors')}:</span>

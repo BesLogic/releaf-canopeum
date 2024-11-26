@@ -82,13 +82,9 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
 
   return (
     <Dialog fullWidth maxWidth='sm' onClose={onCancel} open={!!batchToEdit}>
-      <DialogTitle>
-        <div className='fs-5 m-auto text-center'>
-          {t('analyticsSite.batch-modal.edit-title')}
-        </div>
-      </DialogTitle>
+      <DialogTitle>{t('analyticsSite.batch-modal.edit-title')}</DialogTitle>
 
-      <DialogContent className='pb-5'>
+      <DialogContent>
         <BatchForm
           handleBatchChange={handleBatchChange}
           initialBatch={batchToEdit}

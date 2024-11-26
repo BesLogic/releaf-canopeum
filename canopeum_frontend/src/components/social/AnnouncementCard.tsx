@@ -18,7 +18,7 @@ const AnnouncementCard = ({ announcement, viewMode, onEdit }: Props) => {
 
   return (
     <>
-      <div className='card rounded'>
+      <div className='card'>
         <div className='card-body'>
           <div className='d-flex justify-content-between align-items-center pb-3'>
             <h2 className='card-title'>{t('social.announcement.title')}</h2>
