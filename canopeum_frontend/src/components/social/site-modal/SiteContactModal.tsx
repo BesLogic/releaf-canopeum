@@ -76,9 +76,7 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
                 {t('social.contact.email')}
               </label>
               <EmailTextField
-                attributes={{
-                  id: 'email',
-                }}
+                attributes={{ id: 'email' }}
                 isValid={value => setIsFormValid(value)}
                 onChange={eventValue =>
                   setEditedContact(value => ({ ...value, email: eventValue }))}
@@ -90,9 +88,7 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
                 {t('social.contact.phone')}
               </label>
               <PhoneTextField
-                attributes={{
-                  id: 'phone',
-                }}
+                attributes={{ id: 'phone' }}
                 isValid={value => setIsFormValid(value)}
                 onChange={eventValue =>
                   setEditedContact(value => ({ ...value, phone: eventValue }))}
@@ -102,9 +98,7 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
             <div className='d-flex'>
               <img alt='facebook-logo' className='px-2' src={facebookLogo} />
               <UrlTextField
-                attributes={{
-                  id: 'facebookLink',
-                }}
+                attributes={{ id: 'facebookLink' }}
                 isValid={value => setIsFormValid(value)}
                 onChange={eventValue =>
                   setEditedContact(value => ({ ...value, facebookLink: eventValue }))}
@@ -114,9 +108,7 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
             <div className='d-flex'>
               <img alt='x-logo' className='px-2' src={xLogo} />
               <UrlTextField
-                attributes={{
-                  id: 'xLink',
-                }}
+                attributes={{ id: 'xLink' }}
                 isValid={value => setIsFormValid(value)}
                 onChange={eventValue =>
                   setEditedContact(value => ({ ...value, xLink: eventValue }))}
@@ -126,9 +118,7 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
             <div className='d-flex'>
               <img alt='instagram-logo' className='px-2' src={instagramLogo} />
               <UrlTextField
-                attributes={{
-                  id: 'instagramLink',
-                }}
+                attributes={{ id: 'instagramLink' }}
                 isValid={value => setIsFormValid(value)}
                 onChange={eventValue =>
                   setEditedContact(value => ({ ...value, instagramLink: eventValue }))}
@@ -138,9 +128,7 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
             <div className='d-flex'>
               <img alt='linkedin-logo' className='px-2' src={linkedinLogo} />
               <UrlTextField
-                attributes={{
-                  id: 'linkedinLink',
-                }}
+                attributes={{ id: 'linkedinLink' }}
                 isValid={value => setIsFormValid(value)}
                 onChange={eventValue =>
                   setEditedContact(value => ({ ...value, linkedinLink: eventValue }))}

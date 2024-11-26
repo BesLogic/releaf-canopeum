@@ -1,4 +1,4 @@
-import { type FC, type InputHTMLAttributes, useState } from 'react'
+import { type InputHTMLAttributes, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { isValidPhone } from '@utils/validators'
@@ -10,7 +10,7 @@ type Props = {
   readonly isValid: (valid: boolean) => void,
 }
 
-const PhoneTextField: FC<Props> = props => {
+const PhoneTextField = (props: Props) => {
   const { t } = useTranslation()
   const [error, setError] = useState<string | null>(null)
 
@@ -31,6 +31,7 @@ const PhoneTextField: FC<Props> = props => {
       {/* eslint-disable react/jsx-props-no-spreading -- Needed for custom input */}
       <input
         {...props.attributes}
+        className='form-control'
         onChange={event => handleChange(event.target.value)}
         type='tel'
         value={props.value}
