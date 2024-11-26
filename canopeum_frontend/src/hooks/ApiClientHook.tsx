@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
 import useHttp from './HttpHook'
-import { AdminUserSitesClient, AnnouncementClient, AuthenticationClient, BatchClient, CommentClient, ContactClient, FertilizerClient, LikeClient, MulchLayerClient, PostClient, RefreshClient, SiteClient, SocialClient, SummaryClient, TokenClient, TreeClient, UserClient, UserInvitationClient, WidgetClient } from '@services/api'
+import { AnnouncementClient, AuthenticationClient, BatchClient, CommentClient, ContactClient, FertilizerClient, LikeClient, MulchLayerClient, PostClient, RefreshClient, SiteAdminsClient, SiteClient, SocialClient, SummaryClient, TokenClient, TreeClient, UserClient, UserInvitationClient, WidgetClient } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 
 const useApiClient = () => {
@@ -19,7 +19,7 @@ const useApiClient = () => {
     userClient: new UserClient(getApiBaseUrl(), { fetch: fetchWithAuth }),
     siteClient: new SiteClient(getApiBaseUrl(), { fetch: fetchWithAuth }),
     userInvitationClient: new UserInvitationClient(getApiBaseUrl(), { fetch: fetchWithAuth }),
-    adminUserSitesClient: new AdminUserSitesClient(getApiBaseUrl(), { fetch: fetchWithAuth }),
+    adminUserSitesClient: new SiteAdminsClient(getApiBaseUrl(), { fetch: fetchWithAuth }),
     summaryClient: new SummaryClient(getApiBaseUrl(), { fetch: fetchWithAuth }),
     announcementClient: new AnnouncementClient(getApiBaseUrl(), { fetch: fetchWithAuth }),
     contactClient: new ContactClient(getApiBaseUrl(), { fetch: fetchWithAuth }),

@@ -114,8 +114,8 @@ urlpatterns = [
     ),
     # Site admins
     path(
-        "admin-user-sites/",
-        views.AdminUserSitesAPIView.as_view(),
+        "site-admins/",
+        views.SiteAdminsAPIView.as_view(),
         name="site_admin-list",
     ),
     # SWAGGER

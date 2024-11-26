@@ -5,14 +5,14 @@ import AdminCard from '@components/settings/AdminCard'
 import AdminInvitationDialog from '@components/settings/AdminInvitationDialog'
 import useApiClient from '@hooks/ApiClientHook'
 import LoadingPage from '@pages/LoadingPage'
-import type { AdminUserSites } from '@services/api'
+import type { SiteAdmins } from '@services/api'
 
 const ManageAdmins = () => {
   const { t: translate } = useTranslation()
   const { getApiClient } = useApiClient()
 
   const [isLoadingAdmins, setIsLoadingAdmins] = useState(true)
-  const [siteAdminList, setSiteAdminList] = useState<AdminUserSites[]>([])
+  const [siteAdminList, setSiteAdminList] = useState<SiteAdmins[]>([])
   const [showAdminInviteDialog, setShowAdminInviteDialog] = useState(false)
 
   const fetchSiteAdmins = useCallback(async () => {
