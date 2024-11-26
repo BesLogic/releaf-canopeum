@@ -35,7 +35,7 @@ export default {
     'seeds-per-species-label': 'Number of Seeds Collected per Species',
     'total-seeds-label': 'Total number of seeds collected',
     'propagation-label': 'Total Propagation',
-    'images-label': 'Image',
+    'images-label': 'Batch Image',
     feedback: {
       'create-success': 'Batch created successfully',
       'create-error': 'Error creating batch',

@@ -161,13 +161,13 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange, onSiteEdit }: P
   const actionsPopover = (
     <Popover full>
       <Dropdown.Menu>
-        <Dropdown.Menu title='Select Administrator'>
+        <Dropdown.Menu title={translate('analytics.select-admin')}>
           {administratorsSelection}
         </Dropdown.Menu>
         <Dropdown.Item onClick={() => onSiteEdit(siteSummary.id)}>
           {translate('analytics.edit-site-info')}
         </Dropdown.Item>
-        <Dropdown.Item onClick={onDeleteSiteClick}>Delete</Dropdown.Item>
+        <Dropdown.Item onClick={onDeleteSiteClick}>{translate('generic.delete')}</Dropdown.Item>
       </Dropdown.Menu>
     </Popover>
   )
