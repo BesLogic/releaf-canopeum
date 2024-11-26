@@ -66,7 +66,7 @@ const BatchTable = (props: Props) => {
                 scope='col'
                 style={{ width: '17.5rem' }}
               >
-                <div className='d-flex justify-content-between align-items-center card-title'>
+                <div className='d-flex justify-content-between align-items-center'>
                   {batch.name}
 
                   <BatchActions

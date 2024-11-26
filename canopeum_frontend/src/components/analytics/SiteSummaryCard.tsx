@@ -31,14 +31,17 @@ const SiteSummaryCard = ({ site, admins, onSiteChange, onSiteEdit }: Props) => {
       className='col-12 col-md-6 col-xl-4 col-xxl-3'
       key={site.name}
     >
-      <div className='card h-100 w-100 py-3'>
+      <div className='card h-100 w-100'>
         <div className='card-body d-flex flex-column h-100'>
           <div className='d-flex justify-content-between align-items-center card-title'>
-            <Link className='nav-link flex-grow-1 me-3' to={appRoutes.site(site.id)}>
-              <div className='d-flex gap-1 align-items-center flex-grow-1'>
-                <IconBadge iconKey={getSiteTypeIconKey(site.siteType.id)} />
-                <h5 className='mb-0 text-ellipsis'>{site.name}</h5>
-              </div>
+            <Link
+              className='nav-link me-2 d-flex gap-1 align-items-center'
+              // idk why just 100% still goes over the card length, so adjust for icon size ?
+              style={{ width: 'calc(100% - 2em)' }}
+              to={appRoutes.site(site.id)}
+            >
+              <IconBadge iconKey={getSiteTypeIconKey(site.siteType.id)} />
+              <h5 className='mb-0 text-ellipsis'>{site.name}</h5>
             </Link>
 
             {currentUser?.role === 'MegaAdmin'

@@ -33,7 +33,7 @@ const Home = () => {
   const renderPosts = () => {
     if (loadingError) {
       return (
-        <div className='bg-white rounded-2 px-5 py-4 d-flex flex-column gap-3'>
+        <div className='card px-5 py-4 d-flex flex-column gap-3'>
           <span>{loadingError}</span>
         </div>
       )
