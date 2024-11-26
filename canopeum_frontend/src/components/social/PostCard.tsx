@@ -83,7 +83,7 @@ const PostCard = ({ post, deletePost }: Props) => {
 
   return (
     <div className='card'>
-      <div className='card-body rounded-2 d-flex flex-column gap-3'>
+      <div className='card-body d-flex flex-column gap-3'>
         <div className='d-flex justify-content-start align-items-center gap-2'>
           <img
             alt='site'

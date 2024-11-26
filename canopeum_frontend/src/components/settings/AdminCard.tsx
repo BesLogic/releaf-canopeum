@@ -5,7 +5,7 @@ type Props = {
 }
 
 const AdminCard = ({ admin }: Props) => (
-  <div className='card h-100 py-2'>
+  <div className='card h-100'>
     <div className='card-body'>
       <h5 className='card-title d-flex align-items-center'>
         <span className='material-symbols-outlined fill-icon icon-lg'>person</span>
