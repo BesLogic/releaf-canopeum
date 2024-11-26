@@ -82,13 +82,12 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
           />
         </div>
 
-        <div
-          className='d-flex align-items-center fw-bold overflow-x-auto pb-2 mt-4'
-          style={{ maxWidth: '800px' }} // TODO: Magic number
-        >
-          <span className='material-symbols-outlined'>group</span>
-          <span className='ms-1 me-2'>{translate('analyticsSite.sponsors')}:</span>
-          <div className='d-flex gap-4'>
+        <div className='d-flex flex-wrap align-items-center fw-bold overflow-x-auto pb-2 mt-4'>
+          <label className='d-flex form-label'>
+            <span className='material-symbols-outlined'>group</span>
+            <span className='ms-1 me-2'>{translate('analyticsSite.sponsors')}:</span>
+          </label>
+          <div className='d-flex flex-wrap gap-4'>
             {siteSummary.sponsors.map(sponsor => (
               <BatchSponsorLogo key={sponsor.id} sponsor={sponsor} />
             ))}
