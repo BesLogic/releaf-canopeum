@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import facebookLogo from '@assets/icons/facebook-contact-logo.svg'
@@ -18,13 +18,10 @@ type Props = {
 const ContactCard = ({ contact, viewMode, onEdit }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const googleMapQueryURL = useMemo(
-    () =>
-      contact.address
-        ? `https://www.google.com/maps/search/?api=1&query=${encodeURI(contact.address)}`
-        : '',
-    [contact.address],
-  )
+  const googleMapQueryURL = contact.address
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURI(contact.address)}`
+    : ''
+
   const renderContactCard = () => (
     <div className='card rounded'>
       <div className='card-body'>
