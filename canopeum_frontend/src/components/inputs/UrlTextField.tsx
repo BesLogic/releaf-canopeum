@@ -1,4 +1,4 @@
-import { type FC, type InputHTMLAttributes, useState } from 'react'
+import { type InputHTMLAttributes, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { isValidUrl } from '@utils/validators'
@@ -10,7 +10,7 @@ type Props = {
   readonly isValid: (valid: boolean) => void,
 }
 
-const UrlTextField: FC<Props> = props => {
+const UrlTextField = (props: Props) => {
   const { t } = useTranslation()
   const [error, setError] = useState<string | null>(null)
 
@@ -31,6 +31,7 @@ const UrlTextField: FC<Props> = props => {
       {/* eslint-disable react/jsx-props-no-spreading -- Needed for custom input */}
       <input
         {...props.attributes}
+        className='form-control'
         onChange={event => handleChange(event.target.value)}
         type='url'
         value={props.value}

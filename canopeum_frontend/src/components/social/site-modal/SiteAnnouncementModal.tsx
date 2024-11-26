@@ -50,7 +50,7 @@ const SiteAnnouncementModal = ({ announcement, isOpen, handleClose }: Props) => 
   return (
     <Dialog fullWidth maxWidth='sm' onClose={() => handleClose(null)} open={isOpen}>
       <DialogTitle>{t('social.announcement.title')}</DialogTitle>
-      <DialogContent className='pb-5'>
+      <DialogContent>
         <form className='d-flex flex-column'>
           <div className='d-flex flex-column gap-4'>
             <div>
@@ -71,9 +71,7 @@ const SiteAnnouncementModal = ({ announcement, isOpen, handleClose }: Props) => 
                 {t('social.announcement.link')}
               </label>
               <UrlTextField
-                attributes={{
-                  id: 'link',
-                }}
+                attributes={{ id: 'link' }}
                 isValid={value => setIsFormValid(value)}
                 onChange={eventValue =>
                   setEditedAnnouncement(value => ({ ...value, link: eventValue }))}
