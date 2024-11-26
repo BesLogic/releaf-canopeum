@@ -2,6 +2,10 @@ const VALID_CARDINALS = ['N', 'S', 'E', 'W'] as const
 
 export type Cardinal = typeof VALID_CARDINALS[number]
 
+// We default to no cardinality so we know the user forgot to input it
+// and we don't have to deal with non-numeric input (default to 0 for all fields)
+export type DefaultCoordinate = Omit<Coordinate, 'cardinal'> & { cardinal?: Coordinate['cardinal'] }
+
 export type Coordinate = {
   degrees: number,
   minutes: number,
@@ -10,20 +14,20 @@ export type Coordinate = {
   cardinal: Cardinal,
 }
 
-export const defaultLatitude: Coordinate = {
+export const defaultLatitude: DefaultCoordinate = {
   degrees: 0,
   minutes: 0,
   seconds: 0,
   miliseconds: 0,
-  cardinal: 'N',
+  cardinal: undefined,
 }
 
-export const defaultLongitude: Coordinate = {
+export const defaultLongitude: DefaultCoordinate = {
   degrees: 0,
   minutes: 0,
   seconds: 0,
   miliseconds: 0,
-  cardinal: 'W',
+  cardinal: undefined,
 }
 
 export const coordinateToString = (coord: Coordinate) =>
