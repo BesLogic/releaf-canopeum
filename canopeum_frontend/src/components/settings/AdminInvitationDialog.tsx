@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle } from '@mui/material'
+import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -100,10 +100,10 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
     handleClose()
   }
 
-  const renderInvitationContent = () => {
-    if (invitationLink) {
-      return (
-        <div className='d-flex flex-column gap-4'>
+  const renderInvitationContent = () =>
+    invitationLink
+      ? (
+        <div className='d-flex flex-column gap-3'>
           <span className='text-primary text-decoration-underline'>{invitationLink}</span>
 
           <div>
@@ -112,11 +112,8 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
           </div>
         </div>
       )
-    }
-
-    return (
-      <div className='w-100'>
-        <div className='w-100'>
+      : (
+        <>
           <label htmlFor='email-input'>{translate('auth.email-label')}</label>
           <input
             aria-describedby='email'
@@ -140,27 +137,25 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
               {translate('auth.email-error-format')}
             </span>
           )}
-        </div>
 
-        <MultipleSelectChip
-          classes='mt-4'
-          label={`${translate('settings.manage-admins.assign-to-label')}*`}
-          onChange={ids => setSiteIds(ids)}
-          options={siteOptions}
-        />
+          <MultipleSelectChip
+            classes='mt-4'
+            label={`${translate('settings.manage-admins.assign-to-label')}*`}
+            onChange={ids => setSiteIds(ids)}
+            options={siteOptions}
+          />
 
-        {generateLinkError && (
-          <div className='mt-3'>
-            <span className='help-block text-danger'>{generateLinkError}</span>
-          </div>
-        )}
-      </div>
-    )
-  }
+          {generateLinkError && (
+            <div className='mt-3'>
+              <span className='help-block text-danger'>{generateLinkError}</span>
+            </div>
+          )}
+        </>
+      )
 
-  const renderActionButton = () => {
-    if (invitationLink) {
-      return (
+  const renderActionButton = () =>
+    invitationLink
+      ? (
         <button
           className='btn btn-primary'
           onClick={handleCopyLinkClick}
@@ -169,41 +164,31 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
           {translate('settings.manage-admins.copy-link')}
         </button>
       )
-    }
-
-    return (
-      <button
-        className='btn btn-primary'
-        onClick={handleGenerateLinkClick}
-        type='button'
-      >
-        {translate('settings.manage-admins.generate-link')}
-      </button>
-    )
-  }
+      : (
+        <button
+          className='btn btn-primary'
+          onClick={handleGenerateLinkClick}
+          type='button'
+        >
+          {translate('settings.manage-admins.generate-link')}
+        </button>
+      )
 
   return (
     <Dialog fullWidth maxWidth='sm' onClose={onCloseModal} open={open}>
-      <DialogTitle className='text-center'>
-        {translate('settings.manage-admins.invite-admin')}
-      </DialogTitle>
-      <DialogContent>
-        <div className='d-flex flex-column justify-content-between m-auto' style={{ width: '80%' }}>
-          {renderInvitationContent()}
+      <DialogTitle>{translate('settings.manage-admins.invite-admin')}</DialogTitle>
+      <DialogContent>{renderInvitationContent()}</DialogContent>
+      <DialogActions>
+        <button
+          className='btn btn-outline-primary'
+          onClick={onCloseModal}
+          type='button'
+        >
+          {translate('generic.cancel')}
+        </button>
 
-          <div className='mt-5 d-flex justify-content-between align-items-center'>
-            <button
-              className='btn btn-outline-primary'
-              onClick={onCloseModal}
-              type='button'
-            >
-              {translate('generic.cancel')}
-            </button>
-
-            {renderActionButton()}
-          </div>
-        </div>
-      </DialogContent>
+        {renderActionButton()}
+      </DialogActions>
     </Dialog>
   )
 }

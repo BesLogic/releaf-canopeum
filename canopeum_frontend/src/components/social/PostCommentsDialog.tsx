@@ -136,7 +136,7 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose }: Props) => {
   return (
     <>
       <Dialog fullWidth maxWidth='sm' onClose={handleClose} open={open}>
-        <DialogContent className='pb-5'>
+        <DialogContent>
           {currentUser && (
             <div className='mb-5'>
               <div className='d-flex justify-content-between align-items-center pb-1'>
