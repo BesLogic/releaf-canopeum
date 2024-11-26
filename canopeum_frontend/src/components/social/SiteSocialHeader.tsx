@@ -3,11 +3,11 @@ import './SiteSocialHeader.scss'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import BatchSponsorLogo from '@components/batches/BatchSponsorLogo'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { LanguageContext } from '@components/context/LanguageContext'
 import IconBadge from '@components/IconBadge'
 import ToggleSwitch from '@components/inputs/ToggleSwitch'
+import SiteHeaderSponsors from '@components/SiteHeaderSponsors'
 import useApiClient from '@hooks/ApiClientHook'
 import type { PageViewMode } from '@models/PageViewMode.type'
 import { getSiteTypeIconKey } from '@models/SiteType'
@@ -84,66 +84,53 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
           }}
         />
 
-        <div className='card-body'>
-          <div className='d-flex flex-row justify-content-between align-items-start gap-3'>
-            <h1 className='fw-bold card-title'>{site.name}</h1>
+        <div className='card-body d-flex flex-column gap-4'>
+          <div>
+            <div className='d-flex flex-row justify-content-between align-items-center gap-3'>
+              <h1 className='card-title mb-0'>{site.name}</h1>
 
-            <div className='
+              <div className='
               d-flex
               align-items-center
               column-gap-3
               row-gap-2
               flex-wrap
               justify-content-end'>
-              {viewMode === 'admin' && (
-                <ToggleSwitch
-                  additionalClassNames='fs-4'
-                  checked={isPublic}
-                  onChange={toggleSitePublicStatus}
-                  text={translate('social.site-social-header.public')}
-                />
-              )}
-
-              {currentUser
-                && currentUser.role !== 'MegaAdmin'
-                && isFollowing !== undefined
-                && (
-                  <button
-                    className='btn btn-secondary'
-                    onClick={onFollowClick}
-                    type='button'
-                  >
-                    {isFollowing
-                      ? translate('social.site-social-header.unfollow')
-                      : translate('social.site-social-header.follow')}
-                  </button>
+                {viewMode === 'admin' && (
+                  <ToggleSwitch
+                    additionalClassNames='fs-4'
+                    checked={isPublic}
+                    onChange={toggleSitePublicStatus}
+                    text={translate('social.site-social-header.public')}
+                  />
                 )}
-            </div>
-          </div>
 
-          <div className='card-text d-flex flex-row align-items-center gap-1'>
-            <IconBadge iconKey={getSiteTypeIconKey(site.siteType.id)} />
-            <h4 className='fw-bold text-primary mb-0'>{translateValue(site.siteType)}</h4>
+                {currentUser
+                  && currentUser.role !== 'MegaAdmin'
+                  && isFollowing !== undefined
+                  && (
+                    <button
+                      className='btn btn-secondary'
+                      onClick={onFollowClick}
+                      type='button'
+                    >
+                      {isFollowing
+                        ? translate('social.site-social-header.unfollow')
+                        : translate('social.site-social-header.follow')}
+                    </button>
+                  )}
+              </div>
+            </div>
+
+            <div className='d-flex align-items-center gap-2'>
+              <IconBadge iconKey={getSiteTypeIconKey(site.siteType.id)} />
+              <h4 className='fw-bold text-primary mb-0'>{translateValue(site.siteType)}</h4>
+            </div>
           </div>
 
           <p className='card-text mt-2'>{site.description ?? ''}</p>
 
-          <div className='fw-bold'>
-            <div className='mb-2'>
-              <span className='material-symbols-outlined align-middle'>person</span>
-              <span>{translate('social.site-social-header.sponsors')}:</span>
-            </div>
-            <div className='row'>
-              {site.sponsors.map(sponsor => (
-                <div
-                  className='col-12 col-sm-6 col-md-4 col-lg-3 mb-3'
-                  key={`site-${site.id}-sponsor-${sponsor.id}`}
-                >
-                  <BatchSponsorLogo sponsor={sponsor} />
-                </div>
-              ))}
-            </div>
-          </div>
+          <SiteHeaderSponsors sponsors={site.sponsors} />
         </div>
       </div>
     </div>
