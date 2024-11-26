@@ -334,7 +334,8 @@ class PostAsset(models.Model):
 class Post(models.Model):
     site = models.ForeignKey(Site, models.CASCADE, blank=False, null=False)
     body = models.TextField(blank=False, null=False)
-    share_count = models.IntegerField(default=0)
+    # Feature currently unused, maybe eventually we'll want to track social media shares
+    # share_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True, blank=False, null=False)
     # TODO(NicolasDontigny): Add created by user?
     # created_by = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)

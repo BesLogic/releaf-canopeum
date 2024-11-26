@@ -145,14 +145,14 @@ def create_posts_for_site(site):
     num_posts = random.randint(4, 8)
     for _ in range(num_posts):
         # Generate a random share_count between 0 and 10
-        share_count = random.randint(0, 10)
+        # share_count = random.randint(0, 10)
 
         # Create a post for the site
         post = Post.objects.create(
             site=site,
             body=f"{site.name} has planted {random.randint(100, 1000)} new trees today. "
             + "Let's continue to grow our forest!",
-            share_count=share_count,
+            # share_count=share_count,
         )
         # Change created_at date since it is auto-generated on create
         # Generate a random created_at time within the last 2 months
@@ -536,7 +536,7 @@ class Command(BaseCommand):
             site=site1,
             body="The season is officially started; "
             + "new plants are starting to grow and our volunteers are very dedicated!",
-            share_count=5,
+            # share_count=5,
         )
         post.media.add(*Asset.objects.filter(asset__contains="canopeum_post_img"))
         create_posts_for_site(site1)
