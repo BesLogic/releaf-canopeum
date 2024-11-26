@@ -689,7 +689,7 @@ class PostSerializer(serializers.ModelSerializer[Post]):
             "created_at",
             "body",
             "like_count",
-            "share_count",
+            # "share_count",
             "comment_count",
             "has_liked",
             "media",

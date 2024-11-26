@@ -78,9 +78,7 @@ const SiteSuccessRatesChart = ({ siteSummaries }: Props) => {
 
     return (
       <div>
-        <h6 className='text-capitalize'>
-          {translate('analytics.average')} : {options.average.toFixed(1)} %
-        </h6>
+        <h6>{translate('analytics.average')} : {options.average.toFixed(1)} %</h6>
         <BarChart
           colors={options.colors}
           grid={{ horizontal: true, vertical: true }}

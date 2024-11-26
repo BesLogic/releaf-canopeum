@@ -217,12 +217,10 @@ const EditProfile = () => {
           col-12
           col-lg-8
           col-xl-6
-          m-0
           d-flex
           flex-column
           justify-content-between
-          py-3
-          gap-2
+          py-2
         '>
           <form className='form'>
             <div className='mb-4'>
@@ -268,7 +266,7 @@ const EditProfile = () => {
             </div>
 
             <button
-              className='btn btn-primary'
+              className='btn btn-primary mb-4'
               onClick={() => setDoChangePassword(previous => !previous)}
               type='button'
             >
@@ -279,7 +277,7 @@ const EditProfile = () => {
 
             {doChangePassword && (
               <>
-                <div className='mb-4 mt-4'>
+                <div className='mb-4'>
                   <label htmlFor='password-input'>
                     {translate('settings.edit-profile.current-password')}
                   </label>
@@ -368,9 +366,9 @@ const EditProfile = () => {
             )}
           </form>
 
-          <div className='form-actions d-flex justify-content-between align-items-center gap-5'>
+          <div className='d-flex justify-content-between'>
             <button
-              className='btn btn-outline-primary flex-grow-1'
+              className='btn btn-outline-primary'
               disabled={!changesToSave}
               onClick={handleCancel}
               type='button'
@@ -378,7 +376,7 @@ const EditProfile = () => {
               {translate('generic.cancel')}
             </button>
             <button
-              className='btn btn-primary flex-grow-1'
+              className='btn btn-primary'
               disabled={!changesToSave}
               onClick={handleSaveProfile}
               type='button'

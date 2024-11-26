@@ -28,14 +28,15 @@ export default {
     'copy-link': 'Copy Link',
   },
   posts: {
+    'new-post': 'New Post',
+    'message-placeholder': 'Post a New Message...',
+    publish: 'Publish',
     'post-body-required': 'You must enter a message in order to publish your post.',
   },
   widgets: {
-    create: 'add a new widget',
-    submit: 'submit',
-    cancel: 'cancel',
+    create: 'Add a new widget',
     'max-word': '100 words maximum',
-    title: 'widget title',
+    title: 'Widget Title',
   },
   contact: {
     title: 'Contact',

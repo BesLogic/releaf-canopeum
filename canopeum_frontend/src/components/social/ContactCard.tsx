@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import facebookLogo from '@assets/icons/facebook-contact-logo.svg'
@@ -17,12 +18,17 @@ type Props = {
 
 const ContactCard = ({ contact, viewMode, onEdit }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const { t } = useTranslation()
+
+  const googleMapQueryURL = contact.address
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURI(contact.address)}`
+    : ''
 
   const renderContactCard = () => (
-    <div className='card rounded'>
+    <div className='card'>
       <div className='card-body'>
         <div className='d-flex justify-content-between align-items-center pb-3'>
-          <h2 className='card-title'>Contact</h2>
+          <h2 className='card-title'>{t('social.contact.title')}</h2>
           {viewMode === 'admin' && (
             <button
               className='material-symbols-outlined text-primary fs-2'
@@ -34,18 +40,30 @@ const ContactCard = ({ contact, viewMode, onEdit }: Props) => {
           )}
         </div>
         <div className='info-section d-flex flex-column'>
-          <div className='card-text adress d-flex align-items-center pb-3 gap-2'>
-            <span className='material-symbols-outlined fs-4'>home_work</span>
-            <p className='mb-0'>{contact.address}</p>
-          </div>
-          <div className='email d-flex align-items-center pb-3 gap-2'>
-            <span className='material-symbols-outlined fs-4'>mail</span>
-            <p className='mb-0'>{contact.email}</p>
-          </div>
-          <div className='phone d-flex align-items-center pb-3 gap-2'>
-            <span className='material-symbols-outlined fs-4'>perm_phone_msg</span>
-            <p className='mb-0'>{contact.phone}</p>
-          </div>
+          {contact.address && (
+            <div className='card-text adress d-flex align-items-center pb-3 gap-2'>
+              <span className='material-symbols-outlined fs-4'>home_work</span>
+              <Link
+                rel='noopener noreferrer'
+                target='_blank'
+                to={googleMapQueryURL}
+              >
+                {contact.address}
+              </Link>
+            </div>
+          )}
+          {contact.email && (
+            <div className='email d-flex align-items-center pb-3 gap-2'>
+              <span className='material-symbols-outlined fs-4'>mail</span>
+              <Link to={`mailto:${contact.email}`}>{contact.email}</Link>
+            </div>
+          )}
+          {contact.phone && (
+            <div className='phone d-flex align-items-center pb-3 gap-2'>
+              <span className='material-symbols-outlined fs-4'>perm_phone_msg</span>
+              <Link to={`tel:${contact.phone}`}>{contact.phone}</Link>
+            </div>
+          )}
         </div>
         <div className='social-icons d-flex flex-row-reverse pt-3'>
           {contact.linkedinLink && (

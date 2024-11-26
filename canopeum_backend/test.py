@@ -18,4 +18,8 @@ class PendingMigrationsTests(DBTestCase):
                 stderr=StringIO(),
             )
         except SystemExit:
-            raise AssertionError("Pending migrations:\n" + out.getvalue()) from None
+            raise AssertionError(
+                "Pending migrations:\n"
+                + out.getvalue()
+                + "\nPlease run `uv run manage.py makemigrations`"
+            ) from None

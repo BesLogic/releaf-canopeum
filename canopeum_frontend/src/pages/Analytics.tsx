@@ -142,29 +142,31 @@ const Analytics = () => {
 
       return (
         <div className='accordion-item mb-3 rounded' key={site.id}>
-          <h2 className='accordion-header rounded' id={`heading-${site.id}`}>
-            <button
+          <h3 className='accordion-header rounded' id={`heading-${site.id}`}>
+            {/* We use a div so the text stays selectable, but this is really used like a button */}
+            {/* eslint-disable-next-line jsx-a11y/prefer-tag-over-role -- see above */}
+            <div
               aria-controls={`collapse-${site.id}`}
               aria-expanded='true'
               className='accordion-button collapsed rounded'
               data-bs-target={`#collapse-${site.id}`}
               data-bs-toggle='collapse'
-              type='button'
+              role='button'
             >
-              <div className='d-flex justify-content-between w-100 pe-3 fs-5'>
+              <div className='d-flex justify-content-between align-items-center w-100 pe-3 fs-5'>
                 <span>{site.name}</span>
-                <span style={{ opacity: .5 }}>
+                <small className='fw-bold text-muted fs-small'>
                   {translate('analytics.last-update')}: {lastModifiedBatchDate
                     ? formatDate(lastModifiedBatchDate)
                     : 'N/A'}
-                </span>
-                <span className='text-capitalize'>
+                </small>
+                <span>
                   {site.batches.length}{' '}
                   {translate('analytics.batch', { count: site.batches.length })}
                 </span>
               </div>
-            </button>
-          </h2>
+            </div>
+          </h3>
 
           <div
             aria-labelledby={`heading-${site.id}`}
@@ -221,14 +223,18 @@ const Analytics = () => {
         </div>
 
         <div className='mt-4'>
-          <div className='card p-3 px-4'>
-            <div className='d-flex justify-content-between'>
-              <div className='fs-5'>{translate('analytics.batch-tracking')}</div>
+          {
+            // TODO: Implement batch search/filtering, in the mean time we show a simple title
+            /* <div className='card p-3'>
+            <div className='d-flex justify-content-between align-items-center'>
+              <h2 className='fs-5'>{translate('analytics.batch-tracking')}</h2>
               <div>
                 <span>TODO: Filters Go Here</span>
               </div>
             </div>
-          </div>
+          </div> */
+          }
+          <h2 className='text-light'>{translate('analytics.batch-tracking')}</h2>
 
           <div className='accordion mt-4' id='accordion-batches'>
             {renderBatches()}

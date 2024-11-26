@@ -4601,7 +4601,6 @@ export class Post implements IPost {
   readonly createdAt!: Date
   body!: string
   readonly likeCount!: number
-  shareCount?: number
   readonly commentCount!: number
   readonly hasLiked!: boolean
   media!: Asset[];
@@ -4636,7 +4635,6 @@ export class Post implements IPost {
         : <any> undefined
       this.body = _data['body']
       ;(<any> this).likeCount = _data['likeCount']
-      this.shareCount = _data['shareCount']
       ;(<any> this).commentCount = _data['commentCount']
       ;(<any> this).hasLiked = _data['hasLiked']
       if (Array.isArray(_data['media'])) {
@@ -4667,7 +4665,6 @@ export class Post implements IPost {
     data['createdAt'] = this.createdAt ? this.createdAt.toISOString() : <any> undefined
     data['body'] = this.body
     data['likeCount'] = this.likeCount
-    data['shareCount'] = this.shareCount
     data['commentCount'] = this.commentCount
     data['hasLiked'] = this.hasLiked
     if (Array.isArray(this.media)) {
@@ -4686,7 +4683,6 @@ export interface IPost {
   createdAt: Date
   body: string
   likeCount: number
-  shareCount?: number
   commentCount: number
   hasLiked: boolean
   media: Asset[]

@@ -106,19 +106,17 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
   return (
     <Dialog fullWidth maxWidth='sm' onClose={(_, reason) => handleClose(reason)} open={open}>
       <DialogTitle>
-        <div className='fs-5 text-capitalize m-auto text-center'>
-          {t(
-            siteId
-              ? 'analytics.edit-site-info'
-              : 'analytics.create-site',
-          )}
-        </div>
+        {t(
+          siteId
+            ? 'analytics.edit-site-info'
+            : 'analytics.create-site',
+        )}
       </DialogTitle>
 
-      <DialogContent className='pb-5'>
+      <DialogContent>
         <form>
           <div className='mb-3'>
-            <label className='form-label text-capitalize' htmlFor='site-name'>
+            <label className='form-label' htmlFor='site-name'>
               {t('analytics.site-modal.site-name')}
             </label>
             <input
@@ -131,7 +129,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
           </div>
 
           <div className='mb-3'>
-            <label className='form-label text-capitalize' htmlFor='site-type'>
+            <label className='form-label' htmlFor='site-type'>
               {t('analytics.site-modal.site-type')}
             </label>
             <select
@@ -150,7 +148,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
           </div>
 
           <div className='mb-3'>
-            <label className='form-label text-capitalize' htmlFor='site-image'>
+            <label className='form-label' htmlFor='site-image'>
               {t('analytics.site-modal.site-type')}
             </label>
             <ImageUpload id='site-image-upload' imageUrl={siteImageURL} onChange={onImageUpload} />
@@ -170,7 +168,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
           </div>
 
           <div className='mb-3'>
-            <label className='form-label text-capitalize' htmlFor='site-presentation'>
+            <label className='form-label' htmlFor='site-presentation'>
               {t('analytics.site-modal.site-presentation')}
             </label>
             <textarea
@@ -182,7 +180,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
           </div>
 
           <div className='mb-3'>
-            <label className='form-label text-capitalize' htmlFor='site-size'>
+            <label className='form-label' htmlFor='site-size'>
               {t('analytics.site-modal.site-size')}
             </label>
             <div className='input-group'>
@@ -211,14 +209,14 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
           </div>
 
           <div className='mb-3'>
-            <label className='form-label text-capitalize' htmlFor='site-research-partner'>
+            <label className='form-label' htmlFor='site-research-partner'>
               {t('analytics.site-modal.site-research-partner')}
             </label>
             <div
-              className='d-flex gap-1 align-items-center text-center justify-content-evenly'
+              className='d-flex'
               id='site-research-partner'
             >
-              <div className='form-check form-check-inline'>
+              <div className='col form-check form-check-inline'>
                 <input
                   checked={!!site.researchPartner}
                   className='form-check-input'
@@ -226,14 +224,13 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
                   name='research-partner'
                   onChange={() => setSite(current => ({ ...current, researchPartner: true }))}
                   type='radio'
-                  value='yes'
                 />
                 <label className='form-check-label' htmlFor='research-partner-yes'>
                   {t('analytics.site-modal.yes')}
                 </label>
               </div>
 
-              <div className='form-check form-check-inline'>
+              <div className='col form-check form-check-inline'>
                 <input
                   checked={!site.researchPartner}
                   className='form-check-input'
@@ -241,24 +238,25 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
                   name='research-partner'
                   onChange={() => setSite(current => ({ ...current, researchPartner: false }))}
                   type='radio'
-                  value='no'
                 />
                 <label className='form-check-label' htmlFor='research-partner-no'>
                   {t('analytics.site-modal.no')}
                 </label>
               </div>
+
+              <div className='col' /> {/* spacer */}
             </div>
           </div>
 
           <div className='mb-3'>
-            <label className='form-label text-capitalize' htmlFor='site-map-visibility'>
+            <label className='form-label' htmlFor='site-map-visibility'>
               {t('analytics.site-modal.site-map-visibility')}
             </label>
             <div
-              className='d-flex gap-1 align-items-center text-center justify-content-evenly'
+              className='d-flex'
               id='site-map-visibility'
             >
-              <div className='form-check form-check-inline'>
+              <div className='col form-check form-check-inline'>
                 <input
                   checked={!!site.visibleOnMap}
                   className='form-check-input'
@@ -266,14 +264,13 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
                   name='map-visibility'
                   onChange={() => setSite(current => ({ ...current, visibleOnMap: true }))}
                   type='radio'
-                  value='visible'
                 />
                 <label className='form-check-label' htmlFor='map-visible'>
                   {t('analytics.site-modal.visible')}
                 </label>
               </div>
 
-              <div className='form-check form-check-inline'>
+              <div className='col form-check form-check-inline'>
                 <input
                   checked={!site.visibleOnMap}
                   className='form-check-input'
@@ -281,12 +278,13 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
                   name='map-visibility'
                   onChange={() => setSite(current => ({ ...current, visibleOnMap: false }))}
                   type='radio'
-                  value='invisible'
                 />
                 <label className='form-check-label' htmlFor='map-invisible'>
                   {t('analytics.site-modal.invisible')}
                 </label>
               </div>
+
+              <div className='col' /> {/* spacer */}
             </div>
           </div>
         </form>
