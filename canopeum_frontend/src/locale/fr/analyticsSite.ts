@@ -5,10 +5,9 @@ export default {
   'batch-tracking': 'Suivi des lots',
   'site-tabs': {
     analytics: 'Analytique',
-    social: 'Social',
+    social: 'Page Social',
   },
-  'social-page': 'Page Sociale',
-  sponsors: 'Sponsors',
+  sponsors: 'Commenditaires',
   'add-new-batch': 'Ajouter un Nouveau Lot',
   'edit-batch': 'Modifier un Lot',
   'delete-batch': {

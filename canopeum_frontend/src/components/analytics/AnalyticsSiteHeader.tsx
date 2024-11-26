@@ -85,10 +85,9 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
           />
         </div>
 
-        <div className='d-flex gap-2 flex-column'>
-          <SiteHeaderSponsors sponsors={siteSummary.sponsors} />
-          <SiteSponsorProgress progress={siteSummary.sponsorProgress} />
-        </div>
+        <SiteSponsorProgress progress={siteSummary.sponsorProgress} />
+
+        <SiteHeaderSponsors sponsors={siteSummary.sponsors} />
       </div>
     </div>
   )

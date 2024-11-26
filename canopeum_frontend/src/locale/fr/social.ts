@@ -4,7 +4,6 @@ export default {
   'site-social-header': {
     follow: 'Suivre',
     unfollow: 'Ne plus suivre',
-    sponsors: 'Commanditaires',
     public: 'Publique',
   },
   comments: {
