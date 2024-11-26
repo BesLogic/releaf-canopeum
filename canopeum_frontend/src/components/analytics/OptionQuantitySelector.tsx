@@ -25,6 +25,9 @@ export type SelectorOptionQuantity<TValue> = {
   quantity?: number,
 }
 
+const MINIMUM_QUANTITY = 1 // Makes it easy to refactor if we support a min input
+const DEFAULT_QUANTITY = 1
+
 const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
   { id, label, options, selected, withQuantity, onChange }: Props<TValue>,
 ) => {
@@ -43,9 +46,10 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
       optionQuantity.option.value === option.value
     )
 
-    existingOptionIndex === -1
-      ? onChange([...selected, { option, quantity: 1 }])
-      : updateQuantity(existingOptionIndex, 1)
+    // Do nothing if already selected
+    if (existingOptionIndex !== -1) return
+
+    onChange([...selected, { option, quantity: DEFAULT_QUANTITY }])
   }
 
   const updateQuantity = (
@@ -55,17 +59,16 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
   ) => {
     const updatedOption = { ...selected[optionIndex] }
     updatedOption.quantity = changeType === 'absolute'
-      ? Math.max(quantity, 1)
-      : (updatedOption.quantity ?? 1) + quantity
+      ? Math.max(quantity, MINIMUM_QUANTITY)
+      : (updatedOption.quantity ?? MINIMUM_QUANTITY) + quantity
 
+    // NOTE: Currently unusable since we always disable at minimum,
+    // kept in case we wanna restore that behaviour
+    // if (updatedOption.quantity <= 0) {
+    //   removeOption(optionIndex)
+    // } else {
     const updatedSelected = [...selected]
-
-    if (updatedOption.quantity <= 0) {
-      updatedSelected.splice(optionIndex, 1)
-    } else {
-      updatedSelected[optionIndex] = updatedOption
-    }
-
+    updatedSelected[optionIndex] = updatedOption
     onChange(updatedSelected)
   }
 
@@ -85,16 +88,16 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
         autoSelect
         clearOnBlur
         freeSolo
-        getOptionKey={option => {
-          if (typeof (option) === 'string') return option
-
-          return option.value
-        }}
-        getOptionLabel={option => {
-          if (typeof (option) === 'string') return option
-
-          return option.displayText
-        }}
+        getOptionKey={option => (
+          typeof (option) === 'string'
+            ? option
+            : option.value
+        )}
+        getOptionLabel={option => (
+          typeof (option) === 'string'
+            ? option
+            : option.displayText
+        )}
         id={id}
         onChange={(_event, option) => {
           if (option === null || typeof (option) === 'string') return
@@ -135,7 +138,7 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
       <ul className='list-group list-group-flush overflow-hidden mt-1'>
         {selected.map((optionQuantity, index) => (
           <li
-            className='list-group-item row d-flex align-items-center justify-content-between'
+            className='list-group-item row d-flex justify-content-between align-items-center'
             key={`selected-specie-${optionQuantity.option.value}`}
           >
             <div className='col-6'>{optionQuantity.option.displayText}</div>
@@ -145,6 +148,7 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
                 <div className='d-flex justify-content-center align-items-center'>
                   <button
                     className='btn btn-outline-dark btn-sm icon-button p-1'
+                    disabled={optionQuantity.quantity === MINIMUM_QUANTITY}
                     onClick={() => updateQuantity(index, -1)}
                     type='button'
                   >
@@ -162,7 +166,7 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
 
                   <button
                     className='btn btn-outline-dark btn-sm icon-button p-1'
-                    onClick={() => updateQuantity(index, 1)}
+                    onClick={() => updateQuantity(index, +1)}
                     type='button'
                   >
                     <span className='material-symbols-outlined fill-icon icon-xs'>add</span>

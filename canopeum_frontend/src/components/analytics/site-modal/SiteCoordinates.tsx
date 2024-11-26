@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next'
 
-import { type Coordinate, defaultLatitude, defaultLongitude } from '@models/Coordinate'
+import { type Coordinate, type DefaultCoordinate, defaultLatitude, defaultLongitude } from '@models/Coordinate'
 
 type Props = {
-  readonly latitude?: Coordinate,
-  readonly longitude?: Coordinate,
-  readonly onChange: (latitude: Coordinate, longitude: Coordinate) => void,
+  readonly latitude?: DefaultCoordinate,
+  readonly longitude?: DefaultCoordinate,
+  readonly onChange: (latitude: DefaultCoordinate, longitude: DefaultCoordinate) => void,
 }
 
 const SiteCoordinates = (

@@ -10,7 +10,7 @@ import { AuthenticationContext } from '@components/context/AuthenticationContext
 import { LanguageContext } from '@components/context/LanguageContext'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
-import { coordinateToString } from '@models/Coordinate'
+import { type Coordinate, coordinateToString } from '@models/Coordinate'
 import type { SiteSummary, User } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
 
@@ -65,8 +65,27 @@ const Analytics = () => {
         visibleOnMap,
       } = data
 
-      const latitude = coordinateToString(dmsLatitude)
-      const longitude = coordinateToString(dmsLongitude)
+      // TODO: In-form errors that are translated. To do with the validation refactoring
+      if (dmsLatitude.cardinal == null) {
+        openAlertSnackbar(
+          'Latitude must be specified',
+          { severity: 'error' },
+        )
+        return
+      }
+      if (dmsLongitude.cardinal == null) {
+        openAlertSnackbar(
+          'Longitude must be specified',
+          { severity: 'error' },
+        )
+        return
+      }
+
+      // @typescript-eslint/no-unsafe-type-assertion
+      // NOTE: Casting here isn't great (despite knowing that we just validated),
+      // but we need to refactor how we validate forms anyway
+      const latitude = coordinateToString(dmsLatitude as Coordinate)
+      const longitude = coordinateToString(dmsLongitude as Coordinate)
 
       const response = siteId
         ? getApiClient().siteClient.update(
