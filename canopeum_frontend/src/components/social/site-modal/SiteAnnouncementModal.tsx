@@ -71,9 +71,7 @@ const SiteAnnouncementModal = ({ announcement, isOpen, handleClose }: Props) => 
                 {t('social.announcement.link')}
               </label>
               <UrlTextField
-                attributes={{
-                  id: 'link',
-                }}
+                attributes={{ id: 'link' }}
                 isValid={value => setIsFormValid(value)}
                 onChange={eventValue =>
                   setEditedAnnouncement(value => ({ ...value, link: eventValue }))}
