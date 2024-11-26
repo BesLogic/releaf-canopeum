@@ -59,7 +59,7 @@ const ConfirmationDialog = ({ actions, children, onClose, open, title }: Props) 
   return (
     <Dialog fullWidth maxWidth='xs' onClose={() => onClose(false)} open={open}>
       <DialogTitle>{title}</DialogTitle>
-      <DialogContent className='pb-5'>
+      <DialogContent>
         {children}
       </DialogContent>
       <DialogActions>
