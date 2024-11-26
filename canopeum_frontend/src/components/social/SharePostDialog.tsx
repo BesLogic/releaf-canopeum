@@ -19,8 +19,7 @@ const SharePostDialog = ({ onClose, open, post }: Props) => {
   const [shareUrl, setShareUrl] = useState('')
 
   useEffect(
-    () =>
-      setShareUrl(`${globalThis.location.host}${appRoutes.postDetail(post.id)}`),
+    () => setShareUrl(`${globalThis.location.host}${appRoutes.postDetail(post.id)}`),
     [post],
   )
 
