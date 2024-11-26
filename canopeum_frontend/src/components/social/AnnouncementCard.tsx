@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import SiteAnnouncementModal from '@components/social/site-modal/SiteAnnouncementModal'
@@ -13,13 +14,14 @@ type Props = {
 
 const AnnouncementCard = ({ announcement, viewMode, onEdit }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const { t } = useTranslation()
 
   return (
     <>
       <div className='card'>
         <div className='card-body'>
           <div className='d-flex justify-content-between align-items-center pb-3'>
-            <h2 className='card-title'>Announcement</h2>
+            <h2 className='card-title'>{t('social.announcement.title')}</h2>
             <div>
               {viewMode === 'admin' && (
                 <button

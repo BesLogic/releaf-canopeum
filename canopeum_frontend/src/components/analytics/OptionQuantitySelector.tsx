@@ -80,7 +80,9 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
 
   return (
     <div className='position-relative'>
-      <label className='form-label' htmlFor={id}>{label}</label>
+      <label className='form-label' htmlFor={id}>
+        {label}
+      </label>
 
       <Autocomplete
         autoSelect

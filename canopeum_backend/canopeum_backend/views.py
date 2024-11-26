@@ -64,7 +64,6 @@ from .models import (
     Widget,
 )
 from .serializers import (
-    AdminUserSitesSerializer,
     AnnouncementSerializer,
     AssetSerializer,
     BatchDetailSerializer,
@@ -83,6 +82,7 @@ from .serializers import (
     PostSerializer,
     RegisterUserSerializer,
     SiteAdminSerializer,
+    SiteAdminsSerializer,
     SiteAdminUpdateRequestSerializer,
     SiteMapSerializer,
     SitePostSerializer,
@@ -528,18 +528,18 @@ class SiteFollowersCurrentUserAPIView(APIView):
         return Response(is_following, status=status.HTTP_200_OK)
 
 
-class AdminUserSitesAPIView(APIView):
+class SiteAdminsAPIView(APIView):
     permission_classes = (MegaAdminPermission,)
 
     @extend_schema(
-        responses=AdminUserSitesSerializer(many=True),
-        operation_id="admin-user-sites_all",
+        responses=SiteAdminsSerializer(many=True),
+        operation_id="site-admins_all",
     )
     def get(self, request: Request):
         forest_stewards = User.objects.filter(role__name__iexact=RoleName.ForestSteward).order_by(
             "username"
         )
-        serializer = AdminUserSitesSerializer(forest_stewards, many=True)
+        serializer = SiteAdminsSerializer(forest_stewards, many=True)
         return Response(serializer.data)
 
 
