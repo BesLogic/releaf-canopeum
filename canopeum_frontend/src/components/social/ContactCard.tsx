@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import facebookLogo from '@assets/icons/facebook-contact-logo.svg'
@@ -17,6 +18,7 @@ type Props = {
 
 const ContactCard = ({ contact, viewMode, onEdit }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const { t } = useTranslation()
 
   const googleMapQueryURL = contact.address
     ? `https://www.google.com/maps/search/?api=1&query=${encodeURI(contact.address)}`
@@ -26,7 +28,7 @@ const ContactCard = ({ contact, viewMode, onEdit }: Props) => {
     <div className='card'>
       <div className='card-body'>
         <div className='d-flex justify-content-between align-items-center pb-3'>
-          <h2 className='card-title'>Contact</h2>
+          <h2 className='card-title'>{t('social.contact.title')}</h2>
           {viewMode === 'admin' && (
             <button
               className='material-symbols-outlined text-primary fs-2'
