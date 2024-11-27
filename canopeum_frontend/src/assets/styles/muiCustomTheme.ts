@@ -22,6 +22,13 @@ const muiCustomTheme = createTheme({
     },
   },
   components: {
+    MuiDialog: {
+      styleOverrides: {
+        root: {
+          wordWrap: 'break-word', // Same as .card
+        },
+      },
+    },
     MuiDialogActions: {
       styleOverrides: {
         spacing: {

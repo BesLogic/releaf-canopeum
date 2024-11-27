@@ -47,7 +47,7 @@ const PostComment = ({ comment, onDelete, siteId }: Props) => {
       </div>
 
       <div className='mt-1'>
-        <span>{comment.body}</span>
+        {comment.body}
       </div>
     </div>
   )
