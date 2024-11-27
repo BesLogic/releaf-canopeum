@@ -3,9 +3,8 @@ export default {
   'batch-tracking': 'Batch Tracking',
   'site-tabs': {
     analytics: 'Analytics',
-    social: 'Social',
+    social: 'Social Page',
   },
-  'social-page': 'Social Page',
   sponsors: 'Sponsors',
   'add-new-batch': 'Add a New Batch',
   'edit-batch': 'Edit Batch',

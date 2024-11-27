@@ -2,7 +2,6 @@ export default {
   'site-social-header': {
     follow: 'Follow',
     unfollow: 'Unfollow',
-    sponsors: 'Sponsors',
     public: 'Public',
   },
   comments: {

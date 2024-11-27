@@ -5,10 +5,11 @@ import { useTranslation } from 'react-i18next'
 
 import SiteCountBadge from '@components/analytics/SiteCountBadge'
 import SiteSponsorProgress from '@components/analytics/SiteSponsorProgress'
-import BatchSponsorLogo from '@components/batches/BatchSponsorLogo'
 import { LanguageContext } from '@components/context/LanguageContext'
-import CustomIconBadge from '@components/CustomIconBadge'
+import IconBadge from '@components/IconBadge'
+import SiteHeaderSponsors from '@components/SiteHeaderSponsors'
 import { getImageNameByWMOCategories } from '@constants/weatherImageMap'
+import { getSiteTypeIconKey } from '@models/SiteType'
 import type { SiteSummaryDetail } from '@services/api'
 
 type Props = {
@@ -50,16 +51,17 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
         </div>
       </div>
 
-      <div className='site-info-container pb-4 pt-5 px-5 flex-grow-1'>
+      <div className='card-body d-flex flex-column gap-4'>
         <div>
-          <h2>{siteSummary.name}</h2>
-          <div className='d-flex align-items-center'>
-            <CustomIconBadge icon='siteTypeCanopeumIcon' />
-            <span className='ms-2'>{translateValue(siteSummary.siteType)}</span>
+          <h1 className='card-title mb-0'>{siteSummary.name}</h1>
+          <div className='d-flex align-items-center gap-2'>
+            <IconBadge iconKey={getSiteTypeIconKey(siteSummary.siteType.id)} />
+            {/* <CustomIconBadge icon='siteTypeCanopeumIcon' /> */}
+            <h4 className='fw-bold text-primary mb-0'>{translateValue(siteSummary.siteType)}</h4>
           </div>
         </div>
 
-        <div className='row mt-4 row-gap-3'>
+        <div className='row row-gap-3'>
           <SiteCountBadge
             count={siteSummary.plantCount}
             icon='sitePlantedIcon'
@@ -82,22 +84,9 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
           />
         </div>
 
-        <div
-          className='d-flex align-items-center fw-bold overflow-x-auto pb-2 mt-4'
-          style={{ maxWidth: '800px' }} // TODO: Magic number
-        >
-          <span className='material-symbols-outlined'>group</span>
-          <span className='ms-1 me-2'>{translate('analyticsSite.sponsors')}:</span>
-          <div className='d-flex gap-4'>
-            {siteSummary.sponsors.map(sponsor => (
-              <BatchSponsorLogo key={sponsor.id} sponsor={sponsor} />
-            ))}
-          </div>
-        </div>
+        <SiteSponsorProgress progress={siteSummary.sponsorProgress} />
 
-        <div className='mt-1'>
-          <SiteSponsorProgress progress={siteSummary.sponsorProgress} />
-        </div>
+        <SiteHeaderSponsors sponsors={siteSummary.sponsors} />
       </div>
     </div>
   )
