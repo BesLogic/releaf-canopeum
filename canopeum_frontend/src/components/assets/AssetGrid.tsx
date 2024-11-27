@@ -43,17 +43,13 @@ const AssetGrid = ({ medias, isEditable }: Props) => {
                   onClick={() => isEditable.removeFile(index)}
                   type='button'
                 >
-                  <span
-                    className='
+                  <span className='
                       material-symbols-outlined
                       fill-icon
                       position-absolute
                       top-0
                       end-0
-                      cursor-pointer
-                    '
-                    style={{ cursor: 'pointer' }}
-                  >
+                    '>
                     cancel
                   </span>
                 </button>
