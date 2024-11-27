@@ -50,7 +50,7 @@ const WidgetDialog = ({ handleClose, open }: Props) => {
                   onClick={() => handleClose('delete', innerWidget)}
                   type='button'
                 >
-                  <span className='material-symbols-outlined text-primary'>cancel</span>
+                  <span className='material-symbols-outlined text-danger'>delete</span>
                 </button>
               )}
             </div>
