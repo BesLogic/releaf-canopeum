@@ -17,7 +17,7 @@ type Action = {
 
 const usePostsStore = create<Action & PostsState>(set => ({
   posts: [],
-  setPosts: posts => set(_state => ({ posts })),
+  setPosts: posts => set(() => ({ posts })),
   addPost: newPost => set(state => ({ posts: [newPost, ...state.posts] })),
   deletePost: postId => set(state => ({ posts: state.posts.filter(post => post.id !== postId) })),
   morePostsLoaded: (newPosts: Post[]) => set(state => ({ posts: [...state.posts, ...newPosts] })),
