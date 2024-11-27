@@ -27,6 +27,19 @@ body {
   background-image: url('@assets/images/TreeBackground.png');
 }
 
+// Causes teh inner elements of an anchor to be underlined instead of the anchor itself
+// Useful to get partial underline by adding text-decoration-none to an inner-element
+.link-inner-underline {
+  &:active,
+  &:focus,
+  &:hover {
+    text-decoration: none;
+    * {
+      text-decoration: underline;
+    }
+  }
+}
+
 // Named after https://getbootstrap.com/docs/5.2/utilities/text/#font-size
 .fs-small {
   font-size: 0.875rem;
