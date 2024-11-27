@@ -14,6 +14,7 @@ import type { SiteMap } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 
 const PIN_FOCUS_ZOOM_LEVEL = 15
+const MAP_DISTANCE_ZOOM_MULTIPLIER = 20
 
 /**
  * The initial map location if the user doesn't provide location
@@ -36,9 +37,16 @@ const initialMapLocation = (sites: SiteMap[]) => {
   )
 
   return {
+    // Center the map to the middle point between all sites
     latitude: (maxLat + minLat) / 2,
     longitude: (maxLong + minLong) / 2,
-    zoom: Math.min((maxLat - minLat) * 2, (maxLong - minLong) * 2),
+    // min to take the most zoomed out between latitude or longitude
+    zoom: Math.min(
+      // 0 is max zoomed out, so we use an "inverse" (1 / x)
+      // The bigger the distance (max - min), the lower the zoom
+      (1 / (maxLat - minLat)) * MAP_DISTANCE_ZOOM_MULTIPLIER,
+      (1 / (maxLong - minLong)) * MAP_DISTANCE_ZOOM_MULTIPLIER,
+    ),
   }
 }
 
