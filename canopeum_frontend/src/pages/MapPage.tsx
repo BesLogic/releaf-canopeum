@@ -1,6 +1,8 @@
 import './MapPage.scss'
 
+import type { Marker as MarkerInstance } from 'maplibre-gl'
 import { useCallback, useEffect, useState } from 'react'
+import type { MarkerEvent } from 'react-map-gl/dist/esm/types'
 import ReactMap, { GeolocateControl, Marker, NavigationControl, ScaleControl, type ViewState } from 'react-map-gl/maplibre'
 import { Link } from 'react-router-dom'
 
@@ -11,13 +13,20 @@ import { getSiteTypeIconKey, type SiteTypeID } from '@models/SiteType'
 import type { SiteMap } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 
-type MarkerEvent = {
-  target: {
-    _lngLat: {
-      lat: number,
-      lng: number,
-    },
-  },
+const PIN_FOCUS_ZOOM_LEVEL = 15
+
+/**
+ * The initial map location if the user doesn't provide location
+ */
+const initialMapLocation = (sites: SiteMap[]) => {
+  const cannopeumCoordinates = sites
+    .find(site => site.name === 'Canopeum')
+    ?.coordinates
+
+  return {
+    latitude: cannopeumCoordinates?.latitude ?? 0,
+    longitude: cannopeumCoordinates?.longitude ?? 0,
+  }
 }
 
 const MapPage = () => {
@@ -27,22 +36,23 @@ const MapPage = () => {
   const [selectedSiteId, setSelectedSiteId] = useState<number | undefined>()
 
   const [mapViewState, setMapViewState] = useState({
-    longitude: -100,
-    latitude: 40,
-    zoom: 5,
+    longitude: 0,
+    latitude: 0,
+    zoom: PIN_FOCUS_ZOOM_LEVEL,
   })
 
   const fetchData = useCallback(async () => {
     const response = await getApiClient().siteClient.map()
     setSites(response)
+    return response
   }, [getApiClient])
 
-  const onMarkerClick = (event: MarkerEvent, site: SiteMap) => {
+  const onMarkerClick = (event: MarkerEvent<MarkerInstance, MouseEvent>, site: SiteMap) => {
     const { lat, lng } = event.target._lngLat
     setMapViewState({
       latitude: lat,
       longitude: lng,
-      zoom: 15,
+      zoom: PIN_FOCUS_ZOOM_LEVEL,
     })
     setSelectedSiteId(site.id)
     document.getElementById(`${site.id}`)?.scrollIntoView({ behavior: 'smooth' })
@@ -53,16 +63,34 @@ const MapPage = () => {
     setSelectedSiteId(undefined)
   }
 
-  useEffect(() => {
-    void fetchData()
-
-    /* eslint-disable-next-line sonarjs/no-intrusive-permissions
-    -- We only ask when the map is rendered */
-    navigator.geolocation.getCurrentPosition(position => {
-      const { latitude, longitude } = position.coords
-      setMapViewState(mvs => ({ ...mvs, latitude, longitude }))
-    })
-  }, [fetchData])
+  useEffect(() =>
+    void Promise.all([
+      fetchData(),
+      new Promise(
+        (
+          resolve: (position: GeolocationPosition | GeolocationPositionError) => void,
+          _reject,
+        ): void => {
+          /* eslint-disable-next-line sonarjs/no-intrusive-permissions
+          -- We only ask when the map is rendered */
+          navigator.geolocation.getCurrentPosition(resolve, resolve)
+        },
+      ),
+    ]).then(([fetchedSites, position]) =>
+      'code' in position
+        // If there's an error obtaining the user position, use our default position instead
+        // Note that getCurrentPosition always error code 2 in http
+        ? setMapViewState(mvs => ({
+          ...mvs,
+          ...initialMapLocation(fetchedSites),
+        }))
+        // Otherwise focus on the user's position
+        : setMapViewState(mvs => ({
+          ...mvs,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        }))
+    ), [fetchData])
 
   return (
     <div className='container-fluid p-0'>
