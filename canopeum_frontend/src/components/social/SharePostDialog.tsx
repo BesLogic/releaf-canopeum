@@ -32,7 +32,22 @@ const SharePostDialog = ({ onClose, open, post }: Props) => {
 
   return (
     <Dialog fullWidth maxWidth='sm' onClose={onClose} open={open}>
-      <DialogTitle>{translate('social.share-dialog.title')}</DialogTitle>
+      <DialogTitle>
+        {translate('social.share-dialog.title')}
+        <button
+          className='
+            btn
+            unstyled-button
+            position-absolute
+            top-0
+            end-0
+          '
+          onClick={onClose}
+          type='button'
+        >
+          <span className='material-symbols-outlined'>cancel</span>
+        </button>
+      </DialogTitle>
       <DialogContent>
         <div>
           <div>
@@ -45,13 +60,6 @@ const SharePostDialog = ({ onClose, open, post }: Props) => {
         </div>
       </DialogContent>
       <DialogActions>
-        <button
-          className='btn btn-outline-primary'
-          onClick={onClose}
-          type='button'
-        >
-          {translate('generic.cancel')}
-        </button>
         <button
           className='btn btn-primary'
           onClick={handleCopyLinkClick}
