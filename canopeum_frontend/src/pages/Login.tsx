@@ -139,24 +139,21 @@ const Login = () => {
 
         {loginError && <span className='help-block text-danger'>{loginError}</span>}
 
-        <div className='w-100'>
+        <div className='mt-4'>
           <button
-            className='btn btn-primary w-100'
+            className='btn btn-primary w-100 my-2'
             onClick={onLoginClick}
-            style={{ margin: '40px 0px 10px' }}
             type='submit'
           >
             {translate('auth.log-in')}
           </button>
 
-          <Link className='w-100' to={appRoutes.register}>
-            <button
-              className='btn btn-outline-primary w-100'
-              style={{ margin: '10px 0px 10px' }}
-              type='button'
-            >
-              {translate('auth.sign-up')}
-            </button>
+          <Link
+            className='btn btn-outline-primary w-100 my-2 text-decoration-none'
+            to={appRoutes.register}
+            type='button'
+          >
+            {translate('auth.sign-up')}
           </Link>
         </div>
       </div>
