@@ -29,14 +29,14 @@ const AuthPageLayout = ({ children }: Props) => {
         overflow-y-auto
       '>
         {children}
-        <div className='mt-4'>
-          <Link className='d-flex align-items-center' to={appRoutes.map}>
-            <span className='material-symbols-outlined text-primary'>arrow_back</span>
-            <span className='text-primary'>
-              {translate('auth.back-to-map')}
-            </span>
-          </Link>
-        </div>
+        <Link className='mt-4 d-flex align-items-center link-inner-underline' to={appRoutes.map}>
+          <span className='material-symbols-outlined text-primary text-decoration-none'>
+            arrow_back
+          </span>
+          <span className='text-primary'>
+            {translate('auth.back-to-map')}
+          </span>
+        </Link>
       </div>
     </div>
   )

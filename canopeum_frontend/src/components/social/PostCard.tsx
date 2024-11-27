@@ -1,5 +1,6 @@
 import { useContext, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 import { Dropdown, Popover } from 'rsuite'
 import DropdownMenu from 'rsuite/esm/Dropdown/DropdownMenu'
 import type { OverlayTriggerHandle } from 'rsuite/esm/internals/Picker'
@@ -13,6 +14,7 @@ import ConfirmationDialog from '@components/dialogs/ConfirmationDialog'
 import TextExpansion from '@components/inputs/TextExpansion'
 import PostCommentsDialog from '@components/social/PostCommentsDialog'
 import SharePostDialog from '@components/social/SharePostDialog'
+import { appRoutes } from '@constants/routes.constant'
 import useApiClient from '@hooks/ApiClientHook'
 import type { PageViewMode } from '@models/PageViewMode.type'
 import type { Post } from '@services/api'
@@ -20,13 +22,13 @@ import usePostsStore from '@store/postsStore'
 
 type Props = {
   readonly post: Post,
-  readonly deletePost?: (postId: number) => void,
+  readonly showActions?: boolean,
 }
 
-const PostCard = ({ post, deletePost }: Props) => {
+const PostCard = ({ post, showActions }: Props) => {
   const { t } = useTranslation()
   const { formatDate } = useContext(LanguageContext)
-  const { toggleLike } = usePostsStore()
+  const { toggleLike, deletePost } = usePostsStore()
   const { getApiClient } = useApiClient()
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const { currentUser } = useContext(AuthenticationContext)
@@ -53,7 +55,7 @@ const PostCard = ({ post, deletePost }: Props) => {
   const onDeletePostConfirmation = async (proceed: boolean) => {
     if (proceed) {
       await getApiClient().postClient.delete(post.id)
-      deletePost?.(post.id)
+      deletePost(post.id)
       openAlertSnackbar('Post deleted successfully', { severity: 'success' })
     }
     setConfirmPostDeleteOpen(false)
@@ -70,9 +72,7 @@ const PostCard = ({ post, deletePost }: Props) => {
   }
 
   const actionsPopover = (
-    <Popover
-      style={{ width: 'fit-content' }}
-    >
+    <Popover style={{ width: 'fit-content' }}>
       <DropdownMenu>
         <Dropdown.Item>
           <span className='material-symbols-outlined align-middle'>edit_square</span>{' '}
@@ -90,19 +90,23 @@ const PostCard = ({ post, deletePost }: Props) => {
     <div className='card'>
       <div className='card-body d-flex flex-column gap-3'>
         <div className='d-flex justify-content-start align-items-center gap-2'>
-          <img
-            alt='site'
-            className='rounded-circle'
-            src={post.site.image.asset}
-            style={{ height: '48px', width: '48px' }}
-          />
+          <Link to={appRoutes.site(post.site.id)}>
+            <img
+              alt='site'
+              className='rounded-circle'
+              src={post.site.image.asset}
+              style={{ height: '3em', width: '3em' }}
+            />
+          </Link>
           <div className='d-flex flex-column'>
-            <h6 className='text-uppercase fw-bold mb-1'>{post.site.name}</h6>
-            <span className='text-muted initialism'>
+            <h6 className='text-uppercase fw-bold mb-1'>
+              <Link to={appRoutes.site(post.site.id)}>{post.site.name}</Link>
+            </h6>
+            <Link className='text-muted initialism' to={appRoutes.postDetail(post.id)}>
               {formatDate(post.createdAt, { dateStyle: 'short' })}
-            </span>
+            </Link>
           </div>
-          {viewMode === 'admin' && (
+          {showActions && viewMode === 'admin' && (
             <>
               <Whisper
                 placement='bottomEnd'
