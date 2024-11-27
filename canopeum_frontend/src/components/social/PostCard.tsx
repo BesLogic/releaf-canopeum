@@ -1,4 +1,5 @@
 import { useContext, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Dropdown, Popover } from 'rsuite'
 import DropdownMenu from 'rsuite/esm/Dropdown/DropdownMenu'
 import type { OverlayTriggerHandle } from 'rsuite/esm/internals/Picker'
@@ -23,6 +24,7 @@ type Props = {
 }
 
 const PostCard = ({ post, deletePost }: Props) => {
+  const { t } = useTranslation()
   const { formatDate } = useContext(LanguageContext)
   const { toggleLike } = usePostsStore()
   const { getApiClient } = useApiClient()
@@ -72,10 +74,13 @@ const PostCard = ({ post, deletePost }: Props) => {
       style={{ width: 'fit-content' }}
     >
       <DropdownMenu>
-        <Dropdown.Item onClick={() => setConfirmPostDeleteOpen(true)}>
-          <div className='d-flex gap-2'>
-            <span className='material-symbols-outlined text-danger'>delete</span>
-          </div>
+        <Dropdown.Item>
+          <span className='material-symbols-outlined align-middle'>edit_square</span>{' '}
+          {t('generic.edit')} (Not yet implemented)
+        </Dropdown.Item>
+        <Dropdown.Item className='' onClick={() => setConfirmPostDeleteOpen(true)}>
+          <span className='material-symbols-outlined align-middle text-danger'>delete</span>
+          <span className='text-danger'>{' '}{t('generic.delete')}</span>
         </Dropdown.Item>
       </DropdownMenu>
     </Popover>
