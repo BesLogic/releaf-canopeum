@@ -1,7 +1,8 @@
 import './MapPage.scss'
 
 import type { Marker as MarkerInstance } from 'maplibre-gl'
-import { useCallback, useEffect, useState } from 'react'
+import { type CSSProperties, useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { MarkerEvent } from 'react-map-gl/dist/esm/types'
 import ReactMap, { GeolocateControl, Marker, NavigationControl, ScaleControl, type ViewState } from 'react-map-gl/maplibre'
 import { Link } from 'react-router-dom'
@@ -52,7 +53,7 @@ const initialMapLocation = (sites: SiteMap[]) => {
 
 const MapPage = () => {
   const { getApiClient } = useApiClient()
-
+  const { t } = useTranslation()
   const [sites, setSites] = useState<SiteMap[]>([])
   const [selectedSiteId, setSelectedSiteId] = useState<number | undefined>()
 
@@ -68,11 +69,14 @@ const MapPage = () => {
     return response
   }, [getApiClient])
 
-  const onMarkerClick = (event: MarkerEvent<MarkerInstance, MouseEvent>, site: SiteMap) => {
-    const { lat, lng } = event.target._lngLat
+  const onSelectSite = (site: SiteMap, event?: MarkerEvent<MarkerInstance, MouseEvent>) => {
+    const latitude = event?.target._lngLat.lat ?? site.coordinates.latitude
+    const longitude = event?.target._lngLat.lng ?? site.coordinates.longitude
+    if (!latitude || !longitude) return
+
     setMapViewState({
-      latitude: lat,
-      longitude: lng,
+      latitude,
+      longitude,
       zoom: PIN_FOCUS_ZOOM_LEVEL,
     })
     setSelectedSiteId(site.id)
@@ -139,7 +143,7 @@ const MapPage = () => {
                   key={`${site.id}-${latitude}-${longitude}`}
                   latitude={latitude}
                   longitude={longitude}
-                  onClick={event => onMarkerClick(event, site)}
+                  onClick={event => onSelectSite(site, event)}
                   style={{ cursor: 'pointer' }}
                 >
                   <SiteTypePin siteTypeId={site.siteType.id as SiteTypeID} />
@@ -153,20 +157,21 @@ const MapPage = () => {
           className='col-12 col-lg-4 h-100'
           id='map-sites-list-container'
         >
-          <div className='py-3 d-flex flex-column gap-3'>
+          <div className='d-flex flex-column gap-3'>
             {sites.map(site => (
               <div
                 className={`card ${
                   selectedSiteId === site.id
-                    ? 'border border-secondary border-5'
+                    ? 'shadow '
                     : ''
                 }`}
                 key={site.id}
+                style={{ '--bs-box-shadow': '0 0 0 0.25rem var(--bs-secondary)' } as CSSProperties}
               >
-                <Link
-                  className='stretched-link list-group-item-action'
-                  id={`${site.id}`}
-                  to={appRoutes.siteSocial(site.id)}
+                <button
+                  className='stretched-link list-group-item-action unstyled-button rounded'
+                  onClick={() => onSelectSite(site)}
+                  type='button'
                 >
                   <div className='row g-0 h-100'>
                     <div className='col-lg-4'>
@@ -192,10 +197,26 @@ const MapPage = () => {
                           <span className='material-symbols-outlined fill-icon'>location_on</span>
                           <span className='ms-1'>{site.coordinates.address}</span>
                         </h6>
+
+                        <Link
+                          className='fw-bold text-secondary link-inner-underline'
+                          // special styles needed for link-in-button hover
+                          style={{ position: 'relative', zIndex: 2 }}
+                          to={appRoutes.siteSocial(site.id)}
+                        >
+                          <span className='me-1'>{t('social.visit-site')}</span>
+                          <span className='
+                            material-symbols-outlined
+                            align-top
+                            text-decoration-none
+                          '>
+                            arrow_forward
+                          </span>
+                        </Link>
                       </div>
                     </div>
                   </div>
-                </Link>
+                </button>
               </div>
             ))}
           </div>

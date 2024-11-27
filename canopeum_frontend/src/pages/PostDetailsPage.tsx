@@ -75,10 +75,10 @@ const PostDetailsPage = () => {
   return (
     <div className='container py-5'>
       <Link
-        className='mb-3 d-flex align-items-center text-light link-inner-underline'
+        className='d-inline-block mb-3 text-light link-inner-underline'
         to={appRoutes.siteSocial(postDetail.site.id)}
       >
-        <span className='material-symbols-outlined text-decoration-none'>arrow_back</span>
+        <span className='material-symbols-outlined text-decoration-none align-top'>arrow_back</span>
         <span className='ms-1'>{translate('posts.back-to-social')}</span>
       </Link>
 
