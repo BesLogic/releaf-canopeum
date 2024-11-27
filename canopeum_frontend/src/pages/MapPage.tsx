@@ -19,13 +19,26 @@ const PIN_FOCUS_ZOOM_LEVEL = 15
  * The initial map location if the user doesn't provide location
  */
 const initialMapLocation = (sites: SiteMap[]) => {
-  const cannopeumCoordinates = sites
-    .find(site => site.name === 'Canopeum')
-    ?.coordinates
+  // eslint-disable-next-line unicorn/no-array-reduce -- Find the middle point between all sites
+  const { minLat, maxLat, minLong, maxLong } = sites.reduce(
+    (previous, current) => {
+      // Unset or invalid coordinate should be ignored when trying to pin the center of all sites
+      if (!current.coordinates.latitude || !current.coordinates.longitude) return previous
+
+      return {
+        minLat: Math.min(previous.minLat, current.coordinates.latitude),
+        maxLat: Math.max(previous.maxLat, current.coordinates.latitude),
+        minLong: Math.min(previous.minLong, current.coordinates.longitude),
+        maxLong: Math.max(previous.maxLong, current.coordinates.longitude),
+      }
+    },
+    { minLat: 90, maxLat: -90, minLong: 180, maxLong: -180 },
+  )
 
   return {
-    latitude: cannopeumCoordinates?.latitude ?? 0,
-    longitude: cannopeumCoordinates?.longitude ?? 0,
+    latitude: (maxLat + minLat) / 2,
+    longitude: (maxLong + minLong) / 2,
+    zoom: Math.min((maxLat - minLat) * 2, (maxLong - minLong) * 2),
   }
 }
 
