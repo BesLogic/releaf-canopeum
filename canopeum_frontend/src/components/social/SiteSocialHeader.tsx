@@ -129,6 +129,22 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
               <IconBadge iconKey={getSiteTypeIconKey(site.siteType.id)} />
               <h4 className='fw-bold text-primary mb-0'>{translateValue(site.siteType)}</h4>
             </div>
+
+            <Link
+              className='d-inline-block text-muted mt-1 link-inner-underline'
+              to={{ pathname: appRoutes.map, search: `site=${site.id}` }}
+            >
+              <span className='
+                material-symbols-outlined
+                fill-icon
+                align-top
+                me-1
+                text-decoration-none
+              '>
+                location_on
+              </span>
+              <span>{site.coordinate.address ?? translate('analytics.site-summary.unknown')}</span>
+            </Link>
           </div>
 
           <p className='card-text mt-2'>{site.description ?? ''}</p>
