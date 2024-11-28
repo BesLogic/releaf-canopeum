@@ -69,9 +69,12 @@ const MapPage = () => {
     return response
   }, [getApiClient])
 
-  const onSelectSite = (site: SiteMap, event?: MarkerEvent<MarkerInstance, MouseEvent>) => {
-    const latitude = event?.target._lngLat.lat ?? site.coordinates.latitude
-    const longitude = event?.target._lngLat.lng ?? site.coordinates.longitude
+  const onSelectSite = (
+    site: SiteMap,
+    mapMarkerEvent?: MarkerEvent<MarkerInstance, MouseEvent>,
+  ) => {
+    const latitude = mapMarkerEvent?.target._lngLat.lat ?? site.coordinates.latitude
+    const longitude = mapMarkerEvent?.target._lngLat.lng ?? site.coordinates.longitude
     if (!latitude || !longitude) return
 
     setMapViewState({
@@ -80,7 +83,13 @@ const MapPage = () => {
       zoom: PIN_FOCUS_ZOOM_LEVEL,
     })
     setSelectedSiteId(site.id)
-    document.getElementById(`${site.id}`)?.scrollIntoView({ behavior: 'smooth' })
+    if (mapMarkerEvent) {
+      // Clicked from map, scroll card into view
+      document.getElementById(`site-card-${site.id}`)?.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      // Clicked from card, scroll to top for mobile
+      window.scrollTo({ behavior: 'smooth', top: 0 })
+    }
   }
 
   const onMapMove = (viewState: ViewState) => {
@@ -118,10 +127,10 @@ const MapPage = () => {
     ), [fetchData])
 
   return (
-    <div className='container-fluid p-0'>
+    <div className='container-fluid p-0 h-100'>
       <div className='row flex-row-reverse m-0' id='map-page-row-container'>
         <div
-          className='col-12 col-lg-8 d-flex p-0'
+          className='col-12 col-lg-8 d-flex '
           id='map-container'
         >
           <ReactMap
@@ -153,10 +162,7 @@ const MapPage = () => {
           </ReactMap>
         </div>
 
-        <div
-          className='col-12 col-lg-4 h-100'
-          id='map-sites-list-container'
-        >
+        <div className='col-12 col-lg-4 h-100 py-3' id='map-sites-list-container'>
           <div className='d-flex flex-column gap-3'>
             {sites.map(site => (
               <div
@@ -165,6 +171,7 @@ const MapPage = () => {
                     ? 'shadow '
                     : ''
                 }`}
+                id={`site-card-${site.id}`}
                 key={site.id}
                 style={{ '--bs-box-shadow': '0 0 0 0.25rem var(--bs-secondary)' } as CSSProperties}
               >
