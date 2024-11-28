@@ -18,9 +18,9 @@ const PIN_FOCUS_ZOOM_LEVEL = 15
 const MAP_DISTANCE_ZOOM_MULTIPLIER = 20
 
 /**
- * The initial map location if the user doesn't provide location
+ * The default initial map location if the user doesn't provide location
  */
-const initialMapLocation = (sites: SiteMap[]) => {
+const defaultMapLocation = (sites: SiteMap[]) => {
   // eslint-disable-next-line unicorn/no-array-reduce -- Find the middle point between all sites
   const { minLat, maxLat, minLong, maxLong } = sites.reduce(
     (previous, current) => {
@@ -115,21 +115,32 @@ const MapPage = () => {
           navigator.geolocation.getCurrentPosition(resolve, resolve)
         },
       ),
-    ]).then(([fetchedSites, position]) =>
-      'code' in position
+    ]).then(([fetchedSites, position]) => {
+      // If there's a pre-selected site-id (from URL), zoom on it
+      const preSelectedSiteId = Number(searchParams.get('site')) || null
+      const preSelectedSite = fetchedSites.find(site => site.id === preSelectedSiteId)
+      if (preSelectedSite?.coordinate.ddLatitude && preSelectedSite.coordinate.ddLongitude) {
+        setMapViewState({
+          latitude: preSelectedSite.coordinate.ddLatitude,
+          longitude: preSelectedSite.coordinate.ddLongitude,
+          zoom: PIN_FOCUS_ZOOM_LEVEL,
+        })
+      } else if ('code' in position) {
         // If there's an error obtaining the user position, use our default position instead
         // Note that getCurrentPosition always error code 2 in http
-        ? setMapViewState(mvs => ({
+        setMapViewState(mvs => ({
           ...mvs,
-          ...initialMapLocation(fetchedSites),
+          ...defaultMapLocation(fetchedSites),
         }))
+      } else {
         // Otherwise focus on the user's position
-        : setMapViewState(mvs => ({
+        setMapViewState(mvs => ({
           ...mvs,
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         }))
-    ), [fetchData])
+      }
+    }), [fetchData, searchParams])
 
   return (
     <div className='container-fluid p-0 h-100'>
