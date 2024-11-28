@@ -20,7 +20,7 @@ const NavbarLayout = () => (
   <div className='d-flex flex-column vh-100'>
     <Navbar />
     {/* TODO: Can we do better than hardcode a number relating to the expected header size here? */}
-    <div className='' style={{ height: 'calc(100vh - 48px)' }}>
+    <div className='' style={{ height: 'calc(100vh - 62px)' }}>
       <Outlet />
     </div>
   </div>
