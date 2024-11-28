@@ -5,7 +5,7 @@ import { type CSSProperties, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { MarkerEvent } from 'react-map-gl/dist/esm/types'
 import ReactMap, { GeolocateControl, Marker, NavigationControl, ScaleControl, type ViewState } from 'react-map-gl/maplibre'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 
 import SiteTypePin from '@components/assets/SiteTypePin'
 import { appRoutes } from '@constants/routes.constant'
@@ -55,7 +55,10 @@ const MapPage = () => {
   const { getApiClient } = useApiClient()
   const { t } = useTranslation()
   const [sites, setSites] = useState<SiteMap[]>([])
-  const [selectedSiteId, setSelectedSiteId] = useState<number | undefined>()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [selectedSiteId, setSelectedSiteId] = useState(
+    Number(searchParams.get('site')) || null,
+  )
 
   const [mapViewState, setMapViewState] = useState({
     longitude: 0,
@@ -83,6 +86,8 @@ const MapPage = () => {
       zoom: PIN_FOCUS_ZOOM_LEVEL,
     })
     setSelectedSiteId(site.id)
+    searchParams.set('site', site.id.toString())
+    setSearchParams(searchParams)
     if (mapMarkerEvent) {
       // Clicked from map, scroll card into view
       document.getElementById(`site-card-${site.id}`)?.scrollIntoView({ behavior: 'smooth' })
@@ -94,7 +99,7 @@ const MapPage = () => {
 
   const onMapMove = (viewState: ViewState) => {
     setMapViewState(viewState)
-    setSelectedSiteId(undefined)
+    setSelectedSiteId(null)
   }
 
   useEffect(() =>
@@ -207,6 +212,7 @@ const MapPage = () => {
 
                         <Link
                           className='fw-bold text-secondary link-inner-underline'
+                          onClick={event => event.stopPropagation()}
                           // special styles needed for link-in-button hover
                           style={{ position: 'relative', zIndex: 2 }}
                           to={appRoutes.siteSocial(site.id)}
