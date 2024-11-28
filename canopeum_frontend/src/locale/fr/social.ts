@@ -6,6 +6,7 @@ export default {
     unfollow: 'Ne plus suivre',
     public: 'Publique',
   },
+  'visit-site': 'Visiter le Site',
   comments: {
     'leave-a-comment': 'Laisser un Commentaire',
     word_one: 'mot',

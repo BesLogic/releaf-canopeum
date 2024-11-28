@@ -1,6 +1,9 @@
 import './MapPage.scss'
 
-import { useCallback, useEffect, useState } from 'react'
+import type { Marker as MarkerInstance } from 'maplibre-gl'
+import { type CSSProperties, useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import type { MarkerEvent } from 'react-map-gl/dist/esm/types'
 import ReactMap, { GeolocateControl, Marker, NavigationControl, ScaleControl, type ViewState } from 'react-map-gl/maplibre'
 import { Link } from 'react-router-dom'
 
@@ -11,41 +14,82 @@ import { getSiteTypeIconKey, type SiteTypeID } from '@models/SiteType'
 import type { SiteMap } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 
-type MarkerEvent = {
-  target: {
-    _lngLat: {
-      lat: number,
-      lng: number,
+const PIN_FOCUS_ZOOM_LEVEL = 15
+const MAP_DISTANCE_ZOOM_MULTIPLIER = 20
+
+/**
+ * The initial map location if the user doesn't provide location
+ */
+const initialMapLocation = (sites: SiteMap[]) => {
+  // eslint-disable-next-line unicorn/no-array-reduce -- Find the middle point between all sites
+  const { minLat, maxLat, minLong, maxLong } = sites.reduce(
+    (previous, current) => {
+      // Unset or invalid coordinate should be ignored when trying to pin the center of all sites
+      if (!current.coordinates.latitude || !current.coordinates.longitude) return previous
+
+      return {
+        minLat: Math.min(previous.minLat, current.coordinates.latitude),
+        maxLat: Math.max(previous.maxLat, current.coordinates.latitude),
+        minLong: Math.min(previous.minLong, current.coordinates.longitude),
+        maxLong: Math.max(previous.maxLong, current.coordinates.longitude),
+      }
     },
-  },
+    { minLat: 90, maxLat: -90, minLong: 180, maxLong: -180 },
+  )
+
+  return {
+    // Center the map to the middle point between all sites
+    latitude: (maxLat + minLat) / 2,
+    longitude: (maxLong + minLong) / 2,
+    // min to take the most zoomed out between latitude or longitude
+    zoom: Math.min(
+      // 0 is max zoomed out, so we use an "inverse" (1 / x)
+      // The bigger the distance (max - min), the lower the zoom
+      (1 / (maxLat - minLat)) * MAP_DISTANCE_ZOOM_MULTIPLIER,
+      (1 / (maxLong - minLong)) * MAP_DISTANCE_ZOOM_MULTIPLIER,
+    ),
+  }
 }
 
 const MapPage = () => {
   const { getApiClient } = useApiClient()
-
+  const { t } = useTranslation()
   const [sites, setSites] = useState<SiteMap[]>([])
   const [selectedSiteId, setSelectedSiteId] = useState<number | undefined>()
 
   const [mapViewState, setMapViewState] = useState({
-    longitude: -100,
-    latitude: 40,
-    zoom: 5,
+    longitude: 0,
+    latitude: 0,
+    zoom: PIN_FOCUS_ZOOM_LEVEL,
   })
 
   const fetchData = useCallback(async () => {
     const response = await getApiClient().siteClient.map()
     setSites(response)
+    return response
   }, [getApiClient])
 
-  const onMarkerClick = (event: MarkerEvent, site: SiteMap) => {
-    const { lat, lng } = event.target._lngLat
+  const onSelectSite = (
+    site: SiteMap,
+    mapMarkerEvent?: MarkerEvent<MarkerInstance, MouseEvent>,
+  ) => {
+    const latitude = mapMarkerEvent?.target._lngLat.lat ?? site.coordinates.latitude
+    const longitude = mapMarkerEvent?.target._lngLat.lng ?? site.coordinates.longitude
+    if (!latitude || !longitude) return
+
     setMapViewState({
-      latitude: lat,
-      longitude: lng,
-      zoom: 15,
+      latitude,
+      longitude,
+      zoom: PIN_FOCUS_ZOOM_LEVEL,
     })
     setSelectedSiteId(site.id)
-    document.getElementById(`${site.id}`)?.scrollIntoView({ behavior: 'smooth' })
+    if (mapMarkerEvent) {
+      // Clicked from map, scroll card into view
+      document.getElementById(`site-card-${site.id}`)?.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      // Clicked from card, scroll to top for mobile
+      window.scrollTo({ behavior: 'smooth', top: 0 })
+    }
   }
 
   const onMapMove = (viewState: ViewState) => {
@@ -53,22 +97,40 @@ const MapPage = () => {
     setSelectedSiteId(undefined)
   }
 
-  useEffect(() => {
-    void fetchData()
-
-    /* eslint-disable-next-line sonarjs/no-intrusive-permissions
-    -- We only ask when the map is rendered */
-    navigator.geolocation.getCurrentPosition(position => {
-      const { latitude, longitude } = position.coords
-      setMapViewState(mvs => ({ ...mvs, latitude, longitude }))
-    })
-  }, [fetchData])
+  useEffect(() =>
+    void Promise.all([
+      fetchData(),
+      new Promise(
+        (
+          resolve: (position: GeolocationPosition | GeolocationPositionError) => void,
+          _reject,
+        ): void => {
+          /* eslint-disable-next-line sonarjs/no-intrusive-permissions
+          -- We only ask when the map is rendered */
+          navigator.geolocation.getCurrentPosition(resolve, resolve)
+        },
+      ),
+    ]).then(([fetchedSites, position]) =>
+      'code' in position
+        // If there's an error obtaining the user position, use our default position instead
+        // Note that getCurrentPosition always error code 2 in http
+        ? setMapViewState(mvs => ({
+          ...mvs,
+          ...initialMapLocation(fetchedSites),
+        }))
+        // Otherwise focus on the user's position
+        : setMapViewState(mvs => ({
+          ...mvs,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        }))
+    ), [fetchData])
 
   return (
-    <div className='container-fluid p-0'>
+    <div className='container-fluid p-0 h-100'>
       <div className='row flex-row-reverse m-0' id='map-page-row-container'>
         <div
-          className='col-12 col-lg-8 d-flex p-0'
+          className='col-12 col-lg-8 d-flex '
           id='map-container'
         >
           <ReactMap
@@ -90,7 +152,7 @@ const MapPage = () => {
                   key={`${site.id}-${latitude}-${longitude}`}
                   latitude={latitude}
                   longitude={longitude}
-                  onClick={event => onMarkerClick(event, site)}
+                  onClick={event => onSelectSite(site, event)}
                   style={{ cursor: 'pointer' }}
                 >
                   <SiteTypePin siteTypeId={site.siteType.id as SiteTypeID} />
@@ -100,24 +162,23 @@ const MapPage = () => {
           </ReactMap>
         </div>
 
-        <div
-          className='col-12 col-lg-4 h-100'
-          id='map-sites-list-container'
-        >
-          <div className='py-3 d-flex flex-column gap-3'>
+        <div className='col-12 col-lg-4 h-100 py-3' id='map-sites-list-container'>
+          <div className='d-flex flex-column gap-3'>
             {sites.map(site => (
               <div
                 className={`card ${
                   selectedSiteId === site.id
-                    ? 'border border-secondary border-5'
+                    ? 'shadow '
                     : ''
                 }`}
+                id={`site-card-${site.id}`}
                 key={site.id}
+                style={{ '--bs-box-shadow': '0 0 0 0.25rem var(--bs-secondary)' } as CSSProperties}
               >
-                <Link
-                  className='stretched-link list-group-item-action'
-                  id={`${site.id}`}
-                  to={appRoutes.siteSocial(site.id)}
+                <button
+                  className='stretched-link list-group-item-action unstyled-button rounded'
+                  onClick={() => onSelectSite(site)}
+                  type='button'
                 >
                   <div className='row g-0 h-100'>
                     <div className='col-lg-4'>
@@ -143,10 +204,26 @@ const MapPage = () => {
                           <span className='material-symbols-outlined fill-icon'>location_on</span>
                           <span className='ms-1'>{site.coordinates.address}</span>
                         </h6>
+
+                        <Link
+                          className='fw-bold text-secondary link-inner-underline'
+                          // special styles needed for link-in-button hover
+                          style={{ position: 'relative', zIndex: 2 }}
+                          to={appRoutes.siteSocial(site.id)}
+                        >
+                          <span className='me-1'>{t('social.visit-site')}</span>
+                          <span className='
+                            material-symbols-outlined
+                            align-top
+                            text-decoration-none
+                          '>
+                            arrow_forward
+                          </span>
+                        </Link>
                       </div>
                     </div>
                   </div>
-                </Link>
+                </button>
               </div>
             ))}
           </div>

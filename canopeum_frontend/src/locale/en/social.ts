@@ -4,6 +4,7 @@ export default {
     unfollow: 'Unfollow',
     public: 'Public',
   },
+  'visit-site': 'Visit the Site',
   comments: {
     'leave-a-comment': 'Leave a Comment',
     word_one: 'word',

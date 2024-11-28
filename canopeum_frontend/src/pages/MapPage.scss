@@ -1,51 +1,31 @@
 @use '../assets/styles/Variables.scss' as *;
 
-#map-page-row-container {
-  padding: 0 2rem;
-}
-
-#map-sites-list-container {
-  padding: 0;
-}
-
 .map-site-image {
   border-radius: $border-radius $border-radius 0 0;
   width: 100%;
 }
 
-@media screen and (min-width: $medium-width) {
-  #map-page-row-container {
-    padding: 0 4rem;
-  }
+#map-container {
+  padding: 0;
+}
+#map-page-row-container {
+  height: calc(100vh - 62px);
+}
+#map-container {
+  height: calc(100vh - 62px);
 }
 
 @media screen and (max-width: $large-width) {
+  #map-sites-list-container,
   #map-container {
-    height: calc(100vh - 3.3rem);
-    margin-top: 2rem;
+    padding: 0 3rem;
   }
 }
 
 @media screen and (min-width: $large-width) {
   #map-sites-list-container {
     overflow-y: auto;
-    padding: 1rem;
   }
-
-  #map-page-row-container {
-    padding: 0;
-  }
-
-  #map-container {
-    height: 100%;
-    margin: 0;
-    margin-top: 0;
-  }
-
-  #map-page-row-container {
-    height: calc(100vh - 4rem);
-  }
-
   .map-site-image {
     border-radius: $border-radius 0 0 $border-radius;
     width: unset;
