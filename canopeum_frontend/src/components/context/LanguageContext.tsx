@@ -7,7 +7,7 @@ type ILanguageContext = {
   translateValue: (translatable: Translatable) => string,
 }
 
-type Translatable = Record<string, string> & {
+type Translatable = Record<string, unknown> & {
   en: string,
   fr: string,
 }
@@ -39,9 +39,17 @@ const LanguageContextProvider: FunctionComponent<{ readonly children?: ReactNode
       return new Intl.DateTimeFormat(i18n.language, fullOptions).format(date)
     }, [i18n])
 
-    const translateValue = useCallback((translable: Translatable) => translable[i18n.language], [
-      i18n,
-    ])
+    const translateValue = useCallback(
+      (translable: Translatable) => {
+        const value = translable[i18n.language]
+        if (typeof value !== 'string') {
+          throw new TypeError(`The value of language '${i18n.language}' is not a string`)
+        }
+
+        return value
+      },
+      [i18n],
+    )
 
     const context = useMemo<ILanguageContext>(() => (
       {
@@ -50,13 +58,7 @@ const LanguageContextProvider: FunctionComponent<{ readonly children?: ReactNode
       }
     ), [formatDate, translateValue])
 
-    return (
-      <LanguageContext.Provider
-        value={context}
-      >
-        {props.children}
-      </LanguageContext.Provider>
-    )
+    return <LanguageContext.Provider value={context}>{props.children}</LanguageContext.Provider>
   },
 )
 

@@ -25,13 +25,13 @@ const initialMapLocation = (sites: SiteMap[]) => {
   const { minLat, maxLat, minLong, maxLong } = sites.reduce(
     (previous, current) => {
       // Unset or invalid coordinate should be ignored when trying to pin the center of all sites
-      if (!current.coordinates.latitude || !current.coordinates.longitude) return previous
+      if (!current.coordinate.ddLatitude || !current.coordinate.ddLongitude) return previous
 
       return {
-        minLat: Math.min(previous.minLat, current.coordinates.latitude),
-        maxLat: Math.max(previous.maxLat, current.coordinates.latitude),
-        minLong: Math.min(previous.minLong, current.coordinates.longitude),
-        maxLong: Math.max(previous.maxLong, current.coordinates.longitude),
+        minLat: Math.min(previous.minLat, current.coordinate.ddLatitude),
+        maxLat: Math.max(previous.maxLat, current.coordinate.ddLatitude),
+        minLong: Math.min(previous.minLong, current.coordinate.ddLongitude),
+        maxLong: Math.max(previous.maxLong, current.coordinate.ddLongitude),
       }
     },
     { minLat: 90, maxLat: -90, minLong: 180, maxLong: -180 },
@@ -73,8 +73,8 @@ const MapPage = () => {
     site: SiteMap,
     mapMarkerEvent?: MarkerEvent<MarkerInstance, MouseEvent>,
   ) => {
-    const latitude = mapMarkerEvent?.target._lngLat.lat ?? site.coordinates.latitude
-    const longitude = mapMarkerEvent?.target._lngLat.lng ?? site.coordinates.longitude
+    const latitude = mapMarkerEvent?.target._lngLat.lat ?? site.coordinate.ddLatitude
+    const longitude = mapMarkerEvent?.target._lngLat.lng ?? site.coordinate.ddLongitude
     if (!latitude || !longitude) return
 
     setMapViewState({
@@ -143,8 +143,8 @@ const MapPage = () => {
             <NavigationControl position='top-right' showCompass showZoom visualizePitch />
             <ScaleControl position='bottom-left' unit='metric' />
             {sites.map(site => {
-              const latitude = Number(site.coordinates.latitude)
-              const longitude = Number(site.coordinates.longitude)
+              const latitude = Number(site.coordinate.ddLatitude)
+              const longitude = Number(site.coordinate.ddLongitude)
 
               return (
                 <Marker
@@ -200,9 +200,9 @@ const MapPage = () => {
                           <span className='ms-1'>{site.siteType.en}</span>
                         </h6>
 
-                        <h6 className='d-flex align-items-center text-black-50'>
+                        <h6 className='d-flex align-items-center gap-1 text-muted'>
                           <span className='material-symbols-outlined fill-icon'>location_on</span>
-                          <span className='ms-1'>{site.coordinates.address}</span>
+                          {site.coordinate.address ?? t('analytics.site-summary.unknown')}
                         </h6>
 
                         <Link

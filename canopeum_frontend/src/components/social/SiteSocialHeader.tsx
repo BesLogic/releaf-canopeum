@@ -2,12 +2,14 @@ import './SiteSocialHeader.scss'
 
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { LanguageContext } from '@components/context/LanguageContext'
 import IconBadge from '@components/IconBadge'
 import ToggleSwitch from '@components/inputs/ToggleSwitch'
 import SiteHeaderSponsors from '@components/SiteHeaderSponsors'
+import { appRoutes } from '@constants/routes.constant'
 import useApiClient from '@hooks/ApiClientHook'
 import type { PageViewMode } from '@models/PageViewMode.type'
 import { getSiteTypeIconKey } from '@models/SiteType'
@@ -29,10 +31,10 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
   const [isFollowing, setIsFollowing] = useState<boolean | undefined>()
   const [isPublic, setIsPublic] = useState(!!site.isPublic)
 
-  useEffect(() => setIsFollowing(currentUser?.followedSiteIds.includes(site.id)), [
-    currentUser?.followedSiteIds,
-    site.id,
-  ])
+  useEffect(
+    () => setIsFollowing(currentUser?.followedSiteIds.includes(site.id)),
+    [currentUser?.followedSiteIds, site.id],
+  )
 
   useEffect(() => setIsPublic(!!site.isPublic), [site])
 
@@ -90,12 +92,13 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
               <h1 className='card-title mb-0'>{site.name}</h1>
 
               <div className='
-              d-flex
-              align-items-center
-              column-gap-3
-              row-gap-2
-              flex-wrap
-              justify-content-end'>
+                d-flex
+                align-items-center
+                column-gap-3
+                row-gap-2
+                flex-wrap
+                justify-content-end
+              '>
                 {viewMode === 'admin' && (
                   <ToggleSwitch
                     additionalClassNames='fs-4'
