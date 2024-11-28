@@ -1,4 +1,3 @@
-@use '../../../node_modules/bootstrap/scss/bootstrap.scss';
 @use 'Variables.scss' as *;
 
 // TODO (Sam. T): Move this file to a GlobalStyles/_index.scss and imported files into same folder
@@ -10,16 +9,15 @@
 @use 'Transitions.scss';
 
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 0.5em;
+  height: 0.5em;
 }
-
 ::-webkit-scrollbar-track {
   background-color: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: map-get(bootstrap.$colors, dark-gray);
+  background-color: $gray-600; // map-get($colors, gray)
   border-radius: 5px;
 }
 

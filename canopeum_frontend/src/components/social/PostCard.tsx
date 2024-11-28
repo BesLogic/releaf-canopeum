@@ -90,7 +90,7 @@ const PostCard = ({ post, showActions }: Props) => {
     <div className='card'>
       <div className='card-body d-flex flex-column gap-3'>
         <div className='d-flex justify-content-start align-items-center gap-2'>
-          <Link to={appRoutes.site(post.site.id)}>
+          <Link to={appRoutes.siteSocial(post.site.id)}>
             <img
               alt='site'
               className='rounded-circle'
@@ -100,7 +100,7 @@ const PostCard = ({ post, showActions }: Props) => {
           </Link>
           <div className='d-flex flex-column'>
             <h6 className='text-uppercase fw-bold mb-1'>
-              <Link to={appRoutes.site(post.site.id)}>{post.site.name}</Link>
+              <Link to={appRoutes.siteSocial(post.site.id)}>{post.site.name}</Link>
             </h6>
             <Link className='text-muted initialism' to={appRoutes.postDetail(post.id)}>
               {formatDate(post.createdAt, { dateStyle: 'short' })}
