@@ -1412,7 +1412,10 @@ export class SchemaClient {
     this.baseUrl = baseUrl ?? ''
   }
 
-  retrieve(format?: Format | undefined, lang?: Lang | undefined): Promise<{ [key: string]: any }> {
+  retrieve(
+    format?: Format | undefined,
+    lang?: Lang | undefined,
+  ): Promise<{ [key: string]: unknown }> {
     let url_ = this.baseUrl + '/api/schema/?'
     if (format === null) {
       throw new Error("The parameter 'format' cannot be null.")
@@ -1438,7 +1441,7 @@ export class SchemaClient {
     })
   }
 
-  protected processRetrieve(response: Response): Promise<{ [key: string]: any }> {
+  protected processRetrieve(response: Response): Promise<{ [key: string]: unknown }> {
     const status = response.status
     let _headers: any = {}
     if (response.headers && response.headers.forEach) {
@@ -1474,7 +1477,7 @@ export class SchemaClient {
         )
       })
     }
-    return Promise.resolve<{ [key: string]: any }>(null as any)
+    return Promise.resolve<{ [key: string]: unknown }>(null as any)
   }
 }
 
@@ -2260,7 +2263,7 @@ export class LikeClient {
     this.baseUrl = baseUrl ?? ''
   }
 
-  likePost(postId: number, body?: { [key: string]: any } | undefined): Promise<Like> {
+  likePost(postId: number, body?: { [key: string]: unknown } | undefined): Promise<Like> {
     let url_ = this.baseUrl + '/social/posts/{postId}/likes/'
     if (postId === undefined || postId === null) {
       throw new Error("The parameter 'postId' must be defined.")
@@ -3041,7 +3044,7 @@ export class Announcement implements IAnnouncement {
   body?: string | undefined
   link?: string | undefined;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IAnnouncement) {
     if (data) {
@@ -3092,14 +3095,14 @@ export interface IAnnouncement {
   body?: string | undefined
   link?: string | undefined
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class Asset implements IAsset {
   readonly id!: number
   asset!: string;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IAsset) {
     if (data) {
@@ -3147,7 +3150,7 @@ export interface IAsset {
   id: number
   asset: string
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class BatchDetail implements IBatchDetail {
@@ -3171,7 +3174,7 @@ export class BatchDetail implements IBatchDetail {
   totalPropagation?: number | undefined
   site!: number;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IBatchDetail) {
     if (data) {
@@ -3334,7 +3337,7 @@ export interface IBatchDetail {
   totalPropagation?: number | undefined
   site: number
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class BatchSeed implements IBatchSeed {
@@ -3342,7 +3345,7 @@ export class BatchSeed implements IBatchSeed {
   quantity!: number
   readonly treeType!: TreeType;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IBatchSeed) {
     if (data) {
@@ -3398,7 +3401,7 @@ export interface IBatchSeed {
   quantity: number
   treeType: TreeType
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class BatchSpecies implements IBatchSpecies {
@@ -3406,7 +3409,7 @@ export class BatchSpecies implements IBatchSpecies {
   quantity!: number
   readonly treeType!: TreeType;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IBatchSpecies) {
     if (data) {
@@ -3462,7 +3465,7 @@ export interface IBatchSpecies {
   quantity: number
   treeType: TreeType
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class BatchSponsor implements IBatchSponsor {
@@ -3471,7 +3474,7 @@ export class BatchSponsor implements IBatchSponsor {
   name!: string
   url!: string;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IBatchSponsor) {
     if (data) {
@@ -3528,7 +3531,7 @@ export interface IBatchSponsor {
   name: string
   url: string
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class ChangePassword implements IChangePassword {
@@ -3536,7 +3539,7 @@ export class ChangePassword implements IChangePassword {
   newPassword!: string
   newPasswordConfirmation!: string;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IChangePassword) {
     if (data) {
@@ -3587,7 +3590,7 @@ export interface IChangePassword {
   newPassword: string
   newPasswordConfirmation: string
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class Comment implements IComment {
@@ -3597,7 +3600,7 @@ export class Comment implements IComment {
   readonly authorUsername!: string
   readonly createdAt!: Date;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IComment) {
     if (data) {
@@ -3656,7 +3659,7 @@ export interface IComment {
   authorUsername: string
   createdAt: Date
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class Contact implements IContact {
@@ -3669,7 +3672,7 @@ export class Contact implements IContact {
   instagramLink?: string | undefined
   linkedinLink?: string | undefined;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IContact) {
     if (data) {
@@ -3735,18 +3738,18 @@ export interface IContact {
   instagramLink?: string | undefined
   linkedinLink?: string | undefined
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class Coordinates implements ICoordinates {
   readonly id!: number
+  readonly ddLatitude!: number | undefined
+  readonly ddLongitude!: number | undefined
   dmsLatitude?: string | undefined
   dmsLongitude?: string | undefined
-  ddLatitude?: string | undefined
-  ddLongitude?: string | undefined
   address?: string | undefined;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: ICoordinates) {
     if (data) {
@@ -3766,10 +3769,10 @@ export class Coordinates implements ICoordinates {
         }
       }
       ;(<any> this).id = _data['id']
+      ;(<any> this).ddLatitude = _data['ddLatitude']
+      ;(<any> this).ddLongitude = _data['ddLongitude']
       this.dmsLatitude = _data['dmsLatitude']
       this.dmsLongitude = _data['dmsLongitude']
-      this.ddLatitude = _data['ddLatitude']
-      this.ddLongitude = _data['ddLongitude']
       this.address = _data['address']
     }
   }
@@ -3789,10 +3792,10 @@ export class Coordinates implements ICoordinates {
       }
     }
     data['id'] = this.id
-    data['dmsLatitude'] = this.dmsLatitude
-    data['dmsLongitude'] = this.dmsLongitude
     data['ddLatitude'] = this.ddLatitude
     data['ddLongitude'] = this.ddLongitude
+    data['dmsLatitude'] = this.dmsLatitude
+    data['dmsLongitude'] = this.dmsLongitude
     data['address'] = this.address
     return data
   }
@@ -3800,78 +3803,19 @@ export class Coordinates implements ICoordinates {
 
 export interface ICoordinates {
   id: number
+  ddLatitude: number | undefined
+  ddLongitude: number | undefined
   dmsLatitude?: string | undefined
   dmsLongitude?: string | undefined
-  ddLatitude?: string | undefined
-  ddLongitude?: string | undefined
   address?: string | undefined
 
-  [key: string]: any
-}
-
-export class CoordinatesMap implements ICoordinatesMap {
-  readonly latitude!: number | undefined
-  readonly longitude!: number | undefined
-  address?: string | undefined;
-
-  [key: string]: any
-
-  constructor(data?: ICoordinatesMap) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) {
-          ;(<any> this)[property] = (<any> data)[property]
-        }
-      }
-    }
-  }
-
-  init(_data?: any) {
-    if (_data) {
-      for (var property in _data) {
-        if (_data.hasOwnProperty(property)) {
-          this[property] = _data[property]
-        }
-      }
-      ;(<any> this).latitude = _data['latitude']
-      ;(<any> this).longitude = _data['longitude']
-      this.address = _data['address']
-    }
-  }
-
-  static fromJS(data: any): CoordinatesMap {
-    data = typeof data === 'object' ? data : {}
-    let result = new CoordinatesMap()
-    result.init(data)
-    return result
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {}
-    for (var property in this) {
-      if (this.hasOwnProperty(property)) {
-        data[property] = this[property]
-      }
-    }
-    data['latitude'] = this.latitude
-    data['longitude'] = this.longitude
-    data['address'] = this.address
-    return data
-  }
-}
-
-export interface ICoordinatesMap {
-  latitude: number | undefined
-  longitude: number | undefined
-  address?: string | undefined
-
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class CreateComment implements ICreateComment {
   body!: string;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: ICreateComment) {
     if (data) {
@@ -3916,14 +3860,14 @@ export class CreateComment implements ICreateComment {
 export interface ICreateComment {
   body: string
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class CreateUserInvitation implements ICreateUserInvitation {
   siteIds!: number[]
   email!: string;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: ICreateUserInvitation) {
     if (data) {
@@ -3984,7 +3928,7 @@ export interface ICreateUserInvitation {
   siteIds: number[]
   email: string
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class FertilizerType implements IFertilizerType {
@@ -3992,7 +3936,7 @@ export class FertilizerType implements IFertilizerType {
   readonly en!: string
   readonly fr!: string;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IFertilizerType) {
     if (data) {
@@ -4043,7 +3987,7 @@ export interface IFertilizerType {
   en: string
   fr: string
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class Like implements ILike {
@@ -4051,7 +3995,7 @@ export class Like implements ILike {
   user!: number
   post!: number;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: ILike) {
     if (data) {
@@ -4102,14 +4046,14 @@ export interface ILike {
   user: number
   post: number
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class LoginUser implements ILoginUser {
   email!: string
   password!: string;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: ILoginUser) {
     if (data) {
@@ -4157,7 +4101,7 @@ export interface ILoginUser {
   email: string
   password: string
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class MulchLayerType implements IMulchLayerType {
@@ -4165,7 +4109,7 @@ export class MulchLayerType implements IMulchLayerType {
   readonly en!: string
   readonly fr!: string;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IMulchLayerType) {
     if (data) {
@@ -4216,7 +4160,7 @@ export interface IMulchLayerType {
   en: string
   fr: string
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class PatchedAnnouncement implements IPatchedAnnouncement {
@@ -4224,7 +4168,7 @@ export class PatchedAnnouncement implements IPatchedAnnouncement {
   body?: string | undefined
   link?: string | undefined;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IPatchedAnnouncement) {
     if (data) {
@@ -4275,7 +4219,7 @@ export interface IPatchedAnnouncement {
   body?: string | undefined
   link?: string | undefined
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class PatchedContact implements IPatchedContact {
@@ -4288,7 +4232,7 @@ export class PatchedContact implements IPatchedContact {
   instagramLink?: string | undefined
   linkedinLink?: string | undefined;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IPatchedContact) {
     if (data) {
@@ -4354,13 +4298,13 @@ export interface IPatchedContact {
   instagramLink?: string | undefined
   linkedinLink?: string | undefined
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class PatchedSiteAdminUpdateRequest implements IPatchedSiteAdminUpdateRequest {
   ids?: number[];
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IPatchedSiteAdminUpdateRequest) {
     if (data) {
@@ -4415,13 +4359,13 @@ export class PatchedSiteAdminUpdateRequest implements IPatchedSiteAdminUpdateReq
 export interface IPatchedSiteAdminUpdateRequest {
   ids?: number[]
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class PatchedUpdateSitePublicStatus implements IPatchedUpdateSitePublicStatus {
   isPublic?: boolean;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IPatchedUpdateSitePublicStatus) {
     if (data) {
@@ -4466,7 +4410,7 @@ export class PatchedUpdateSitePublicStatus implements IPatchedUpdateSitePublicSt
 export interface IPatchedUpdateSitePublicStatus {
   isPublic?: boolean
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class PatchedUpdateUser implements IPatchedUpdateUser {
@@ -4475,7 +4419,7 @@ export class PatchedUpdateUser implements IPatchedUpdateUser {
   email?: string
   changePassword?: ChangePassword;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IPatchedUpdateUser) {
     if (data) {
@@ -4529,7 +4473,7 @@ export interface IPatchedUpdateUser {
   email?: string
   changePassword?: ChangePassword
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class PatchedWidget implements IPatchedWidget {
@@ -4538,7 +4482,7 @@ export class PatchedWidget implements IPatchedWidget {
   body?: string | undefined
   site?: number | undefined;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IPatchedWidget) {
     if (data) {
@@ -4592,7 +4536,7 @@ export interface IPatchedWidget {
   body?: string | undefined
   site?: number | undefined
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class Post implements IPost {
@@ -4605,7 +4549,7 @@ export class Post implements IPost {
   readonly hasLiked!: boolean
   media!: Asset[];
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IPost) {
     if (data) {
@@ -4687,7 +4631,7 @@ export interface IPost {
   hasLiked: boolean
   media: Asset[]
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class PostPagination implements IPostPagination {
@@ -4696,7 +4640,7 @@ export class PostPagination implements IPostPagination {
   previous?: string
   results!: Post[];
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IPostPagination) {
     if (data) {
@@ -4763,7 +4707,7 @@ export interface IPostPagination {
   previous?: string
   results: Post[]
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class RegisterUser implements IRegisterUser {
@@ -4773,7 +4717,7 @@ export class RegisterUser implements IRegisterUser {
   passwordConfirmation!: string
   code?: string;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IRegisterUser) {
     if (data) {
@@ -4830,7 +4774,7 @@ export interface IRegisterUser {
   passwordConfirmation: string
   code?: string
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export type RoleEnum = 'User' | 'ForestSteward' | 'MegaAdmin'
@@ -4851,7 +4795,7 @@ export class Site implements ISite {
   visibleMap?: boolean | undefined
   visitorCount?: number | undefined;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: ISite) {
     if (data) {
@@ -4957,13 +4901,13 @@ export interface ISite {
   visibleMap?: boolean | undefined
   visitorCount?: number | undefined
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class SiteAdmin implements ISiteAdmin {
   user!: User;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: ISiteAdmin) {
     if (data) {
@@ -5011,7 +4955,7 @@ export class SiteAdmin implements ISiteAdmin {
 export interface ISiteAdmin {
   user: User
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class SiteAdminSiteInfo implements ISiteAdminSiteInfo {
@@ -5019,7 +4963,7 @@ export class SiteAdminSiteInfo implements ISiteAdminSiteInfo {
   name!: string
   siteType?: number | undefined;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: ISiteAdminSiteInfo) {
     if (data) {
@@ -5070,7 +5014,7 @@ export interface ISiteAdminSiteInfo {
   name: string
   siteType?: number | undefined
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class SiteAdmins implements ISiteAdmins {
@@ -5080,7 +5024,7 @@ export class SiteAdmins implements ISiteAdmins {
   email!: string
   readonly sites!: SiteAdminSiteInfo[];
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: ISiteAdmins) {
     if (data) {
@@ -5148,17 +5092,17 @@ export interface ISiteAdmins {
   email: string
   sites: SiteAdminSiteInfo[]
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class SiteMap implements ISiteMap {
   readonly id!: number
   name!: string
   siteType!: SiteType
-  readonly coordinates!: CoordinatesMap
+  coordinate!: Coordinates
   image!: Asset;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: ISiteMap) {
     if (data) {
@@ -5170,7 +5114,7 @@ export class SiteMap implements ISiteMap {
     }
     if (!data) {
       this.siteType = new SiteType()
-      this.coordinates = new CoordinatesMap()
+      this.coordinate = new Coordinates()
       this.image = new Asset()
     }
   }
@@ -5185,9 +5129,9 @@ export class SiteMap implements ISiteMap {
       ;(<any> this).id = _data['id']
       this.name = _data['name']
       this.siteType = _data['siteType'] ? SiteType.fromJS(_data['siteType']) : new SiteType()
-      ;(<any> this).coordinates = _data['coordinates']
-        ? CoordinatesMap.fromJS(_data['coordinates'])
-        : new CoordinatesMap()
+      this.coordinate = _data['coordinate']
+        ? Coordinates.fromJS(_data['coordinate'])
+        : new Coordinates()
       this.image = _data['image'] ? Asset.fromJS(_data['image']) : new Asset()
     }
   }
@@ -5209,7 +5153,7 @@ export class SiteMap implements ISiteMap {
     data['id'] = this.id
     data['name'] = this.name
     data['siteType'] = this.siteType ? this.siteType.toJSON() : <any> undefined
-    data['coordinates'] = this.coordinates ? this.coordinates.toJSON() : <any> undefined
+    data['coordinate'] = this.coordinate ? this.coordinate.toJSON() : <any> undefined
     data['image'] = this.image ? this.image.toJSON() : <any> undefined
     return data
   }
@@ -5219,10 +5163,10 @@ export interface ISiteMap {
   id: number
   name: string
   siteType: SiteType
-  coordinates: CoordinatesMap
+  coordinate: Coordinates
   image: Asset
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class SiteOverview implements ISiteOverview {
@@ -5230,7 +5174,7 @@ export class SiteOverview implements ISiteOverview {
   name!: string
   image!: Asset;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: ISiteOverview) {
     if (data) {
@@ -5284,7 +5228,7 @@ export interface ISiteOverview {
   name: string
   image: Asset
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class SiteSocial implements ISiteSocial {
@@ -5292,6 +5236,7 @@ export class SiteSocial implements ISiteSocial {
   name!: string
   isPublic?: boolean
   siteType!: SiteType
+  coordinate!: Coordinates
   image!: Asset
   description?: string | undefined
   contact!: Contact
@@ -5299,7 +5244,7 @@ export class SiteSocial implements ISiteSocial {
   readonly sponsors!: BatchSponsor[]
   readonly widget!: Widget[];
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: ISiteSocial) {
     if (data) {
@@ -5311,6 +5256,7 @@ export class SiteSocial implements ISiteSocial {
     }
     if (!data) {
       this.siteType = new SiteType()
+      this.coordinate = new Coordinates()
       this.image = new Asset()
       this.contact = new Contact()
       this.announcement = new Announcement()
@@ -5330,6 +5276,9 @@ export class SiteSocial implements ISiteSocial {
       this.name = _data['name']
       this.isPublic = _data['isPublic']
       this.siteType = _data['siteType'] ? SiteType.fromJS(_data['siteType']) : new SiteType()
+      this.coordinate = _data['coordinate']
+        ? Coordinates.fromJS(_data['coordinate'])
+        : new Coordinates()
       this.image = _data['image'] ? Asset.fromJS(_data['image']) : new Asset()
       this.description = _data['description']
       this.contact = _data['contact'] ? Contact.fromJS(_data['contact']) : new Contact()
@@ -5369,6 +5318,7 @@ export class SiteSocial implements ISiteSocial {
     data['name'] = this.name
     data['isPublic'] = this.isPublic
     data['siteType'] = this.siteType ? this.siteType.toJSON() : <any> undefined
+    data['coordinate'] = this.coordinate ? this.coordinate.toJSON() : <any> undefined
     data['image'] = this.image ? this.image.toJSON() : <any> undefined
     data['description'] = this.description
     data['contact'] = this.contact ? this.contact.toJSON() : <any> undefined
@@ -5394,6 +5344,7 @@ export interface ISiteSocial {
   name: string
   isPublic?: boolean
   siteType: SiteType
+  coordinate: Coordinates
   image: Asset
   description?: string | undefined
   contact: Contact
@@ -5401,7 +5352,7 @@ export interface ISiteSocial {
   sponsors: BatchSponsor[]
   widget: Widget[]
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class SiteSummary implements ISiteSummary {
@@ -5417,7 +5368,7 @@ export class SiteSummary implements ISiteSummary {
   admins!: SiteAdmin[]
   readonly batches!: BatchDetail[];
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: ISiteSummary) {
     if (data) {
@@ -5520,7 +5471,7 @@ export interface ISiteSummary {
   admins: SiteAdmin[]
   batches: BatchDetail[]
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class SiteSummaryDetail implements ISiteSummaryDetail {
@@ -5538,7 +5489,7 @@ export class SiteSummaryDetail implements ISiteSummaryDetail {
   readonly batches!: BatchDetail[]
   readonly weather!: Weather;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: ISiteSummaryDetail) {
     if (data) {
@@ -5659,7 +5610,7 @@ export interface ISiteSummaryDetail {
   batches: BatchDetail[]
   weather: Weather
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class SiteType implements ISiteType {
@@ -5667,7 +5618,7 @@ export class SiteType implements ISiteType {
   readonly en!: string
   readonly fr!: string;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: ISiteType) {
     if (data) {
@@ -5718,7 +5669,7 @@ export interface ISiteType {
   en: string
   fr: string
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class Sitetreespecies implements ISitetreespecies {
@@ -5727,7 +5678,7 @@ export class Sitetreespecies implements ISitetreespecies {
   readonly en!: string
   readonly fr!: string;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: ISitetreespecies) {
     if (data) {
@@ -5781,7 +5732,7 @@ export interface ISitetreespecies {
   en: string
   fr: string
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class TokenObtainPair implements ITokenObtainPair {
@@ -5790,7 +5741,7 @@ export class TokenObtainPair implements ITokenObtainPair {
   readonly access!: string
   readonly refresh!: string;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: ITokenObtainPair) {
     if (data) {
@@ -5844,14 +5795,14 @@ export interface ITokenObtainPair {
   access: string
   refresh: string
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class TokenRefresh implements ITokenRefresh {
   readonly access!: string
   refresh!: string;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: ITokenRefresh) {
     if (data) {
@@ -5899,7 +5850,7 @@ export interface ITokenRefresh {
   access: string
   refresh: string
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class TreeType implements ITreeType {
@@ -5907,7 +5858,7 @@ export class TreeType implements ITreeType {
   readonly en!: string
   readonly fr!: string;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: ITreeType) {
     if (data) {
@@ -5958,13 +5909,13 @@ export interface ITreeType {
   en: string
   fr: string
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class UpdateSitePublicStatus implements IUpdateSitePublicStatus {
   isPublic!: boolean;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IUpdateSitePublicStatus) {
     if (data) {
@@ -6009,7 +5960,7 @@ export class UpdateSitePublicStatus implements IUpdateSitePublicStatus {
 export interface IUpdateSitePublicStatus {
   isPublic: boolean
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class User implements IUser {
@@ -6035,7 +5986,7 @@ export class User implements IUser {
   /** Specific permissions for this user. */
   userPermissions?: number[];
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IUser) {
     if (data) {
@@ -6176,7 +6127,7 @@ export interface IUser {
   /** Specific permissions for this user. */
   userPermissions?: number[]
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class UserInvitation implements IUserInvitation {
@@ -6185,7 +6136,7 @@ export class UserInvitation implements IUserInvitation {
   email!: string
   expiresAt!: Date;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IUserInvitation) {
     if (data) {
@@ -6241,14 +6192,14 @@ export interface IUserInvitation {
   email: string
   expiresAt: Date
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class UserToken implements IUserToken {
   token!: TokenRefresh
   user!: User;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IUserToken) {
     if (data) {
@@ -6300,7 +6251,7 @@ export interface IUserToken {
   token: TokenRefresh
   user: User
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class Weather implements IWeather {
@@ -6308,7 +6259,7 @@ export class Weather implements IWeather {
   humidity!: string
   description!: string;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IWeather) {
     if (data) {
@@ -6359,7 +6310,7 @@ export interface IWeather {
   humidity: string
   description: string
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class Widget implements IWidget {
@@ -6368,7 +6319,7 @@ export class Widget implements IWidget {
   body?: string | undefined
   site?: number | undefined;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: IWidget) {
     if (data) {
@@ -6422,14 +6373,14 @@ export interface IWidget {
   body?: string | undefined
   site?: number | undefined
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class Seeds implements ISeeds {
   id?: number
   quantity?: number;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: ISeeds) {
     if (data) {
@@ -6477,14 +6428,14 @@ export interface ISeeds {
   id?: number
   quantity?: number
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class Species implements ISpecies {
   id?: number
   quantity?: number;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: ISpecies) {
     if (data) {
@@ -6532,14 +6483,14 @@ export interface ISpecies {
   id?: number
   quantity?: number
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class Seeds2 implements ISeeds2 {
   id?: number
   quantity?: number;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: ISeeds2) {
     if (data) {
@@ -6587,14 +6538,14 @@ export interface ISeeds2 {
   id?: number
   quantity?: number
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class Species2 implements ISpecies2 {
   id?: number
   quantity?: number;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: ISpecies2) {
     if (data) {
@@ -6642,14 +6593,14 @@ export interface ISpecies2 {
   id?: number
   quantity?: number
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class Species3 implements ISpecies3 {
   id?: number
   quantity?: number;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: ISpecies3) {
     if (data) {
@@ -6697,14 +6648,14 @@ export interface ISpecies3 {
   id?: number
   quantity?: number
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export class Species4 implements ISpecies4 {
   id?: number
   quantity?: number;
 
-  [key: string]: any
+  [key: string]: unknown
 
   constructor(data?: ISpecies4) {
     if (data) {
@@ -6752,7 +6703,7 @@ export interface ISpecies4 {
   id?: number
   quantity?: number
 
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export type Format = 'json' | 'yaml'
@@ -6867,14 +6818,14 @@ export class ApiException extends Error {
   override message: string
   status: number
   response: string
-  headers: { [key: string]: any }
+  headers: { [key: string]: unknown }
   result: any
 
   constructor(
     message: string,
     status: number,
     response: string,
-    headers: { [key: string]: any },
+    headers: { [key: string]: unknown },
     result: any,
   ) {
     super()
@@ -6897,7 +6848,7 @@ function throwException(
   message: string,
   status: number,
   response: string,
-  headers: { [key: string]: any },
+  headers: { [key: string]: unknown },
   result?: any,
 ): any {
   if (result !== null && result !== undefined) {

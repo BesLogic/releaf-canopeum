@@ -165,9 +165,19 @@ class UserTokenSerializer(serializers.Serializer[Any]):
 
 
 class CoordinatesSerializer(serializers.ModelSerializer[Coordinate]):
+    # The serializer doesn't understand these are decimal (float), not string
+    dd_latitude = serializers.SerializerMethodField()
+    dd_longitude = serializers.SerializerMethodField()
+
     class Meta:
         model = Coordinate
         fields = "__all__"
+
+    def get_dd_latitude(self, obj: Coordinate) -> Decimal | None:
+        return obj.dd_latitude
+
+    def get_dd_longitude(self, obj: Coordinate) -> Decimal | None:
+        return obj.dd_longitude
 
 
 class WidgetSerializer(serializers.ModelSerializer[Widget]):
@@ -354,6 +364,7 @@ class BatchSponsorSerializer(serializers.ModelSerializer[BatchSponsor]):
 
 class SiteSocialSerializer(serializers.ModelSerializer[Site]):
     site_type = SiteTypeSerializer()
+    coordinate = CoordinatesSerializer()
     contact = ContactSerializer()
     announcement = AnnouncementSerializer()
     widget = serializers.SerializerMethodField()
@@ -367,6 +378,7 @@ class SiteSocialSerializer(serializers.ModelSerializer[Site]):
             "name",
             "is_public",
             "site_type",
+            "coordinate",
             "image",
             "description",
             "contact",
@@ -631,33 +643,14 @@ class SiteSummaryDetailSerializer(serializers.ModelSerializer[Site]):
         return BatchDetailSerializer(batches, many=True).data
 
 
-class CoordinatesMapSerializer(serializers.ModelSerializer[Coordinate]):
-    latitude = serializers.SerializerMethodField()
-    longitude = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Coordinate
-        fields = ("latitude", "longitude", "address")
-
-    def get_latitude(self, obj: Coordinate) -> Decimal | None:
-        return obj.dd_latitude
-
-    def get_longitude(self, obj: Coordinate) -> Decimal | None:
-        return obj.dd_longitude
-
-
 class SiteMapSerializer(serializers.ModelSerializer[Site]):
     site_type = SiteTypeSerializer()
-    coordinates = serializers.SerializerMethodField()
+    coordinate = CoordinatesSerializer()
     image = AssetSerializer()
 
     class Meta:
         model = Site
-        fields = ("id", "name", "site_type", "coordinates", "image")
-
-    @extend_schema_field(CoordinatesMapSerializer)
-    def get_coordinates(self, obj):
-        return CoordinatesMapSerializer(obj.coordinate).data
+        fields = ("id", "name", "site_type", "coordinate", "image")
 
 
 class SiteOverviewSerializer(serializers.ModelSerializer[Site]):

@@ -56,16 +56,14 @@ const SiteSummaryCard = ({ site, admins, onSiteChange, onSiteEdit }: Props) => {
           </div>
 
           <div className='card-subtitle my-1'>
-            <div className='d-flex align-items-center text-muted'>
-              <span className='material-symbols-outlined fill-icon text-muted me-1'>
-                location_on
-              </span>
+            <div className='d-flex align-items-center gap-1 text-muted'>
+              <span className='material-symbols-outlined fill-icon'>location_on</span>
               <span className='text-ellipsis'>
                 {site.coordinate.address ?? translate('analytics.site-summary.unknown')}
               </span>
             </div>
-            <div className='d-flex align-items-center text-muted'>
-              <span className='material-symbols-outlined fill-icon text-muted me-1'>person</span>
+            <div className='d-flex align-items-center gap-1 text-muted'>
+              <span className='material-symbols-outlined fill-icon'>person</span>
               <span className='text-ellipsis'>{siteAdminsDisplay}</span>
             </div>
           </div>
