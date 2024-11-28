@@ -8,7 +8,7 @@ type Props = {
 }
 
 const SiteHeaderSponsors = (props: Props) => {
-  const { t } = useTranslation<'analytics'>()
+  const { t } = useTranslation()
 
   return (
     <div className='d-flex flex-wrap gap-2 align-items-center'>

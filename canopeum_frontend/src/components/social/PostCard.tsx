@@ -93,7 +93,7 @@ const PostCard = ({ post, showActions }: Props) => {
           <Link to={appRoutes.siteSocial(post.site.id)}>
             <img
               alt='site'
-              className='rounded-circle'
+              className='rounded-circle object-fit-cover'
               src={post.site.image.asset}
               style={{ height: '3em', width: '3em' }}
             />
@@ -108,18 +108,18 @@ const PostCard = ({ post, showActions }: Props) => {
           </div>
           {showActions && viewMode === 'admin' && (
             <>
-              <Whisper
-                placement='bottomEnd'
-                ref={whisperRef}
-                speaker={actionsPopover}
-                trigger='click'
-              >
-                <div className='d-flex flex-grow-1 justify-content-end'>
+              <div className='d-flex flex-grow-1 justify-content-end'>
+                <Whisper
+                  placement='bottomEnd'
+                  ref={whisperRef}
+                  speaker={actionsPopover}
+                  trigger='click'
+                >
                   <button className='unstyled-button' type='button'>
                     <span className='material-symbols-outlined text-primary'>more_vert</span>
                   </button>
-                </div>
-              </Whisper>
+                </Whisper>
+              </div>
               <ConfirmationDialog
                 actions={['cancel', 'delete']}
                 onClose={(proceed: boolean) => onDeletePostConfirmation(proceed)}

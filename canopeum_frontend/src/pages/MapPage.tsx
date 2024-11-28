@@ -116,30 +116,24 @@ const MapPage = () => {
         },
       ),
     ]).then(([fetchedSites, position]) => {
+      let initialMapState: Omit<typeof mapViewState, 'zoom'>
       // If there's a pre-selected site-id (from URL), zoom on it
       const preSelectedSiteId = Number(searchParams.get('site')) || null
       const preSelectedSite = fetchedSites.find(site => site.id === preSelectedSiteId)
       if (preSelectedSite?.coordinate.ddLatitude && preSelectedSite.coordinate.ddLongitude) {
-        setMapViewState({
+        initialMapState = {
           latitude: preSelectedSite.coordinate.ddLatitude,
           longitude: preSelectedSite.coordinate.ddLongitude,
-          zoom: PIN_FOCUS_ZOOM_LEVEL,
-        })
+        }
       } else if ('code' in position) {
         // If there's an error obtaining the user position, use our default position instead
         // Note that getCurrentPosition always error code 2 in http
-        setMapViewState(mvs => ({
-          ...mvs,
-          ...defaultMapLocation(fetchedSites),
-        }))
+        initialMapState = defaultMapLocation(fetchedSites)
       } else {
         // Otherwise focus on the user's position
-        setMapViewState(mvs => ({
-          ...mvs,
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        }))
+        initialMapState = position.coords
       }
+      setMapViewState(mvs => ({ ...mvs, ...initialMapState }))
     }), [fetchData, searchParams])
 
   return (

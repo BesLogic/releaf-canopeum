@@ -150,7 +150,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
 
           <div>
             <label className='form-label' htmlFor='site-image'>
-              {t('analytics.site-modal.site-type')}
+              {t('analytics.site-modal.site-image')}
             </label>
             <ImageUpload id='site-image-upload' imageUrl={siteImageURL} onChange={onImageUpload} />
           </div>

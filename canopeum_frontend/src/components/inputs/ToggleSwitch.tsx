@@ -3,9 +3,10 @@ type Props = {
   readonly checked: boolean,
   readonly onChange: (checked: boolean) => void,
   readonly additionalClassNames?: string,
+  readonly id: string,
 }
 
-const ToggleSwitch = ({ text, checked, onChange, additionalClassNames }: Props) => (
+const ToggleSwitch = ({ text, checked, id, onChange, additionalClassNames }: Props) => (
   <div className={`form-check mb-0 form-switch ${additionalClassNames ?? ''}`}>
     <input
       checked={checked}
@@ -14,12 +15,13 @@ const ToggleSwitch = ({ text, checked, onChange, additionalClassNames }: Props) 
           ? 'text-bg-primary'
           : ''
       }`}
+      id={id}
       onChange={event =>
         onChange(event.target.checked)}
       role='switch'
       type='checkbox'
     />
-    <label className='form-check-label'>{text}</label>
+    <label className='form-check-label' htmlFor={id}>{text}</label>
   </div>
 )
 

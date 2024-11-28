@@ -71,7 +71,7 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
       })
       const response = await getApiClient().userInvitationClient.create(createUserInvitation)
 
-      setInvitationLink(`${globalThis.location.host}register?code=${response.code}`)
+      setInvitationLink(`${globalThis.location.origin}/register?code=${response.code}`)
     } catch (error: unknown) {
       const errorMessage = getErrorMessage(
         error,
