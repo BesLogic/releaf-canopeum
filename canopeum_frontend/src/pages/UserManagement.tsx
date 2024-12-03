@@ -1,29 +1,33 @@
 import './UserManagement.scss'
 
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import EditProfile from '@components/settings/EditProfile'
 import ManageAdmins from '@components/settings/ManageAdmins'
 import SettingsTab from '@components/settings/SettingsTab'
 import TermsAndPolicies from '@components/settings/TermsAndPolicies'
+import { appRoutes } from '@constants/routes.constant'
 import type { RoleEnum } from '@services/api'
 
-type UserManagementTab = 'editProfile' | 'logout' | 'manageAdmins' | 'termsAndPolicies'
+type UserManagementTab =
+  | (typeof appRoutes.userManagment)[keyof Omit<typeof appRoutes.userManagment, ''>]
+  | 'logout'
 
 const tabs: { type: UserManagementTab, translationKey: string, roles?: RoleEnum[] }[] = [
   {
-    type: 'editProfile',
+    type: appRoutes.userManagment.myProfile,
     translationKey: 'settings.tabs.edit-profile',
   },
   {
-    type: 'manageAdmins',
+    type: appRoutes.userManagment.manageAdmins,
     translationKey: 'settings.tabs.manage-admins',
     roles: ['MegaAdmin' as RoleEnum],
   },
   {
-    type: 'termsAndPolicies',
+    type: appRoutes.userManagment.termsAndPolicies,
     translationKey: 'settings.tabs.terms-and-policies',
   },
   {
@@ -35,28 +39,17 @@ const tabs: { type: UserManagementTab, translationKey: string, roles?: RoleEnum[
 const UserManagement = () => {
   const { t: translate } = useTranslation()
   const { logout, currentUser } = useContext(AuthenticationContext)
-  const [selectedTab, setSelectedTab] = useState<UserManagementTab>('editProfile')
+  const navigate = useNavigate()
+  const location = useLocation()
 
-  const displayTabContent = () => {
-    if (selectedTab === 'termsAndPolicies') {
-      return <TermsAndPolicies />
-    }
-
-    if (selectedTab === 'manageAdmins' && currentUser?.role === 'MegaAdmin') {
-      return <ManageAdmins />
-    }
-
-    return <EditProfile />
-  }
-
-  const onTabClick = (tabType: UserManagementTab) => {
-    if (tabType === 'logout') {
+  const onTabClick = (tabPath: UserManagementTab) => {
+    if (tabPath === 'logout') {
       logout()
 
       return
     }
 
-    setSelectedTab(tabType)
+    navigate(tabPath)
   }
 
   const tabsDisplay = () =>
@@ -66,7 +59,7 @@ const UserManagement = () => {
         <SettingsTab
           key={tab.type}
           onClick={() => onTabClick(tab.type)}
-          selected={selectedTab === tab.type}
+          selected={location.pathname === tab.type}
         >
           {translate(tab.translationKey)}
         </SettingsTab>
@@ -86,7 +79,15 @@ const UserManagement = () => {
         </div>
 
         <div className='settings-tab-content-container col-12 col-md-7 col-lg-9 pb-4'>
-          {displayTabContent()}
+          <Routes>
+            <Route element={<EditProfile />} path='/my-profile' />
+            <Route element={<ManageAdmins />} path='/manage-admins' />
+            <Route element={<TermsAndPolicies />} path='/terms-and-policies' />
+            <Route
+              element={<Navigate replace to={appRoutes.userManagment.myProfile} />}
+              path='*'
+            />
+          </Routes>
         </div>
       </div>
     </div>
