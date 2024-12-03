@@ -71,7 +71,11 @@ const UserManagement = () => {
         <div className='col-12 col-md-5 col-lg-3 pb-4'>
           <div className='settings-left-nav-menu card py-3 px-4'>
             <div className='py-3 d-none d-md-block'>
-              <h4 className='text-center'>CANOPEUM</h4>
+              <h4 className='text-center'>
+                {currentUser?.role === 'MegaAdmin'
+                  ? 'CANOPEUM'
+                  : currentUser?.username}
+              </h4>
             </div>
 
             <div className='d-flex flex-column gap-2'>{tabsDisplay()}</div>
