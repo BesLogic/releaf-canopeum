@@ -1,6 +1,8 @@
 import type Shape from '../en/auth'
 
 export default {
+  'keep-password': 'Garder le même mot de passe',
+  'change-password': 'Change de mot de passe',
   'log-in-header-text': 'Connectez-vous à votre compte',
   'sign-up-header-text': 'Créez votre compte',
   'username-label': "Nom d'utilisateur",

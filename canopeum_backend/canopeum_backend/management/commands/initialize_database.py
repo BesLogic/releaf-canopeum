@@ -332,7 +332,7 @@ class Command(BaseCommand):
         with connection.cursor() as cursor:
             if cursor.execute("SHOW TABLES;") != 0:
                 self.stdout.write("Erasing existing data...")
-                assets_to_delete = Asset.objects.all().exclude(asset="site_img.png")
+                assets_to_delete = Asset.objects.all()
                 try:
                     for asset in assets_to_delete:
                         path = (

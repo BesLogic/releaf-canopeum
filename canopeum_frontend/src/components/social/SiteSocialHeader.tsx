@@ -103,6 +103,7 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
                   <ToggleSwitch
                     additionalClassNames='fs-4'
                     checked={isPublic}
+                    id='social.site-social-header.public'
                     onChange={toggleSitePublicStatus}
                     text={translate('social.site-social-header.public')}
                   />

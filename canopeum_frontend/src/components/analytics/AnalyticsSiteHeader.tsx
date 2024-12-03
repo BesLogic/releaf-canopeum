@@ -17,7 +17,7 @@ type Props = {
 }
 
 const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
-  const { t: translate } = useTranslation<'analytics'>()
+  const { t: translate } = useTranslation()
   const { translateValue } = useContext(LanguageContext)
 
   return (

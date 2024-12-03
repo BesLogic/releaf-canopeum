@@ -182,7 +182,7 @@ const EditProfile = () => {
     if (!currentUser) return
 
     const isFormValid = validateForm()
-    if (!isFormValid) return
+    if (!isFormValid) return // TODO: Tell the user
 
     try {
       const updateUserBody: IPatchedUpdateUser = { username, email }
@@ -201,6 +201,7 @@ const EditProfile = () => {
       setSaveProfileError(undefined)
       resetChangePassword()
     } catch (error: unknown) {
+      console.error(error)
       setSaveProfileError(
         getErrorMessage(error, translate('settings.edit-profile.save-profile-error')),
       )
@@ -271,8 +272,8 @@ const EditProfile = () => {
               type='button'
             >
               {doChangePassword
-                ? 'Keep Same Password'
-                : 'Change Password'}
+                ? translate('auth.keep-password')
+                : translate('auth.change-password')}
             </button>
 
             {doChangePassword && (

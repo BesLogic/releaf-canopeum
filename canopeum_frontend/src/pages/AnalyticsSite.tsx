@@ -12,7 +12,7 @@ import useApiClient from '@hooks/ApiClientHook'
 import type { SiteSummaryDetail } from '@services/api'
 
 const AnalyticsSite = () => {
-  const { t: translate } = useTranslation<'analytics'>()
+  const { t: translate } = useTranslation()
   const { siteId: siteIdFromParams } = useParams()
   const { formatDate } = useContext(LanguageContext)
   const { getApiClient } = useApiClient()
