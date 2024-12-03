@@ -99,7 +99,7 @@ const PostCard = ({ post, showActions }: Props) => {
             />
           </Link>
           <div className='d-flex flex-column'>
-            <h6 className='text-uppercase fw-bold mb-1'>
+            <h6 className='fw-bold mb-1'>
               <Link to={appRoutes.siteSocial(post.site.id)}>{post.site.name}</Link>
             </h6>
             <Link className='text-muted initialism' to={appRoutes.postDetail(post.id)}>

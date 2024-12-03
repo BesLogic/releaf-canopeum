@@ -23,7 +23,6 @@ export default {
   'table-row-13': 'Types of seeds collected',
   'last-update': 'Last Update',
   visitors: 'Visitors',
-  sponsored: 'Sponsored',
   'unnamed-site': 'Unnamed site',
   'site-save-success': 'Site saved successfully',
   'site-save-error': 'Error saving Site',

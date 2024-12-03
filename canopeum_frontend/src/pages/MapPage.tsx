@@ -14,7 +14,7 @@ import { getSiteTypeIconKey, type SiteTypeID } from '@models/SiteType'
 import type { SiteMap } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 
-const PIN_FOCUS_ZOOM_LEVEL = 15
+const PIN_FOCUS_ZOOM_LEVEL = 12
 const MAP_DISTANCE_ZOOM_MULTIPLIER = 20
 
 /**
