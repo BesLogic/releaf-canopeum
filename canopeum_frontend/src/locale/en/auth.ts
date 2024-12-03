@@ -1,4 +1,6 @@
 export default {
+  'keep-password': 'Keep Same Password',
+  'change-password': 'Change Password',
   'log-in-header-text': 'Log In to Your Account',
   'sign-up-header-text': 'Create Your Account',
   'username-label': 'Username',
