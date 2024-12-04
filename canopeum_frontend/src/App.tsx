@@ -10,6 +10,8 @@ import muiCustomTheme from '@assets/styles/muiCustomTheme'
 import LanguageContextProvider from '@components/context/LanguageContext'
 import SnackbarContextProvider from '@components/context/SnackbarContext'
 
+console.info({ VITE_BUILD_DATE })
+
 const App = () => (
   <ThemeProvider theme={muiCustomTheme}>
     <LanguageContextProvider>
