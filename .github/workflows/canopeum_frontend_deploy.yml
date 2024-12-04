@@ -22,7 +22,7 @@ jobs:
         run: npm ci
       - name: Build project
         run: npm run build
-      - uses: docker/login-action@v1
+      - uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -32,7 +32,7 @@ jobs:
         run: echo DATETIME=$(date +'%Y-%m-%d-%H-%M') >> $GITHUB_OUTPUT
       - name: Publish Docker image
         id: push
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v6
         with:
           context: ./canopeum_frontend
           file: canopeum_frontend/Dockerfile
