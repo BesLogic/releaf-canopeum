@@ -25,7 +25,6 @@ export default {
   'table-row-13': 'Types de graines collectées',
   'last-update': 'Dernière Mise à Jour',
   visitors: 'Visiteurs',
-  sponsored: 'Sponsorisé',
   'unnamed-site': 'Site sans nom',
   'site-save-success': 'Site saved successfully',
   'site-save-error': 'Error saving Site',
