@@ -14,7 +14,7 @@ import { getSiteTypeIconKey, type SiteTypeID } from '@models/SiteType'
 import type { SiteMap } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 
-const PIN_FOCUS_ZOOM_LEVEL = 15
+const PIN_FOCUS_ZOOM_LEVEL = 12
 const MAP_DISTANCE_ZOOM_MULTIPLIER = 20
 
 /**
@@ -131,7 +131,11 @@ const MapPage = () => {
         initialMapState = defaultMapLocation(fetchedSites)
       } else {
         // Otherwise focus on the user's position
-        initialMapState = position.coords
+        // NOTE: Can't spread or clone a GeolocationPosition !
+        initialMapState = {
+          longitude: position.coords.longitude,
+          latitude: position.coords.latitude,
+        }
       }
       setMapViewState(mvs => ({ ...mvs, ...initialMapState }))
     }), [fetchData, searchParams])
@@ -153,8 +157,11 @@ const MapPage = () => {
             <NavigationControl position='top-right' showCompass showZoom visualizePitch />
             <ScaleControl position='bottom-left' unit='metric' />
             {sites.map(site => {
-              const latitude = Number(site.coordinate.ddLatitude)
-              const longitude = Number(site.coordinate.ddLongitude)
+              const latitude = site.coordinate.ddLatitude
+              const longitude = site.coordinate.ddLongitude
+
+              // Unset or invalid coordinate should be ignored from map pins
+              if (!latitude || !longitude) return
 
               return (
                 <Marker
@@ -168,7 +175,7 @@ const MapPage = () => {
                   <SiteTypePin siteTypeId={site.siteType.id as SiteTypeID} />
                 </Marker>
               )
-            })}
+            }).filter(Boolean)}
           </ReactMap>
         </div>
 
