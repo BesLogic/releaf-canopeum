@@ -17,10 +17,10 @@ export type SnackbarAlertOptions = {
   severity?: OverridableStringUnion<AlertColor, AlertPropsColorOverrides>,
 }
 
-const DEFAULT_SNACKBAR_ALERT_OPTIONS: SnackbarAlertOptions = {
+const DEFAULT_SNACKBAR_ALERT_OPTIONS = {
   autohideDuration: 5000,
   severity: 'success',
-}
+} satisfies SnackbarAlertOptions
 
 export const SnackbarContext = createContext<ISnackbarContext>({
   openAlertSnackbar: (_message: string, _options?: SnackbarAlertOptions) => {/* empty */},
@@ -29,9 +29,9 @@ SnackbarContext.displayName = 'SnackbarContext'
 
 const SnackbarContextProvider: FunctionComponent<{ readonly children?: ReactNode }> = memo(
   props => {
-    const [snackbarAlertOptions, setSnackbarAlertOptions] = useState<
-      SnackbarAlertOptions | undefined
-    >()
+    const [snackbarAlertOptions, setSnackbarAlertOptions] = useState<SnackbarAlertOptions>(
+      DEFAULT_SNACKBAR_ALERT_OPTIONS,
+    )
 
     const [snackPack, setSnackPack] = useState<readonly SnackbarMessage[]>([])
     const [open, setOpen] = useState(false)
@@ -50,36 +50,25 @@ const SnackbarContextProvider: FunctionComponent<{ readonly children?: ReactNode
     }, [snackPack, messageInfo, open])
 
     const handleClose = (_event: Event | SyntheticEvent, reason?: string) => {
-      if (reason === 'clickaway') {
-        return
-      }
+      if (reason === 'clickaway') return
       setOpen(false)
     }
 
-    const handleExited = () => {
-      setSnackbarAlertOptions(undefined)
-      setMessageInfo(undefined)
-    }
-
     const openAlertSnackbar = useCallback((message: string, options?: SnackbarAlertOptions) => {
-      setSnackbarAlertOptions(options)
+      setSnackbarAlertOptions(options ?? DEFAULT_SNACKBAR_ALERT_OPTIONS)
       setSnackPack(previous => [...previous, { message, key: Date.now() }])
     }, [setSnackPack, setSnackbarAlertOptions])
 
-    const context = useMemo<ISnackbarContext>(() => (
-      {
-        openAlertSnackbar,
-      }
-    ), [openAlertSnackbar])
+    const context = useMemo<ISnackbarContext>(() => ({ openAlertSnackbar }), [openAlertSnackbar])
 
     return (
       <SnackbarContext.Provider value={context}>
         {props.children}
 
         <Snackbar
-          TransitionProps={{ onExited: handleExited }}
+          TransitionProps={{ onExited: () => setMessageInfo(undefined) }}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-          autoHideDuration={snackbarAlertOptions?.autohideDuration
+          autoHideDuration={snackbarAlertOptions.autohideDuration
             ?? DEFAULT_SNACKBAR_ALERT_OPTIONS.autohideDuration}
           key={messageInfo
             ? messageInfo.key
@@ -89,7 +78,7 @@ const SnackbarContextProvider: FunctionComponent<{ readonly children?: ReactNode
         >
           <Alert
             onClose={handleClose}
-            severity={snackbarAlertOptions?.severity ?? DEFAULT_SNACKBAR_ALERT_OPTIONS.severity}
+            severity={snackbarAlertOptions.severity ?? DEFAULT_SNACKBAR_ALERT_OPTIONS.severity}
             sx={{ width: '100%', boxShadow: 3 }}
             variant='filled'
           >
@@ -100,6 +89,5 @@ const SnackbarContextProvider: FunctionComponent<{ readonly children?: ReactNode
     )
   },
 )
-
 SnackbarContextProvider.displayName = 'SnackbarContextProvider'
 export default SnackbarContextProvider
