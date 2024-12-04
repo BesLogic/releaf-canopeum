@@ -11,8 +11,7 @@ import LanguageContextProvider from '@components/context/LanguageContext'
 import SnackbarContextProvider from '@components/context/SnackbarContext'
 
 console.info({ VITE_BUILD_DATE })
-// const { VITE_BUILD_DATE, BUILD_DATE } = import.meta.env
-console.info({ VITE_BUILD_DATE })
+
 const App = () => (
   <ThemeProvider theme={muiCustomTheme}>
     <LanguageContextProvider>
