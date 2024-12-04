@@ -112,11 +112,11 @@ const Navbar = () => {
             {isAuthenticated && (
               <Link
                 className={`nav-item nav-link ${
-                  location.pathname === appRoutes.userManagment
+                  (Object.values(appRoutes.userManagment) as string[]).includes(location.pathname)
                     ? 'active'
                     : ''
                 }`}
-                to={appRoutes.userManagment}
+                to={appRoutes.userManagment.myProfile}
               >
                 <span className='material-symbols-outlined icon-lg'>account_circle</span>
                 <span className='nav-link-label'>{translate('navbar.settings')}</span>

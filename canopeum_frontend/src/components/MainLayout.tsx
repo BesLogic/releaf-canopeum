@@ -3,6 +3,7 @@ import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
 
 import { AuthenticationContext } from './context/AuthenticationContext'
 import Navbar from './Navbar'
+import TermsAndPolicies from '@components/settings/TermsAndPolicies'
 import { appRoutes } from '@constants/routes.constant'
 import Analytics from '@pages/Analytics'
 import AnalyticsSite from '@pages/AnalyticsSite'
@@ -68,15 +69,21 @@ const MainLayout = () => {
           <Route element={<Home />} path='/home' />
           <Route element={<Analytics />} path='/sites' />
           <Route element={<AnalyticsSite />} path='/sites/:siteId' />
-          <Route element={<UserManagement />} path='/user-management' />
+          <Route element={<UserManagement />} path='/user-management/*' />
           <Route element={<Utilities />} path='/utilities' />
         </Route>
-        <Route element={<MapPage />} path='*' />
 
         {/* The following routes are accessible to Visitors without any authentication */}
+        <Route element={<TermsAndPolicies />} path='/terms-and-policies' />
         <Route element={<SiteSocialPage />} path='/sites/:siteId/social' />
         <Route element={<PostDetailsPage />} path='/posts/:postId' />
         <Route element={<MapPage />} path='/map' />
+
+        {/* Fallback route */}
+        <Route
+          element={<Navigate replace to='/map' />}
+          path='*'
+        />
       </Route>
     </Routes>
   )
