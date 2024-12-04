@@ -27,5 +27,8 @@ export default ({ mode }: { mode: string }) => {
         usePolling: true,
       },
     },
+    define: {
+      VITE_BUILD_DATE: new Date(),
+    },
   })
 }
