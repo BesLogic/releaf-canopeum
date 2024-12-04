@@ -1,6 +1,7 @@
 name: canopeum_frontend_deploy
 
 on:
+  workflow_dispatch: #  Allows manual builds
   push:
     branches:
       - production
@@ -21,12 +22,14 @@ jobs:
         run: npm ci
       - name: Build project
         run: npm run build
-      - name: 'login'
-        uses: docker/login-action@v1
+      - uses: docker/login-action@v1
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get datetime
+        id: datetime
+        run: echo DATETIME=$(date +'%Y-%m-%d-%H-%M') >> $GITHUB_OUTPUT
       - name: Publish Docker image
         id: push
         uses: docker/build-push-action@v3
@@ -34,5 +37,9 @@ jobs:
           context: ./canopeum_frontend
           file: canopeum_frontend/Dockerfile
           push: true
-          tags: ghcr.io/beslogic/canopeum_frontend:latest
-          labels: latest
+          tags: ghcr.io/beslogic/canopeum_frontend:latest,ghcr.io/beslogic/canopeum_frontend:${{steps.datetime.outputs.DATETIME}}
+      - name: Create and push git tag
+        continue-on-error: true
+        run: |
+          git tag ${{steps.datetime.outputs.DATETIME}}
+          git push origin --tags
