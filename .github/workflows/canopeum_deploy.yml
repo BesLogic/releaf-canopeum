@@ -32,7 +32,6 @@ jobs:
     outputs:
       DATETIME: ${{ steps.datetime.outputs.DATETIME }}
     steps:
-      # TODO: Share output across jobs to avoid rewriting this step
       - name: Get datetime
         id: datetime
         run: echo DATETIME=$(date +'%Y-%m-%d-%H-%M') >> $GITHUB_OUTPUT
