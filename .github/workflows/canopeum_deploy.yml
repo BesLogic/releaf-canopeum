@@ -1,13 +1,46 @@
 name: canopeum_frontend_deploy
 
 on:
-  workflow_dispatch: #  Allows manual builds
-  # TODO: Add inputs to decide whether frontend and/or backend are deployed
+  workflow_dispatch: #  Allows manual triggers
+    inputs:
+      deploy_frontend:
+        description: 'Deploy the frontend'
+        required: true
+        type: boolean
+        default: true
+      deploy_backend:
+        description: 'Deploy the backend'
+        required: true
+        type: boolean
+        default: true
+  # TODO: The autodection of updated packages currently doesn't work on our portainer instance,
+  # we're just pushing all updates right now and force-updating on portainer at
+  # /#!/1/docker/stacks/releaf-canopeum?id=11&regular=true
+  push:
+    branches:
+      - main
+    paths:
+      - "canopeum_backend/**"
+      - "canopeum_frontend/**"
+      - ".github/workflows/canopeum_deploy.yml"
 
 jobs:
+  GetDateTime:
+    runs-on: ubuntu-latest
+    if:  ${{ inputs.deploy_frontend && inputs.deploy_backend }}
+    outputs:
+      DATETIME: ${{ steps.datetime.outputs.DATETIME }}
+    steps:
+      # TODO: Share output across jobs to avoid rewriting this step
+      - name: Get datetime
+        id: datetime
+        run: echo DATETIME=$(date +'%Y-%m-%d-%H-%M') >> $GITHUB_OUTPUT
+
   BuildFrontend:
     name: Build & Deploy Frontend
     runs-on: ubuntu-latest
+    if:  ${{ inputs.deploy_frontend }}
+    needs: [GetDateTime]
     defaults:
       run:
         working-directory: canopeum_frontend
@@ -23,9 +56,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Get datetime
-        id: datetime
-        run: echo DATETIME=$(date +'%Y-%m-%d-%H-%M') >> $GITHUB_OUTPUT
       - name: Publish Docker image
         id: push
         uses: docker/build-push-action@v6
@@ -33,16 +63,13 @@ jobs:
           context: ./canopeum_frontend
           file: canopeum_frontend/Dockerfile
           push: true
-          tags: ghcr.io/beslogic/canopeum_frontend:latest,ghcr.io/beslogic/canopeum_frontend:${{steps.datetime.outputs.DATETIME}}
-      - name: Create and push git tag
-        continue-on-error: true
-        run: |
-          git tag ${{steps.datetime.outputs.DATETIME}}
-          git push origin --tags
+          tags: ghcr.io/beslogic/canopeum_frontend:latest,ghcr.io/beslogic/canopeum_frontend:${{needs.GetDateTime.outputs.DATETIME}}
 
   BuildBackend:
     name: Build & Deploy Backend
     runs-on: ubuntu-latest
+    if:  ${{ inputs.deploy_backend }}
+    needs: [GetDateTime]
     defaults:
       run:
         working-directory: canopeum_backend
@@ -63,19 +90,16 @@ jobs:
           context: ./canopeum_backend
           file: canopeum_backend/Dockerfile
           push: true
-          tags: ghcr.io/beslogic/canopeum_backend:latest,ghcr.io/beslogic/canopeum_backend:${{steps.datetime.outputs.DATETIME}}
+          tags: ghcr.io/beslogic/canopeum_backend:latest,ghcr.io/beslogic/canopeum_backend:${{needs.GetDateTime.outputs.DATETIME}}
+
   TagRelease:
     runs-on: ubuntu-latest
-    needs: [BuildFrontend, BuildBackend]
+    needs: [GetDateTime, BuildFrontend, BuildBackend]
     # If at least one publication succeeded
     if: always() && contains(needs.*.result, 'success')
     steps:
-      # TODO: Share output across jobs to avoid rewriting this step
-      - name: Get datetime
-        id: datetime
-        run: echo DATETIME=$(date +'%Y-%m-%d-%H-%M') >> $GITHUB_OUTPUT
       - name: Create and push git tag
         continue-on-error: true
         run: |
-          git tag ${{steps.datetime.outputs.DATETIME}}
+          git tag ${{needs.GetDateTime.outputs.DATETIME}}
           git push origin --tags
