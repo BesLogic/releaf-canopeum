@@ -20,6 +20,7 @@ export default {
   'password-error-must-match': 'Passwords do not match',
   'log-in': 'Se Connecter',
   'log-out': 'Se Déconnecter',
+  'log-out-confirmation': 'Est-vous certain de vouloir vous déconnecter?',
   'sign-up': "S'inscrire",
   'create-account': 'Créer mon compte',
   'already-have-an-account': 'Vous avez déjà un compte?',

@@ -28,7 +28,7 @@ on:
 jobs:
   GetDateTime:
     runs-on: ubuntu-latest
-    if:  ${{ inputs.deploy_frontend && inputs.deploy_backend }}
+    if:  ${{ github.event_name == 'push' || (inputs.deploy_frontend && inputs.deploy_backend) }}
     outputs:
       DATETIME: ${{ steps.datetime.outputs.DATETIME }}
     steps:
@@ -39,7 +39,7 @@ jobs:
   BuildFrontend:
     name: Build & Deploy Frontend
     runs-on: ubuntu-latest
-    if:  ${{ inputs.deploy_frontend }}
+    if:  ${{ github.event_name == 'push' || inputs.deploy_frontend }}
     needs: [GetDateTime]
     defaults:
       run:
@@ -68,7 +68,7 @@ jobs:
   BuildBackend:
     name: Build & Deploy Backend
     runs-on: ubuntu-latest
-    if:  ${{ inputs.deploy_backend }}
+    if:  ${{ github.event_name == 'push' || inputs.deploy_backend }}
     needs: [GetDateTime]
     defaults:
       run:

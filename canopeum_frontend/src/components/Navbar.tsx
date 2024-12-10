@@ -58,7 +58,7 @@ const Navbar = () => {
     void changeLanguage(newLanguage)
   }
 
-  const { isAuthenticated, logout } = useContext(AuthenticationContext)
+  const { isAuthenticated, showLogoutModal } = useContext(AuthenticationContext)
 
   return (
     <nav className='navbar sticky-top navbar-expand-lg navbar-dark bg-primary'>
@@ -127,7 +127,7 @@ const Navbar = () => {
               ? (
                 <button
                   className='nav-item btn btn-primary'
-                  onClick={logout}
+                  onClick={showLogoutModal}
                   type='button'
                 >
                   {translate('auth.log-out')}
