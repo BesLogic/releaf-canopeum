@@ -68,6 +68,9 @@ const Utilities = () => (
             </IconBadge>
           ))}
           <IconBadge>
+            <SiteTypeIcon siteTypeId={0} /* Example with incorrect id */ />
+          </IconBadge>
+          <IconBadge>
             <span className='material-symbols-outlined text-light align-middle icon-sm'>
               arrow_upward
             </span>
