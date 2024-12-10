@@ -38,13 +38,13 @@ const tabs: { type: UserManagementTab, translationKey: string, roles?: RoleEnum[
 
 const UserManagement = () => {
   const { t: translate } = useTranslation()
-  const { logout, currentUser } = useContext(AuthenticationContext)
+  const { showLogoutModal, currentUser } = useContext(AuthenticationContext)
   const navigate = useNavigate()
   const location = useLocation()
 
   const onTabClick = (tabPath: UserManagementTab) => {
     if (tabPath === 'logout') {
-      logout()
+      showLogoutModal()
 
       return
     }

@@ -6,7 +6,7 @@ type ConfirmationAction = 'cancel' | 'delete' | 'ok'
 
 type Props = {
   readonly actions: ConfirmationAction[],
-  readonly children: ReactNode,
+  readonly children?: ReactNode,
   readonly onClose: (proceed: boolean) => void,
   readonly open: boolean,
   readonly title: string,
@@ -57,14 +57,10 @@ const ConfirmationDialog = ({ actions, children, onClose, open, title }: Props) 
   }
 
   return (
-    <Dialog fullWidth maxWidth='xs' onClose={() => onClose(false)} open={open}>
+    <Dialog onClose={() => onClose(false)} open={open}>
       <DialogTitle>{title}</DialogTitle>
-      <DialogContent>
-        {children}
-      </DialogContent>
-      <DialogActions>
-        {actions.map(action => renderActionButton(action))}
-      </DialogActions>
+      <DialogContent>{children}</DialogContent>
+      <DialogActions>{actions.map(action => renderActionButton(action))}</DialogActions>
     </Dialog>
   )
 }
