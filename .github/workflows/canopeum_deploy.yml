@@ -1,4 +1,4 @@
-name: canopeum_frontend_deploy
+name: Build & Deploy
 
 on:
   workflow_dispatch: #  Allows manual triggers
