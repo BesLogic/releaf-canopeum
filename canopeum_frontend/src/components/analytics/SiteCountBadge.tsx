@@ -1,5 +1,4 @@
-import CustomIcon, { type IconSize } from '@components/icons/CustomIcon'
-import type { CustomIconType } from '@components/icons/customIconList'
+import CustomIcon, { type CustomIconType, type IconSize } from '@components/icons/CustomIcon'
 
 type Props = {
   readonly icon: CustomIconType,

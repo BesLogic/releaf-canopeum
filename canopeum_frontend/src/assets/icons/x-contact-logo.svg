@@ -1,22 +1,5 @@
-<svg
-xmlns="http://www.w3.org/2000/svg"
-xmlns:xlink="http://www.w3.org/1999/xlink"
-viewBox="0,0,256,256"
-width="30px"
-height="30px"><g
-fill="#007e51"
-fill-rule="nonzero"
-stroke="none"
-stroke-width="1"
-stroke-linecap="butt"
-stroke-linejoin="miter"
-stroke-miterlimit="10"
-stroke-dasharray=""
-àstroke-dashoffset="0"
-font-family="none"
-font-weight="none"
-font-size="none"
-text-anchor="none" style="mix-blend-mode: normal">
-<g transform="scale(5.12,5.12)">
-<path d="M11,4c-3.866,0 -7,3.134 -7,7v28c0,3.866 3.134,7 7,7h28c3.866,0 7,-3.134 7,-7v-28c0,-3.866 -3.134,-7 -7,-7zM13.08594,13h7.9375l5.63672,8.00977l6.83984,-8.00977h2.5l-8.21094,9.61328l10.125,14.38672h-7.93555l-6.54102,-9.29297l-7.9375,9.29297h-2.5l9.30859,-10.89648zM16.91406,15l14.10742,20h3.06445l-14.10742,-20z"></path></g></g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="30" height="30">
+  <path
+    d="M56.32 20.48c-19.794 0-35.84 16.046-35.84 35.84v143.36c0 19.794 16.046 35.84 35.84 35.84h143.36c19.794 0 35.84-16.046 35.84-35.84V56.32c0-19.794-16.046-35.84-35.84-35.84zM67 66.56h40.64l28.86 41.01 35.02-41.01h12.8l-42.04 49.22 51.84 73.66h-40.63L120 141.86l-40.64 47.58h-12.8l47.66-55.79zM86.6 76.8l72.23 102.4h15.69L102.29 76.8z"
+    fill="#007e51" stroke-miterlimit="10" font-family="none" font-weight="none" font-size="none" text-anchor="none" />
 </svg>

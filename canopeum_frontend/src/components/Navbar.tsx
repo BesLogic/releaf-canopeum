@@ -1,4 +1,3 @@
-import type { MaterialIcon } from 'material-icons'
 import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router-dom'
@@ -8,7 +7,7 @@ import { appRoutes } from '@constants/routes.constant'
 import type { RoleEnum } from '@services/api'
 
 type NavbarItem = {
-  icon: MaterialIcon,
+  icon: string,
   linkTo: string,
   label: string,
   roles: RoleEnum[],

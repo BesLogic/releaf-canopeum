@@ -1,4 +1,20 @@
-import { customIcons, type CustomIconType } from './customIconList'
+import sitePlantedIcon from '@assets/icons/site-planted.svg'
+import sitePropagationIcon from '@assets/icons/site-propagation.svg'
+import siteSurvivedIcon from '@assets/icons/site-survived.svg'
+import siteTypeCanopeumIcon from '@assets/icons/site-type-canopeum.svg'
+import siteTypeFarmLand from '@assets/icons/site-type-farm-land.svg'
+import siteVisitorsIcon from '@assets/icons/site-visitors.svg'
+
+const customIcons = {
+  sitePlantedIcon,
+  sitePropagationIcon,
+  siteSurvivedIcon,
+  siteTypeCanopeumIcon,
+  siteTypeFarmLand,
+  siteVisitorsIcon,
+}
+
+export type CustomIconType = keyof typeof customIcons
 
 // These sizes match the custom icon scss sizes determined in App.scss
 export type IconSize =

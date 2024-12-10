@@ -1,72 +1,80 @@
 /* eslint-disable max-lines -- We don't want to split this file as it is a dev page */
 // Listing all available components for the application
 
-import facebookLogo from '@assets/icons/facebook-regular.svg'
 import canopeumLogo from '@assets/images/Canopeum_Logo.jpg'
-import IconBadge from '@components/IconBadge'
-import { getSiteTypeIconKey, SITE_TYPE_IDS } from '@models/SiteType'
+import IconBadge from '@components/icons/IconBadge'
+import SiteTypeIcon from '@components/icons/SiteTypeIcon'
+import { SITE_TYPE_IDS } from '@models/SiteType'
 
 const Utilities = () => (
   <div>
     <div className='container mt-2 d-flex flex-column gap-2'>
-      <h1>Utilities</h1>
+      <h1 className='text-light'>Utilities</h1>
       <div className='card px-3 py-2'>
         <h2>Icons</h2>
-        <span className='material-symbols-outlined fill-icon icon-2xs'>home</span>
-        <span className='material-symbols-outlined icon-xs'>home</span>
-        <span className='material-symbols-outlined fill-icon icon-sm'>donut_small</span>
-        <span className='material-symbols-outlined'>donut_small</span>
-        <span className='material-symbols-outlined fill-icon icon-lg'>pin_drop</span>
-        <span className='material-symbols-outlined icon-xl'>pin_drop</span>
-        <span className='material-symbols-outlined fill-icon icon-2xl'>account_circle</span>
-        <span className='material-symbols-outlined icon-3xl'>account_circle</span>
-        <span className='material-symbols-outlined fill-icon icon-4xl'>sms</span>
-        <span className='material-symbols-outlined'>sms</span>
-        <span className='material-symbols-outlined fill-icon'>mood</span>
-        <span className='material-symbols-outlined'>mood</span>
-        <span className='material-symbols-outlined fill-icon'>add_a_photo</span>
-        <span className='material-symbols-outlined'>add_a_photo</span>
-        <span className='material-symbols-outlined fill-icon'>smart_display</span>
-        <span className='material-symbols-outlined'>smart_display</span>
-        <span className='material-symbols-outlined fill-icon'>home_work</span>
-        <span className='material-symbols-outlined'>home_work</span>
-        <span className='material-symbols-outlined fill-icon'>mail</span>
-        <span className='material-symbols-outlined'>mail</span>
-        <span className='material-symbols-outlined fill-icon'>perm_phone_msg</span>
-        <span className='material-symbols-outlined'>perm_phone_msg</span>
-        <span className='material-symbols-outlined fill-icon'>edit_square</span>
-        <span className='material-symbols-outlined'>edit_square</span>
-        <span className='material-symbols-outlined fill-icon'>add</span>
-        <span className='material-symbols-outlined'>add</span>
-        <span className='material-symbols-outlined fill-icon'>cancel</span>
-        <span className='material-symbols-outlined'>cancel</span>
-        <span className='material-symbols-outlined fill-icon'>location_on</span>
-        <span className='material-symbols-outlined'>location_on</span>
-        <span className='material-symbols-outlined fill-icon'>person</span>
-        <span className='material-symbols-outlined'>person</span>
-        <img alt='iconHome' className='h-1' src={facebookLogo} />
+        <div>
+          <span className='material-symbols-outlined fill-icon icon-2xs'>home</span>
+          <span className='material-symbols-outlined icon-xs'>home</span>
+          <span className='material-symbols-outlined fill-icon icon-sm'>donut_small</span>
+          <span className='material-symbols-outlined'>donut_small</span>
+          <span className='material-symbols-outlined fill-icon icon-lg'>pin_drop</span>
+          <span className='material-symbols-outlined icon-xl'>pin_drop</span>
+          <span className='material-symbols-outlined fill-icon icon-2xl'>account_circle</span>
+          <span className='material-symbols-outlined icon-3xl'>account_circle</span>
+          <span className='material-symbols-outlined fill-icon icon-4xl'>sms</span>
+          <span className='material-symbols-outlined'>sms</span>
+          <span className='material-symbols-outlined fill-icon'>mood</span>
+          <span className='material-symbols-outlined'>mood</span>
+          <span className='material-symbols-outlined fill-icon'>add_a_photo</span>
+          <span className='material-symbols-outlined'>add_a_photo</span>
+          <span className='material-symbols-outlined fill-icon'>smart_display</span>
+          <span className='material-symbols-outlined'>smart_display</span>
+          <span className='material-symbols-outlined fill-icon'>home_work</span>
+          <span className='material-symbols-outlined'>home_work</span>
+          <span className='material-symbols-outlined fill-icon'>mail</span>
+          <span className='material-symbols-outlined'>mail</span>
+          <span className='material-symbols-outlined fill-icon'>perm_phone_msg</span>
+          <span className='material-symbols-outlined'>perm_phone_msg</span>
+          <span className='material-symbols-outlined fill-icon'>edit_square</span>
+          <span className='material-symbols-outlined'>edit_square</span>
+          <span className='material-symbols-outlined fill-icon'>add</span>
+          <span className='material-symbols-outlined'>add</span>
+          <span className='material-symbols-outlined fill-icon'>cancel</span>
+          <span className='material-symbols-outlined'>cancel</span>
+          <span className='material-symbols-outlined fill-icon'>location_on</span>
+          <span className='material-symbols-outlined'>location_on</span>
+          <span className='material-symbols-outlined fill-icon'>person</span>
+          <span className='material-symbols-outlined'>person</span>
+        </div>
 
         <h4>Site Type Icons</h4>
-        {SITE_TYPE_IDS.map(siteTypeId => {
-          const key = getSiteTypeIconKey(siteTypeId)
-
-          return (
+        <div>
+          {SITE_TYPE_IDS.map(siteTypeId => (
             <>
-              <span className='material-symbols-outlined fill-icon' key={`${key}-fill`}>{key}</span>
-              <span className='material-symbols-outlined' key={key}>{key}</span>
-              <span className='material-symbols-outlined icon-2xl' key={`${key}-2xl`}>{key}</span>
+              <span className='text-primary'>
+                <SiteTypeIcon key={`siteType-${siteTypeId}`} siteTypeId={siteTypeId} />
+              </span>
+              <SiteTypeIcon key={`siteType-${siteTypeId}`} siteTypeId={siteTypeId} />
             </>
-          )
-        })}
+          ))}
+        </div>
       </div>
       <div className='card px-3 py-2'>
         <h2>Badges</h2>
         <div className='d-flex gap-1'>
-          {SITE_TYPE_IDS.map(siteTypeId => {
-            const key = getSiteTypeIconKey(siteTypeId)
-
-            return <IconBadge iconKey={key} key={key} />
-          })}
+          {SITE_TYPE_IDS.map(siteTypeId => (
+            <IconBadge key={`siteType-${siteTypeId}`}>
+              <SiteTypeIcon siteTypeId={siteTypeId} />
+            </IconBadge>
+          ))}
+          <IconBadge>
+            <SiteTypeIcon siteTypeId={0} /* Example with incorrect id */ />
+          </IconBadge>
+          <IconBadge>
+            <span className='material-symbols-outlined text-light align-middle icon-sm'>
+              arrow_upward
+            </span>
+          </IconBadge>
         </div>
       </div>
       <div className='card px-3 py-2'>

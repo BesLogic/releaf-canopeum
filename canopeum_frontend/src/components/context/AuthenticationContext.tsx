@@ -1,4 +1,4 @@
-import type { FunctionComponent, ReactNode } from 'react'
+import type { PropsWithChildren } from 'react'
 import { createContext, memo, useCallback, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -32,8 +32,8 @@ export const AuthenticationContext = createContext<IAuthenticationContext>({
 })
 AuthenticationContext.displayName = 'AuthenticationContext'
 
-const AuthenticationContextProvider: FunctionComponent<{ readonly children?: ReactNode }> = memo(
-  props => {
+const AuthenticationContextProvider = memo(
+  (props: PropsWithChildren) => {
     const [user, setUser] = useState<User>()
     const [isSessionLoaded, setIsSessionLoaded] = useState(false)
     const [isInitiated, setIsInitiated] = useState(false)

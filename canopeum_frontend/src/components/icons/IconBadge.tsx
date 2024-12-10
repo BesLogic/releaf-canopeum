@@ -1,9 +1,7 @@
-import type { MaterialIcon } from 'material-icons'
-
-import type { SiteTypeIconKey } from '@models/SiteType'
+import type { ReactNode } from 'react'
 
 type Props = {
-  readonly iconKey: MaterialIcon | SiteTypeIconKey,
+  readonly children: ReactNode,
   readonly bgColor?: string,
 }
 
@@ -15,14 +13,10 @@ const IconBadge = (props: Props) => {
   return (
     <div
       className={`${bgColor} text-center rounded-circle`}
+      // If we ever need to parametrize the size, consider dealing with this and "font-size" at once
       style={{ height: '2em', width: '2em', minWidth: '2em' }}
     >
-      <span
-        className='material-symbols-outlined text-light align-middle'
-        style={{ fontSize: 24, marginTop: '0.15em' }}
-      >
-        {props.iconKey}
-      </span>
+      {props.children}
     </div>
   )
 }

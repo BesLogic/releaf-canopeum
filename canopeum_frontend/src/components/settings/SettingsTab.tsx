@@ -1,7 +1,9 @@
+import type { ReactNode } from 'react'
+
 import classes from './SettingsTab.module.scss'
 
 type Props = {
-  readonly children: string,
+  readonly children: ReactNode,
   readonly selected: boolean,
   readonly onClick: () => void,
 }
