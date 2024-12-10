@@ -1,16 +1,12 @@
 import './AuthPageLayout.scss'
 
-import type { ReactNode } from 'react'
+import type { PropsWithChildren } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import { appRoutes } from '@constants/routes.constant'
 
-type Props = {
-  readonly children: ReactNode,
-}
-
-const AuthPageLayout = ({ children }: Props) => {
+const AuthPageLayout = ({ children }: PropsWithChildren) => {
   const { t: translate } = useTranslation()
 
   return (

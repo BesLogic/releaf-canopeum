@@ -1,4 +1,4 @@
-import type { FunctionComponent, ReactNode } from 'react'
+import type { PropsWithChildren } from 'react'
 import { createContext, memo, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -20,8 +20,8 @@ LanguageContext.displayName = 'LanguageContext'
 
 const { timeZone } = new Intl.DateTimeFormat().resolvedOptions()
 
-const LanguageContextProvider: FunctionComponent<{ readonly children?: ReactNode }> = memo(
-  props => {
+const LanguageContextProvider = memo(
+  (props: PropsWithChildren) => {
     const { i18n } = useTranslation()
 
     const formatDate = useCallback((date: Date | string, options?: Intl.DateTimeFormatOptions) => {

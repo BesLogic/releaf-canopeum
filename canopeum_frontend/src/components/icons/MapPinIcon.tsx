@@ -4,7 +4,7 @@ import type { PropsWithChildren } from 'react'
 
 import mapPinIconRaw from '@assets/icons/map-pin.svg?raw'
 
-const MapPinIcon = (props: PropsWithChildren & { readonly themeColor: string }) => (
+const MapPinIcon = (props: PropsWithChildren<{ readonly themeColor: string }>) => (
   <div className='map-pin-icon'>
     <i
       className={`map-pin-icon-background text-${props.themeColor}`}

@@ -1,6 +1,6 @@
 import { Alert, type AlertColor, type AlertPropsColorOverrides, Snackbar } from '@mui/material'
 import type { OverridableStringUnion } from '@mui/types'
-import type { FunctionComponent, ReactNode, SyntheticEvent } from 'react'
+import type { PropsWithChildren, SyntheticEvent } from 'react'
 import { createContext, memo, useCallback, useEffect, useMemo, useState } from 'react'
 
 type ISnackbarContext = {
@@ -27,8 +27,8 @@ export const SnackbarContext = createContext<ISnackbarContext>({
 })
 SnackbarContext.displayName = 'SnackbarContext'
 
-const SnackbarContextProvider: FunctionComponent<{ readonly children?: ReactNode }> = memo(
-  props => {
+const SnackbarContextProvider = memo(
+  (props: PropsWithChildren) => {
     const [snackbarAlertOptions, setSnackbarAlertOptions] = useState<SnackbarAlertOptions>(
       DEFAULT_SNACKBAR_ALERT_OPTIONS,
     )
