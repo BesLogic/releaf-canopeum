@@ -6,9 +6,8 @@ import EducationalFacilityPin from '@assets/icons/pins/educational-facility-pin.
 import FarmsLandPin from '@assets/icons/pins/farms-land-pin.svg'
 import IndegeniousCommunityPin from '@assets/icons/pins/indegenious-community-pin.svg'
 import ParkPin from '@assets/icons/pins/park-pin.svg'
-import type { SiteTypeID } from '@models/SiteType'
 
-const pinMap: Record<SiteTypeID, JSX.Element> = {
+const pinMap: Record<number, JSX.Element> = {
   1: <img alt='CanopeumPin' src={CanopeumPin} />,
   2: <img alt='ParkPin' src={ParkPin} />,
   3: <img alt='IndegeniousCommunityPin' src={IndegeniousCommunityPin} />,

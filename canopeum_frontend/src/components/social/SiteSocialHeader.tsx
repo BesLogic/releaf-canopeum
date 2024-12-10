@@ -6,13 +6,13 @@ import { Link } from 'react-router-dom'
 
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { LanguageContext } from '@components/context/LanguageContext'
-import IconBadge from '@components/IconBadge'
+import IconBadge from '@components/icons/IconBadge'
+import SiteTypeIcon from '@components/icons/SiteTypeIcon'
 import ToggleSwitch from '@components/inputs/ToggleSwitch'
 import SiteHeaderSponsors from '@components/SiteHeaderSponsors'
 import { appRoutes } from '@constants/routes.constant'
 import useApiClient from '@hooks/ApiClientHook'
 import type { PageViewMode } from '@models/PageViewMode.type'
-import { getSiteTypeIconKey } from '@models/SiteType'
 import { PatchedUpdateSitePublicStatus, type SiteSocial, User } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 import type { ExcludeFunctions } from '@utils/types'
@@ -127,7 +127,9 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
             </div>
 
             <div className='d-flex align-items-center gap-2'>
-              <IconBadge iconKey={getSiteTypeIconKey(site.siteType.id)} />
+              <IconBadge>
+                <SiteTypeIcon siteTypeId={site.siteType.id} />
+              </IconBadge>
               <h4 className='fw-bold text-primary mb-0'>{translateValue(site.siteType)}</h4>
             </div>
 

@@ -1,4 +1,4 @@
-import { getSiteTypeIconKey } from '@models/SiteType'
+import SiteTypeIcon from '@components/icons/SiteTypeIcon'
 import type { SiteAdmins } from '@services/api'
 
 type Props = {
@@ -20,9 +20,7 @@ const AdminCard = ({ admin }: Props) => (
       <div className='card-text mt-3 d-flex flex-column gap-1'>
         {admin.sites.map(site => (
           <div className='d-flex align-items-center text-primary' key={site.id}>
-            <span className='material-symbols-outlined'>
-              {getSiteTypeIconKey(site.siteType ?? 0)}
-            </span>
+            <SiteTypeIcon siteTypeId={site.siteType ?? 0} />
             <span className='ms-1'>{site.name}</span>
           </div>
         ))}

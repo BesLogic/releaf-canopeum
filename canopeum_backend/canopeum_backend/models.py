@@ -138,13 +138,6 @@ class Internationalization(models.Model):
 class Sitetype(models.Model):
     name = models.ForeignKey(Internationalization, models.DO_NOTHING, blank=True, null=True)
 
-    @override
-    def delete(self, using=None, keep_parents=False):
-        # TODO: FIXME, should Sitetype subclass Asset
-        # or should it have a foreignkey asset like PostAsset???
-        self.asset.delete()  # type:ignore[attr-defined] # pyright: ignore[reportAttributeAccessIssue]
-        return super().delete(using, keep_parents)
-
 
 class Site(models.Model):
     name = models.TextField()

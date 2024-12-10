@@ -7,10 +7,10 @@ import type { MarkerEvent } from 'react-map-gl/dist/esm/types'
 import ReactMap, { GeolocateControl, Marker, NavigationControl, ScaleControl, type ViewState } from 'react-map-gl/maplibre'
 import { Link, useSearchParams } from 'react-router-dom'
 
-import SiteTypePin from '@components/assets/SiteTypePin'
+import SiteTypeIcon from '@components/icons/SiteTypeIcon'
+import SiteTypePin from '@components/icons/SiteTypePin'
 import { appRoutes } from '@constants/routes.constant'
 import useApiClient from '@hooks/ApiClientHook'
-import { getSiteTypeIconKey, type SiteTypeID } from '@models/SiteType'
 import type { SiteMap } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 
@@ -172,7 +172,7 @@ const MapPage = () => {
                   onClick={event => onSelectSite(site, event)}
                   style={{ cursor: 'pointer' }}
                 >
-                  <SiteTypePin siteTypeId={site.siteType.id as SiteTypeID} />
+                  <SiteTypePin siteTypeId={site.siteType.id} />
                 </Marker>
               )
             }).filter(Boolean)}
@@ -211,9 +211,7 @@ const MapPage = () => {
                         <h5>{site.name}</h5>
 
                         <h6 className='d-flex align-items-center text-primary'>
-                          <span className='material-symbols-outlined'>
-                            {getSiteTypeIconKey(site.siteType.id)}
-                          </span>
+                          <SiteTypeIcon siteTypeId={site.siteType.id} />
                           <span className='ms-1'>{site.siteType.en}</span>
                         </h6>
 

@@ -6,10 +6,10 @@ import { useTranslation } from 'react-i18next'
 import SiteCountBadge from '@components/analytics/SiteCountBadge'
 import SiteSponsorProgress from '@components/analytics/SiteSponsorProgress'
 import { LanguageContext } from '@components/context/LanguageContext'
-import IconBadge from '@components/IconBadge'
+import IconBadge from '@components/icons/IconBadge'
+import SiteTypeIcon from '@components/icons/SiteTypeIcon'
 import SiteHeaderSponsors from '@components/SiteHeaderSponsors'
 import { getImageNameByWMOCategories } from '@constants/weatherImageMap'
-import { getSiteTypeIconKey } from '@models/SiteType'
 import type { SiteSummaryDetail } from '@services/api'
 
 type Props = {
@@ -55,8 +55,9 @@ const AnalyticsSiteHeader = ({ siteSummary }: Props) => {
         <div>
           <h1 className='card-title mb-0'>{siteSummary.name}</h1>
           <div className='d-flex align-items-center gap-2'>
-            <IconBadge iconKey={getSiteTypeIconKey(siteSummary.siteType.id)} />
-            {/* <CustomIconBadge icon='siteTypeCanopeumIcon' /> */}
+            <IconBadge>
+              <SiteTypeIcon siteTypeId={siteSummary.siteType.id} />
+            </IconBadge>
             <h4 className='fw-bold text-primary mb-0'>{translateValue(siteSummary.siteType)}</h4>
           </div>
         </div>

@@ -116,6 +116,7 @@
     "!unused-imports/no-unused-imports",
     "!autofix/no-debugger",
     "!autofix/no-unused-vars",
+    "!@eslint-community/eslint-comments/no-unused-disable",
     "*"
   ],
   "eslint.rules.customizations": [
