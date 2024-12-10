@@ -59,7 +59,8 @@ For backend
 
    ```ini
    SECRET_KEY_DJANGO_CANOPEUM="not_empty"
-   MYSQL_PASSWORD_CANOPEUM=CanopeumUser12345!@
+   MYSQL_PASSWORD_CANOPEUM="CanopeumUser12345!@"
+   GOOGLE_API_KEY_CANOPEUM=<your Google Geocoding API key, leave empty if none>
    ```
 
    4.2. Then run:

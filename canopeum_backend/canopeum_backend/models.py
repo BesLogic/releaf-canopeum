@@ -8,6 +8,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.http import QueryDict
 from django.utils.datastructures import MultiValueDict as django_MultiValueDict
+from googlemaps.geocoding import reverse_geocode
 from rest_framework.request import Request as drf_Request
 
 from .settings import GOOGLE_API_KEY
@@ -112,14 +113,29 @@ class Coordinate(models.Model):
             dd_longitude *= -1
 
         if gmaps is not None:
-            data_retrieved = gmaps.reverse_geocode(  # pyright: ignore[reportAttributeAccessIssue] -- No type stub currently exists
-                (dd_latitude, dd_longitude), result_type="street_address"
+            data_retrieved: list[dict[str, Any]] = reverse_geocode(
+                gmaps,
+                (dd_latitude, dd_longitude),
+                # https://developers.google.com/maps/documentation/geocoding/requests-reverse-geocoding
+                result_type=[
+                    # Gives lots of good civil administrations polygons,
+                    # automatically includes many administrative_area_level
+                    "political",
+                    # Direct address, if possible
+                    "street_address",
+                ],
+            )
+            # Naive way to get the location we want, longer name usually means more precise
+            data_retrieved = sorted(
+                data_retrieved, key=lambda location: len(location["formatted_address"])
             )
             formatted_address = (
-                data_retrieved[0]["formatted_address"] if data_retrieved else "Custom address"
+                data_retrieved[0]["formatted_address"]
+                if data_retrieved
+                else "Unretrievable location"
             )
         else:
-            formatted_address = "Unknown address"
+            formatted_address = "Missing Google API Key"
 
         return cls.objects.create(
             dms_latitude=dms_latitude,

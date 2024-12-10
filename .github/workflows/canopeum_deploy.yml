@@ -17,13 +17,15 @@ on:
   # we're just pushing all updates right now and force-updating on portainer at
   # /#!/1/docker/stacks/releaf-canopeum?id=11&regular=true
   # Once fixed, remove this "on push" trigger
-  push:
-    branches:
-      - main
-    paths:
-      - "canopeum_backend/**"
-      - "canopeum_frontend/**"
-      - ".github/workflows/canopeum_deploy.yml"
+
+  # (disabled until the end of decenmber whilst Beslogic is still actively working on the project)
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - "canopeum_backend/**"
+  #     - "canopeum_frontend/**"
+  #     - ".github/workflows/canopeum_deploy.yml"
 
 jobs:
   GetDateTime:
