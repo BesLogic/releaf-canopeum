@@ -1,0 +1,18 @@
+.map-pin-icon > :not(.map-pin-icon-background) {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transform: translate(-50%, -80%);
+  .material-symbols-outlined {
+    // Material icons look too big compared to custom icons,
+    // it may be this is better handled by changing default icon weigh globally,
+    // or thickening the custom site icons
+    font-weight: 300;
+  }
+}
+.map-pin-icon-background {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transform: translate(-50%, 0);
+}

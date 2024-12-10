@@ -7,8 +7,8 @@ import type { MarkerEvent } from 'react-map-gl/dist/esm/types'
 import ReactMap, { GeolocateControl, Marker, NavigationControl, ScaleControl, type ViewState } from 'react-map-gl/maplibre'
 import { Link, useSearchParams } from 'react-router-dom'
 
+import MapPin from '@components/icons/MapPinIcon'
 import SiteTypeIcon from '@components/icons/SiteTypeIcon'
-import SiteTypePin from '@components/icons/SiteTypePin'
 import { appRoutes } from '@constants/routes.constant'
 import useApiClient from '@hooks/ApiClientHook'
 import type { SiteMap } from '@services/api'
@@ -170,9 +170,14 @@ const MapPage = () => {
                   latitude={latitude}
                   longitude={longitude}
                   onClick={event => onSelectSite(site, event)}
-                  style={{ cursor: 'pointer' }}
                 >
-                  <SiteTypePin siteTypeId={site.siteType.id} />
+                  <MapPin
+                    themeColor={site.siteType.id === 1 // Canopeum
+                      ? 'secondary'
+                      : 'primary'}
+                  >
+                    <SiteTypeIcon siteTypeId={site.siteType.id} />
+                  </MapPin>
                 </Marker>
               )
             }).filter(Boolean)}
