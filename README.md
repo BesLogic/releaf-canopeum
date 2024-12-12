@@ -67,11 +67,13 @@ For backend
 
    ```shell
    cd canopeum_backend
-   docker compose up
+   # docker compose up # SEE NOTE BELOW !
    uv sync --locked
    uv run manage.py initialize_database
    uv run manage.py runserver
    ```
+
+   Note: The docker compose file has bee updated for production deployment a while ago and no alternative has been created for local deployment. We currently use the `start-local-env.ps1` script with option `2: Run MySQL container`. If anyone wants to contribute restoring a simple docker command for dev, it would be more than welcome.
 
 5. Set up React frontend:
 
