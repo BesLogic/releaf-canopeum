@@ -1,4 +1,4 @@
-const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[\d!#$%&*?@A-Za-z]{8,}$/u
+export const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[\d!#$%&*.?@A-Za-z]{8,}$/u
 
 export const isValidPassword = (input: string) => new RegExp(passwordRegex).test(input)
 
