@@ -7,13 +7,14 @@ import { Link, useSearchParams } from 'react-router-dom'
 import AuthPageLayout from '@components/auth/AuthPageLayout'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { appRoutes } from '@constants/routes.constant'
+import { formClasses } from '@constants/style'
 import useApiClient from '@hooks/ApiClientHook'
 import type { UserInvitation } from '@services/api'
 import { RegisterUser } from '@services/api'
 import { storeToken } from '@utils/auth.utils'
-import { passwordRegex } from '@utils/validators'
+import { emailRegex, passwordRegex } from '@utils/validators'
 
-type RegisterInputs = {
+type RegisterFormInputs = {
   username: string,
   email: string,
   password: string,
@@ -37,15 +38,15 @@ const Register = () => {
     handleSubmit,
     formState: { errors, touchedFields },
     setValue,
-  } = useForm<RegisterInputs>({ mode: 'onTouched' })
-  const onSubmit: SubmitHandler<RegisterInputs> = async data => {
+  } = useForm<RegisterFormInputs>({ mode: 'onTouched' })
+  const onSubmit: SubmitHandler<RegisterFormInputs> = async formData => {
     try {
       const response = await getApiClient().authenticationClient.register(
         new RegisterUser({
-          email: data.email.trim(),
-          username: data.username.trim(),
-          password: data.password,
-          passwordConfirmation: data.confirmPassword,
+          email: formData.email.trim(),
+          username: formData.username.trim(),
+          password: formData.password,
+          passwordConfirmation: formData.confirmPassword,
           code: userInvitation?.code,
         }),
       )
@@ -59,8 +60,6 @@ const Register = () => {
       setRegistrationError(translate('auth.sign-up-error'))
     }
   }
-
-  const invalidFieldClass = 'is-invalid'
 
   const fetchUserInvitation = useCallback(
     async (code: string) => {
@@ -111,7 +110,7 @@ const Register = () => {
               aria-describedby='emailHelp'
               className={`form-control ${
                 touchedFields.username && errors.username
-                  ? invalidFieldClass
+                  ? formClasses.invalidFieldClass
                   : ''
               }`}
               {...register('username', {
@@ -130,7 +129,7 @@ const Register = () => {
               aria-describedby='email'
               className={`form-control ${
                 touchedFields.email && errors.email
-                  ? invalidFieldClass
+                  ? formClasses.invalidFieldClass
                   : ''
               }`}
               disabled={!!userInvitation}
@@ -138,6 +137,7 @@ const Register = () => {
               type='email'
               {...register('email', {
                 required: { value: true, message: translate('auth.email-error-required') },
+                pattern: { value: emailRegex, message: translate('auth.email-error-format') },
               })}
             />
             {errors.email && (
@@ -151,7 +151,7 @@ const Register = () => {
             <input
               className={`form-control ${
                 touchedFields.password && errors.password
-                  ? invalidFieldClass
+                  ? formClasses.invalidFieldClass
                   : ''
               }`}
               id='password-input'
@@ -174,7 +174,7 @@ const Register = () => {
             <input
               className={`form-control ${
                 touchedFields.confirmPassword && errors.confirmPassword
-                  ? invalidFieldClass
+                  ? formClasses.invalidFieldClass
                   : ''
               }`}
               id='confirmation-password-input'

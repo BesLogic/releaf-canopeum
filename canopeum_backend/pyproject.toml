@@ -34,10 +34,6 @@ dev = [
   "types-jsonschema",
 ]
 
-[tool.pyright]
-venvPath = "."
-venv = ".venv"
-
 # https://mypy.readthedocs.io/en/stable/config_file.html
 [tool.mypy]
 show_column_numbers = true
