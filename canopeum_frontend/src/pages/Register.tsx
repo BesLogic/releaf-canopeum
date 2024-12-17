@@ -137,7 +137,7 @@ const Register = () => {
               type='email'
               {...register('email', {
                 required: { value: true, message: translate('auth.email-error-required') },
-                pattern: {value: emailRegex, message: translate('auth.email-error-format')}
+                pattern: { value: emailRegex, message: translate('auth.email-error-format') },
               })}
             />
             {errors.email && (
