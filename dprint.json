@@ -13,6 +13,8 @@
     "**/obj",
     // capacitor folders
     "**/*/android/app",
-    "**/*/ios/App"
+    "**/*/ios/App",
+    // TODO: Test and update configs for scss (Malva)
+    "**/*.scss"
   ]
 }
