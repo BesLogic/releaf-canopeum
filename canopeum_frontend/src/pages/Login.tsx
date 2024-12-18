@@ -1,82 +1,51 @@
+/* eslint-disable react/jsx-props-no-spreading -- Needed for react hook forms */
 import { useContext, useState } from 'react'
+import { type SubmitHandler, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import AuthPageLayout from '@components/auth/AuthPageLayout'
-import Checkbox from '@components/Checkbox'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { appRoutes } from '@constants/routes.constant'
+import { formClasses } from '@constants/style'
 import useApiClient from '@hooks/ApiClientHook'
 import { LoginUser } from '@services/api'
 import { storeToken } from '@utils/auth.utils'
-import type { InputValidationError } from '@utils/validators'
+
+type LoginFormInputs = {
+  email: string,
+  password: string,
+  rememberMe: boolean,
+}
 
 const Login = () => {
-  const { authenticate } = useContext(AuthenticationContext)
-  const { t: translate } = useTranslation()
-  const { getApiClient } = useApiClient()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, touchedFields },
+  } = useForm<LoginFormInputs>({ mode: 'onTouched' })
 
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [rememberMe, setRememberMe] = useState(false)
-
-  const [emailError, setEmailError] = useState<InputValidationError | undefined>()
-  const [passwordError, setPasswordError] = useState<InputValidationError | undefined>()
-
-  const [loginError, setLoginError] = useState<string | undefined>()
-
-  const validateEmail = () => {
-    if (!email) {
-      setEmailError('required')
-
-      return false
-    }
-
-    setEmailError(undefined)
-
-    return true
-  }
-
-  const validatePassword = () => {
-    if (!password) {
-      setPasswordError('required')
-
-      return false
-    }
-
-    setPasswordError(undefined)
-
-    return true
-  }
-
-  const validateForm = () => {
-    // Do not return directly the method calls;
-    // we need each of them to be called before returning the result
-    const emailValid = validateEmail()
-    const passwordValid = validatePassword()
-
-    return emailValid
-      && passwordValid
-  }
-
-  const onLoginClick = async () => {
-    const isFormValid = validateForm()
-    if (!isFormValid) return
-
+  const onSubmit: SubmitHandler<LoginFormInputs> = async formData => {
     try {
       const response = await getApiClient().authenticationClient.login(
         new LoginUser({
-          email: email.trim(),
-          password,
+          email: formData.email.trim(),
+          password: formData.password,
         }),
       )
 
-      storeToken(response.token, rememberMe)
+      storeToken(response.token, formData.rememberMe)
       authenticate(response.user)
     } catch {
       setLoginError(translate('auth.log-in-error'))
     }
   }
+
+  const { authenticate } = useContext(AuthenticationContext)
+  const { t: translate } = useTranslation()
+  const { getApiClient } = useApiClient()
+
+  const [loginError, setLoginError] = useState<string | undefined>()
 
   return (
     <AuthPageLayout>
@@ -84,67 +53,64 @@ const Login = () => {
         <h1 style={{ textAlign: 'center' }}>{translate('auth.log-in-header-text')}</h1>
       </div>
 
-      <div className='col-10 col-sm-6 col-md-8 col-xl-6 d-flex flex-column gap-4'>
+      <form
+        className='col-10 col-sm-8 col-xl-6 d-flex flex-column gap-4'
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <div className='w-100'>
-          <label htmlFor='email-input'>{translate('auth.email-label')}</label>
+          <label htmlFor='email'>{translate('auth.email-label')}</label>
           <input
-            aria-describedby='email'
+            aria-describedby='emailHelp'
             className={`form-control ${
-              emailError
-                ? 'is-invalid'
+              touchedFields.email && errors.email
+                ? formClasses.invalidFieldClass
                 : ''
             }`}
-            id='email-input'
-            onBlur={() => validateEmail()}
-            onChange={event => setEmail(event.target.value)}
-            type='email'
+            {...register('email', {
+              required: { value: true, message: translate('auth.email-error-required') },
+            })}
           />
-          {emailError === 'required' && (
-            <span className='help-block text-danger'>
-              {translate('auth.email-error-required')}
-            </span>
-          )}
+          {errors.email && <span className='help-block text-danger'>{errors.email.message}</span>}
         </div>
 
         <div className='w-100'>
           <label htmlFor='password-input'>{translate('auth.password-label')}</label>
           <input
             className={`form-control ${
-              passwordError
-                ? 'is-invalid'
+              touchedFields.password && errors.password
+                ? formClasses.invalidFieldClass
                 : ''
             }`}
-            id='password-input'
-            onBlur={() => validatePassword()}
-            onChange={event => setPassword(event.target.value)}
             type='password'
+            {...register('password', {
+              required: { value: true, message: translate('auth.password-error-required') },
+            })}
           />
-          {passwordError === 'required' && (
-            <span className='help-block text-danger'>
-              {translate('auth.password-error-required')}
-            </span>
+          {errors.password && (
+            <span className='help-block text-danger'>{errors.password.message}</span>
           )}
         </div>
 
         <div>
-          <Checkbox
-            checked={rememberMe}
-            id='remember-me'
-            onChange={(_value, isChecked) => setRememberMe(isChecked)}
-            value='remember-me'
-          >
-            Remember Me
-          </Checkbox>
+          {/* TODO: Make a component, this is extracted from the Checkbox  */}
+          {/* component until everything uses React Hook Forms */}
+          <div className='form-check'>
+            <input
+              className='form-check-input'
+              id='checkbox-input'
+              type='checkbox'
+              {...register('rememberMe')}
+            />
+            <label className='form-check-label' htmlFor='checkbox-input'>
+              {translate('auth.remember-me')}
+            </label>
+          </div>
         </div>
 
         {loginError && <span className='help-block text-danger'>{loginError}</span>}
 
         <div className='mt-4'>
-          <button
-            className='btn btn-primary w-100 my-2'
-            onClick={onLoginClick}
-            type='submit'
-          >
+          <button className='btn btn-primary w-100 my-2' type='submit'>
             {translate('auth.log-in')}
           </button>
 
@@ -156,7 +122,7 @@ const Login = () => {
             {translate('auth.sign-up')}
           </Link>
         </div>
-      </div>
+      </form>
     </AuthPageLayout>
   )
 }
