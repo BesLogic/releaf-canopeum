@@ -1,4 +1,4 @@
-@use '../assets/styles/Variables.scss' as *;
+@use "../assets/styles/Variables.scss" as *;
 
 .settings-left-nav-menu {
   margin-bottom: 2rem;
@@ -10,8 +10,8 @@
 
 @media screen and (min-width: $medium-width) {
   .settings-left-nav-menu {
-    height: 100%;
     margin-bottom: 0;
+    height: 100%;
   }
 
   .settings-tab-content-container {

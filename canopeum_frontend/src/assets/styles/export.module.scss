@@ -1,4 +1,4 @@
-@use 'Variables.scss' as *;
+@use "Variables.scss" as *;
 
 // Re-export variables to be accessible from .ts
 // This is useful to mix frameworks like applying bootstrap-defined style to MUI
@@ -8,5 +8,5 @@
   success: $success;
   // Would prefer using $card-bg from bootstrap,
   // but that causes it to load first before App.scss somehow
-  cardBackground: $white;
+  cardbackground: $white;
 }

@@ -89,18 +89,18 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
         clearOnBlur
         freeSolo
         getOptionKey={option => (
-          typeof (option) === 'string'
+          typeof option === 'string'
             ? option
             : option.value
         )}
         getOptionLabel={option => (
-          typeof (option) === 'string'
+          typeof option === 'string'
             ? option
             : option.displayText
         )}
         id={id}
         onChange={(_event, option) => {
-          if (option === null || typeof (option) === 'string') return
+          if (option === null || typeof option === 'string') return
 
           onSelect(option)
         }}
