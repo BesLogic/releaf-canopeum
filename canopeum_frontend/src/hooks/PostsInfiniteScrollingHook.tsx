@@ -76,13 +76,8 @@ const usePostsInfiniteScrolling = () => {
       return
     }
 
-    fetchPostsPage().then(() =>
-      isMounted.current = true
-    )
-    .catch(() =>
-      isMounted.current = false
-    )
-
+    fetchPostsPage().then(() => isMounted.current = true)
+      .catch(() => isMounted.current = false)
   }, [fetchPostsPage, siteIds])
 
   // The scrollable container should be the parent container with overflow y auto/scroll
@@ -101,8 +96,9 @@ const usePostsInfiniteScrolling = () => {
 
     setIsLoadingMore(true)
     fetchPostsPage().catch((error: unknown) =>
-      openAlertSnackbar(getErrorMessage(error, translate('errors.fetch-posts-failed')),
-      { severity: 'error' })
+      openAlertSnackbar(getErrorMessage(error, translate('errors.fetch-posts-failed')), {
+        severity: 'error',
+      })
     )
   }
 

@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { SnackbarContext } from '@components/context/SnackbarContext'
@@ -32,7 +32,7 @@ const ManageAdmins = () => {
 
     fetchSiteAdmins().catch((error: unknown) =>
       openAlertSnackbar(
-        getErrorMessage(error, translate('errors.fetch-support-species-failed'))
+        getErrorMessage(error, translate('errors.fetch-support-species-failed')),
       )
     )
   }, [setSiteAdminList, setIsLoadingAdmins])

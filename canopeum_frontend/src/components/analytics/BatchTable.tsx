@@ -75,13 +75,16 @@ const BatchTable = (props: Props) => {
                   <BatchActions
                     batchDetail={batch}
                     onDelete={() => setBatches(previous => previous.filter(b => b.id !== batch.id))}
-                    onEdit={() => fetchBatch(props.siteId).catch((error: unknown) =>
-                      openAlertSnackbar(
-                        getErrorMessage(error, t('errors.fetch-batch-failed',
-                          { batchName: batch.name })),
-                        { severity: 'error' },
-                      )
-                    )}
+                    onEdit={() =>
+                      fetchBatch(props.siteId).catch((error: unknown) =>
+                        openAlertSnackbar(
+                          getErrorMessage(
+                            error,
+                            t('errors.fetch-batch-failed', { batchName: batch.name }),
+                          ),
+                          { severity: 'error' },
+                        )
+                      )}
                   />
                 </div>
               </th>

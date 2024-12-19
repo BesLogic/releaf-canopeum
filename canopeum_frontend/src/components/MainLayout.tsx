@@ -58,7 +58,6 @@ const MainLayout = () => {
   const { t: translate } = useTranslation()
   const { getErrorMessage } = useErrorHandling()
 
-
   // Try authenticating user on app start if token was saved in storage
   useEffect(() => {
     const runInitAuth = async () => initAuth()
@@ -66,13 +65,11 @@ const MainLayout = () => {
     runInitAuth().catch((error: unknown) => {
       const errorMessage = getErrorMessage(
         error,
-        translate('auth.user-token-not-found')
+        translate('auth.user-token-not-found'),
       )
-      console.error(errorMessage);
-    });
-  }, []);
-
-
+      console.error(errorMessage)
+    })
+  }, [])
 
   return (
     <Routes>

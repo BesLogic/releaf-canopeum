@@ -46,8 +46,9 @@ const FertilizersSelector = ({ onChange, fertilizers }: Props) => {
       setOptions(fertilizerOptions)
     }
     fetchFertilizers().catch((error: unknown) =>
-      openAlertSnackbar(getErrorMessage(error, translate('errors.fetch-fertilizers-failed')),
-      { severity: 'error' })
+      openAlertSnackbar(getErrorMessage(error, translate('errors.fetch-fertilizers-failed')), {
+        severity: 'error',
+      })
     )
   }, [])
 

@@ -12,7 +12,7 @@ export default {
   'fetch-fertilizers-failed': 'Erreur: le chargement des engrais a échoué',
   'fetch-mulch-layers-failed': 'Erreur: le chargement des couches de paillis a échoué',
   'fetch-support-species-failed': 'Erreur: le chargement des espèces de support a échoué',
-  'fetch-tree-species-failed': 'Erreur: le chargement des espèces d\'arbres a échoué',
+  'fetch-tree-species-failed': "Erreur: le chargement des espèces d'arbres a échoué",
   'fetch-site-types-failed': 'Erreur: le chargement des types de sites a échoué',
   'fetch-site-failed': 'Erreur: le chargement du site a échoué',
   'fetch-site-data-failed': 'Erreur: le chargement des données du site a échoué',
@@ -24,6 +24,5 @@ export default {
   'fetch-posts-failed': 'Erreur: le chargement des publications a échoué',
   'fetch-post-failed': 'Erreur: le chargement de la publication a échoué',
   'fetch-admins-failed': 'Erreur: le chargement des administrateurs a échoué',
-  'fetch-user-invitation-failed': 'Erreur: le chargement de l\'invitation de utilisateur a échoué',
-
+  'fetch-user-invitation-failed': "Erreur: le chargement de l'invitation de utilisateur a échoué",
 } satisfies typeof Shape

@@ -97,10 +97,9 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
     const fetchSiteTypes = async () =>
       setAvailableSiteTypes(await getApiClient().siteClient.types())
 
-
     fetchSiteTypes().catch((error: unknown) =>
       openAlertSnackbar(
-        getErrorMessage(error, t('errors.fetch-site-types-failed'))
+        getErrorMessage(error, t('errors.fetch-site-types-failed')),
       )
     )
   }, [])
@@ -110,7 +109,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
 
     fetchSite().catch((error: unknown) =>
       openAlertSnackbar(
-        getErrorMessage(error, t('errors.fetch-site-failed'))
+        getErrorMessage(error, t('errors.fetch-site-failed')),
       )
     )
   }, [])

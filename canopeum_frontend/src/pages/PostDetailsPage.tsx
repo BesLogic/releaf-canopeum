@@ -60,7 +60,8 @@ const PostDetailsPage = () => {
 
     fetchPost(postIdNumber).catch((error: unknown) =>
       openAlertSnackbar(
-        getErrorMessage(error, translate('errors.fetch-post-failed')), { severity: 'error' }
+        getErrorMessage(error, translate('errors.fetch-post-failed')),
+        { severity: 'error' },
       )
     )
     setPostId(postIdNumber)

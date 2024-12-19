@@ -113,9 +113,9 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange, onSiteEdit }: P
       return
     }
 
-    deleteSite().catch((error: unknown)=>
+    deleteSite().catch((error: unknown) =>
       openAlertSnackbar(
-        getErrorMessage(error, translate('errors.delete-site-failed'))
+        getErrorMessage(error, translate('errors.delete-site-failed')),
       )
     )
   }

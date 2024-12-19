@@ -94,7 +94,7 @@ const Register = () => {
     fetchUserInvitation(code).catch((error: unknown) =>
       openAlertSnackbar(
         getErrorMessage(error, translate('errors.fetch-user-invitation-failed')),
-        { severity: 'error' }
+        { severity: 'error' },
       )
     )
   }, [searchParams, fetchUserInvitation])

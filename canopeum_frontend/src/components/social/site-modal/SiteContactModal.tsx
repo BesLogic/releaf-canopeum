@@ -38,7 +38,6 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const { getErrorMessage } = useErrorHandling()
 
-
   const handleSubmitSiteContact = () =>
     getApiClient().contactClient.update(contact.id, editedContact as PatchedContact).then(
       () => {
@@ -49,7 +48,8 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
       },
     ).catch((error: unknown) =>
       openAlertSnackbar(
-        getErrorMessage(error, t('social.contact.feedback.edit-error')), { severity: 'error' }
+        getErrorMessage(error, t('social.contact.feedback.edit-error')),
+        { severity: 'error' },
       )
     )
 

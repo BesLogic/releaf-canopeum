@@ -60,9 +60,9 @@ const Navbar = () => {
     changeLanguage(newLanguage).catch((error: unknown) => {
       const errorMessage = getErrorMessage(
         error,
-        translate('errors.change-language-failed')
+        translate('errors.change-language-failed'),
       )
-      openAlertSnackbar(errorMessage,  { severity: 'error' })
+      openAlertSnackbar(errorMessage, { severity: 'error' })
     })
   }
 

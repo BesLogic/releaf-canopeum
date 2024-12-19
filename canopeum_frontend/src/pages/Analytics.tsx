@@ -136,8 +136,9 @@ const Analytics = () => {
     if (currentUser?.role !== 'MegaAdmin') return
 
     fetchAdmins().catch((error: unknown) =>
-      openAlertSnackbar(getErrorMessage(error, translate('errors.fetch-admins-failed')),
-      { severity: 'error' })
+      openAlertSnackbar(getErrorMessage(error, translate('errors.fetch-admins-failed')), {
+        severity: 'error',
+      })
     )
   }, [currentUser?.role, fetchAdmins])
 
@@ -145,8 +146,9 @@ const Analytics = () => {
     const fetchSites = async () => setSiteSummaries(await getApiClient().summaryClient.all())
 
     fetchSites().catch((error: unknown) =>
-      openAlertSnackbar(getErrorMessage(error, translate('errors.fetch-fertilizers-failed')),
-      { severity: 'error' })
+      openAlertSnackbar(getErrorMessage(error, translate('errors.fetch-fertilizers-failed')), {
+        severity: 'error',
+      })
     )
   }, [getApiClient, setSiteSummaries])
 

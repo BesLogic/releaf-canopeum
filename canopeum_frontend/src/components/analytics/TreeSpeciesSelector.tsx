@@ -48,7 +48,7 @@ const TreeSpeciesSelector = (
     }
     fetchTreeSpecies().catch((error: unknown) =>
       openAlertSnackbar(
-        getErrorMessage(error, translate('errors.fetch-tree-species-failed'))
+        getErrorMessage(error, translate('errors.fetch-tree-species-failed')),
       )
     )
   }, [setAvailableSpecies, setOptions])

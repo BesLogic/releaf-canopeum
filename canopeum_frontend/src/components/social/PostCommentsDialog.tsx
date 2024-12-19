@@ -48,14 +48,13 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose }: Props) => {
     const fetchComments = async () => setComments(await getApiClient().commentClient.all(postId))
 
     fetchComments()
-    .then(() => setCommentsLoaded(true))
-    .catch((error: unknown) => {
-      openAlertSnackbar(getErrorMessage(error, translate('errors.fetch-comments-failed')),
-      { severity: 'error' })
-      setCommentsLoaded(false)
-    })
-
-
+      .then(() => setCommentsLoaded(true))
+      .catch((error: unknown) => {
+        openAlertSnackbar(getErrorMessage(error, translate('errors.fetch-comments-failed')), {
+          severity: 'error',
+        })
+        setCommentsLoaded(false)
+      })
   }, [postId, open, commentsLoaded, getApiClient])
 
   useEffect(() => {
@@ -140,8 +139,9 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose }: Props) => {
     if (!proceedWithDelete || !commentToDelete) return
 
     deleteComment(commentToDelete).catch((error: unknown) =>
-      openAlertSnackbar(getErrorMessage(error, translate('errors.delete-comment-failed')),
-      { severity: 'error' })
+      openAlertSnackbar(getErrorMessage(error, translate('errors.delete-comment-failed')), {
+        severity: 'error',
+      })
     )
   }
 

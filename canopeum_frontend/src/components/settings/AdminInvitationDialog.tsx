@@ -1,5 +1,5 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { SnackbarContext } from '@components/context/SnackbarContext'
@@ -38,7 +38,7 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
 
     fetchAllSites().catch((error: unknown) =>
       openAlertSnackbar(
-        getErrorMessage(error, translate('errors.fetch-all-sites-failed'))
+        getErrorMessage(error, translate('errors.fetch-all-sites-failed')),
       )
     )
   }, [])
@@ -94,7 +94,7 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
       )
       .catch((error: unknown) =>
         openAlertSnackbar(
-          getErrorMessage(error, translate('errors.copy-to-clipboard-failed'))
+          getErrorMessage(error, translate('errors.copy-to-clipboard-failed')),
         )
       )
   }

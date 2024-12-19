@@ -39,7 +39,8 @@ const AnalyticsSite = () => {
 
     fetchSite(siteIdNumber).catch((error: unknown) =>
       openAlertSnackbar(
-        getErrorMessage(error, translate('errors.fetch-site-failed')), { severity: 'error' }
+        getErrorMessage(error, translate('errors.fetch-site-failed')),
+        { severity: 'error' },
       )
     )
   }, [fetchSite, siteIdFromParams])
@@ -103,12 +104,14 @@ const AnalyticsSite = () => {
       <CreateBatchModal
         handleClose={reason => {
           setIsCreateBatchOpen(false)
-          if (reason === 'create')
+          if (reason === 'create') {
             fetchSite(siteSummary.id).catch((error: unknown) =>
               openAlertSnackbar(
-                getErrorMessage(error, translate('errors.fetch-site-failed')), { severity: 'error' }
+                getErrorMessage(error, translate('errors.fetch-site-failed')),
+                { severity: 'error' },
               )
             )
+          }
         }}
         open={isCreateBatchOpen}
         site={siteSummary}

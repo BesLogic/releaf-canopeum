@@ -47,7 +47,7 @@ const MulchLayersSelector = ({ onChange, mulchLayers }: Props) => {
     }
     fetchMulchLayers().catch((error: unknown) =>
       openAlertSnackbar(
-        getErrorMessage(error, translate('errors.fetch-mulch-layers-failed'))
+        getErrorMessage(error, translate('errors.fetch-mulch-layers-failed')),
       )
     )
   }, [])

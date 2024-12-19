@@ -35,18 +35,21 @@ const BatchActions = ({ onEdit, onDelete, batchDetail }: Props) => {
       translate('analyticsSite.delete-batch.success', { batchName: batchDetail.name }),
     )
     onDelete()
-
   }
 
   const handleConfirmDeleteClose = (proceed: boolean) => {
     setConfirmDeleteOpen(false)
-    if (proceed) deleteBatch().catch((error: unknown) =>
-      openAlertSnackbar(
-        getErrorMessage(error, translate('analyticsSite.delete-batch.error',
-        { batchName: batchDetail.name })),
-        { severity: 'error' },
+    if (proceed) {
+      deleteBatch().catch((error: unknown) =>
+        openAlertSnackbar(
+          getErrorMessage(
+            error,
+            translate('analyticsSite.delete-batch.error', { batchName: batchDetail.name }),
+          ),
+          { severity: 'error' },
+        )
       )
-    )
+    }
   }
 
   return (

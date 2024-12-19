@@ -45,7 +45,7 @@ const SupportSpeciesSelector = ({ onChange, species }: Props) => {
     }
     fetchTreeSpecies().catch((error: unknown) =>
       openAlertSnackbar(
-        getErrorMessage(error, translate('errors.fetch-support-species-failed'))
+        getErrorMessage(error, translate('errors.fetch-support-species-failed')),
       )
     )
   }, [])

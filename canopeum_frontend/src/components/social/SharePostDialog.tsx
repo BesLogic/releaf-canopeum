@@ -29,14 +29,15 @@ const SharePostDialog = ({ onClose, open, post }: Props) => {
     if (!shareUrl) return
 
     navigator.clipboard.writeText(shareUrl)
-    .then(() =>
-      openAlertSnackbar(`${translate('generic.copied-clipboard')}!`, { severity: 'info' }))
-    .catch((error: unknown) =>
-      openAlertSnackbar(
-        getErrorMessage(error, translate('errors.copy-to-clibboard-failed')), { severity: 'error' }
+      .then(() =>
+        openAlertSnackbar(`${translate('generic.copied-clipboard')}!`, { severity: 'info' })
       )
-    )
-
+      .catch((error: unknown) =>
+        openAlertSnackbar(
+          getErrorMessage(error, translate('errors.copy-to-clibboard-failed')),
+          { severity: 'error' },
+        )
+      )
   }
 
   return (

@@ -88,7 +88,8 @@ const SiteSocialPage = () => {
       getApiClient().widgetClient.delete(siteId, data.id)
         .then(() => fetchSiteData(siteId)).catch((error_: unknown) =>
           openAlertSnackbar(
-            getErrorMessage(error_, t(fetchSiteDataError)), { severity: 'error' }
+            getErrorMessage(error_, t(fetchSiteDataError)),
+            { severity: 'error' },
           )
         )
         .catch(() => {/* empty */})
@@ -102,7 +103,8 @@ const SiteSocialPage = () => {
       response
         .then(() => fetchSiteData(siteId)).catch((error_: unknown) =>
           openAlertSnackbar(
-            getErrorMessage(error_, t(fetchSiteDataError)), { severity: 'error' }
+            getErrorMessage(error_, t(fetchSiteDataError)),
+            { severity: 'error' },
           )
         )
         .catch(() => {/* empty */})
@@ -116,7 +118,8 @@ const SiteSocialPage = () => {
   useEffect((): void => {
     fetchSiteData(siteId).catch((error_: unknown) =>
       openAlertSnackbar(
-        getErrorMessage(error_, t(fetchSiteDataError)), { severity: 'error' }
+        getErrorMessage(error_, t(fetchSiteDataError)),
+        { severity: 'error' },
       )
     )
     setSiteIds([siteId])
