@@ -58,14 +58,14 @@ const Login = () => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <div className='w-100'>
-          <label htmlFor='email'>{translate('auth.email-label')}</label>
+          <label htmlFor='email-input'>{translate('auth.email-label')}</label>
           <input
-            aria-describedby='emailHelp'
             className={`form-control ${
               touchedFields.email && errors.email
                 ? formClasses.invalidFieldClass
                 : ''
             }`}
+            id='email-input'
             {...register('email', {
               required: { value: true, message: translate('auth.email-error-required') },
             })}
@@ -81,6 +81,7 @@ const Login = () => {
                 ? formClasses.invalidFieldClass
                 : ''
             }`}
+            id='password-input'
             type='password'
             {...register('password', {
               required: { value: true, message: translate('auth.password-error-required') },
@@ -97,11 +98,11 @@ const Login = () => {
           <div className='form-check'>
             <input
               className='form-check-input'
-              id='checkbox-input'
+              id='remember-me'
               type='checkbox'
               {...register('rememberMe')}
             />
-            <label className='form-check-label' htmlFor='checkbox-input'>
+            <label className='form-check-label' htmlFor='remember-me'>
               {translate('auth.remember-me')}
             </label>
           </div>
