@@ -29,9 +29,7 @@ const TextExpansion = ({ text, maxLength }: TextExpansionProps) => {
             </button>
           </>
         )
-        : (
-          text
-        )}
+        : text}
     </div>
   )
 }

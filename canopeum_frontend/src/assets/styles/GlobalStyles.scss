@@ -1,12 +1,12 @@
-@use 'Variables.scss' as *;
+@use "Variables.scss" as *;
 
 // TODO (Sam. T): Move this file to a GlobalStyles/_index.scss and imported files into same folder
-@use 'Buttons.scss';
-@use 'Card.scss';
-@use 'DropdownMenu.scss';
-@use 'Icons.scss';
-@use 'Nav.scss';
-@use 'Transitions.scss';
+@use "Buttons.scss";
+@use "Card.scss";
+@use "DropdownMenu.scss";
+@use "Icons.scss";
+@use "Nav.scss";
+@use "Transitions.scss";
 
 ::-webkit-scrollbar {
   width: 0.5em;
@@ -17,12 +17,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: $gray-600; // map-get($colors, gray)
   border-radius: 5px;
+  background-color: $gray-600; // map-get($colors, gray)
 }
 
 body {
-  background-image: url('@assets/images/TreeBackground.png');
+  background-image: url("@assets/images/TreeBackground.png");
 }
 
 // Causes teh inner elements of an anchor to be underlined instead of the anchor itself
@@ -44,9 +44,9 @@ body {
 }
 
 .text-ellipsis {
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .lightgreen-color {
@@ -58,9 +58,9 @@ body {
 }
 
 .page-container {
+  margin: 0 auto;
   padding: 1rem 1rem;
   max-width: 90em;
-  margin: 0 auto;
 }
 
 @media screen and (min-width: $medium-width) {

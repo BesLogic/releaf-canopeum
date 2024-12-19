@@ -1,4 +1,4 @@
-@use '../../../node_modules/bootstrap/scss/bootstrap.scss' as *;
+@use "../../../node_modules/bootstrap/scss/bootstrap.scss" as *;
 
 /*
 Override button-variant node_modules/bootstrap/scss/mixins/_buttons.scss
@@ -20,9 +20,9 @@ however we still prefer the lighter color for our secondary buttons
 
 .unstyled-button {
   border: none;
-  padding: inherit;
-  background-color: inherit;
   background: inherit;
+  background-color: inherit;
+  padding: inherit;
 }
 
 button.icon-button {

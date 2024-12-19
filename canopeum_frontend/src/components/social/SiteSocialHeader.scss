@@ -1,4 +1,4 @@
-@use '../../assets/styles/Variables.scss' as *;
+@use "../../assets/styles/Variables.scss" as *;
 
 .site-social-header-card {
   display: flex;
@@ -6,11 +6,11 @@
 
   .site-social-image {
     border-radius: $border-radius $border-radius 0 0;
-    width: 100%;
-    height: 300px;
     background-position: top;
     background-size: cover;
     background-repeat: no-repeat;
+    width: 100%;
+    height: 300px;
   }
 }
 
@@ -19,9 +19,9 @@
     flex-direction: row;
 
     .site-social-image {
+      flex-basis: 33%;
       border-radius: $border-radius 0 0 $border-radius;
       min-width: 256px;
-      flex-basis: 33%;
       height: unset;
     }
   }

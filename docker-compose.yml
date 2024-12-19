@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 services:
   mysql:
     hostname: mysql
@@ -33,7 +33,7 @@ services:
       MYSQL_PASSWORD_CANOPEUM: /run/secrets/MYSQL_PASSWORD_CANOPEUM
       SECRET_KEY_DJANGO_CANOPEUM: /run/secrets/SECRET_KEY_DJANGO_CANOPEUM
       GOOGLE_API_KEY_CANOPEUM: /run/secrets/GOOGLE_API_KEY_CANOPEUM
-      DEBUG: 'False'
+      DEBUG: "False"
       VIRTUAL_HOST: api.canopeum.releaftrees.life
       LETSENCRYPT_HOST: api.canopeum.releaftrees.life
     volumes:

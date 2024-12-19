@@ -1,4 +1,4 @@
-@use '../../assets/styles/Variables.scss' as *;
+@use "../../assets/styles/Variables.scss" as *;
 
 .upload-button:not(:hover) {
   // override .btn's var(--bs-btn-bg) to have a solid background instead of transparent
@@ -6,7 +6,7 @@
 }
 
 .upload-instruction {
-  background-color: var(--bs-body-bg);
   border-radius: $border-radius;
+  background-color: var(--bs-body-bg);
   padding: 0 0.5rem;
 }
