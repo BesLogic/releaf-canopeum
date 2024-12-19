@@ -1,15 +1,15 @@
-@use "../../assets/styles/Variables.scss" as *;
+@use '../../assets/styles/Variables.scss' as *;
 
 .header-card {
   flex-direction: column;
 
   .weather-container {
     border-radius: $border-radius $border-radius 0 0;
+    width: 100%;
+    height: 300px;
     background-position: top;
     background-size: cover;
     background-repeat: no-repeat;
-    width: 100%;
-    height: 300px;
   }
 }
 
@@ -18,9 +18,9 @@
     flex-direction: row;
 
     .weather-container {
-      flex-basis: 25%;
       border-radius: $border-radius 0 0 $border-radius;
       min-width: 256px;
+      flex-basis: 25%;
       height: unset;
     }
   }

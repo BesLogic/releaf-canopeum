@@ -99,6 +99,10 @@
   }
 
   &.fill-icon {
-    font-variation-settings: "FILL" 1, "wght" 700, "GRAD" 0, "opsz" 48;
+    font-variation-settings:
+      'FILL' 1,
+      'wght' 700,
+      'GRAD' 0,
+      'opsz' 48;
   }
 }

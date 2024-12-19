@@ -3,15 +3,16 @@
 
   button {
     position: absolute;
-    top: 0px;
     right: 8px;
+    top: 0px;
   }
 }
 
-input[type="number"].no-spinner {
+input[type=number].no-spinner {
   -webkit-appearance: none; // WebKit browsers
   appearance: none; // Standard property
   -moz-appearance: textfield; // Firefox
+
 
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {

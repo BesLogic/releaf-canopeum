@@ -1,12 +1,13 @@
-@use "../../../node_modules/bootstrap/scss/bootstrap.scss" as *;
+@use '../../../node_modules/bootstrap/scss/bootstrap.scss' as *;
 
 .nav-underline {
   .nav-link {
+    // underline on hover just looks weird if there's already an underline from nav
+    text-decoration: none;
+
     // By default bootstrap gives those 0 padding, restore the .nav-link padding
     padding-right: var(--bs-nav-link-padding-x);
     padding-left: var(--bs-nav-link-padding-x);
-    // underline on hover just looks weird if there's already an underline from nav
-    text-decoration: none;
   }
 }
 
@@ -19,7 +20,11 @@
   }
 
   .nav-item.active .material-symbols-outlined {
-    font-variation-settings: "FILL" 1, "wght" 700, "GRAD" 0, "opsz" 48;
+    font-variation-settings:
+      'FILL' 1,
+      'wght' 700,
+      'GRAD' 0,
+      'opsz' 48;
   }
 
   .nav-link {
@@ -83,7 +88,7 @@ with colors of .navbar-dark in  node_modules/bootstrap/scss/_navbar.scss
 to support non-navbar nav
 */
 .nav-dark.nav-dark,
-.nav.nav[data-bs-theme="dark"] {
+.nav.nav[data-bs-theme='dark'] {
   // scss-docs-start nav-dark-css-vars
   --#{$prefix}nav-link-color: #{$navbar-dark-color};
   --#{$prefix}nav-link-hover-color: #{$navbar-dark-hover-color};
