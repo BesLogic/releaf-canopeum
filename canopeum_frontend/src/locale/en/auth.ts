@@ -18,6 +18,7 @@ export default {
   'password-confirmation-error-required': 'Please re-enter your password',
   'password-error-must-match': 'Passwords do not match',
   'log-in': 'Log In',
+  'remember-me': 'Remember me',
   'log-out': 'Log Out',
   'log-out-confirmation': 'Are you sure you want to log out?',
   'sign-up': 'Sign Up',

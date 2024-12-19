@@ -1,4 +1,6 @@
+/* eslint-disable react/jsx-props-no-spreading -- Good practice for React Hook Form */
 import { useCallback, useContext, useEffect, useState } from 'react'
+import { type SubmitHandler, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Link, useSearchParams } from 'react-router-dom'
 
@@ -6,12 +8,20 @@ import AuthPageLayout from '@components/auth/AuthPageLayout'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import { appRoutes } from '@constants/routes.constant'
+import { formClasses } from '@constants/style'
 import useApiClient from '@hooks/ApiClientHook'
 import useErrorHandling from '@hooks/ErrorHandlingHook'
 import type { UserInvitation } from '@services/api'
 import { RegisterUser } from '@services/api'
 import { storeToken } from '@utils/auth.utils'
-import { type InputValidationError, isValidEmail, isValidPassword, mustMatch } from '@utils/validators'
+import { emailRegex, passwordRegex } from '@utils/validators'
+
+type RegisterFormInputs = {
+  username: string,
+  email: string,
+  password: string,
+  confirmPassword: string,
+}
 
 const Register = () => {
   const [searchParams, _setSearchParams] = useSearchParams()
@@ -21,23 +31,39 @@ const Register = () => {
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const { getErrorMessage } = useErrorHandling()
 
-  const [username, setUsername] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [passwordConfirmation, setPasswordConfirmation] = useState('')
-
-  const [usernameError, setUsernameError] = useState<InputValidationError | undefined>()
-  const [emailError, setEmailError] = useState<InputValidationError | undefined>()
-  const [passwordError, setPasswordError] = useState<InputValidationError | undefined>()
-  const [passwordConfirmationError, setPasswordConfirmationError] = useState<
-    InputValidationError | undefined
-  >()
-
   const [registrationError, setRegistrationError] = useState<string | undefined>()
   const [codeInvalid, setCodeInvalid] = useState(false)
   const [codeExpired, setCodeExpired] = useState(false)
 
   const [userInvitation, setUserInvitation] = useState<UserInvitation>()
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, touchedFields },
+    setValue,
+  } = useForm<RegisterFormInputs>({ mode: 'onTouched' })
+  const onSubmit: SubmitHandler<RegisterFormInputs> = async formData => {
+    try {
+      const response = await getApiClient().authenticationClient.register(
+        new RegisterUser({
+          email: formData.email.trim(),
+          username: formData.username.trim(),
+          password: formData.password,
+          passwordConfirmation: formData.confirmPassword,
+          code: userInvitation?.code,
+        }),
+      )
+
+      authenticate(response.user)
+      // By default, do not "remember" the user outside of the browser's session on Registration
+      // They will get to chose that option the next time they log in
+      const rememberMe = false
+      storeToken(response.token, rememberMe)
+    } catch {
+      setRegistrationError(translate('auth.sign-up-error'))
+    }
+  }
 
   const fetchUserInvitation = useCallback(async (code: string) => {
     try {
@@ -53,7 +79,7 @@ const Register = () => {
       setCodeExpired(false)
       setCodeInvalid(false)
       setUserInvitation(userInvitationResponse)
-      setEmail(userInvitationResponse.email)
+      setValue('email', userInvitationResponse.email)
     } catch {
       setCodeInvalid(true)
       setCodeExpired(false)
@@ -73,110 +99,12 @@ const Register = () => {
     )
   }, [searchParams, fetchUserInvitation])
 
-  const validateUsername = () => {
-    if (!username) {
-      setUsernameError('required')
+  useEffect(() => {
+    const code = searchParams.get('code')
+    if (!code) return
 
-      return false
-    }
-
-    setUsernameError(undefined)
-
-    return true
-  }
-
-  const validateEmail = () => {
-    if (!email) {
-      setEmailError('required')
-
-      return false
-    }
-
-    if (!isValidEmail(email)) {
-      setEmailError('email')
-
-      return false
-    }
-
-    setEmailError(undefined)
-
-    return true
-  }
-
-  const validatePassword = () => {
-    if (!password) {
-      setPasswordError('required')
-
-      return false
-    }
-
-    if (!isValidPassword(password)) {
-      setPasswordError('password')
-
-      return false
-    }
-
-    setPasswordError(undefined)
-
-    return true
-  }
-
-  const validatePasswordConfirmation = () => {
-    if (!passwordConfirmation) {
-      setPasswordConfirmationError('required')
-
-      return false
-    }
-
-    if (!mustMatch(password, passwordConfirmation)) {
-      setPasswordConfirmationError('mustMatch')
-
-      return false
-    }
-
-    setPasswordConfirmationError(undefined)
-
-    return true
-  }
-
-  const validateForm = () => {
-    // Do not return directly the method calls;
-    // we need each of them to be called before returning the result
-    const usernameValid = validateUsername()
-    const emailValid = validateEmail()
-    const passwordValid = validatePassword()
-    const passwordConfirmationValid = validatePasswordConfirmation()
-
-    return usernameValid
-      && emailValid
-      && passwordValid
-      && passwordConfirmationValid
-  }
-
-  const onCreateAccountClick = async () => {
-    const isFormValid = validateForm()
-    if (!isFormValid) return
-
-    try {
-      const response = await getApiClient().authenticationClient.register(
-        new RegisterUser({
-          email: email.trim(),
-          username: username.trim(),
-          password,
-          passwordConfirmation,
-          code: userInvitation?.code,
-        }),
-      )
-
-      authenticate(response.user)
-      // By default, do not "remember" the user outside of the browser's session on Registration
-      // They will get to chose that option the next time they log in
-      const rememberMe = false
-      storeToken(response.token, rememberMe)
-    } catch {
-      setRegistrationError(translate('auth.sign-up-error'))
-    }
-  }
+    void fetchUserInvitation(code)
+  }, [searchParams, fetchUserInvitation])
 
   return (
     <AuthPageLayout>
@@ -185,109 +113,110 @@ const Register = () => {
           <h1 style={{ textAlign: 'center' }}>{translate('auth.sign-up-header-text')}</h1>
         </div>
 
-        <div className='col-10 col-sm-8 col-xl-6 d-flex flex-column gap-4'>
+        <form
+          className='col-10 col-sm-8 col-xl-6 d-flex flex-column gap-4'
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <div className='w-100'>
-            <label htmlFor='username-input'>{translate('auth.username-label')}</label>
+            <label htmlFor='username'>{translate('auth.username-label')}</label>
             <input
               aria-describedby='emailHelp'
               className={`form-control ${
-                usernameError
-                  /* eslint-disable-next-line sonarjs/no-duplicate-string
-                  -- Create an Input Component? */
-                  ? 'is-invalid'
+                touchedFields.username && errors.username
+                  ? formClasses.invalidFieldClass
                   : ''
               }`}
-              id='username-input'
-              onBlur={() => validateUsername()}
-              onChange={event => setUsername(event.target.value)}
-              type='text'
+              {...register('username', {
+                required: { value: true, message: translate('auth.username-error-required') },
+              })}
             />
-            {usernameError && (
+            {errors.username && (
               <span className='help-block text-danger'>
-                {translate('auth.username-error-required')}
+                {errors.username.message}
               </span>
             )}
           </div>
-
           <div className='w-100'>
-            <label htmlFor='email-input'>{translate('auth.email-label')}</label>
+            <label htmlFor='email'>{translate('auth.email-label')}</label>
             <input
               aria-describedby='email'
               className={`form-control ${
-                emailError
-                  ? 'is-invalid'
+                touchedFields.email && errors.email
+                  ? formClasses.invalidFieldClass
                   : ''
               }`}
               disabled={!!userInvitation}
-              id='email-input'
-              onBlur={() => validateEmail()}
-              onChange={event => setEmail(event.target.value)}
+              id='email'
               type='email'
-              value={email}
+              {...register('email', {
+                required: { value: true, message: translate('auth.email-error-required') },
+                pattern: { value: emailRegex, message: translate('auth.email-error-format') },
+              })}
             />
-            {emailError === 'required' && (
+            {errors.email && (
               <span className='help-block text-danger'>
-                {translate('auth.email-error-required')}
-              </span>
-            )}
-            {emailError === 'email' && (
-              <span className='help-block text-danger'>
-                {translate('auth.email-error-format')}
+                {errors.email.message}
               </span>
             )}
           </div>
-
           <div className='w-100'>
             <label htmlFor='password-input'>{translate('auth.password-label')}</label>
             <input
               className={`form-control ${
-                passwordError
-                  ? 'is-invalid'
+                touchedFields.password && errors.password
+                  ? formClasses.invalidFieldClass
                   : ''
               }`}
               id='password-input'
-              onBlur={() => validatePassword()}
-              onChange={event => setPassword(event.target.value)}
               type='password'
+              {...register('password', {
+                required: { value: true, message: translate('auth.password-error-required') },
+                pattern: { value: passwordRegex, message: translate('auth.password-error-format') },
+              })}
             />
-            {passwordError === 'required' && (
+            {errors.password && (
               <span className='help-block text-danger'>
-                {translate('auth.password-error-required')}
-              </span>
-            )}
-            {passwordError === 'password' && (
-              <span className='help-block text-danger'>
-                {translate('auth.password-error-format')}
+                {errors.password.message}
               </span>
             )}
           </div>
-
           <div className='w-100'>
             <label htmlFor='confirmation-password-input'>
               {translate('auth.password-confirmation-label')}
             </label>
             <input
               className={`form-control ${
-                passwordConfirmationError
-                  ? 'is-invalid'
+                touchedFields.confirmPassword && errors.confirmPassword
+                  ? formClasses.invalidFieldClass
                   : ''
               }`}
               id='confirmation-password-input'
-              onBlur={() => validatePasswordConfirmation()}
-              onChange={event => setPasswordConfirmation(event.target.value)}
               type='password'
+              {...register('confirmPassword', {
+                required: {
+                  value: true,
+                  message: translate('auth.password-confirmation-error-required'),
+                },
+                validate: {
+                  mustMatch: (value, formValues) =>
+                    value === formValues.password
+                    || translate('auth.password-error-must-match'),
+                },
+              })}
             />
-            {passwordConfirmationError === 'required' && (
+            {errors.confirmPassword && (
               <span className='help-block text-danger'>
-                {translate('auth.password-confirmation-error-required')}
-              </span>
-            )}
-            {passwordConfirmationError === 'mustMatch' && (
-              <span className='help-block text-danger'>
-                {translate('auth.password-error-must-match')}
+                {errors.confirmPassword.message}
               </span>
             )}
           </div>
+          <button
+            className='btn btn-primary'
+            style={{ margin: '40px 0px 10px' }}
+            type='submit'
+          >
+            {translate('auth.create-account')}
+          </button>
 
           {registrationError && <span className='help-block text-danger'>{registrationError}</span>}
           {codeInvalid && (
@@ -297,15 +226,6 @@ const Register = () => {
             <span className='help-block text-danger'>{translate('auth.invitation-expired')}</span>
           )}
 
-          <button
-            className='btn btn-primary'
-            onClick={onCreateAccountClick}
-            style={{ margin: '40px 0px 10px' }}
-            type='submit'
-          >
-            {translate('auth.create-account')}
-          </button>
-
           <div className='mt-4 text-center'>
             <span>{translate('auth.already-have-an-account')}</span>
             <Link className='ms-2' to={appRoutes.login}>
@@ -314,7 +234,7 @@ const Register = () => {
               </span>
             </Link>
           </div>
-        </div>
+        </form>
       </>
     </AuthPageLayout>
   )
