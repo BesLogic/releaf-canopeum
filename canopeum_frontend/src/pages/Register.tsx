@@ -4,8 +4,10 @@ import { Link, useSearchParams } from 'react-router-dom'
 
 import AuthPageLayout from '@components/auth/AuthPageLayout'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
+import { SnackbarContext } from '@components/context/SnackbarContext'
 import { appRoutes } from '@constants/routes.constant'
 import useApiClient from '@hooks/ApiClientHook'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
 import type { UserInvitation } from '@services/api'
 import { RegisterUser } from '@services/api'
 import { storeToken } from '@utils/auth.utils'
@@ -16,6 +18,8 @@ const Register = () => {
   const { authenticate } = useContext(AuthenticationContext)
   const { t: translate } = useTranslation()
   const { getApiClient } = useApiClient()
+  const { openAlertSnackbar } = useContext(SnackbarContext)
+  const { getErrorMessage } = useErrorHandling()
 
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
@@ -61,7 +65,12 @@ const Register = () => {
     const code = searchParams.get('code')
     if (!code) return
 
-    void fetchUserInvitation(code)
+    fetchUserInvitation(code).catch((error: unknown) =>
+      openAlertSnackbar(
+        getErrorMessage(error, translate('errors.fetch-user-invitation-failed')),
+        { severity: 'error' }
+      )
+    )
   }, [searchParams, fetchUserInvitation])
 
   const validateUsername = () => {

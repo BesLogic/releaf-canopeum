@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import { appRoutes } from '@constants/routes.constant'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
 import type { Post } from '@services/api'
 
 type Props = {
@@ -15,6 +16,7 @@ type Props = {
 const SharePostDialog = ({ onClose, open, post }: Props) => {
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
+  const { getErrorMessage } = useErrorHandling()
 
   const [shareUrl, setShareUrl] = useState('')
 
@@ -26,8 +28,15 @@ const SharePostDialog = ({ onClose, open, post }: Props) => {
   const handleCopyLinkClick = () => {
     if (!shareUrl) return
 
-    void navigator.clipboard.writeText(shareUrl)
-    openAlertSnackbar(`${translate('generic.copied-clipboard')}!`, { severity: 'info' })
+    navigator.clipboard.writeText(shareUrl)
+    .then(() =>
+      openAlertSnackbar(`${translate('generic.copied-clipboard')}!`, { severity: 'info' }))
+    .catch((error: unknown) =>
+      openAlertSnackbar(
+        getErrorMessage(error, translate('errors.copy-to-clibboard-failed')), { severity: 'error' }
+      )
+    )
+
   }
 
   return (

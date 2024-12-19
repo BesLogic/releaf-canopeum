@@ -1,33 +1,41 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { SnackbarContext } from '@components/context/SnackbarContext'
 import AdminCard from '@components/settings/AdminCard'
 import AdminInvitationDialog from '@components/settings/AdminInvitationDialog'
 import useApiClient from '@hooks/ApiClientHook'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
 import LoadingPage from '@pages/LoadingPage'
 import type { SiteAdmins } from '@services/api'
 
 const ManageAdmins = () => {
   const { t: translate } = useTranslation()
   const { getApiClient } = useApiClient()
+  const { getErrorMessage } = useErrorHandling()
+  const { openAlertSnackbar } = useContext(SnackbarContext)
 
   const [isLoadingAdmins, setIsLoadingAdmins] = useState(true)
   const [siteAdminList, setSiteAdminList] = useState<SiteAdmins[]>([])
   const [showAdminInviteDialog, setShowAdminInviteDialog] = useState(false)
 
-  const fetchSiteAdmins = useCallback(async () => {
-    try {
-      const adminsList = await getApiClient().adminUserSitesClient.all()
-      setSiteAdminList(adminsList)
-      setIsLoadingAdmins(false)
-    } catch {
-      setIsLoadingAdmins(false)
+  useEffect(() => {
+    const fetchSiteAdmins = async () => {
+      try {
+        const adminsList = await getApiClient().adminUserSitesClient.all()
+        setSiteAdminList(adminsList)
+        setIsLoadingAdmins(false)
+      } catch {
+        setIsLoadingAdmins(false)
+      }
     }
-  }, [getApiClient])
 
-  useEffect((): void => {
-    void fetchSiteAdmins()
-  }, [fetchSiteAdmins])
+    fetchSiteAdmins().catch((error: unknown) =>
+      openAlertSnackbar(
+        getErrorMessage(error, translate('errors.fetch-support-species-failed'))
+      )
+    )
+  }, [setSiteAdminList, setIsLoadingAdmins])
 
   if (isLoadingAdmins) {
     return <LoadingPage />

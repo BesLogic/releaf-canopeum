@@ -1,10 +1,12 @@
 import { useContext, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
 
 import { AuthenticationContext } from './context/AuthenticationContext'
 import Navbar from './Navbar'
 import TermsAndPolicies from '@components/settings/TermsAndPolicies'
 import { appRoutes } from '@constants/routes.constant'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
 import Analytics from '@pages/Analytics'
 import AnalyticsSite from '@pages/AnalyticsSite'
 import Home from '@pages/Home'
@@ -53,9 +55,24 @@ const AuthenticatedRoutes = () => {
 
 const MainLayout = () => {
   const { initAuth } = useContext(AuthenticationContext)
+  const { t: translate } = useTranslation()
+  const { getErrorMessage } = useErrorHandling()
+
 
   // Try authenticating user on app start if token was saved in storage
-  useEffect(() => void initAuth(), [initAuth])
+  useEffect(() => {
+    const runInitAuth = async () => initAuth()
+
+    runInitAuth().catch((error: unknown) => {
+      const errorMessage = getErrorMessage(
+        error,
+        translate('auth.user-token-not-found')
+      )
+      console.error(errorMessage);
+    });
+  }, []);
+
+
 
   return (
     <Routes>

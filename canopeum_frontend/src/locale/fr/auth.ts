@@ -1,6 +1,7 @@
 import type Shape from '../en/auth'
 
 export default {
+  'user-token-not-found': 'Token de l\'usager absent du stockage',
   'keep-password': 'Garder le même mot de passe',
   'change-password': 'Change de mot de passe',
   'log-in-header-text': 'Connectez-vous à votre compte',

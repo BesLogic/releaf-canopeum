@@ -1,6 +1,7 @@
-import { type RefObject, useCallback, useEffect, useRef, useState } from 'react'
+import { type RefObject, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
 import useErrorHandling from '@hooks/ErrorHandlingHook'
 import usePostsStore from '@store/postsStore'
@@ -11,8 +12,9 @@ const PAGE_SIZE = 5
 const usePostsInfiniteScrolling = () => {
   const { setPosts, morePostsLoaded } = usePostsStore()
   const { t: translate } = useTranslation()
-  const { getErrorMessage } = useErrorHandling()
   const { getApiClient } = useApiClient()
+  const { openAlertSnackbar } = useContext(SnackbarContext)
+  const { getErrorMessage } = useErrorHandling()
 
   const [siteIds, setSiteIds] = useState<number[]>()
   const [currentPage, setCurrentPage] = useState(0)
@@ -74,8 +76,13 @@ const usePostsInfiniteScrolling = () => {
       return
     }
 
-    void fetchPostsPage()
-    isMounted.current = true
+    fetchPostsPage().then(() =>
+      isMounted.current = true
+    )
+    .catch(() =>
+      isMounted.current = false
+    )
+
   }, [fetchPostsPage, siteIds])
 
   // The scrollable container should be the parent container with overflow y auto/scroll
@@ -93,7 +100,10 @@ const usePostsInfiniteScrolling = () => {
     if (scrollTop + clientHeight < scrollHeight - INCERTITUDE_MARGIN) return
 
     setIsLoadingMore(true)
-    void fetchPostsPage()
+    fetchPostsPage().catch((error: unknown) =>
+      openAlertSnackbar(getErrorMessage(error, translate('errors.fetch-posts-failed')),
+      { severity: 'error' })
+    )
   }
 
   return {

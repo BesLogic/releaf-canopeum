@@ -5,7 +5,9 @@ import { useTranslation } from 'react-i18next'
 import BatchActions from '@components/analytics/BatchActions'
 import BatchSponsorLogo from '@components/batches/BatchSponsorLogo'
 import { LanguageContext } from '@components/context/LanguageContext'
+import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
 import type { BatchDetail } from '@services/api'
 
 const BATCH_HEADER_CLASS =
@@ -22,6 +24,8 @@ const BatchTable = (props: Props) => {
   const { t } = useTranslation()
   const { translateValue } = useContext(LanguageContext)
   const { getApiClient } = useApiClient()
+  const { openAlertSnackbar } = useContext(SnackbarContext)
+  const { getErrorMessage } = useErrorHandling()
 
   const [batches, setBatches] = useState(props.batches)
 
@@ -71,7 +75,13 @@ const BatchTable = (props: Props) => {
                   <BatchActions
                     batchDetail={batch}
                     onDelete={() => setBatches(previous => previous.filter(b => b.id !== batch.id))}
-                    onEdit={() => void fetchBatch(props.siteId)}
+                    onEdit={() => fetchBatch(props.siteId).catch((error: unknown) =>
+                      openAlertSnackbar(
+                        getErrorMessage(error, t('errors.fetch-batch-failed',
+                          { batchName: batch.name })),
+                        { severity: 'error' },
+                      )
+                    )}
                   />
                 </div>
               </th>

@@ -7,6 +7,7 @@ import EditBatchModal from '@components/analytics/batch-modal/EditBatchModal'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import ConfirmationDialog from '@components/dialogs/ConfirmationDialog'
 import useApiClient from '@hooks/ApiClientHook'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
 import type { BatchDetail } from '@services/api'
 
 type Props = {
@@ -19,6 +20,7 @@ const BatchActions = ({ onEdit, onDelete, batchDetail }: Props) => {
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const { getApiClient } = useApiClient()
+  const { getErrorMessage } = useErrorHandling()
 
   const whisperRef = useRef<OverlayTriggerHandle>(null)
 
@@ -27,23 +29,24 @@ const BatchActions = ({ onEdit, onDelete, batchDetail }: Props) => {
 
   const deleteBatch = async () => {
     whisperRef.current?.close()
-    try {
-      await getApiClient().batchClient.delete(batchDetail.id)
-      openAlertSnackbar(
-        translate('analyticsSite.delete-batch.success', { batchName: batchDetail.name }),
-      )
-      onDelete()
-    } catch {
-      openAlertSnackbar(
-        translate('analyticsSite.delete-batch.error', { batchName: batchDetail.name }),
-        { severity: 'error' },
-      )
-    }
+
+    await getApiClient().batchClient.delete(batchDetail.id)
+    openAlertSnackbar(
+      translate('analyticsSite.delete-batch.success', { batchName: batchDetail.name }),
+    )
+    onDelete()
+
   }
 
   const handleConfirmDeleteClose = (proceed: boolean) => {
     setConfirmDeleteOpen(false)
-    if (proceed) void deleteBatch()
+    if (proceed) deleteBatch().catch((error: unknown) =>
+      openAlertSnackbar(
+        getErrorMessage(error, translate('analyticsSite.delete-batch.error',
+        { batchName: batchDetail.name })),
+        { severity: 'error' },
+      )
+    )
   }
 
   return (

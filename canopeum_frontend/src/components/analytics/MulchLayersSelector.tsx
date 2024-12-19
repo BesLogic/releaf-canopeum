@@ -3,7 +3,9 @@ import { useTranslation } from 'react-i18next'
 
 import OptionQuantitySelector, { type SelectorOption, type SelectorOptionQuantity } from '@components/analytics/OptionQuantitySelector'
 import { LanguageContext } from '@components/context/LanguageContext'
+import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
 import { MulchLayerType } from '@services/api'
 import { notEmpty } from '@utils/arrayUtils'
 
@@ -17,6 +19,8 @@ const MulchLayersSelector = ({ onChange, mulchLayers }: Props) => {
   const { t: translate } = useTranslation()
   const { translateValue } = useContext(LanguageContext)
   const { getApiClient } = useApiClient()
+  const { getErrorMessage } = useErrorHandling()
+  const { openAlertSnackbar } = useContext(SnackbarContext)
 
   const [availableMulchLayers, setAvailableMulchLayers] = useState<Map<number, MulchLayerType>>(
     new Map(),
@@ -41,8 +45,12 @@ const MulchLayersSelector = ({ onChange, mulchLayers }: Props) => {
       setAvailableMulchLayers(mulchLayerMap)
       setOptions(mulchLayerOptions)
     }
-    void fetchMulchLayers()
-  }, [getApiClient, translateValue])
+    fetchMulchLayers().catch((error: unknown) =>
+      openAlertSnackbar(
+        getErrorMessage(error, translate('errors.fetch-mulch-layers-failed'))
+      )
+    )
+  }, [])
 
   useEffect(() =>
     mulchLayers
