@@ -22,6 +22,7 @@ export default {
   'log-out': 'Se Déconnecter',
   'log-out-confirmation': 'Est-vous certain de vouloir vous déconnecter?',
   'sign-up': "S'inscrire",
+  'remember-me': 'Se souvenir de moi',
   'create-account': 'Créer mon compte',
   'already-have-an-account': 'Vous avez déjà un compte?',
   'back-to-map': 'Retourner à la carte',
