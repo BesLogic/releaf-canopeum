@@ -112,7 +112,7 @@
     }
   ],
   "eslint.codeActionsOnSave.rules": [
-    // Clearing imports and unused vars because of commented code while testing is annoying
+    // Clearing imports, unused vars and comments because of commented code while testing is annoying
     "!unused-imports/no-unused-imports",
     "!autofix/no-debugger",
     "!autofix/no-unused-vars",
@@ -135,6 +135,9 @@
     "editor.defaultFormatter": "vscode.html-language-features"
   },
   "html.format.wrapAttributes": "force-expand-multiline",
+  // To match markup_fmt with dprint
+  "html.format.indentInnerHtml": true,
+  "html.format.extraLiners": "",
 
   /*
   * CSS
