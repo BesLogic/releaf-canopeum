@@ -66,6 +66,7 @@ const Login = () => {
                 : ''
             }`}
             id='email-input'
+            type='email'
             {...register('email', {
               required: { value: true, message: translate('auth.email-error-required') },
             })}
