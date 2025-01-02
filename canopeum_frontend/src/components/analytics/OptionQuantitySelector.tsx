@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 type Props<TValue> = {
   readonly id: string,
   readonly label: string,
+  readonly required?: boolean,
   readonly withQuantity?: boolean,
   readonly selected: SelectorOptionQuantity<TValue>[],
   readonly options: SelectorOption<TValue>[],
@@ -29,7 +30,7 @@ const MINIMUM_QUANTITY = 1 // Makes it easy to refactor if we support a min inpu
 const DEFAULT_QUANTITY = 1
 
 const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
-  { id, label, options, selected, withQuantity, onChange }: Props<TValue>,
+  { id, label, required, options, selected, withQuantity, onChange }: Props<TValue>,
 ) => {
   const [filteredOptions, setFilteredOptions] = useState(options)
   const [isAutocompleteOpen, setIsAutocompleteOpen] = useState(false)
@@ -80,7 +81,7 @@ const OptionQuantitySelector = <TValue extends OptionQuantityValueType>(
 
   return (
     <div className='position-relative'>
-      <label className='form-label' htmlFor={id}>
+      <label aria-required={required} className='form-label' htmlFor={id}>
         {label}
       </label>
 
