@@ -14,7 +14,8 @@ export default {
     comments: 'Commentaires',
     send: 'Envoyer',
     'comment-body-required': 'Votre commentaire ne peut pas être vide.',
-    'comment-body-max-chars_one': 'Votre commentaire ne peut pas contenir plus de {{count}} caractères.',
+    'comment-body-max-chars_one':
+      'Votre commentaire ne peut pas contenir plus de {{count}} caractères.',
     'comment-body-max-chars_other':
       'Votre commentaire ne peut pas contenir plus de {{count}} caractères.',
     'comment-deletion-error': 'Un problème est survenu lors de la suppression du commentaire.',
