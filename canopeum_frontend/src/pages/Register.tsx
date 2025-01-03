@@ -56,9 +56,9 @@ const Register = () => {
       // They will get to chose that option the next time they log in
       const rememberMe = false
       storeToken(response.token, rememberMe)
-    } catch (error){
+    } catch (error) {
       let errorMessage = 'auth.sign-up-error'
-      if (error instanceof ApiException){
+      if (error instanceof ApiException) {
         errorMessage = error.message
       }
       setRegistrationError(translate(errorMessage))

@@ -38,7 +38,7 @@ const Login = () => {
       authenticate(response.user)
     } catch (error) {
       let errorMessage = 'auth.log-in-error'
-      if (error instanceof ApiException){
+      if (error instanceof ApiException) {
         errorMessage = error.message
       }
       setLoginError(translate(errorMessage))
