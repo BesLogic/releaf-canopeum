@@ -10,7 +10,7 @@ import { appRoutes } from '@constants/routes.constant'
 import { formClasses } from '@constants/style'
 import useApiClient from '@hooks/ApiClientHook'
 import type { UserInvitation } from '@services/api'
-import { RegisterUser } from '@services/api'
+import { ApiException, RegisterUser } from '@services/api'
 import { storeToken } from '@utils/auth.utils'
 import { emailRegex, passwordRegex } from '@utils/validators'
 
@@ -56,8 +56,12 @@ const Register = () => {
       // They will get to chose that option the next time they log in
       const rememberMe = false
       storeToken(response.token, rememberMe)
-    } catch {
-      setRegistrationError(translate('auth.sign-up-error'))
+    } catch (error){
+      let errorMessage = 'auth.sign-up-error'
+      if (error instanceof ApiException){
+        errorMessage = error.message
+      }
+      setRegistrationError(translate(errorMessage))
     }
   }
 

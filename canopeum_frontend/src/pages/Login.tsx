@@ -9,7 +9,7 @@ import { AuthenticationContext } from '@components/context/AuthenticationContext
 import { appRoutes } from '@constants/routes.constant'
 import { formClasses } from '@constants/style'
 import useApiClient from '@hooks/ApiClientHook'
-import { LoginUser } from '@services/api'
+import { ApiException, LoginUser } from '@services/api'
 import { storeToken } from '@utils/auth.utils'
 
 type LoginFormInputs = {
@@ -36,8 +36,12 @@ const Login = () => {
 
       storeToken(response.token, formData.rememberMe)
       authenticate(response.user)
-    } catch {
-      setLoginError(translate('auth.log-in-error'))
+    } catch (error) {
+      let errorMessage = 'auth.log-in-error'
+      if (error instanceof ApiException){
+        errorMessage = error.message
+      }
+      setLoginError(translate(errorMessage))
     }
   }
 

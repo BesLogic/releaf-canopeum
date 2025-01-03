@@ -1529,10 +1529,20 @@ export class AuthenticationClient {
         result200 = UserToken.fromJS(resultData200)
         return result200
       })
-    } else if (status !== 200 && status !== 204) {
+    } else if (status === 401) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          'auth.log-in-invalid-credentials',
+          status,
+          _responseText,
+          _headers,
+        )
+      });
+    }
+    else if (status !== 200 && status !== 204) {
       return response.text().then(_responseText => {
         return throwException(
-          'An unexpected server error occurred.',
+          'auth.log-in-error',
           status,
           _responseText,
           _headers,
@@ -1577,6 +1587,16 @@ export class AuthenticationClient {
         result201 = UserToken.fromJS(resultData201)
         return result201
       })
+    } else if (status === 400) {
+      return response.text().then((_responseText) => {
+        const errorMessage = this.processRegisterError(_responseText)
+        return throwException(
+          errorMessage,
+          status,
+          _responseText,
+          _headers,
+        )
+      });
     } else if (status !== 200 && status !== 204) {
       return response.text().then(_responseText => {
         return throwException(
@@ -1589,7 +1609,25 @@ export class AuthenticationClient {
     }
     return Promise.resolve<UserToken>(null as any)
   }
+
+  protected processRegisterError(_responseText: string): string{
+    var errorMessage = 'auth.sign-up-error'
+    if(_responseText.includes('The password is too similar to the')){
+      errorMessage = 'auth.sign-up-password-too-similar'
+    }else if(_responseText.includes('This password is too short')){
+      errorMessage = 'auth.sign-up-password-too-short'
+    }
+    else if(_responseText.includes('This password is too common')){
+      errorMessage = 'auth.sign-up-password-too-common'
+    }
+    else if(_responseText.includes('This password is entirely numeric')){
+      errorMessage = 'auth.sign-up-password-numeric'
+    }
+    return errorMessage
+  }
 }
+
+
 
 export class TokenClient {
   private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }
