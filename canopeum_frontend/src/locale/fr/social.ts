@@ -9,14 +9,14 @@ export default {
   'visit-site': 'Visiter le Site',
   comments: {
     'leave-a-comment': 'Laisser un Commentaire',
-    word_one: 'mot',
-    word_other: 'mots',
+    character_one: 'caractère',
+    character_other: 'caractères',
     comments: 'Commentaires',
     send: 'Envoyer',
     'comment-body-required': 'Votre commentaire ne peut pas être vide.',
-    'comment-body-max-chars_one': 'Votre commentaire ne peut pas contenir plus de {{count}} mots.',
+    'comment-body-max-chars_one': 'Votre commentaire ne peut pas contenir plus de {{count}} caractères.',
     'comment-body-max-chars_other':
-      'Votre commentaire ne peut pas contenir plus de {{count}} mots.',
+      'Votre commentaire ne peut pas contenir plus de {{count}} caractères.',
     'comment-deletion-error': 'Un problème est survenu lors de la suppression du commentaire.',
     'comment-deletion-confirm-title': 'Supprimer le Commentaire',
     'comment-deletion-confirm-self':
@@ -38,7 +38,7 @@ export default {
   },
   widgets: {
     create: 'Ajouter un nouveau widget',
-    'max-word': '100 mots maximum',
+    'max-character': '1000 caractères maximum',
     title: 'Titre du widget',
   },
   contact: {
