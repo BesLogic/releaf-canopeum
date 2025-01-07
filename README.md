@@ -24,7 +24,6 @@ with the docker-compose.yml from this repository.
 #### For frontend
 
 - [Node.js](https://nodejs.org/en/download) (includes npm)
-- [Mockoon](https://mockoon.com/download/#download-section)
 
 #### For backend
 
@@ -87,14 +86,6 @@ On Linux you must instal the mysql dev binaries to be able to build the `mysqlcl
    cd canopeum_frontend
    npm install
    npm run dev
-   ```
-
-   Run mock data (For Frontend only)
-
-   ```shell
-   # In another CLI
-   cd canopeum_frontend
-   npm run mockoon
    ```
 
 6. Linting/Formatting:
