@@ -15,7 +15,7 @@ export default {
     send: 'Envoyer',
     'comment-body-required': 'Votre commentaire ne peut pas être vide.',
     'comment-body-max-chars_one':
-      'Votre commentaire ne peut pas contenir plus de {{count}} caractères.',
+      'Votre commentaire ne peut pas contenir plus de {{count}} caractère.',
     'comment-body-max-chars_other':
       'Votre commentaire ne peut pas contenir plus de {{count}} caractères.',
     'comment-deletion-error': 'Un problème est survenu lors de la suppression du commentaire.',
@@ -39,7 +39,7 @@ export default {
   },
   widgets: {
     create: 'Ajouter un nouveau widget',
-    'max-character': '1000 caractères maximum',
+    max_character: '{{count}} caractères maximum',
     title: 'Titre du widget',
   },
   contact: {

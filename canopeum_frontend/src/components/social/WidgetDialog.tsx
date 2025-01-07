@@ -16,6 +16,8 @@ const defaultWidget: IWidget = {
   id: 0,
 }
 
+const MAXIMUM_CHARS_PER_WIDGET_BODY = 500
+
 const WidgetDialog = ({ handleClose, open }: Props) => {
   const { t } = useTranslation()
   const [innerWidget, setInnerWidget] = useState<IWidget>(open[1] ?? defaultWidget)
@@ -63,7 +65,7 @@ const WidgetDialog = ({ handleClose, open }: Props) => {
                 htmlFor='widget-body'
                 style={{ bottom: 0, right: 0, marginRight: '.5rem', marginBottom: '.5rem' }}
               >
-                {t('social.widgets.max-character')}
+                {t('social.widgets.max_character', { count: MAXIMUM_CHARS_PER_WIDGET_BODY })}
               </label>
 
               <textarea
