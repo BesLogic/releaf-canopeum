@@ -36,7 +36,3 @@
 
 // insert our theme's global styles after so we can use its variables
 @use './assets/styles/GlobalStyles.scss';
-
-label[aria-required]::after {
-  content: ' *';
-}

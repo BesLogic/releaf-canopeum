@@ -84,3 +84,7 @@ body {
 .maplibregl-marker {
   cursor: pointer;
 }
+
+label[aria-required]::after {
+  content: ' *';
+}
