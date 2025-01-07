@@ -26,12 +26,12 @@ const AssetViewer = ({ medias, handleClose, mediaSelectedIndex }: AssetViewerPro
         </button>
       )}
     <button
-        className='btn-close text-light shadow-none'
-        onClick={handleClose}
-        type='button'
-      >
-        <span className='material-symbols-outlined'>cancel</span>
-      </button>
+      className='btn-close text-light shadow-none'
+      onClick={handleClose}
+      type='button'
+    >
+      <span className='material-symbols-outlined'>cancel</span>
+    </button>
     <div className='carousel-inner'>
       {medias.map((media, index) => (
         <div
