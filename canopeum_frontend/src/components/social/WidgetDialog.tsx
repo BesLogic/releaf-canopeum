@@ -16,6 +16,8 @@ const defaultWidget: IWidget = {
   id: 0,
 }
 
+const MAXIMUM_CHARS_PER_WIDGET_BODY = 500
+
 const WidgetDialog = ({ handleClose, open }: Props) => {
   const { t } = useTranslation()
   const [innerWidget, setInnerWidget] = useState<IWidget>(open[1] ?? defaultWidget)
@@ -39,6 +41,7 @@ const WidgetDialog = ({ handleClose, open }: Props) => {
               <input
                 className='form-control'
                 id='widget-title'
+                maxLength={20}
                 onChange={event =>
                   setInnerWidget(value => ({ ...value, title: event.target.value }))}
                 type='text'
@@ -62,13 +65,13 @@ const WidgetDialog = ({ handleClose, open }: Props) => {
                 htmlFor='widget-body'
                 style={{ bottom: 0, right: 0, marginRight: '.5rem', marginBottom: '.5rem' }}
               >
-                {t('social.widgets.max-word')}
+                {t('social.widgets.max_character', { count: MAXIMUM_CHARS_PER_WIDGET_BODY })}
               </label>
 
               <textarea
                 className='form-control'
                 id='widget-body'
-                maxLength={100}
+                maxLength={1000}
                 onChange={event =>
                   setInnerWidget(value => ({ ...value, body: event.target.value }))}
                 rows={3}

@@ -173,6 +173,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
             <textarea
               className='form-control'
               id='site-presentation'
+              maxLength={1000}
               onChange={event => setSite(value => ({ ...value, presentation: event.target.value }))}
               value={site.presentation}
             />
