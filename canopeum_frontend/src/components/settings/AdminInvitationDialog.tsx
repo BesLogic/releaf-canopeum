@@ -113,7 +113,7 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
       )
       : (
         <>
-          <label htmlFor='email-input'>{translate('auth.email-label')}</label>
+          <label aria-required htmlFor='email-input'>{translate('auth.email-label')}</label>
           <input
             aria-describedby='email'
             className={`form-control ${

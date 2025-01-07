@@ -105,7 +105,7 @@ const Register = () => {
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className='w-100'>
-            <label htmlFor='username'>{translate('auth.username-label')}</label>
+            <label aria-required htmlFor='username'>{translate('auth.username-label')}</label>
             <input
               aria-describedby='emailHelp'
               className={`form-control ${
@@ -124,7 +124,7 @@ const Register = () => {
             )}
           </div>
           <div className='w-100'>
-            <label htmlFor='email'>{translate('auth.email-label')}</label>
+            <label aria-required htmlFor='email'>{translate('auth.email-label')}</label>
             <input
               aria-describedby='email'
               className={`form-control ${
@@ -147,7 +147,7 @@ const Register = () => {
             )}
           </div>
           <div className='w-100'>
-            <label htmlFor='password-input'>{translate('auth.password-label')}</label>
+            <label aria-required htmlFor='password-input'>{translate('auth.password-label')}</label>
             <input
               className={`form-control ${
                 touchedFields.password && errors.password
@@ -168,7 +168,7 @@ const Register = () => {
             )}
           </div>
           <div className='w-100'>
-            <label htmlFor='confirmation-password-input'>
+            <label aria-required htmlFor='confirmation-password-input'>
               {translate('auth.password-confirmation-label')}
             </label>
             <input

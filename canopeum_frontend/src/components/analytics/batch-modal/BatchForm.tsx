@@ -56,7 +56,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
   return (
     <form className='d-flex flex-column gap-3'>
       <div>
-        <label className='form-label' htmlFor='batch-name'>
+        <label aria-required className='form-label' htmlFor='batch-name'>
           {t('analyticsSite.batch-modal.name-label')}
         </label>
         <input
@@ -69,7 +69,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
       </div>
 
       <div>
-        <label className='form-label' htmlFor='sponsor-name'>
+        <label aria-required className='form-label' htmlFor='sponsor-name'>
           {t('analyticsSite.batch-modal.sponsor-name-label')}
         </label>
         <input
@@ -86,7 +86,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
       </div>
 
       <div>
-        <label className='form-label' htmlFor='sponsor-website-url'>
+        <label aria-required className='form-label' htmlFor='sponsor-website-url'>
           {t('analyticsSite.batch-modal.sponsor-website-url-label')}
         </label>
         <input
@@ -103,7 +103,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
       </div>
 
       <div>
-        <label className='form-label' htmlFor='sponsor-logo'>
+        <label aria-required className='form-label' htmlFor='sponsor-logo'>
           {t('analyticsSite.batch-modal.sponsor-logo-label')}
         </label>
         <ImageUpload
@@ -148,6 +148,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
               })),
             [],
           )}
+          required
           species={batch.species}
         />
       </div>
