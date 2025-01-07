@@ -13,14 +13,26 @@ const AssetViewer = ({ medias, handleClose, mediaSelectedIndex }: AssetViewerPro
     className='carousel carousel-fade asset-viewer-container'
     id='carouselFade'
   >
+    {medias.length > 1
+      && (
+        <button
+          className='carousel-control-prev'
+          data-bs-slide='prev'
+          data-bs-target='#carouselFade'
+          type='button'
+        >
+          <span aria-hidden='true' className='carousel-control-prev-icon' />
+          <span className='visually-hidden'>Previous</span>
+        </button>
+      )}
+    <button
+      className='btn-close text-light shadow-none'
+      onClick={handleClose}
+      type='button'
+    >
+      <span className='material-symbols-outlined'>cancel</span>
+    </button>
     <div className='carousel-inner'>
-      <button
-        className='btn-close text-light shadow-none'
-        onClick={handleClose}
-        type='button'
-      >
-        <span className='material-symbols-outlined'>cancel</span>
-      </button>
       {medias.map((media, index) => (
         <div
           className={`carousel-item ${
@@ -34,18 +46,6 @@ const AssetViewer = ({ medias, handleClose, mediaSelectedIndex }: AssetViewerPro
         </div>
       ))}
     </div>
-    {medias.length > 1
-      && (
-        <button
-          className='carousel-control-prev'
-          data-bs-slide='prev'
-          data-bs-target='#carouselFade'
-          type='button'
-        >
-          <span aria-hidden='true' className='carousel-control-prev-icon' />
-          <span className='visually-hidden'>Previous</span>
-        </button>
-      )}
     {medias.length > 1
       && (
         <button
