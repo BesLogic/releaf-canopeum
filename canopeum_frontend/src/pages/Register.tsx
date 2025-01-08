@@ -21,7 +21,6 @@ type RegisterFormInputs = {
   confirmPassword: string,
 }
 
-
 const processRegisterError = (_responseText: string): string => {
   let errorMessage = 'auth.sign-up-error'
   if (_responseText.includes('The password is too similar to the')) {
