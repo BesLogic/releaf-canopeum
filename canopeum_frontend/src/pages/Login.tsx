@@ -38,9 +38,10 @@ const Login = () => {
       authenticate(response.user)
     } catch (error) {
       let errorMessage = 'auth.log-in-error'
-      if (error instanceof ApiException) {
-        errorMessage = error.message
+      if (error instanceof ApiException && (error.response.includes('Invalid credentials'))){
+        errorMessage = 'auth.log-in-invalid-credentials'
       }
+
       setLoginError(translate(errorMessage))
     }
   }

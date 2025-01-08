@@ -21,6 +21,22 @@ type RegisterFormInputs = {
   confirmPassword: string,
 }
 
+
+const processRegisterError = (_responseText: string): string => {
+  let errorMessage = 'auth.sign-up-error'
+  if (_responseText.includes('The password is too similar to the')) {
+    errorMessage = 'auth.sign-up-password-too-similar'
+  } else if (_responseText.includes('This password is too short')) {
+    errorMessage = 'auth.sign-up-password-too-short'
+  } else if (_responseText.includes('This password is too common')) {
+    errorMessage = 'auth.sign-up-password-too-common'
+  } else if (_responseText.includes('This password is entirely numeric')) {
+    errorMessage = 'auth.sign-up-password-numeric'
+  }
+
+  return errorMessage
+}
+
 const Register = () => {
   const [searchParams, _setSearchParams] = useSearchParams()
   const { authenticate } = useContext(AuthenticationContext)
@@ -59,7 +75,7 @@ const Register = () => {
     } catch (error) {
       let errorMessage = 'auth.sign-up-error'
       if (error instanceof ApiException) {
-        errorMessage = error.message
+        errorMessage = processRegisterError(error.response)
       }
       setRegistrationError(translate(errorMessage))
     }
