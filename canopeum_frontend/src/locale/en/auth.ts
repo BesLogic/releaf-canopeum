@@ -24,8 +24,13 @@ export default {
   'create-account': 'Create Account',
   'already-have-an-account': 'Already have an account?',
   'back-to-map': 'Back to the map',
-  'log-in-error': 'Error while trying to log in',
-  'sign-up-error': 'Error while trying to sign up',
+  'log-in-error': 'An unexpected error occured while trying to log in.',
+  'log-in-invalid-credentials': 'Login error. Incorrect username or password.',
+  'sign-up-error': 'An unexpected error occured while trying to sign up.',
+  'sign-up-password-too-similar': 'The password is too similar to your other informations.',
+  'sign-up-password-too-short': 'The password is short.',
+  'sign-up-password-too-common': 'The password is too common.',
+  'sign-up-password-numeric': 'The password is entirely numeric.',
   'code-invalid':
     'Your invitation link is invalid. Please contact the person who invited you to ask for a new link.',
   'invitation-expired':

@@ -26,8 +26,13 @@ export default {
   'create-account': 'Créer mon compte',
   'already-have-an-account': 'Vous avez déjà un compte?',
   'back-to-map': 'Retourner à la carte',
-  'log-in-error': 'Erreur lors de la tentative de connexion',
-  'sign-up-error': "Erreur lors de la tentative d'inscription",
+  'log-in-error': "Une erreur inattendue s'est produite lors de la tentative de connexion.",
+  'log-in-invalid-credentials': "Erreur de connexion. Nom d'utilisateur ou mot de passe incorrect.",
+  'sign-up-error': "Une erreur inattendue s'est produite lors de la tentative d'inscription.",
+  'sign-up-password-too-similar': 'Le mot de passe est trop similaire à vos autres informations.',
+  'sign-up-password-too-short': 'Le mot de passe est trop court.',
+  'sign-up-password-too-common': 'Le mot de passe est trop commun.',
+  'sign-up-password-numeric': 'Le mot de passe est entièrement numérique.',
   'code-invalid':
     "Votre lien d'invitation est invalide. Veuillez contacter la personne qui vous a invité pour demander un nouveau lien.",
   'invitation-expired':
