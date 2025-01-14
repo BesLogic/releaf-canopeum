@@ -50,14 +50,16 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
   const [site, setSite] = useState(defaultSiteDto)
   const [availableSiteTypes, setAvailableSiteTypes] = useState<SiteType[]>([])
   const [siteImageURL, setSiteImageURL] = useState<string>()
+  const [loading, setLoading] = useState(true)
 
   const fetchSite = useCallback(async () => {
     if (!siteId) {
       // Clear the image that could come from having opened the modal with a previous site
       setSiteImageURL(undefined)
-
       return
     }
+
+    setLoading(true)
 
     const siteDetail = await getApiClient().siteClient.detail(siteId)
     const { dmsLatitude, dmsLongitude } = siteDetail.coordinate
@@ -82,10 +84,15 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
       visibleOnMap: siteDetail.visibleMap,
     })
     setSiteImageURL(URL.createObjectURL(blob))
+    setLoading(false)
   }, [siteId, getApiClient])
 
   const fetchSiteTypes = useCallback(
-    async () => setAvailableSiteTypes(await getApiClient().siteClient.types()),
+    async () => {
+      setLoading(true)
+      setAvailableSiteTypes(await getApiClient().siteClient.types())
+      setLoading(false)
+    },
     [getApiClient],
   )
 
@@ -97,12 +104,18 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
   useEffect(() => void fetchSiteTypes(), [fetchSiteTypes])
 
   useEffect(() => {
-    if (!open) return
+    if (!open) {
+      if (!siteId) setSite(defaultSiteDto)
+
+      return
+    }
 
     void fetchSite()
-  }, [open, fetchSite])
+  }, [open, fetchSite, siteId])
 
   useEffect(() => setSite(defaultSiteDto), [siteId])
+
+  if (loading) return null
 
   return (
     <Dialog fullWidth maxWidth='sm' onClose={(_, reason) => handleClose(reason)} open={open}>

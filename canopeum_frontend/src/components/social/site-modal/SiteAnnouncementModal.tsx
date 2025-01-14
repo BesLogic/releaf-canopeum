@@ -1,5 +1,5 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { SnackbarContext } from '@components/context/SnackbarContext'
@@ -26,6 +26,10 @@ const SiteAnnouncementModal = ({ announcement, isOpen, handleClose }: Props) => 
   const [isFormValid, setIsFormValid] = useState<boolean>(true)
   const { getApiClient } = useApiClient()
   const { openAlertSnackbar } = useContext(SnackbarContext)
+
+  useEffect(() => {
+    if (!isOpen) setEditedAnnouncement(announcement)
+  }, [isOpen, announcement])
 
   const handleSubmitSiteAnnouncement = async () => {
     try {
