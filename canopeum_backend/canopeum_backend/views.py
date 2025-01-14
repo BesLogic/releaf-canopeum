@@ -136,11 +136,11 @@ class LoginAPIView(APIView):
 
         user = cast(User, authenticate(email=email, password=password))
         if user is not None:
-            refresh = cast(RefreshToken, RefreshToken.for_user(user))
+            refresh = RefreshToken.for_user(user)
 
             refresh_serializer = TokenRefreshSerializer({
-                "refresh": str(refresh),
-                "access": str(refresh.access_token),
+                "refresh": refresh,
+                "access": refresh.access_token,
             })
             user_serializer = UserSerializer(user)
             serializer = UserTokenSerializer(
@@ -166,7 +166,7 @@ class RegisterAPIView(APIView):
         if register_user_serializer.is_valid():
             user = register_user_serializer.create_user()
             if user is not None:
-                refresh = cast(RefreshToken, RefreshToken.for_user(user))
+                refresh = RefreshToken.for_user(user)
 
                 token_refresh_serializer = TokenRefreshSerializer({
                     "refresh": str(refresh),
@@ -1194,7 +1194,7 @@ class TokenObtainPairAPIView(APIView):
             ),
         )
         if user is not None:
-            refresh = cast(RefreshToken, RefreshToken.for_user(user))
+            refresh = RefreshToken.for_user(user)
             if user.role is not None:
                 refresh["role"] = user.role.name
             return Response(
