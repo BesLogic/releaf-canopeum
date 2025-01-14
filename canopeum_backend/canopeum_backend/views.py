@@ -136,11 +136,11 @@ class LoginAPIView(APIView):
 
         user = cast(User, authenticate(email=email, password=password))
         if user is not None:
-            refresh = cast(RefreshToken, RefreshToken.for_user(user))
+            refresh = RefreshToken.for_user(user)
 
             refresh_serializer = TokenRefreshSerializer({
-                "refresh": str(refresh),
-                "access": str(refresh.access_token),
+                "refresh": refresh,
+                "access": refresh.access_token,
             })
             user_serializer = UserSerializer(user)
             serializer = UserTokenSerializer(
@@ -166,11 +166,11 @@ class RegisterAPIView(APIView):
         if register_user_serializer.is_valid():
             user = register_user_serializer.create_user()
             if user is not None:
-                refresh = cast(RefreshToken, RefreshToken.for_user(user))
+                refresh = RefreshToken.for_user(user)
 
                 token_refresh_serializer = TokenRefreshSerializer({
-                    "refresh": str(refresh),
-                    "access": str(refresh.access_token),
+                    "refresh": refresh,
+                    "access": refresh.access_token,
                 })
                 user_serializer = UserSerializer(user)
                 user_token_serializer = UserTokenSerializer(
@@ -1170,35 +1170,3 @@ class UserInvitationDetailAPIView(APIView):
 
         serializer = UserInvitationSerializer(user_invitation)
         return Response(serializer.data)
-
-
-class TokenRefreshAPIView(APIView):
-    @extend_schema(responses=RefreshToken, operation_id="token_refresh")
-    def post(self, request: Request):
-        refresh = RefreshToken(request.data.get("refresh"))
-        user = User.objects.get(pk=refresh["user_id"])
-        refresh["role"] = user.role.name
-        return Response(
-            {"refresh": str(refresh), "access": str(refresh.access_token)},
-            status=status.HTTP_200_OK,
-        )
-
-
-class TokenObtainPairAPIView(APIView):
-    @extend_schema(responses=UserSerializer, operation_id="token_obtain_pair")
-    def post(self, request: Request):
-        user = cast(
-            User,
-            authenticate(
-                username=request.data.get("username"), password=request.data.get("password")
-            ),
-        )
-        if user is not None:
-            refresh = cast(RefreshToken, RefreshToken.for_user(user))
-            if user.role is not None:
-                refresh["role"] = user.role.name
-            return Response(
-                {"refresh": str(refresh), "access": str(refresh.access_token)},
-                status=status.HTTP_200_OK,
-            )
-        return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
