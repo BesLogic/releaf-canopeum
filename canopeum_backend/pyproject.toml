@@ -8,7 +8,7 @@ dependencies = [
   "dj-database-url",
   "django-cors-headers",
   "djangorestframework-camel-case",
-  "djangorestframework-simplejwt",
+  "djangorestframework-simplejwt>=5.4.0",
   # TODO: Bump above 5.3.1 as soon as fixed for https://github.com/BesLogic/releaf-canopeum/security/dependabot/3
   "djangorestframework>=3.15.2",
   # Fix for https://github.com/BesLogic/releaf-canopeum/security/dependabot/15
