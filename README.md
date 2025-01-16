@@ -177,8 +177,6 @@ If you save a modification to the `.nswag` file, DO NOT INCLUDE THE LOCAL COPY O
 
 ## Deployments
 
-Whenever changes are pushed to the main branch, a build is automatically triggered and a container package pushed to <https://github.com/orgs/BesLogic/packages?repo_name=releaf-canopeum>.
-
-You can also trigger a manual package build by using the "Run workflow" button at <https://github.com/BesLogic/releaf-canopeum/actions/workflows/canopeum_deploy.yml>.
+You can trigger a manual package build by using the "Run workflow" button at <https://github.com/BesLogic/releaf-canopeum/actions/workflows/canopeum_deploy.yml>. As soon as that build is finished, a container package is pushed to <https://github.com/orgs/BesLogic/packages?repo_name=releaf-canopeum>. Our Portainer instance watches for new packages and will automatically pull them.
 
 <!--- If the deployment is not reflected whithin the next 5 mintues, an administrator may try navigating to `/#!/1/docker/stacks/releaf-canopeum?id=11&regular=true` on our portainer instance and press "Pull and redeploy". -->
