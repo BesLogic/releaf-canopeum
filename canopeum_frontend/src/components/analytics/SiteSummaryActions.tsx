@@ -23,7 +23,7 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange, onSiteEdit }: P
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const { getApiClient } = useApiClient()
-  const { getErrorMessage } = useErrorHandling()
+  const { displayUnhandledAPIError } = useErrorHandling()
   const whisperRef = useRef<OverlayTriggerHandle>(null)
 
   const [filteredAdmins, setFilteredAdmins] = useState(admins)
@@ -113,11 +113,7 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange, onSiteEdit }: P
       return
     }
 
-    deleteSite().catch((error: unknown) =>
-      openAlertSnackbar(
-        getErrorMessage(error, translate('errors.delete-site-failed')),
-      )
-    )
+    deleteSite().catch(displayUnhandledAPIError('errors.delete-site-failed'))
   }
 
   const administratorsSelection = (

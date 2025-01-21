@@ -16,7 +16,7 @@ type Props = {
 const SharePostDialog = ({ onClose, open, post }: Props) => {
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
-  const { getErrorMessage } = useErrorHandling()
+  const { displayUnhandledAPIError } = useErrorHandling()
 
   const [shareUrl, setShareUrl] = useState('')
 
@@ -32,12 +32,7 @@ const SharePostDialog = ({ onClose, open, post }: Props) => {
       .then(() =>
         openAlertSnackbar(`${translate('generic.copied-clipboard')}!`, { severity: 'info' })
       )
-      .catch((error: unknown) =>
-        openAlertSnackbar(
-          getErrorMessage(error, translate('errors.copy-to-clibboard-failed')),
-          { severity: 'error' },
-        )
-      )
+      .catch(displayUnhandledAPIError('errors.copy-to-clibboard-failed'))
   }
 
   return (

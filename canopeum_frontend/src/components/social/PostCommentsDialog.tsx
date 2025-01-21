@@ -29,7 +29,7 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose }: Props) => {
   const { currentUser } = useContext(AuthenticationContext)
   const { commentChange } = usePostsStore()
   const { getApiClient } = useApiClient()
-  const { getErrorMessage } = useErrorHandling()
+  const { displayUnhandledAPIError } = useErrorHandling()
 
   const [comments, setComments] = useState<Comment[]>([])
   const [commentsLoaded, setCommentsLoaded] = useState(false)
@@ -50,9 +50,7 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose }: Props) => {
     fetchComments()
       .then(() => setCommentsLoaded(true))
       .catch((error: unknown) => {
-        openAlertSnackbar(getErrorMessage(error, translate('errors.fetch-comments-failed')), {
-          severity: 'error',
-        })
+        displayUnhandledAPIError('errors.fetch-comments-failed')(error)
         setCommentsLoaded(false)
       })
   }, [postId, open, commentsLoaded, getApiClient])
@@ -138,11 +136,7 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose }: Props) => {
 
     if (!proceedWithDelete || !commentToDelete) return
 
-    deleteComment(commentToDelete).catch((error: unknown) =>
-      openAlertSnackbar(getErrorMessage(error, translate('errors.delete-comment-failed')), {
-        severity: 'error',
-      })
-    )
+    deleteComment(commentToDelete).catch(displayUnhandledAPIError('errors.delete-comment-failed'))
   }
 
   return (

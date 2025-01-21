@@ -1,7 +1,6 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { SnackbarContext } from '@components/context/SnackbarContext'
 import AdminCard from '@components/settings/AdminCard'
 import AdminInvitationDialog from '@components/settings/AdminInvitationDialog'
 import useApiClient from '@hooks/ApiClientHook'
@@ -12,8 +11,7 @@ import type { SiteAdmins } from '@services/api'
 const ManageAdmins = () => {
   const { t: translate } = useTranslation()
   const { getApiClient } = useApiClient()
-  const { getErrorMessage } = useErrorHandling()
-  const { openAlertSnackbar } = useContext(SnackbarContext)
+  const { displayUnhandledAPIError } = useErrorHandling()
 
   const [isLoadingAdmins, setIsLoadingAdmins] = useState(true)
   const [siteAdminList, setSiteAdminList] = useState<SiteAdmins[]>([])
@@ -30,11 +28,7 @@ const ManageAdmins = () => {
       }
     }
 
-    fetchSiteAdmins().catch((error: unknown) =>
-      openAlertSnackbar(
-        getErrorMessage(error, translate('errors.fetch-support-species-failed')),
-      )
-    )
+    fetchSiteAdmins().catch(displayUnhandledAPIError('errors.fetch-support-species-failed'))
   }, [setSiteAdminList, setIsLoadingAdmins])
 
   if (isLoadingAdmins) {

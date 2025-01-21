@@ -17,7 +17,7 @@ type Props = {
 const AdminInvitationDialog = ({ open, handleClose }: Props) => {
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
-  const { getErrorMessage } = useErrorHandling()
+  const { getErrorMessage, displayUnhandledAPIError } = useErrorHandling()
   const { getApiClient } = useApiClient()
 
   const [siteOptions, setSiteOptions] = useState<SelectionItem<number>[]>([])
@@ -36,11 +36,7 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
       setSiteOptions(sites.map(site => ({ displayText: site.name, value: site.id })))
     }
 
-    fetchAllSites().catch((error: unknown) =>
-      openAlertSnackbar(
-        getErrorMessage(error, translate('errors.fetch-all-sites-failed')),
-      )
-    )
+    fetchAllSites().catch(displayUnhandledAPIError('errors.fetch-all-sites-failed'))
   }, [])
   const validateEmail = () => {
     if (!email) {
@@ -78,11 +74,10 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
 
       setInvitationLink(`${globalThis.location.origin}/register?code=${response.code}`)
     } catch (error: unknown) {
-      const errorMessage = getErrorMessage(
+      setGenerateLinkError(getErrorMessage(
         error,
         translate('settings.manage-admins.generate-link-error'),
-      )
-      setGenerateLinkError(errorMessage)
+      ))
     }
   }
 
@@ -92,11 +87,7 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
       .then(() =>
         openAlertSnackbar(`${translate('generic.copied-clipboard')}!`, { severity: 'info' })
       )
-      .catch((error: unknown) =>
-        openAlertSnackbar(
-          getErrorMessage(error, translate('errors.copy-to-clipboard-failed')),
-        )
-      )
+      .catch(displayUnhandledAPIError('errors.copy-to-clipboard-failed'))
   }
 
   const onCloseModal = () => {

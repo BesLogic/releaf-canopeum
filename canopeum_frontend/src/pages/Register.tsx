@@ -6,7 +6,6 @@ import { Link, useSearchParams } from 'react-router-dom'
 
 import AuthPageLayout from '@components/auth/AuthPageLayout'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
-import { SnackbarContext } from '@components/context/SnackbarContext'
 import { appRoutes } from '@constants/routes.constant'
 import { formClasses } from '@constants/style'
 import useApiClient from '@hooks/ApiClientHook'
@@ -28,8 +27,7 @@ const Register = () => {
   const { authenticate } = useContext(AuthenticationContext)
   const { t: translate } = useTranslation()
   const { getApiClient } = useApiClient()
-  const { openAlertSnackbar } = useContext(SnackbarContext)
-  const { getErrorMessage } = useErrorHandling()
+  const { displayUnhandledAPIError } = useErrorHandling()
 
   const [registrationError, setRegistrationError] = useState<string | undefined>()
   const [codeInvalid, setCodeInvalid] = useState(false)
@@ -91,19 +89,14 @@ const Register = () => {
     const code = searchParams.get('code')
     if (!code) return
 
-    fetchUserInvitation(code).catch((error: unknown) =>
-      openAlertSnackbar(
-        getErrorMessage(error, translate('errors.fetch-user-invitation-failed')),
-        { severity: 'error' },
-      )
-    )
+    fetchUserInvitation(code).catch(displayUnhandledAPIError('errors.fetch-user-invitation-failed'))
   }, [searchParams, fetchUserInvitation])
 
   useEffect(() => {
     const code = searchParams.get('code')
     if (!code) return
 
-    void fetchUserInvitation(code)
+    fetchUserInvitation(code).catch(displayUnhandledAPIError('errors.fetch-user-invitation-failed'))
   }, [searchParams, fetchUserInvitation])
 
   return (

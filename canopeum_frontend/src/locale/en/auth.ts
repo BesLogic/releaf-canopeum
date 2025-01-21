@@ -1,5 +1,4 @@
 export default {
-  'user-token-not-found': 'User token not found in storage',
   'keep-password': 'Keep Same Password',
   'change-password': 'Change Password',
   'log-in-header-text': 'Log In to Your Account',

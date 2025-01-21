@@ -1,9 +1,8 @@
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router-dom'
 
 import LoadingPage from './LoadingPage'
-import { SnackbarContext } from '@components/context/SnackbarContext'
 import PostCard from '@components/social/PostCard'
 import { appRoutes } from '@constants/routes.constant'
 import useApiClient from '@hooks/ApiClientHook'
@@ -16,8 +15,7 @@ const PostDetailsPage = () => {
   const { postId: postIdFromParams } = useParams()
   const { posts, setPosts } = usePostsStore()
   const { getApiClient } = useApiClient()
-  const { openAlertSnackbar } = useContext(SnackbarContext)
-  const { getErrorMessage } = useErrorHandling()
+  const { displayUnhandledAPIError } = useErrorHandling()
 
   const [postId, setPostId] = useState<number>()
   const [postDetail, setPostDetail] = useState<Post>()
@@ -58,12 +56,7 @@ const PostDetailsPage = () => {
       return
     }
 
-    fetchPost(postIdNumber).catch((error: unknown) =>
-      openAlertSnackbar(
-        getErrorMessage(error, translate('errors.fetch-post-failed')),
-        { severity: 'error' },
-      )
-    )
+    fetchPost(postIdNumber).catch(displayUnhandledAPIError('errors.fetch-post-failed'))
     setPostId(postIdNumber)
   }, [fetchPost, postIdFromParams])
 

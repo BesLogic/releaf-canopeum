@@ -36,22 +36,17 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
   const [isFormValid, setIsFormValid] = useState<boolean>(true)
   const { getApiClient } = useApiClient()
   const { openAlertSnackbar } = useContext(SnackbarContext)
-  const { getErrorMessage } = useErrorHandling()
+  const { displayUnhandledAPIError } = useErrorHandling()
 
   const handleSubmitSiteContact = () =>
-    getApiClient().contactClient.update(contact.id, editedContact as PatchedContact).then(
-      () => {
-        openAlertSnackbar(
-          t('social.contact.feedback.edit-success'),
-        )
+    getApiClient()
+      .contactClient
+      .update(contact.id, editedContact as PatchedContact)
+      .then(() => {
+        openAlertSnackbar(t('social.contact.feedback.edit-success'))
         handleClose(editedContact as Contact)
-      },
-    ).catch((error: unknown) =>
-      openAlertSnackbar(
-        getErrorMessage(error, t('social.contact.feedback.edit-error')),
-        { severity: 'error' },
-      )
-    )
+      })
+      .catch(displayUnhandledAPIError('social.contact.feedback.edit-error'))
 
   return (
     <Dialog fullWidth maxWidth='sm' onClose={() => handleClose(null)} open={isOpen}>

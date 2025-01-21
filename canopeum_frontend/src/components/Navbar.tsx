@@ -3,9 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router-dom'
 
 import { AuthenticationContext } from './context/AuthenticationContext'
-import { SnackbarContext } from '@components/context/SnackbarContext'
 import { appRoutes } from '@constants/routes.constant'
-import useErrorHandling from '@hooks/ErrorHandlingHook'
 import type { RoleEnum } from '@services/api'
 
 type NavbarItem = {
@@ -48,8 +46,6 @@ const Navbar = () => {
   const { i18n: { changeLanguage, language }, t: translate } = useTranslation()
   const [currentLanguage, setCurrentLanguage] = useState(language)
   const { currentUser } = useContext(AuthenticationContext)
-  const { getErrorMessage } = useErrorHandling()
-  const { openAlertSnackbar } = useContext(SnackbarContext)
   const location = useLocation()
 
   const handleChangeLanguage = () => {
@@ -57,13 +53,7 @@ const Navbar = () => {
       ? 'fr'
       : 'en'
     setCurrentLanguage(newLanguage)
-    changeLanguage(newLanguage).catch((error: unknown) => {
-      const errorMessage = getErrorMessage(
-        error,
-        translate('errors.change-language-failed'),
-      )
-      openAlertSnackbar(errorMessage, { severity: 'error' })
-    })
+    changeLanguage(newLanguage)
   }
 
   const { isAuthenticated, showLogoutModal } = useContext(AuthenticationContext)

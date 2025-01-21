@@ -49,8 +49,7 @@ const usePostsInfiniteScrolling = () => {
       setCurrentPage(previous => previous + 1)
       setLoadingError(undefined)
     } catch (error: unknown) {
-      const errorMessage = getErrorMessage(error, translate('posts.error-loading-posts'))
-      setLoadingError(errorMessage)
+      setLoadingError(getErrorMessage(error, translate('posts.error-loading-posts')))
     }
 
     setIsLoadingFirstPage(false)
@@ -76,7 +75,8 @@ const usePostsInfiniteScrolling = () => {
       return
     }
 
-    fetchPostsPage().then(() => isMounted.current = true)
+    fetchPostsPage()
+      .then(() => isMounted.current = true)
       .catch(() => isMounted.current = false)
   }, [fetchPostsPage, siteIds])
 
