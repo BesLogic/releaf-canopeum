@@ -135,14 +135,14 @@ const Analytics = () => {
     setIsModalOpen(true)
   }
 
-  useEffect((): void => {
+  useEffect(() => {
     if (currentUser?.role !== 'MegaAdmin') return
 
     void fetchAdmins()
   }, [currentUser?.role, fetchAdmins])
 
   useEffect(
-    (): void => void fetchSites(),
+    () => void fetchSites(),
     [fetchSites],
   )
 
