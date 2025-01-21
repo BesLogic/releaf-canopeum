@@ -25,9 +25,7 @@ const ManageAdmins = () => {
     }
   }, [getApiClient])
 
-  useEffect((): void => {
-    void fetchSiteAdmins()
-  }, [fetchSiteAdmins])
+  useEffect(() => void fetchSiteAdmins(), [fetchSiteAdmins])
 
   if (isLoadingAdmins) {
     return <LoadingPage />
