@@ -28,7 +28,7 @@ const SiteCoordinates = (
 
   return (
     <>
-      <label className='form-label' htmlFor='site-coordinates'>
+      <label aria-required className='form-label' htmlFor='site-coordinates'>
         {t('analytics.site-modal.site-gps-coordinates')}
       </label>
       <div id='site-coordinates'>

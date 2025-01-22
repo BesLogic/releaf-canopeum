@@ -11,7 +11,6 @@ import useApiClient from '@hooks/ApiClientHook'
 import useErrorHandling from '@hooks/ErrorHandlingHook'
 import { type Comment, CreateComment } from '@services/api'
 import usePostsStore from '@store/postsStore'
-import { numberOfWordsInText } from '@utils/stringUtils'
 import type { InputValidationError } from '@utils/validators'
 
 type Props = {
@@ -21,7 +20,7 @@ type Props = {
   readonly handleClose: () => void,
 }
 
-const MAXIMUM_WORDS_PER_COMMENT = 100
+const MAXIMUM_CHARS_PER_COMMENT = 500
 
 const PostCommentsDialog = ({ open, postId, siteId, handleClose }: Props) => {
   const { t: translate } = useTranslation()
@@ -35,7 +34,7 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose }: Props) => {
   const [commentsLoaded, setCommentsLoaded] = useState(false)
 
   const [commentBody, setCommentBody] = useState('')
-  const [commentBodyNumberOfWords, setCommentBodyNumberOfWords] = useState(0)
+  const [commentBodyNumberOfChars, setCommentBodyNumberOfChars] = useState(0)
   const [commentBodyError, setCommentBodyError] = useState<InputValidationError | undefined>()
   const [sendButtonClicked, setSendButtonClicked] = useState(false)
   const [confirmCommentDeleteOpen, setConfirmCommentDeleteOpen] = useState<Comment | undefined>()
@@ -73,12 +72,12 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose }: Props) => {
 
   const handleCommentBodyChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const bodyValue = event.target.value
-    const numberOfWords = numberOfWordsInText(bodyValue)
+    const numberOfWords = bodyValue.length
 
-    if (numberOfWords > MAXIMUM_WORDS_PER_COMMENT) return
+    if (numberOfWords > MAXIMUM_CHARS_PER_COMMENT) return
 
     setCommentBody(bodyValue)
-    setCommentBodyNumberOfWords(numberOfWords)
+    setCommentBodyNumberOfChars(numberOfWords)
   }
 
   const validateCommentBody = (forceValidation = false) => {
@@ -91,7 +90,7 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose }: Props) => {
       return false
     }
 
-    if (commentBodyNumberOfWords > MAXIMUM_WORDS_PER_COMMENT) {
+    if (commentBodyNumberOfChars > MAXIMUM_CHARS_PER_COMMENT) {
       setCommentBodyError('maximumChars')
 
       return false
@@ -113,7 +112,7 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose }: Props) => {
 
     setComments(previous => [newComment, ...previous])
     setCommentBody('')
-    setCommentBodyNumberOfWords(0)
+    setCommentBodyNumberOfChars(0)
     commentChange(postId, 'added')
   }
 
@@ -173,9 +172,9 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose }: Props) => {
                     className='max-words position-absolute end-0 pe-2'
                     style={{ bottom: '-1.6rem' }}
                   >
-                    <span>{commentBodyNumberOfWords}/{MAXIMUM_WORDS_PER_COMMENT}</span>
+                    <span>{commentBodyNumberOfChars}/{MAXIMUM_CHARS_PER_COMMENT}</span>
                     <span className='ms-1'>
-                      {translate('social.comments.word', { count: MAXIMUM_WORDS_PER_COMMENT })}
+                      {translate('social.comments.character', { count: MAXIMUM_CHARS_PER_COMMENT })}
                     </span>
                   </div>
                 </div>
@@ -189,7 +188,7 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose }: Props) => {
                 {commentBodyError === 'maximumChars' && (
                   <span className='help-block text-danger'>
                     {translate('social.comments.comment-body-max-chars', {
-                      count: MAXIMUM_WORDS_PER_COMMENT,
+                      count: MAXIMUM_CHARS_PER_COMMENT,
                     })}
                   </span>
                 )}

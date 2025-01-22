@@ -11,7 +11,7 @@ import { formClasses } from '@constants/style'
 import useApiClient from '@hooks/ApiClientHook'
 import useErrorHandling from '@hooks/ErrorHandlingHook'
 import type { UserInvitation } from '@services/api'
-import { RegisterUser } from '@services/api'
+import { ApiException, RegisterUser } from '@services/api'
 import { storeToken } from '@utils/auth.utils'
 import { emailRegex, passwordRegex } from '@utils/validators'
 
@@ -20,6 +20,22 @@ type RegisterFormInputs = {
   email: string,
   password: string,
   confirmPassword: string,
+}
+
+const processRegisterError = (_responseText: string): string => {
+  let errorMessage = 'auth.sign-up-error'
+  // These come from Django AUTH_PASSWORD_VALIDATORS
+  if (_responseText.includes('The password is too similar to the')) {
+    errorMessage = 'auth.sign-up-password-too-similar'
+  } else if (_responseText.includes('This password is too short')) {
+    errorMessage = 'auth.sign-up-password-too-short'
+  } else if (_responseText.includes('This password is too common')) {
+    errorMessage = 'auth.sign-up-password-too-common'
+  } else if (_responseText.includes('This password is entirely numeric')) {
+    errorMessage = 'auth.sign-up-password-numeric'
+  }
+
+  return errorMessage
 }
 
 const Register = () => {
@@ -58,8 +74,12 @@ const Register = () => {
       // They will get to chose that option the next time they log in
       const rememberMe = false
       storeToken(response.token, rememberMe)
-    } catch {
-      setRegistrationError(translate('auth.sign-up-error'))
+    } catch (error) {
+      let errorMessage = 'auth.sign-up-error'
+      if (error instanceof ApiException) {
+        errorMessage = processRegisterError(error.response)
+      }
+      setRegistrationError(translate(errorMessage))
     }
   }
 
@@ -111,7 +131,7 @@ const Register = () => {
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className='w-100'>
-            <label htmlFor='username'>{translate('auth.username-label')}</label>
+            <label aria-required htmlFor='username'>{translate('auth.username-label')}</label>
             <input
               aria-describedby='emailHelp'
               className={`form-control ${
@@ -130,7 +150,7 @@ const Register = () => {
             )}
           </div>
           <div className='w-100'>
-            <label htmlFor='email'>{translate('auth.email-label')}</label>
+            <label aria-required htmlFor='email'>{translate('auth.email-label')}</label>
             <input
               aria-describedby='email'
               className={`form-control ${
@@ -153,7 +173,7 @@ const Register = () => {
             )}
           </div>
           <div className='w-100'>
-            <label htmlFor='password-input'>{translate('auth.password-label')}</label>
+            <label aria-required htmlFor='password-input'>{translate('auth.password-label')}</label>
             <input
               className={`form-control ${
                 touchedFields.password && errors.password
@@ -174,7 +194,7 @@ const Register = () => {
             )}
           </div>
           <div className='w-100'>
-            <label htmlFor='confirmation-password-input'>
+            <label aria-required htmlFor='confirmation-password-input'>
               {translate('auth.password-confirmation-label')}
             </label>
             <input

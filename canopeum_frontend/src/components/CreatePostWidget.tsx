@@ -7,7 +7,6 @@ import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
 import { Asset, type FileParameter, type Post } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
-import { numberOfWordsInText } from '@utils/stringUtils'
 import textAreaAutoGrow from '@utils/textAreaAutoGrow'
 import type { InputValidationError } from '@utils/validators'
 
@@ -15,7 +14,7 @@ const MAX_FILE_WIDTH = 1920
 const MAX_FILE_HEIGHT = 1920
 const MAX_FILE_DEPTH = 1920
 const MAX_FILE_SIZE = MAX_FILE_WIDTH * MAX_FILE_HEIGHT * MAX_FILE_DEPTH
-const MAXIMUM_WORDS_PER_POST = 3000
+const MAXIMUM_CHARS_PER_POST = 3000
 
 type Props = {
   readonly siteId: number,
@@ -29,7 +28,7 @@ const CreatePostWidget = ({ siteId, addNewPost }: Props) => {
 
   const [isSendingPost, setIsSendingPost] = useState(false)
   const [postBody, setPostBody] = useState<string>('')
-  const [postBodyNumberOfWords, setPostBodyNumberOfWords] = useState(0)
+  const [postBodyNumberOfChars, setPostBodyNumberOfChars] = useState(0)
   const [postBodyError, setPostBodyError] = useState<InputValidationError | undefined>()
   const [files, setFiles] = useState<FileParameter[]>([])
 
@@ -91,12 +90,12 @@ const CreatePostWidget = ({ siteId, addNewPost }: Props) => {
 
   const handleCommentBodyChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const bodyValue = event.target.value
-    const numberOfWords = numberOfWordsInText(bodyValue)
+    const numberOfChars = bodyValue.length
 
-    if (numberOfWords > MAXIMUM_WORDS_PER_POST) return
+    if (numberOfChars > MAXIMUM_CHARS_PER_POST) return
 
     setPostBody(bodyValue)
-    setPostBodyNumberOfWords(numberOfWords)
+    setPostBodyNumberOfChars(numberOfChars)
     textAreaAutoGrow(event.target)
   }
 
@@ -109,7 +108,7 @@ const CreatePostWidget = ({ siteId, addNewPost }: Props) => {
       return false
     }
 
-    if (postBodyNumberOfWords > MAXIMUM_WORDS_PER_POST) {
+    if (postBodyNumberOfChars > MAXIMUM_CHARS_PER_POST) {
       setPostBodyError('maximumChars')
 
       return false
@@ -162,9 +161,9 @@ const CreatePostWidget = ({ siteId, addNewPost }: Props) => {
             value={postBody}
           />
           <div className='max-words end-0 text-end' style={{ bottom: '-1.6rem' }}>
-            <span>{postBodyNumberOfWords}/{MAXIMUM_WORDS_PER_POST}</span>
+            <span>{postBodyNumberOfChars}/{MAXIMUM_CHARS_PER_POST}</span>
             <span className='ms-1'>
-              {translate('social.comments.word', { count: MAXIMUM_WORDS_PER_POST })}
+              {translate('social.comments.character', { count: MAXIMUM_CHARS_PER_POST })}
             </span>
           </div>
 
@@ -176,7 +175,7 @@ const CreatePostWidget = ({ siteId, addNewPost }: Props) => {
 
           {postBodyError === 'maximumChars' && (
             <span className='help-block text-danger'>
-              {translate('social.posts.comment-body-max-chars', { count: MAXIMUM_WORDS_PER_POST })}
+              {translate('social.posts.comment-body-max-chars', { count: MAXIMUM_CHARS_PER_POST })}
             </span>
           )}
         </div>

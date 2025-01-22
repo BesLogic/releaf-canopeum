@@ -13,10 +13,11 @@ type Props = {
   // Make sure that onChange is included in a useCallback if part of a component
   readonly onChange: (selectedSpecies: Species[]) => void,
   readonly label: string,
+  readonly required?: boolean,
 }
 
 const TreeSpeciesSelector = (
-  { onChange, species, label }: Props,
+  { onChange, species, label, required }: Props,
 ) => {
   const { t: translate } = useTranslation()
   const { translateValue } = useContext(LanguageContext)
@@ -83,6 +84,7 @@ const TreeSpeciesSelector = (
       label={translate(label)}
       onChange={handleChange}
       options={options}
+      required={required}
       selected={selected}
       withQuantity
     />

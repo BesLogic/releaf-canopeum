@@ -60,6 +60,7 @@ const SiteAnnouncementModal = ({ announcement, isOpen, handleClose }: Props) => 
               <textarea
                 className='form-control'
                 id='body'
+                maxLength={1000}
                 onChange={event =>
                   setEditedAnnouncement(value => ({ ...value, body: event.target.value }))}
                 rows={5}

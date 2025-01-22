@@ -21,16 +21,21 @@ with the docker-compose.yml from this repository.
 
 ### Prerequisites
 
-For frontend:
+#### For frontend
 
 - [Node.js](https://nodejs.org/en/download) (includes npm)
-- [Mockoon](https://mockoon.com/download/#download-section)
 
-For backend
+#### For backend
 
 - [Python 3.12](https://www.python.org/downloads/)
 - [UV](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer)
 - [Docker](https://www.docker.com/get-started/)
+
+On Linux you must instal the mysql dev binaries to be able to build the `mysqlclient` python distribution.
+
+- Debian / Ubuntu: `apt-get install default-libmysqlclient-dev`
+- Red Hat / CentOS: `yum install mysql-devel`
+- Arch: `pacman -S mysql`
 
 ### Installation
 
@@ -67,11 +72,13 @@ For backend
 
    ```shell
    cd canopeum_backend
-   docker compose up
+   # docker compose up # SEE NOTE BELOW !
    uv sync --locked
    uv run manage.py initialize_database
    uv run manage.py runserver
    ```
+
+   Note: The docker compose file has bee updated for production deployment a while ago and no alternative has been created for local development. We currently use the `start-local-env.ps1` script with option `2: Run MySQL container`. If anyone wants to contribute restoring a simple docker command for dev, it would be more than welcome.
 
 5. Set up React frontend:
 
@@ -79,14 +86,6 @@ For backend
    cd canopeum_frontend
    npm install
    npm run dev
-   ```
-
-   Run mock data (For Frontend only)
-
-   ```shell
-   # In another CLI
-   cd canopeum_frontend
-   npm run mockoon
    ```
 
 6. Linting/Formatting:
@@ -178,6 +177,6 @@ If you save a modification to the `.nswag` file, DO NOT INCLUDE THE LOCAL COPY O
 
 ## Deployments
 
-Whenever changes are pushed to the main branch, a build is automatically triggered and a container package pushed to <https://github.com/orgs/BesLogic/packages?repo_name=releaf-canopeum>. An administrator must then navigate to `/#!/1/docker/stacks/releaf-canopeum?id=11&regular=true` on our portainer instance and press "Pull and redeploy".
+You can trigger a manual package build by using the "Run workflow" button at <https://github.com/BesLogic/releaf-canopeum/actions/workflows/canopeum_deploy.yml>. As soon as that build is finished, a container package is pushed to <https://github.com/orgs/BesLogic/packages?repo_name=releaf-canopeum>. Our Portainer instance watches for new packages and will automatically pull them.
 
-You can also trigger a manual package build by using the "Run workflow" button at <https://github.com/BesLogic/releaf-canopeum/actions/workflows/canopeum_deploy.yml>. We'd prefer this to be the only action necessary for a deployment, so that any maintainer on GitHub could redeploy, but our automated detection on portainer currently isn't working.
+<!--- If the deployment is not reflected whithin the next 5 mintues, an administrator may try navigating to `/#!/1/docker/stacks/releaf-canopeum?id=11&regular=true` on our portainer instance and press "Pull and redeploy". -->

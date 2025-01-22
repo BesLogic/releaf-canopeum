@@ -62,7 +62,7 @@ class User(AbstractUser):
 
 
 class Announcement(models.Model):
-    body = models.TextField(blank=True, null=True)
+    body = models.TextField(blank=True, null=True, max_length=1000)
     link = models.TextField(blank=True, null=True)
 
 
@@ -160,7 +160,7 @@ class Site(models.Model):
     is_public = models.BooleanField(blank=False, null=False, default=False)
     site_type = models.ForeignKey(Sitetype, models.DO_NOTHING, blank=True, null=True)
     coordinate = models.ForeignKey(Coordinate, models.SET_NULL, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True, max_length=1000)
     size = models.TextField(blank=True, null=True)
     research_partnership = models.BooleanField(blank=True, null=True)
     visible_map = models.BooleanField(blank=True, null=True)
@@ -342,7 +342,7 @@ class PostAsset(models.Model):
 
 class Post(models.Model):
     site = models.ForeignKey(Site, models.CASCADE, blank=False, null=False)
-    body = models.TextField(blank=False, null=False)
+    body = models.TextField(blank=False, null=False, max_length=3000)
     # Feature currently unused, maybe eventually we'll want to track social media shares
     # share_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True, blank=False, null=False)
@@ -352,7 +352,7 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    body = models.TextField()
+    body = models.TextField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -398,8 +398,8 @@ class Sitetreespecies(models.Model):
 
 class Widget(models.Model):
     site = models.ForeignKey(Site, models.CASCADE, blank=True, null=True)
-    title = models.TextField(blank=True, null=True)
-    body = models.TextField(blank=True, null=True)
+    title = models.TextField(blank=True, null=True, max_length=20)
+    body = models.TextField(blank=True, null=True, max_length=1000)
 
 
 class Like(models.Model):

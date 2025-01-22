@@ -119,7 +119,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
       <DialogContent>
         <form className='d-flex flex-column gap-3'>
           <div>
-            <label className='form-label' htmlFor='site-name'>
+            <label aria-required className='form-label' htmlFor='site-name'>
               {t('analytics.site-modal.site-name')}
             </label>
             <input
@@ -132,7 +132,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
           </div>
 
           <div>
-            <label className='form-label' htmlFor='site-type'>
+            <label aria-required className='form-label' htmlFor='site-type'>
               {t('analytics.site-modal.site-type')}
             </label>
             <select
@@ -151,7 +151,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
           </div>
 
           <div>
-            <label className='form-label' htmlFor='site-image'>
+            <label aria-required className='form-label' htmlFor='site-image'>
               {t('analytics.site-modal.site-image')}
             </label>
             <ImageUpload id='site-image-upload' imageUrl={siteImageURL} onChange={onImageUpload} />
@@ -175,13 +175,14 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
             <textarea
               className='form-control'
               id='site-presentation'
+              maxLength={1000}
               onChange={event => setSite(value => ({ ...value, presentation: event.target.value }))}
               value={site.presentation}
             />
           </div>
 
           <div>
-            <label className='form-label' htmlFor='site-size'>
+            <label aria-required className='form-label' htmlFor='site-size'>
               {t('analytics.site-modal.site-size')}
             </label>
             <div className='input-group'>
@@ -204,6 +205,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
                 ...current,
                 species,
               }))}
+            required
             species={site.species}
           />
 
