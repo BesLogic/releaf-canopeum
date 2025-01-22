@@ -36,7 +36,7 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
   const { getApiClient } = useApiClient()
   const { openAlertSnackbar } = useContext(SnackbarContext)
 
-  const handleSubmitSiteContact = (): void => {
+  const handleSubmitSiteContact = () =>
     getApiClient().contactClient.update(contact.id, editedContact as PatchedContact).then(
       () => {
         openAlertSnackbar(
@@ -50,7 +50,6 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
         { severity: 'error' },
       )
     )
-  }
 
   return (
     <Dialog fullWidth maxWidth='sm' onClose={() => handleClose(null)} open={isOpen}>

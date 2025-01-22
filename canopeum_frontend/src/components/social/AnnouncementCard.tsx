@@ -46,7 +46,7 @@ const AnnouncementCard = ({ announcement, viewMode, onEdit }: Props) => {
       </div>
       <SiteAnnouncementModal
         announcement={announcement}
-        handleClose={(newAnnouncement: Announcement | null): void => {
+        handleClose={(newAnnouncement: Announcement | null) => {
           setIsModalOpen(!isModalOpen)
           if (newAnnouncement) onEdit(newAnnouncement)
         }}

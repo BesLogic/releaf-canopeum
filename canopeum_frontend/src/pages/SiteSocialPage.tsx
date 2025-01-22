@@ -99,7 +99,7 @@ const SiteSocialPage = () => {
 
   const addNewPost = (newPost: Post) => addPost(newPost)
 
-  useEffect((): void => {
+  useEffect(() => {
     void fetchSiteData(siteId)
     setSiteIds([siteId])
   }, [siteId, fetchSiteData, setSiteIds])
