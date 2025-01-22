@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 
 import OptionQuantitySelector, { type SelectorOption, type SelectorOptionQuantity } from '@components/analytics/OptionQuantitySelector'
 import { LanguageContext } from '@components/context/LanguageContext'
-import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
 import useErrorHandling from '@hooks/ErrorHandlingHook'
 import { TreeType } from '@services/api'
@@ -19,8 +18,7 @@ const SupportSpeciesSelector = ({ onChange, species }: Props) => {
   const { t: translate } = useTranslation()
   const { translateValue } = useContext(LanguageContext)
   const { getApiClient } = useApiClient()
-  const { getErrorMessage } = useErrorHandling()
-  const { openAlertSnackbar } = useContext(SnackbarContext)
+  const { displayUnhandledAPIError } = useErrorHandling()
 
   const [availableSpecies, setAvailableSpecies] = useState<Map<number, TreeType>>(new Map())
   const [options, setOptions] = useState<SelectorOption<number>[]>([])
@@ -43,11 +41,7 @@ const SupportSpeciesSelector = ({ onChange, species }: Props) => {
       setAvailableSpecies(speciesMap)
       setOptions(speciesOptions)
     }
-    fetchTreeSpecies().catch((error: unknown) =>
-      openAlertSnackbar(
-        getErrorMessage(error, translate('errors.fetch-support-species-failed')),
-      )
-    )
+    fetchTreeSpecies().catch(displayUnhandledAPIError('errors.fetch-support-species-failed'))
   }, [])
 
   useEffect(() =>

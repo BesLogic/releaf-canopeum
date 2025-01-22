@@ -6,7 +6,6 @@ import ImageUpload from '@components/analytics/ImageUpload'
 import SiteCoordinates from '@components/analytics/site-modal/SiteCoordinates'
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { LanguageContext } from '@components/context/LanguageContext'
-import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
 import useErrorHandling from '@hooks/ErrorHandlingHook'
 import { type DefaultCoordinate, defaultLatitude, defaultLongitude, extractCoordinate } from '@models/Coordinate'
@@ -48,8 +47,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
   const { t } = useTranslation()
   const { getApiClient } = useApiClient()
   const { translateValue } = useContext(LanguageContext)
-  const { getErrorMessage } = useErrorHandling()
-  const { openAlertSnackbar } = useContext(SnackbarContext)
+  const { displayUnhandledAPIError } = useErrorHandling()
 
   const [site, setSite] = useState(defaultSiteDto)
   const [availableSiteTypes, setAvailableSiteTypes] = useState<SiteType[]>([])
@@ -97,21 +95,13 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
     const fetchSiteTypes = async () =>
       setAvailableSiteTypes(await getApiClient().siteClient.types())
 
-    fetchSiteTypes().catch((error: unknown) =>
-      openAlertSnackbar(
-        getErrorMessage(error, t('errors.fetch-site-types-failed')),
-      )
-    )
+    fetchSiteTypes().catch(displayUnhandledAPIError('errors.fetch-site-types-failed'))
   }, [])
 
   useEffect(() => {
     if (!open) return
 
-    fetchSite().catch((error: unknown) =>
-      openAlertSnackbar(
-        getErrorMessage(error, t('errors.fetch-site-failed')),
-      )
-    )
+    fetchSite().catch(displayUnhandledAPIError('errors.fetch-site-failed'))
   }, [])
 
   useEffect(() => setSite(defaultSiteDto), [siteId])

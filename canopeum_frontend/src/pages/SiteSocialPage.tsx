@@ -6,7 +6,6 @@ import { useParams } from 'react-router-dom'
 import LoadingPage from './LoadingPage'
 import SiteAdminTabs from '@components/analytics/SiteAdminTabs'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
-import { SnackbarContext } from '@components/context/SnackbarContext'
 import CreatePostWidget from '@components/CreatePostWidget'
 import AnnouncementCard from '@components/social/AnnouncementCard'
 import ContactCard from '@components/social/ContactCard'
@@ -23,14 +22,15 @@ import { ensureError } from '@services/errors'
 import usePostsStore from '@store/postsStore'
 import type { ExcludeFunctions } from '@utils/types'
 
+const fetchSiteDataError = 'errors.fetch-site-data-failed'
+
 const SiteSocialPage = () => {
   const { t } = useTranslation()
   const { siteId: siteIdParam } = useParams()
   const { currentUser } = useContext(AuthenticationContext)
   const { posts, addPost } = usePostsStore()
   const { getApiClient } = useApiClient()
-  const { openAlertSnackbar } = useContext(SnackbarContext)
-  const { getErrorMessage } = useErrorHandling()
+  const { displayUnhandledAPIError } = useErrorHandling()
   const scrollableContainerRef = useRef<HTMLDivElement>(null)
 
   const {
@@ -49,8 +49,6 @@ const SiteSocialPage = () => {
     false,
     undefined,
   ])
-
-  const fetchSiteDataError = 'errors.fetch-site-data-failed'
 
   const siteId = siteIdParam
     ? Number.parseInt(siteIdParam, 10) || 0
@@ -86,13 +84,8 @@ const SiteSocialPage = () => {
 
     if (reason === 'delete' && data) {
       getApiClient().widgetClient.delete(siteId, data.id)
-        .then(() => fetchSiteData(siteId)).catch((error_: unknown) =>
-          openAlertSnackbar(
-            getErrorMessage(error_, t(fetchSiteDataError)),
-            { severity: 'error' },
-          )
-        )
-        .catch(() => {/* empty */})
+        .then(() => fetchSiteData(siteId))
+        .catch(displayUnhandledAPIError(fetchSiteDataError))
     }
 
     if (reason === 'save' && data) {
@@ -101,13 +94,8 @@ const SiteSocialPage = () => {
         : getApiClient().widgetClient.update(siteId, data.id, new PatchedWidget(data))
 
       response
-        .then(() => fetchSiteData(siteId)).catch((error_: unknown) =>
-          openAlertSnackbar(
-            getErrorMessage(error_, t(fetchSiteDataError)),
-            { severity: 'error' },
-          )
-        )
-        .catch(() => {/* empty */})
+        .then(() => fetchSiteData(siteId))
+        .catch(displayUnhandledAPIError(fetchSiteDataError))
     }
 
     setIsWidgetModalOpen([false, undefined])
@@ -116,12 +104,7 @@ const SiteSocialPage = () => {
   const addNewPost = (newPost: Post) => addPost(newPost)
 
   useEffect((): void => {
-    fetchSiteData(siteId).catch((error_: unknown) =>
-      openAlertSnackbar(
-        getErrorMessage(error_, t(fetchSiteDataError)),
-        { severity: 'error' },
-      )
-    )
+    fetchSiteData(siteId).catch(displayUnhandledAPIError(fetchSiteDataError))
     setSiteIds([siteId])
   }, [siteId, fetchSiteData, setSiteIds])
 

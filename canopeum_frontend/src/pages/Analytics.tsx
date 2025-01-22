@@ -21,7 +21,7 @@ const Analytics = () => {
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const { currentUser } = useContext(AuthenticationContext)
   const { getApiClient } = useApiClient()
-  const { getErrorMessage } = useErrorHandling()
+  const { displayUnhandledAPIError } = useErrorHandling()
 
   const [siteSummaries, setSiteSummaries] = useState<SiteSummary[]>([])
   const [adminList, setAdminList] = useState<User[]>([])
@@ -135,21 +135,13 @@ const Analytics = () => {
   useEffect((): void => {
     if (currentUser?.role !== 'MegaAdmin') return
 
-    fetchAdmins().catch((error: unknown) =>
-      openAlertSnackbar(getErrorMessage(error, translate('errors.fetch-admins-failed')), {
-        severity: 'error',
-      })
-    )
+    fetchAdmins().catch(displayUnhandledAPIError('errors.fetch-admins-failed'))
   }, [currentUser?.role, fetchAdmins])
 
   useEffect(() => {
     const fetchSites = async () => setSiteSummaries(await getApiClient().summaryClient.all())
 
-    fetchSites().catch((error: unknown) =>
-      openAlertSnackbar(getErrorMessage(error, translate('errors.fetch-fertilizers-failed')), {
-        severity: 'error',
-      })
-    )
+    fetchSites().catch(displayUnhandledAPIError('errors.fetch-fertilizers-failed'))
   }, [getApiClient, setSiteSummaries])
 
   const renderBatches = () =>

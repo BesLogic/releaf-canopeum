@@ -4,7 +4,7 @@ import { initReactI18next } from 'react-i18next'
 
 import resources from './locale'
 
-void i18n
+await i18n
   .use(initReactI18next)
   .use(LanguageDetector)
   .init({

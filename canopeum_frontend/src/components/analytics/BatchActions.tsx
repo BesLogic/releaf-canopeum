@@ -20,7 +20,7 @@ const BatchActions = ({ onEdit, onDelete, batchDetail }: Props) => {
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const { getApiClient } = useApiClient()
-  const { getErrorMessage } = useErrorHandling()
+  const { displayUnhandledAPIError } = useErrorHandling()
 
   const whisperRef = useRef<OverlayTriggerHandle>(null)
 
@@ -40,14 +40,11 @@ const BatchActions = ({ onEdit, onDelete, batchDetail }: Props) => {
   const handleConfirmDeleteClose = (proceed: boolean) => {
     setConfirmDeleteOpen(false)
     if (proceed) {
-      deleteBatch().catch((error: unknown) =>
-        openAlertSnackbar(
-          getErrorMessage(
-            error,
-            translate('analyticsSite.delete-batch.error', { batchName: batchDetail.name }),
-          ),
-          { severity: 'error' },
-        )
+      deleteBatch().catch(
+        displayUnhandledAPIError(
+          'analyticsSite.delete-batch.error',
+          { batchName: batchDetail.name },
+        ),
       )
     }
   }
