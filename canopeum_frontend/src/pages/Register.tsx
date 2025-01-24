@@ -9,6 +9,7 @@ import { AuthenticationContext } from '@components/context/AuthenticationContext
 import { appRoutes } from '@constants/routes.constant'
 import { formClasses } from '@constants/style'
 import useApiClient from '@hooks/ApiClientHook'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
 import type { UserInvitation } from '@services/api'
 import { ApiException, RegisterUser } from '@services/api'
 import { storeToken } from '@utils/auth.utils'
@@ -42,6 +43,7 @@ const Register = () => {
   const { authenticate } = useContext(AuthenticationContext)
   const { t: translate } = useTranslation()
   const { getApiClient } = useApiClient()
+  const { displayUnhandledAPIError } = useErrorHandling()
 
   const [registrationError, setRegistrationError] = useState<string | undefined>()
   const [codeInvalid, setCodeInvalid] = useState(false)
@@ -81,36 +83,40 @@ const Register = () => {
     }
   }
 
-  const fetchUserInvitation = useCallback(
-    async (code: string) => {
-      try {
-        const userInvitationResponse = await getApiClient().userInvitationClient.detail(code)
-        if (userInvitationResponse.expiresAt <= new Date()) {
-          setCodeExpired(true)
-          setCodeInvalid(false)
-          setUserInvitation(undefined)
-
-          return
-        }
-
-        setCodeExpired(false)
+  const fetchUserInvitation = useCallback(async (code: string) => {
+    try {
+      const userInvitationResponse = await getApiClient().userInvitationClient.detail(code)
+      if (userInvitationResponse.expiresAt <= new Date()) {
+        setCodeExpired(true)
         setCodeInvalid(false)
-        setUserInvitation(userInvitationResponse)
-        setValue('email', userInvitationResponse.email)
-      } catch {
-        setCodeInvalid(true)
-        setCodeExpired(false)
         setUserInvitation(undefined)
+
+        return
       }
-    },
-    [getApiClient],
-  )
+
+      setCodeExpired(false)
+      setCodeInvalid(false)
+      setUserInvitation(userInvitationResponse)
+      setValue('email', userInvitationResponse.email)
+    } catch {
+      setCodeInvalid(true)
+      setCodeExpired(false)
+      setUserInvitation(undefined)
+    }
+  }, [getApiClient])
 
   useEffect(() => {
     const code = searchParams.get('code')
     if (!code) return
 
-    void fetchUserInvitation(code)
+    fetchUserInvitation(code).catch(displayUnhandledAPIError('errors.fetch-user-invitation-failed'))
+  }, [searchParams, fetchUserInvitation])
+
+  useEffect(() => {
+    const code = searchParams.get('code')
+    if (!code) return
+
+    fetchUserInvitation(code).catch(displayUnhandledAPIError('errors.fetch-user-invitation-failed'))
   }, [searchParams, fetchUserInvitation])
 
   return (

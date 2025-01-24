@@ -25,6 +25,14 @@ module.exports = {
     'src/services/api.ts',
   ],
   rules: {
+    '@typescript-eslint/no-floating-promises': ['error', {
+      // Don't even ignore voided promises. Force a comment explaining.
+      ignoreVoid: false, // TODO: This could be added to Beslogic's extra-strict preset
+      allowForKnownSafeCalls: [ // TODO: This could be added to Beslogic's presets
+        // Doesn't throw and already console.warn itself
+        { from: 'package', package: 'i18next', name: 'changeLanguage' },
+      ],
+    }],
     'react-refresh/only-export-components': [
       'warn',
       { allowConstantExport: true }, // Works fine in Vite

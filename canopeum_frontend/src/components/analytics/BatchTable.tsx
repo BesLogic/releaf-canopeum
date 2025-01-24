@@ -6,6 +6,7 @@ import BatchActions from '@components/analytics/BatchActions'
 import BatchSponsorLogo from '@components/batches/BatchSponsorLogo'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
 import type { BatchDetail } from '@services/api'
 
 const BATCH_HEADER_CLASS =
@@ -22,6 +23,7 @@ const BatchTable = (props: Props) => {
   const { t } = useTranslation()
   const { translateValue } = useContext(LanguageContext)
   const { getApiClient } = useApiClient()
+  const { displayUnhandledAPIError } = useErrorHandling()
 
   const [batches, setBatches] = useState(props.batches)
 
@@ -71,7 +73,13 @@ const BatchTable = (props: Props) => {
                   <BatchActions
                     batchDetail={batch}
                     onDelete={() => setBatches(previous => previous.filter(b => b.id !== batch.id))}
-                    onEdit={() => void fetchBatch(props.siteId)}
+                    onEdit={() =>
+                      fetchBatch(props.siteId).catch(
+                        displayUnhandledAPIError(
+                          'errors.fetch-batch-failed',
+                          { batchName: batch.name },
+                        ),
+                      )}
                   />
                 </div>
               </th>

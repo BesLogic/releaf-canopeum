@@ -8,6 +8,7 @@ import { SnackbarContext } from '@components/context/SnackbarContext'
 import ConfirmationDialog from '@components/dialogs/ConfirmationDialog'
 import SearchBar from '@components/SearchBar'
 import useApiClient from '@hooks/ApiClientHook'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
 import type { SiteSummary, User } from '@services/api'
 import { PatchedSiteAdminUpdateRequest } from '@services/api'
 
@@ -22,6 +23,7 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange, onSiteEdit }: P
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const { getApiClient } = useApiClient()
+  const { displayUnhandledAPIError } = useErrorHandling()
   const whisperRef = useRef<OverlayTriggerHandle>(null)
 
   const [filteredAdmins, setFilteredAdmins] = useState(admins)
@@ -111,7 +113,7 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange, onSiteEdit }: P
       return
     }
 
-    void deleteSite()
+    deleteSite().catch(displayUnhandledAPIError('errors.delete-site-failed'))
   }
 
   const administratorsSelection = (

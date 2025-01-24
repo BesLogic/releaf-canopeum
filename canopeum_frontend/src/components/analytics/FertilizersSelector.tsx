@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import OptionQuantitySelector, { type SelectorOption, type SelectorOptionQuantity } from '@components/analytics/OptionQuantitySelector'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
 import { FertilizerType } from '@services/api'
 import { notEmpty } from '@utils/arrayUtils'
 
@@ -17,6 +18,7 @@ const FertilizersSelector = ({ onChange, fertilizers }: Props) => {
   const { t: translate } = useTranslation()
   const { translateValue } = useContext(LanguageContext)
   const { getApiClient } = useApiClient()
+  const { displayUnhandledAPIError } = useErrorHandling()
 
   const [availableFertilizers, setAvailableFertilizers] = useState<Map<number, FertilizerType>>(
     new Map(),
@@ -41,8 +43,10 @@ const FertilizersSelector = ({ onChange, fertilizers }: Props) => {
       setAvailableFertilizers(fertilizerMap)
       setOptions(fertilizerOptions)
     }
-    void fetchFertilizers()
-  }, [getApiClient, translateValue])
+    fetchFertilizers().catch(
+      displayUnhandledAPIError('errors.fetch-fertilizers-failed'),
+    )
+  }, [])
 
   useEffect(() =>
     fertilizers
