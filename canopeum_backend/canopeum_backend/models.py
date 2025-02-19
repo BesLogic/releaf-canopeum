@@ -45,7 +45,7 @@ class Role(models.Model):
     )
 
 
-class User(AbstractUser):
+class User(AbstractUser):  # type: ignore[explicit-override] # False-positive
     email = models.EmailField(verbose_name="email address", max_length=255, unique=True)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS: ClassVar[list[str]] = []
@@ -422,6 +422,7 @@ class MultiValueDict(django_MultiValueDict[_K, _V]):
 
     if TYPE_CHECKING:
         # TODO: Report upstream
+        @override
         def __getitem__(self, item: _K) -> _V: ...
 
 
@@ -432,10 +433,12 @@ class Request(drf_Request):
         # TODO: Report upstream
         # Base definition is too vague as `dict[str, Any]`
         @property
+        @override
         def data(self) -> MultiValueDict[str, Any]: ...
 
         # Tries to type as django.http.request._ImmutableQueryDict wich doesn't exist
         @property
+        @override
         def query_params(self) -> QueryDict: ...  # type: ignore[override] # pyright: ignore[reportIncompatibleMethodOverride]
 
         # Override with our own User model
