@@ -25,7 +25,7 @@ dependencies = [
 [dependency-groups]
 dev = [
   # Tools
-  "mypy", # version taken from [compatible-mypy],
+  "mypy[faster-cache]", # version taken from [compatible-mypy],
   "pyright>=1.1.374",
   "ruff~=0.7.4",
   # Stubs
@@ -33,37 +33,3 @@ dev = [
   "djangorestframework-stubs[compatible-mypy]>=3.15.0",
   "types-jsonschema",
 ]
-
-# https://mypy.readthedocs.io/en/stable/config_file.html
-[tool.mypy]
-show_column_numbers = true
-implicit_reexport = true
-python_version = "3.12"
-exclude = [".venv/"]
-# https://github.com/typeddjango/django-stubs/issues/579
-# https://github.com/typeddjango/django-stubs/issues/1264
-plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
-
-strict = true
-# Implicit return types using pyright ! (mypy doesn't do implicit return types)
-check_untyped_defs = true
-disallow_untyped_calls = false
-disallow_untyped_defs = false
-disallow_incomplete_defs = false
-# Note: mypy still has issues with some boolean infered returns:
-# https://github.com/python/mypy/issues/4409
-# https://github.com/python/mypy/issues/10149
-
-[[tool.mypy.overrides]]
-# Untyped dependencies
-module = [
-  "djangorestframework_camel_case.*",
-  "googlemaps.*",
-  "openmeteo_requests.*",
-  "rest_framework.*",
-  "retry_requests.*",
-]
-ignore_missing_imports = true
-
-[tool.django-stubs]
-django_settings_module = "canopeum_backend.settings"

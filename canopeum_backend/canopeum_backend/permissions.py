@@ -2,14 +2,17 @@
 # pyright: reportIncompatibleMethodOverride=false
 # mypy: disable_error_code=override
 
+from typing import override
+
 from rest_framework import permissions
 
-from .models import Comment, Request, RoleName, Site, Siteadmin, User
+from .models import Comment, Request, RoleName, Site, Siteadmin
 
 
 class DeleteCommentPermission(permissions.BasePermission):
     """Deleting a comment is only allowed for admins or the comment's author."""
 
+    @override
     def has_object_permission(self, request: Request, view, obj: Comment):
         if request.user.role.name == RoleName.MegaAdmin:
             return True
@@ -22,12 +25,11 @@ class DeleteCommentPermission(permissions.BasePermission):
 class PublicSiteReadPermission(permissions.BasePermission):
     """Site methods only allowed if they are public, or the user is a site admin."""
 
+    @override
     def has_object_permission(self, request: Request, view, obj: Site) -> bool:
-        if obj.is_public or (
-            isinstance(request.user, User) and request.user.role.name == RoleName.MegaAdmin
-        ):
+        if obj.is_public or (request.user.role.name == RoleName.MegaAdmin):
             return True
-        if not isinstance(request.user, User) or request.user.role.name != RoleName.ForestSteward:
+        if request.user.role.name != RoleName.ForestSteward:
             return False
 
         return (
@@ -38,6 +40,7 @@ class PublicSiteReadPermission(permissions.BasePermission):
 class SiteAdminPermission(permissions.BasePermission):
     """Allows mega admins and a specific site's admin to perform site actions."""
 
+    @override
     def has_object_permission(self, request: Request, view, obj: Site) -> bool:
         if request.user.role.name == RoleName.MegaAdmin:
             return True
@@ -50,6 +53,7 @@ class MegaAdminOrForestStewardPermission(permissions.BasePermission):
     """Global permission for actions only allowed to MegaAdmin or ForestSteward users."""
 
     # About the type ignore: Base permission return type is Literal True but should be bool
+    @override
     def has_permission(self, request: Request, view):
         return request.user.role.name in {RoleName.MegaAdmin, RoleName.ForestSteward}
 
@@ -57,6 +61,7 @@ class MegaAdminOrForestStewardPermission(permissions.BasePermission):
 class MegaAdminPermission(permissions.BasePermission):
     """Global permission for actions only allowed to MegaAdmin users."""
 
+    @override
     def has_permission(self, request: Request, view):
         return request.user.role.name == RoleName.MegaAdmin
 
@@ -70,6 +75,7 @@ class MegaAdminPermissionReadOnly(permissions.BasePermission):
     This one will allow GET requests for any user, though.
     """
 
+    @override
     def has_permission(self, request: Request, view):
         if request.method in READONLY_METHODS:
             return True
@@ -79,5 +85,6 @@ class MegaAdminPermissionReadOnly(permissions.BasePermission):
 class CurrentUserPermission(permissions.BasePermission):
     """Permission specific to a user, only allowed for this authenticated user."""
 
+    @override
     def has_object_permission(self, request: Request, view, obj):
         return obj == request.user

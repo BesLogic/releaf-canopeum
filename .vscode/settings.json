@@ -191,7 +191,7 @@
   // For frontend-backend monorepos
   "mypy-type-checker.args": [
     // https://github.com/microsoft/vscode-mypy/issues/37#issuecomment-1602702174
-    "--config-file=${workspaceFolder}/canopeum_backend/pyproject.toml"
+    "--config-file=${workspaceFolder}/canopeum_backend/mypy.ini"
   ],
 
   /*

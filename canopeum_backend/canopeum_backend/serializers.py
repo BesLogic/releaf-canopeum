@@ -3,7 +3,7 @@
 
 from collections.abc import Mapping
 from decimal import Decimal
-from typing import Any
+from typing import Any, override
 
 from django.contrib.auth.password_validation import validate_password
 from drf_spectacular.utils import extend_schema_field
@@ -91,6 +91,7 @@ class RegisterUserSerializer(serializers.ModelSerializer[User]):
         model = User
         fields = ("username", "email", "password", "password_confirmation", "code")
 
+    @override
     def validate(self, attrs):
         if attrs["password"] != attrs["password_confirmation"]:
             raise serializers.ValidationError({"password": "Password fields didn't match."})
@@ -271,6 +272,7 @@ class AssetSerializer(serializers.ModelSerializer[Asset]):
         model = Asset
         fields = ("id", "asset")
 
+    @override
     def to_internal_value(self, data):
         # Map 'image' field to 'asset' field in incoming data
         if "image" in data:
@@ -336,6 +338,7 @@ class BatchSponsorSerializer(serializers.ModelSerializer[BatchSponsor]):
         model = BatchSponsor
         fields = "__all__"
 
+    @override
     def create(self, validated_data):
         logo_data = validated_data.pop("logo")
         logo_serializer = AssetSerializer(data=logo_data)
@@ -344,6 +347,7 @@ class BatchSponsorSerializer(serializers.ModelSerializer[BatchSponsor]):
 
         return BatchSponsor.objects.create(**validated_data, logo=created_logo)
 
+    @override
     def update(self, instance, validated_data: Mapping[str, Any]):
         instance.name = validated_data.get("name", instance.name)
         instance.url = validated_data.get("url", instance.url)
@@ -390,8 +394,7 @@ class SiteSocialSerializer(serializers.ModelSerializer[Site]):
     @extend_schema_field(BatchSponsorSerializer(many=True))
     def get_sponsors(self, obj: Site):
         batches = Batch.objects.filter(site=obj)
-
-        sponsors = [batch.sponsor for batch in batches if batch.sponsor is not None]
+        sponsors = [batch.sponsor for batch in batches]
         return BatchSponsorSerializer(sponsors, many=True).data
 
     @extend_schema_field(WidgetSerializer(many=True))
@@ -629,7 +632,7 @@ class SiteSummaryDetailSerializer(serializers.ModelSerializer[Site]):
     @extend_schema_field(BatchSponsorSerializer(many=True))
     def get_sponsors(self, obj):
         batches = Batch.objects.filter(site=obj)
-        sponsors = [batch.sponsor for batch in batches if batch.sponsor]
+        sponsors = [batch.sponsor for batch in batches]
         return BatchSponsorSerializer(sponsors, many=True).data
 
     @extend_schema_field(WeatherSerializer)

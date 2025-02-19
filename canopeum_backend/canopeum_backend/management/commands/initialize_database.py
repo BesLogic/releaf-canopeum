@@ -4,6 +4,7 @@ import random
 from collections.abc import Iterable
 from datetime import timedelta
 from pathlib import Path
+from typing import override
 
 from django.core.files import File
 from django.core.management import call_command
@@ -321,6 +322,7 @@ def create_batches_for_site(site):
 class Command(BaseCommand):
     help = "Generate Data for the database"
 
+    @override
     def handle(self, *args, **kwargs):
         self.stdout.write("Are you sure you want to erase all existing data and generate new data?")
         self.stdout.write("This operation is irreversible and will erase all existing data")

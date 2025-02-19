@@ -115,7 +115,7 @@ def get_public_sites_unless_admin(user: User | None):
 def get_admin_sites(user: User):
     if user.role.name == RoleName.MegaAdmin:
         return Site.objects.all()
-    if isinstance(user, User) and user.role.name == RoleName.ForestSteward:
+    if user.role.name == RoleName.ForestSteward:
         admin_site_ids = [siteadmin.site.pk for siteadmin in Siteadmin.objects.filter(user=user)]
         return Site.objects.filter(Q(id__in=admin_site_ids))
 
@@ -134,7 +134,7 @@ class LoginAPIView(APIView):
         email = request.data.get("email")
         password = request.data.get("password")
 
-        user = cast(User, authenticate(email=email, password=password))
+        user = cast(User | None, authenticate(email=email, password=password))
         if user is not None:
             refresh = RefreshToken.for_user(user)
 
@@ -900,7 +900,7 @@ class BatchListAPIView(APIView):
             parsed_species = [json.loads(specie) for specie in request.data.getlist("species", [])]
             parsed_supported_species_ids = request.data.getlist("supported_specie_ids", [])
         except json.JSONDecodeError as e:
-            return Response(data={"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={"error": e}, status=status.HTTP_400_BAD_REQUEST)
 
         # HACK to allow handling the image with a AssetSerializer separately
         # TODO: Figure out how to feed the image directly to BatchDetailSerializer
@@ -981,7 +981,7 @@ class BatchDetailAPIView(APIView):
             parsed_species = [json.loads(specie) for specie in request.data.getlist("species", [])]
             parsed_supported_species_ids = request.data.getlist("supported_specie_ids", [])
         except json.JSONDecodeError as e:
-            return Response(data={"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={"error": e}, status=status.HTTP_400_BAD_REQUEST)
 
         # TODO: On updating an image, we need to delete it too
         # image = None
