@@ -78,7 +78,7 @@ const usePostsInfiniteScrolling = () => {
     fetchPostsPage()
       .then(() => isMounted.current = true)
       .catch(() => isMounted.current = false)
-  }, [fetchPostsPage, siteIds])
+  }, [siteIds])
 
   // The scrollable container should be the parent container with overflow y auto/scroll
   // Scrolling to the bottom of this container will load more posts
@@ -103,7 +103,6 @@ const usePostsInfiniteScrolling = () => {
   }
 
   return {
-    fetchPostsPage,
     onScroll,
     setSiteIds,
     isLoadingMore,
