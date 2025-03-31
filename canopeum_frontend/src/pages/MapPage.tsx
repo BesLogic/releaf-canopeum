@@ -52,6 +52,7 @@ const defaultMapLocation = (sites: SiteMap[]) => {
 }
 
 const MapPage = () => {
+  const isMobileView = window.innerWidth <= 720
   const { getApiClient } = useApiClient()
   const { t } = useTranslation()
   const [sites, setSites] = useState<SiteMap[]>([])
@@ -151,7 +152,7 @@ const MapPage = () => {
             {...mapViewState}
             mapStyle='https://api.maptiler.com/maps/satellite/style.json?key=fSPw19J7BbjcbrS5b5u6'
             onMove={event_ => onMapMove(event_.viewState)}
-            style={{ width: '100%', height: '100%' }}
+            padding={{ right: 0, bottom: isMobileView ? 250 : 0, left: 0, top: 0 }}
           >
             <GeolocateControl position='top-right' />
             <NavigationControl position='top-right' showCompass showZoom visualizePitch />
@@ -203,7 +204,7 @@ const MapPage = () => {
                   type='button'
                 >
                   <div className='row g-0 h-100'>
-                    <div className='col-lg-4'>
+                    <div className='col-4 col-md-12 col-lg-4'>
                       <img
                         alt=''
                         className='h-100 mw-100 map-site-image'
@@ -211,7 +212,7 @@ const MapPage = () => {
                       />
                     </div>
 
-                    <div className='col-lg-8'>
+                    <div className='col-8 col-md-12 col-lg-8'>
                       <div className='card-body'>
                         <h5>{site.name}</h5>
 
