@@ -1,5 +1,5 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { SnackbarContext } from '@components/context/SnackbarContext'
@@ -17,7 +17,7 @@ type Props = {
 const AdminInvitationDialog = ({ open, handleClose }: Props) => {
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
-  const { getErrorMessage } = useErrorHandling()
+  const { getErrorMessage, displayUnhandledAPIError } = useErrorHandling()
   const { getApiClient } = useApiClient()
 
   const [siteOptions, setSiteOptions] = useState<SelectionItem<number>[]>([])
@@ -29,14 +29,15 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
   const [emailError, setEmailError] = useState<InputValidationError | undefined>()
   const [generateLinkError, setGenerateLinkError] = useState<string>()
 
-  const fetchAllSites = useCallback(async () => {
-    const sites = await getApiClient().siteClient.all()
+  useEffect(() => {
+    const fetchAllSites = async () => {
+      const sites = await getApiClient().siteClient.all()
 
-    setSiteOptions(sites.map(site => ({ displayText: site.name, value: site.id })))
-  }, [getApiClient])
+      setSiteOptions(sites.map(site => ({ displayText: site.name, value: site.id })))
+    }
 
-  useEffect(() => void fetchAllSites(), [fetchAllSites])
-
+    fetchAllSites().catch(displayUnhandledAPIError('errors.fetch-all-sites-failed'))
+  }, [])
   const validateEmail = () => {
     if (!email) {
       setEmailError('required')
@@ -73,19 +74,20 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
 
       setInvitationLink(`${globalThis.location.origin}/register?code=${response.code}`)
     } catch (error: unknown) {
-      const errorMessage = getErrorMessage(
+      setGenerateLinkError(getErrorMessage(
         error,
         translate('settings.manage-admins.generate-link-error'),
-      )
-      setGenerateLinkError(errorMessage)
+      ))
     }
   }
 
   const handleCopyLinkClick = () => {
     if (!invitationLink) return
-
-    void navigator.clipboard.writeText(invitationLink)
-    openAlertSnackbar(`${translate('generic.copied-clipboard')}!`, { severity: 'info' })
+    navigator.clipboard.writeText(invitationLink)
+      .then(() =>
+        openAlertSnackbar(`${translate('generic.copied-clipboard')}!`, { severity: 'info' })
+      )
+      .catch(displayUnhandledAPIError('errors.copy-to-clipboard-failed'))
   }
 
   const onCloseModal = () => {

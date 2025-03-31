@@ -7,6 +7,7 @@ import SiteCoordinates from '@components/analytics/site-modal/SiteCoordinates'
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
 import { type DefaultCoordinate, defaultLatitude, defaultLongitude, extractCoordinate } from '@models/Coordinate'
 import { type SiteType, Species } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
@@ -46,6 +47,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
   const { t } = useTranslation()
   const { getApiClient } = useApiClient()
   const { translateValue } = useContext(LanguageContext)
+  const { displayUnhandledAPIError } = useErrorHandling()
 
   const [site, setSite] = useState(defaultSiteDto)
   const [availableSiteTypes, setAvailableSiteTypes] = useState<SiteType[]>([])
@@ -84,23 +86,23 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
     setSiteImageURL(URL.createObjectURL(blob))
   }, [siteId, getApiClient])
 
-  const fetchSiteTypes = useCallback(
-    async () => setAvailableSiteTypes(await getApiClient().siteClient.types()),
-    [getApiClient],
-  )
-
   const onImageUpload = (file: File) => {
     setSite(value => ({ ...value, siteImage: file }))
     setSiteImageURL(URL.createObjectURL(file))
   }
 
-  useEffect(() => void fetchSiteTypes(), [fetchSiteTypes])
+  useEffect(() => {
+    const fetchSiteTypes = async () =>
+      setAvailableSiteTypes(await getApiClient().siteClient.types())
+
+    fetchSiteTypes().catch(displayUnhandledAPIError('errors.fetch-site-types-failed'))
+  }, [])
 
   useEffect(() => {
     if (!open) return
 
-    void fetchSite()
-  }, [open, fetchSite])
+    fetchSite().catch(displayUnhandledAPIError('errors.fetch-site-failed'))
+  }, [])
 
   useEffect(() => setSite(defaultSiteDto), [siteId])
 

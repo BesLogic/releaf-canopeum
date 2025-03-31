@@ -9,6 +9,7 @@ import BatchTable from '@components/analytics/BatchTable'
 import SiteAdminTabs from '@components/analytics/SiteAdminTabs'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
 import type { SiteSummaryDetail } from '@services/api'
 
 const AnalyticsSite = () => {
@@ -16,6 +17,7 @@ const AnalyticsSite = () => {
   const { siteId: siteIdFromParams } = useParams()
   const { formatDate } = useContext(LanguageContext)
   const { getApiClient } = useApiClient()
+  const { displayUnhandledAPIError } = useErrorHandling()
 
   const [siteSummary, setSiteSummary] = useState<SiteSummaryDetail | undefined>()
   const [lastModifiedBatchDate, setLastModifiedBatchDate] = useState<Date | undefined>()
@@ -33,7 +35,7 @@ const AnalyticsSite = () => {
     const siteIdNumber = Number.parseInt(siteIdFromParams, 10)
     if (!siteIdNumber) return
 
-    void fetchSite(siteIdNumber)
+    fetchSite(siteIdNumber).catch(displayUnhandledAPIError('errors.fetch-site-failed'))
   }, [fetchSite, siteIdFromParams])
 
   useEffect(() => {
@@ -95,7 +97,9 @@ const AnalyticsSite = () => {
       <CreateBatchModal
         handleClose={reason => {
           setIsCreateBatchOpen(false)
-          if (reason === 'create') void fetchSite(siteSummary.id)
+          if (reason === 'create') {
+            fetchSite(siteSummary.id).catch(displayUnhandledAPIError('errors.fetch-site-failed'))
+          }
         }}
         open={isCreateBatchOpen}
         site={siteSummary}
