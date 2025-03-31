@@ -3,6 +3,7 @@ import './MapPage.scss'
 import type { Marker as MarkerInstance } from 'maplibre-gl'
 import { type CSSProperties, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { AttributionControl } from 'react-map-gl'
 import type { MarkerEvent } from 'react-map-gl/dist/esm/types'
 import ReactMap, { GeolocateControl, Marker, NavigationControl, ScaleControl, type ViewState } from 'react-map-gl/maplibre'
 import { Link, useSearchParams } from 'react-router-dom'
@@ -16,6 +17,9 @@ import { getApiBaseUrl } from '@services/apiSettings'
 
 const PIN_FOCUS_ZOOM_LEVEL = 12
 const MAP_DISTANCE_ZOOM_MULTIPLIER = 20
+
+const MOBILE_WIDTH = 720
+const OFFSET_BOTTOM_PAN = 333
 
 /**
  * The default initial map location if the user doesn't provide location
@@ -52,7 +56,7 @@ const defaultMapLocation = (sites: SiteMap[]) => {
 }
 
 const MapPage = () => {
-  const isMobileView = window.innerWidth <= 720
+  const isMobileView = window.innerWidth <= MOBILE_WIDTH
   const { getApiClient } = useApiClient()
   const { t } = useTranslation()
   const [sites, setSites] = useState<SiteMap[]>([])
@@ -150,13 +154,37 @@ const MapPage = () => {
         >
           <ReactMap
             {...mapViewState}
+            attributionControl={false}
             mapStyle='https://api.maptiler.com/maps/satellite/style.json?key=fSPw19J7BbjcbrS5b5u6'
             onMove={event_ => onMapMove(event_.viewState)}
-            padding={{ right: 0, bottom: isMobileView ? 250 : 0, left: 0, top: 0 }}
+            padding={{
+              right: 0,
+              bottom: isMobileView
+                ? OFFSET_BOTTOM_PAN
+                : 0,
+              left: 0,
+              top: 0,
+            }}
           >
             <GeolocateControl position='top-right' />
             <NavigationControl position='top-right' showCompass showZoom visualizePitch />
-            <ScaleControl position='bottom-left' unit='metric' />
+            <ScaleControl
+              position='bottom-left'
+              style={{
+                marginBottom: isMobileView
+                  ? OFFSET_BOTTOM_PAN
+                  : 0,
+              }}
+              unit='metric'
+            />
+            <AttributionControl
+              position='bottom-right'
+              style={{
+                marginBottom: isMobileView
+                  ? OFFSET_BOTTOM_PAN
+                  : 0,
+              }}
+            />
             {sites.map(site => {
               const latitude = site.coordinate.ddLatitude
               const longitude = site.coordinate.ddLongitude

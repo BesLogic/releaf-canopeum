@@ -68,8 +68,8 @@ const SnackbarContextProvider = memo(
         <Snackbar
           TransitionProps={{ onExited: () => setMessageInfo(undefined) }}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-          autoHideDuration={snackbarAlertOptions.autohideDuration
-            ?? DEFAULT_SNACKBAR_ALERT_OPTIONS.autohideDuration}
+          autoHideDuration={snackbarAlertOptions.autohideDuration ??
+            DEFAULT_SNACKBAR_ALERT_OPTIONS.autohideDuration}
           key={messageInfo
             ? messageInfo.key
             : undefined}

@@ -9,10 +9,10 @@
   padding: 0;
 }
 #map-page-row-container {
-  height: calc(100vh - 62px);
+  height: calc(100vh - $nav-height);
 }
 #map-container {
-  height: calc(100vh - 62px);
+  height: calc(100vh - $nav-height);
 }
 
 @media screen and (max-width: $large-width) {
@@ -45,7 +45,7 @@
   }
   #map-container {
     width: 100%;
-    height: calc(100vh - 62px);
+    height: calc(100vh - $nav-height);
     padding: 0 0;
   }
   .map-site-image {
