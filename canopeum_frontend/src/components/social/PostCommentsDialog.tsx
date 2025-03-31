@@ -44,7 +44,7 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose }: Props) => {
     // Since this is a dialog, we only want to fetch the comments once it is opened
     if (!open || commentsLoaded) {
       setCommentBody('')
-      setCommentBodyNumberOfWords(0)
+      setCommentBodyNumberOfChars(0)
       setCommentBodyError(undefined)
       return
     }
