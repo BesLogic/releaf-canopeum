@@ -152,7 +152,9 @@ const MapPage = () => {
             {...mapViewState}
             mapStyle='https://api.maptiler.com/maps/satellite/style.json?key=fSPw19J7BbjcbrS5b5u6'
             onMove={event_ => onMapMove(event_.viewState)}
-            padding={{ right: 0, bottom: isMobileView ? 250 : 0, left: 0, top: 0 }}
+            padding={{ right: 0, bottom: isMobileView
+? 250
+: 0, left: 0, top: 0 }}
           >
             <GeolocateControl position='top-right' />
             <NavigationControl position='top-right' showCompass showZoom visualizePitch />
