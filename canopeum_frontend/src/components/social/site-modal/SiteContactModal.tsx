@@ -11,6 +11,7 @@ import EmailTextField from '@components/inputs/EmailTextField'
 import PhoneTextField from '@components/inputs/PhoneTextField'
 import UrlTextField from '@components/inputs/UrlTextField'
 import useApiClient from '@hooks/ApiClientHook'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
 import type { Contact, PatchedContact } from '@services/api'
 
 type Props = {
@@ -35,6 +36,7 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
   const [isFormValid, setIsFormValid] = useState<boolean>(true)
   const { getApiClient } = useApiClient()
   const { openAlertSnackbar } = useContext(SnackbarContext)
+  const { displayUnhandledAPIError } = useErrorHandling()
 
   useEffect(() => {
     if (!isOpen) setEditedContact(contact)
@@ -47,15 +49,10 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
           t('social.contact.feedback.edit-success'),
         )
         handleClose(editedContact as Contact)
-      },
-    ).catch(() =>
-      openAlertSnackbar(
-        t('social.contact.feedback.edit-error'),
-        { severity: 'error' },
-      )
-    )
+      })
+      .catch(displayUnhandledAPIError('social.contact.feedback.edit-error'))
   }
-
+  
   return (
     <Dialog fullWidth maxWidth='sm' onClose={() => handleClose(null)} open={isOpen}>
       <DialogTitle>{t('social.contact.title')}</DialogTitle>

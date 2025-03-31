@@ -46,7 +46,6 @@ const Navbar = () => {
   const { i18n: { changeLanguage, language }, t: translate } = useTranslation()
   const [currentLanguage, setCurrentLanguage] = useState(language)
   const { currentUser } = useContext(AuthenticationContext)
-
   const location = useLocation()
 
   const handleChangeLanguage = () => {
@@ -54,7 +53,7 @@ const Navbar = () => {
       ? 'fr'
       : 'en'
     setCurrentLanguage(newLanguage)
-    void changeLanguage(newLanguage)
+    changeLanguage(newLanguage)
   }
 
   const { isAuthenticated, showLogoutModal } = useContext(AuthenticationContext)
