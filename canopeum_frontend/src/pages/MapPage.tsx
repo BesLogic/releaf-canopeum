@@ -204,7 +204,7 @@ const MapPage = () => {
                   type='button'
                 >
                   <div className='row g-0 h-100'>
-                    <div className='col-4 col-md-12 col-lg-4'>
+                    <div className='col-4 col-lg-4'>
                       <img
                         alt=''
                         className='h-100 mw-100 map-site-image'
@@ -212,7 +212,7 @@ const MapPage = () => {
                       />
                     </div>
 
-                    <div className='col-8 col-md-12 col-lg-8'>
+                    <div className='col-8 col-lg-8'>
                       <div className='card-body'>
                         <h5>{site.name}</h5>
 

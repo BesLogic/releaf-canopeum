@@ -22,17 +22,6 @@
   }
 }
 
-@media screen and (min-width: $large-width) {
-  #map-sites-list-container {
-    overflow-y: auto;
-  }
-  .map-site-image {
-    border-radius: $border-radius 0 0 $border-radius;
-    width: unset;
-    object-fit: cover;
-  }
-}
-
 @media screen and (max-width: $medium-width) {
   #map-page-row-container {
     position: relative;
