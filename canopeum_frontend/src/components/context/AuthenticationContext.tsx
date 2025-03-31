@@ -60,8 +60,8 @@ const AuthenticationContextProvider = memo(
       if (isInitiatedRef.current) return
 
       try {
-        const accessToken = sessionStorage.getItem(STORAGE_ACCESS_TOKEN_KEY) ??
-          localStorage.getItem(STORAGE_ACCESS_TOKEN_KEY)
+        const accessToken = sessionStorage.getItem(STORAGE_ACCESS_TOKEN_KEY)
+          ?? localStorage.getItem(STORAGE_ACCESS_TOKEN_KEY)
 
         if (!accessToken) {
           loadSession()
