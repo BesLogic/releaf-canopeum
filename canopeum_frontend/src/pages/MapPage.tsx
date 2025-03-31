@@ -213,7 +213,7 @@ const MapPage = () => {
           </ReactMap>
         </div>
 
-        <div className='col-12 col-lg-4 h-100 py-3' id='map-sites-list-container'>
+        <div className='col-12 col-lg-4 py-3' id='map-sites-list-container'>
           <div className='d-flex flex-column gap-3'>
             {sites.map(site => (
               <div
