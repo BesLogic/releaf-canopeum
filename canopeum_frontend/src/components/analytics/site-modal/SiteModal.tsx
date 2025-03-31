@@ -88,7 +88,6 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
     })
     setSiteImageURL(URL.createObjectURL(blob))
     setLoading(false)
-
   }, [siteId, getApiClient])
 
   const onImageUpload = (file: File) => {
@@ -101,7 +100,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
       setLoading(true)
       setAvailableSiteTypes(await getApiClient().siteClient.types())
       setLoading(false)
-    }      
+    }
 
     fetchSiteTypes().catch(displayUnhandledAPIError('errors.fetch-site-types-failed'))
   }, [])
