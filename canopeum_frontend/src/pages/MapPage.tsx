@@ -8,6 +8,7 @@ import type { MarkerEvent } from 'react-map-gl/dist/esm/types'
 import ReactMap, { GeolocateControl, Marker, NavigationControl, ScaleControl, type ViewState } from 'react-map-gl/maplibre'
 import { Link, useSearchParams } from 'react-router-dom'
 
+import variables from '@assets/styles/export.module.scss'
 import MapPin from '@components/icons/MapPinIcon'
 import SiteTypeIcon from '@components/icons/SiteTypeIcon'
 import { appRoutes } from '@constants/routes.constant'
@@ -15,12 +16,10 @@ import useApiClient from '@hooks/ApiClientHook'
 import type { SiteMap } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 
-import variables from '@assets/styles/export.module.scss'
-
 const PIN_FOCUS_ZOOM_LEVEL = 12
 const MAP_DISTANCE_ZOOM_MULTIPLIER = 20
 
-const MOBILE_WIDTH = Number.parseInt(variables.mediumWidth)
+const MOBILE_WIDTH = Number.parseInt(variables.mediumWidth, 10)
 const OFFSET_BOTTOM_PAN = window.innerHeight / 3
 
 /**
