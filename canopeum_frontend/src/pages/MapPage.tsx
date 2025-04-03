@@ -20,6 +20,7 @@ const PIN_FOCUS_ZOOM_LEVEL = 12
 const MAP_DISTANCE_ZOOM_MULTIPLIER = 20
 
 const MOBILE_WIDTH = Number.parseInt(variables.mediumWidth, 10)
+// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- A third
 const OFFSET_BOTTOM_PAN = window.innerHeight / 3
 
 /**
