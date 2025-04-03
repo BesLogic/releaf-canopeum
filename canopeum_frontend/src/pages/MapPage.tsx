@@ -18,7 +18,7 @@ import { getApiBaseUrl } from '@services/apiSettings'
 const PIN_FOCUS_ZOOM_LEVEL = 12
 const MAP_DISTANCE_ZOOM_MULTIPLIER = 20
 
-const MOBILE_WIDTH = 720
+const MOBILE_WIDTH = Number.parseInt(variables.mediumWidth)
 const OFFSET_BOTTOM_PAN = 333
 
 /**
