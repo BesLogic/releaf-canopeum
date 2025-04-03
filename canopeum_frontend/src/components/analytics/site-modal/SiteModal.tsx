@@ -52,6 +52,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
   const [site, setSite] = useState(defaultSiteDto)
   const [availableSiteTypes, setAvailableSiteTypes] = useState<SiteType[]>([])
   const [siteImageURL, setSiteImageURL] = useState<string>()
+  const [loading, setLoading] = useState(true)
 
   const fetchSite = useCallback(async () => {
     if (!siteId) {
@@ -60,6 +61,8 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
 
       return
     }
+
+    setLoading(true)
 
     const siteDetail = await getApiClient().siteClient.detail(siteId)
     const { dmsLatitude, dmsLongitude } = siteDetail.coordinate
@@ -84,6 +87,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
       visibleOnMap: siteDetail.visibleMap,
     })
     setSiteImageURL(URL.createObjectURL(blob))
+    setLoading(false)
   }, [siteId, getApiClient])
 
   const onImageUpload = (file: File) => {
@@ -92,19 +96,28 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
   }
 
   useEffect(() => {
-    const fetchSiteTypes = async () =>
+    const fetchSiteTypes = async () => {
+      setLoading(true)
       setAvailableSiteTypes(await getApiClient().siteClient.types())
+      setLoading(false)
+    }
 
     fetchSiteTypes().catch(displayUnhandledAPIError('errors.fetch-site-types-failed'))
   }, [])
 
   useEffect(() => {
-    if (!open) return
+    if (!open) {
+      if (!siteId) setSite(defaultSiteDto)
+
+      return
+    }
 
     fetchSite().catch(displayUnhandledAPIError('errors.fetch-site-failed'))
-  }, [])
+  }, [siteId])
 
   useEffect(() => setSite(defaultSiteDto), [siteId])
+
+  if (loading) return null
 
   return (
     <Dialog fullWidth maxWidth='sm' onClose={(_, reason) => handleClose(reason)} open={open}>
