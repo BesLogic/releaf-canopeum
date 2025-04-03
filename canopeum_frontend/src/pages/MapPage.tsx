@@ -15,11 +15,13 @@ import useApiClient from '@hooks/ApiClientHook'
 import type { SiteMap } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 
+import variables from '@assets/styles/export.module.scss'
+
 const PIN_FOCUS_ZOOM_LEVEL = 12
 const MAP_DISTANCE_ZOOM_MULTIPLIER = 20
 
-const MOBILE_WIDTH = 720
-const OFFSET_BOTTOM_PAN = 333
+const MOBILE_WIDTH = Number.parseInt(variables.mediumWidth)
+const OFFSET_BOTTOM_PAN = window.innerHeight / 3
 
 /**
  * The default initial map location if the user doesn't provide location
