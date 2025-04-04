@@ -53,10 +53,12 @@ $gray-900: #433a2e; // Used for $dark and $body-color: Body text color
 $small-width: 540px;
 $medium-width: 720px;
 $large-width: 960px;
-$xlarge-width: 1200px;
+$xlarge-width: 1140px;
 $xxlarge-width: 1600px;
 
 // TODO (Sam T.): We should configure bootstrap so that
 // our primary-derived color this represents uses the right shade of green.
 // Then use the generated bootstrap scss variable instead of $lightgreen
 $lightgreen: #e8f3e9;
+
+$nav-height: 62px;

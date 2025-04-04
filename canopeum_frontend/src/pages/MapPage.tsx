@@ -3,10 +3,12 @@ import './MapPage.scss'
 import type { Marker as MarkerInstance } from 'maplibre-gl'
 import { type CSSProperties, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { AttributionControl } from 'react-map-gl'
 import type { MarkerEvent } from 'react-map-gl/dist/esm/types'
 import ReactMap, { GeolocateControl, Marker, NavigationControl, ScaleControl, type ViewState } from 'react-map-gl/maplibre'
 import { Link, useSearchParams } from 'react-router-dom'
 
+import variables from '@assets/styles/export.module.scss'
 import MapPin from '@components/icons/MapPinIcon'
 import SiteTypeIcon from '@components/icons/SiteTypeIcon'
 import { appRoutes } from '@constants/routes.constant'
@@ -16,6 +18,10 @@ import { getApiBaseUrl } from '@services/apiSettings'
 
 const PIN_FOCUS_ZOOM_LEVEL = 12
 const MAP_DISTANCE_ZOOM_MULTIPLIER = 20
+
+const MOBILE_WIDTH = Number.parseInt(variables.mediumWidth, 10)
+// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- A third
+const OFFSET_BOTTOM_PAN = window.innerHeight / 3
 
 /**
  * The default initial map location if the user doesn't provide location
@@ -52,6 +58,7 @@ const defaultMapLocation = (sites: SiteMap[]) => {
 }
 
 const MapPage = () => {
+  const isMobileView = window.innerWidth <= MOBILE_WIDTH
   const { getApiClient } = useApiClient()
   const { t } = useTranslation()
   const [sites, setSites] = useState<SiteMap[]>([])
@@ -149,13 +156,37 @@ const MapPage = () => {
         >
           <ReactMap
             {...mapViewState}
+            attributionControl={false}
             mapStyle='https://api.maptiler.com/maps/satellite/style.json?key=fSPw19J7BbjcbrS5b5u6'
             onMove={event_ => onMapMove(event_.viewState)}
-            style={{ width: '100%', height: '100%' }}
+            padding={{
+              right: 0,
+              bottom: isMobileView
+                ? OFFSET_BOTTOM_PAN
+                : 0,
+              left: 0,
+              top: 0,
+            }}
           >
             <GeolocateControl position='top-right' />
             <NavigationControl position='top-right' showCompass showZoom visualizePitch />
-            <ScaleControl position='bottom-left' unit='metric' />
+            <ScaleControl
+              position='bottom-left'
+              style={{
+                marginBottom: isMobileView
+                  ? OFFSET_BOTTOM_PAN
+                  : 0,
+              }}
+              unit='metric'
+            />
+            <AttributionControl
+              position='bottom-right'
+              style={{
+                marginBottom: isMobileView
+                  ? OFFSET_BOTTOM_PAN
+                  : 0,
+              }}
+            />
             {sites.map(site => {
               const latitude = site.coordinate.ddLatitude
               const longitude = site.coordinate.ddLongitude
@@ -184,7 +215,7 @@ const MapPage = () => {
           </ReactMap>
         </div>
 
-        <div className='col-12 col-lg-4 h-100 py-3' id='map-sites-list-container'>
+        <div className='col-12 col-lg-4 py-3' id='map-sites-list-container'>
           <div className='d-flex flex-column gap-3'>
             {sites.map(site => (
               <div
@@ -203,7 +234,7 @@ const MapPage = () => {
                   type='button'
                 >
                   <div className='row g-0 h-100'>
-                    <div className='col-lg-4'>
+                    <div className='col-4 col-lg-4'>
                       <img
                         alt=''
                         className='h-100 mw-100 map-site-image'
@@ -211,7 +242,7 @@ const MapPage = () => {
                       />
                     </div>
 
-                    <div className='col-lg-8'>
+                    <div className='col-8 col-lg-8'>
                       <div className='card-body'>
                         <h5>{site.name}</h5>
 
