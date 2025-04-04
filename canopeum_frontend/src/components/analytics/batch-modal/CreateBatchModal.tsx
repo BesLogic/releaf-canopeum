@@ -8,6 +8,7 @@ import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
 import type { SiteSummaryDetail } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
+import { useForm } from 'react-hook-form'
 
 type Props = {
   readonly open: boolean,
@@ -20,11 +21,18 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
   const { getApiClient } = useApiClient()
   const { openAlertSnackbar } = useContext(SnackbarContext)
 
-  const [batch, setBatch] = useState<BatchFormDto>(DEFAULT_BATCH_FORM_DTO)
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<BatchFormDto>({
+    defaultValues: DEFAULT_BATCH_FORM_DTO,
+  })
 
-  const handleBatchChange = (batchFormDto: BatchFormDto) => setBatch(batchFormDto)
-
-  const handleSubmitBatch = async () => {
+  const handleSubmitBatch = async (formData: BatchFormDto) => {
+    console.log('formData', formData)
     const {
       name,
       size,
@@ -39,7 +47,7 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
       seeds,
       species,
       image,
-    } = batch
+    } = formData
 
     const sponsorLogoImage = sponsor?.logo
       ? await assetFormatter(sponsor.logo)
@@ -90,24 +98,33 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
   return (
     <Dialog fullWidth maxWidth='sm' onClose={handleCancel} open={open}>
       <DialogTitle>{t('analyticsSite.batch-modal.create-title')}</DialogTitle>
+      <form onSubmit={handleSubmit(handleSubmitBatch)}>
+        <DialogContent>
+          <BatchForm
+            register={register}
+            setValue={setValue}
+            watch={watch}
+            errors={errors}
+          />
+        </DialogContent>
 
-      <DialogContent>
-        <BatchForm handleBatchChange={handleBatchChange} />
-      </DialogContent>
+        <DialogActions>
+          <button
+            className='btn btn-outline-primary'
+            onClick={() => handleCancel()}
+            type='button'
+          >
+            {t('generic.cancel')}
+          </button>
 
-      <DialogActions>
-        <button
-          className='btn btn-outline-primary'
-          onClick={() => handleCancel()}
-          type='button'
-        >
-          {t('generic.cancel')}
-        </button>
-
-        <button className='btn btn-primary' onClick={async () => handleSubmitBatch()} type='button'>
-          {t('generic.submit')}
-        </button>
-      </DialogActions>
+          <button
+            className='btn btn-primary'
+            type='submit'
+          >
+            {t('generic.submit')}
+          </button>
+        </DialogActions>
+      </form>
     </Dialog>
   )
 }

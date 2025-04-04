@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { type BatchFormDto, DEFAULT_BATCH_FORM_DTO, transformToEditBatchDto } from '@components/analytics/batch-modal/batchModal.model'
@@ -11,13 +11,17 @@ import type { BatchDetail } from '@services/api'
 import { getApiBaseUrl } from '@services/apiSettings'
 import { mapSum } from '@utils/arrayUtils'
 import { floorNumberValue } from '@utils/formUtils'
+import { type FieldErrors, type UseFormRegister, type UseFormSetValue, type UseFormWatch } from 'react-hook-form'
 
 type Props = {
-  readonly initialBatch?: BatchDetail,
-  readonly handleBatchChange: (batchFormDto: BatchFormDto) => void,
+  initialBatch?: BatchDetail,
+  register: UseFormRegister<BatchFormDto>,
+  setValue: UseFormSetValue<BatchFormDto>,
+  watch: UseFormWatch<BatchFormDto>,
+  errors: FieldErrors<BatchFormDto>,
 }
 
-const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
+const BatchForm = ({ register, setValue, watch, errors, initialBatch }: Props) => {
   const { t } = useTranslation()
 
   const [batch, setBatch] = useState<BatchFormDto>(DEFAULT_BATCH_FORM_DTO)
@@ -27,15 +31,17 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
   useEffect(() => {
     if (!initialBatch) return
 
-    setBatch(transformToEditBatchDto(initialBatch))
+    const transformed = transformToEditBatchDto(initialBatch)
+    Object.entries(transformed).forEach(([key, value]) => {
+      setValue(key as keyof BatchFormDto, value)
+    })
+
     setSponsorLogoUrl(`${getApiBaseUrl()}${initialBatch.sponsor.logo.asset}`)
 
     if (!initialBatch.image) return
 
     setBatchImageURL(`${getApiBaseUrl()}${initialBatch.image.asset}`)
   }, [initialBatch])
-
-  useEffect(() => handleBatchChange(batch), [batch, handleBatchChange])
 
   const onImageUpload = (file: File) => {
     setBatch(value => ({ ...value, image: file }))
@@ -54,7 +60,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
   }
 
   return (
-    <form className='d-flex flex-column gap-3'>
+    <>
       <div>
         <label aria-required className='form-label' htmlFor='batch-name'>
           {t('analyticsSite.batch-modal.name-label')}
@@ -62,10 +68,10 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
         <input
           className='form-control'
           id='batch-name'
-          onChange={event => setBatch(value => ({ ...value, name: event.target.value }))}
+          {...register('name', { required: 'Name is required' })}
           type='text'
-          value={batch.name}
         />
+        {errors.name && <span className='text-danger'>{errors.name.message}</span>}
       </div>
 
       <div>
@@ -75,14 +81,10 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
         <input
           className='form-control'
           id='sponsor-name'
-          onChange={event =>
-            setBatch(value => ({
-              ...value,
-              sponsor: { ...value.sponsor, name: event.target.value },
-            }))}
           type='text'
-          value={batch.sponsor?.name}
+          {...register('sponsor.name', { required: 'Sponsor name is required' })}
         />
+        {errors.sponsor?.name && <span className='text-danger'>{errors.sponsor.name.message}</span>}
       </div>
 
       <div>
@@ -92,14 +94,16 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
         <input
           className='form-control'
           id='sponsor-website-url'
-          onChange={event =>
-            setBatch(value => ({
-              ...value,
-              sponsor: { ...value.sponsor, url: event.target.value },
-            }))}
-          type='text'
-          value={batch.sponsor?.url}
+          type='url'
+          {...register('sponsor.url', {
+            required: 'Sponsor URL is required',
+            pattern: {
+              value: /^(https?:\/\/)?([\w\d-]+\.)+\w{2,}(\/.+)*\/?$/,
+              message: 'Enter a valid URL',
+            },
+          })}
         />
+        {errors.sponsor?.url && <span className='text-danger'>{errors.sponsor.url.message}</span>}
       </div>
 
       <div>
@@ -121,35 +125,29 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
           <input
             className='form-control'
             id='size'
-            min={0}
-            onChange={event =>
-              setBatch(value => ({
-                ...value,
-                size: Number.parseInt(event.target.value, 10),
-              }))}
             type='number'
-            value={floorNumberValue(batch.size)}
+            {...register('size', {
+              valueAsNumber: true,
+              min: { value: 0, message: 'Size must be at least 0' },
+            })}
           />
           <span className='input-group-text'>
             {t('analyticsSite.batch-modal.feet-squared')}
           </span>
+          {errors.size && <span className='text-danger'>{errors.size.message}</span>}
         </div>
       </div>
 
       <div>
         <TreeSpeciesSelector
           label='analyticsSite.batch-modal.number-of-trees-label'
-          onChange={useCallback(
-            species =>
-              setBatch(current => ({
-                ...current,
-                species,
-                plantCount: mapSum(species, 'quantity'),
-              })),
-            [],
-          )}
           required
-          species={batch.species}
+          species={watch('species')}
+          onChange={species => {
+            const total = mapSum(species, 'quantity')
+            setValue('species', species)
+            setValue('plantCount', total)
+          }}
         />
       </div>
 
@@ -174,39 +172,36 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
       </div>
 
       <FertilizersSelector
-        fertilizers={batch.fertilizers}
-        onChange={useCallback(
-          fertilizers =>
-            setBatch(current => ({
-              ...current,
-              fertilizers,
-            })),
-          [],
-        )}
+        fertilizers={watch('fertilizers')}
+        onChange={fertilizers => {
+          setValue('fertilizers', fertilizers)
+          setBatch(current => ({
+            ...current,
+            fertilizers,
+          }))
+        }}
       />
 
       <MulchLayersSelector
-        mulchLayers={batch.mulchLayers}
-        onChange={useCallback(
-          mulchLayers =>
-            setBatch(current => ({
-              ...current,
-              mulchLayers,
-            })),
-          [],
-        )}
+        mulchLayers={watch('mulchLayers')}
+        onChange={mulchLayers => {
+          setValue('mulchLayers', mulchLayers)
+          setBatch(current => ({
+            ...current,
+            mulchLayers,
+          }))
+        }}
       />
 
       <SupportSpeciesSelector
-        onChange={useCallback(
-          supportedSpecies =>
-            setBatch(current => ({
-              ...current,
-              supportedSpecies,
-            })),
-          [],
-        )}
-        species={batch.supportedSpecies}
+        species={watch('supportedSpecies')}
+        onChange={supportedSpecies => {
+          setValue('supportedSpecies', supportedSpecies)
+          setBatch(current => ({
+            ...current,
+            supportedSpecies,
+          }))
+        }}
       />
 
       <div>
@@ -216,14 +211,14 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
         <input
           className='form-control'
           id='survived'
-          onChange={event =>
-            setBatch(value => ({
-              ...value,
-              survivedCount: Number.parseInt(event.target.value, 10),
-            }))}
           type='number'
-          value={floorNumberValue(batch.survivedCount)}
+          {...register('survivedCount', {
+            valueAsNumber: true,
+            min: { value: 0, message: 'Cannot be negative' },
+          })}
         />
+        {errors.survivedCount && <span className='text-danger'>{errors.survivedCount.message}
+        </span>}
       </div>
 
       <div>
@@ -233,29 +228,23 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
         <input
           className='form-control'
           id='replaced'
-          onChange={event =>
-            setBatch(value => ({
-              ...value,
-              replaceCount: Number.parseInt(event.target.value, 10),
-            }))}
           type='number'
-          value={floorNumberValue(batch.replaceCount)}
+          {...register('replaceCount', {
+            valueAsNumber: true,
+            min: { value: 0, message: 'Cannot be negative' },
+          })}
         />
       </div>
 
       <div>
         <TreeSpeciesSelector
           label='analyticsSite.batch-modal.seeds-per-species-label'
-          onChange={useCallback(
-            species =>
-              setBatch(current => ({
-                ...current,
-                seeds: species,
-                totalNumberSeeds: mapSum(species, 'quantity'),
-              })),
-            [],
-          )}
-          species={batch.seeds}
+          species={watch('seeds')}
+          onChange={species => {
+            const total = mapSum(species, 'quantity')
+            setValue('seeds', species)
+            setValue('totalNumberSeeds', total)
+          }}
         />
       </div>
 
@@ -263,7 +252,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
         <label className='form-label'>
           {t('analyticsSite.batch-modal.total-seeds-label')}:&nbsp;
         </label>
-        <span>{batch.totalNumberSeeds}</span>
+        <span>{watch('totalNumberSeeds')}</span>
       </div>
 
       <div>
@@ -273,14 +262,15 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
         <input
           className='form-control'
           id='propagation'
-          onChange={event =>
-            setBatch(value => ({
-              ...value,
-              totalPropagation: Number.parseInt(event.target.value, 10),
-            }))}
           type='number'
-          value={floorNumberValue(batch.totalPropagation)}
+          {...register('totalPropagation', {
+            valueAsNumber: true,
+            min: { value: 0, message: 'Cannot be negative' },
+          })}
         />
+        {errors.totalPropagation && (
+          <span className='text-danger'>{errors.totalPropagation.message}</span>
+        )}
       </div>
 
       <div>
@@ -289,7 +279,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
         </label>
         <ImageUpload id='batch-image-upload' imageUrl={batchImageURL} onChange={onImageUpload} />
       </div>
-    </form>
+    </>
   )
 }
 
