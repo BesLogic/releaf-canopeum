@@ -42,7 +42,12 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose }: Props) => {
 
   useEffect(() => {
     // Since this is a dialog, we only want to fetch the comments once it is opened
-    if (!open || commentsLoaded) return
+    if (!open || commentsLoaded) {
+      setCommentBody('')
+      setCommentBodyNumberOfChars(0)
+      setCommentBodyError(undefined)
+      return
+    }
 
     const fetchComments = async () => setComments(await getApiClient().commentClient.all(postId))
 

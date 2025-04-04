@@ -1,5 +1,5 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import facebookLogo from '@assets/icons/facebook-contact-logo.svg'
@@ -37,6 +37,10 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
   const { getApiClient } = useApiClient()
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const { displayUnhandledAPIError } = useErrorHandling()
+
+  useEffect(() => {
+    if (!isOpen) setEditedContact(contact)
+  }, [isOpen, contact])
 
   const handleSubmitSiteContact = () =>
     getApiClient()
