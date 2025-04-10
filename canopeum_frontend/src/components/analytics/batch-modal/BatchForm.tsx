@@ -1,27 +1,26 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { type BatchFormDto, DEFAULT_BATCH_FORM_DTO, transformToEditBatchDto } from '@components/analytics/batch-modal/batchModal.model'
+import { type BatchFormDto, DEFAULT_BATCH_FORM_DTO } from '@components/analytics/batch-modal/batchModal.model'
 import FertilizersSelector from '@components/analytics/FertilizersSelector'
 import ImageUpload from '@components/analytics/ImageUpload'
 import MulchLayersSelector from '@components/analytics/MulchLayersSelector'
 import SupportSpeciesSelector from '@components/analytics/SupportSpeciesSelector'
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
-import type { BatchDetail } from '@services/api'
-import { getApiBaseUrl } from '@services/apiSettings'
 import { mapSum } from '@utils/arrayUtils'
-import { floorNumberValue } from '@utils/formUtils'
-import { type FieldErrors, type UseFormRegister, type UseFormSetValue, type UseFormWatch } from 'react-hook-form'
+import { type FieldErrors, type UseFormRegister, type UseFormSetValue, type UseFormTrigger, type UseFormWatch } from 'react-hook-form'
+import type { Species } from '@services/api'
 
 type Props = {
-  initialBatch?: BatchDetail,
+  initialBatch?: BatchFormDto,
   register: UseFormRegister<BatchFormDto>,
   setValue: UseFormSetValue<BatchFormDto>,
   watch: UseFormWatch<BatchFormDto>,
+  trigger: UseFormTrigger<BatchFormDto>,
   errors: FieldErrors<BatchFormDto>,
 }
 
-const BatchForm = ({ register, setValue, watch, errors, initialBatch }: Props) => {
+const BatchForm = ({ register, setValue, watch, trigger, errors }: Props) => {
   const { t } = useTranslation()
 
   const [batch, setBatch] = useState<BatchFormDto>(DEFAULT_BATCH_FORM_DTO)
@@ -29,52 +28,64 @@ const BatchForm = ({ register, setValue, watch, errors, initialBatch }: Props) =
   const [sponsorLogoUrl, setSponsorLogoUrl] = useState<string>()
 
   useEffect(() => {
-    if (!initialBatch) return
+    const imagePreview = watch(value => {
+      const logo = value?.sponsor?.logo
+      if (logo instanceof File) {
+        setSponsorLogoUrl(URL.createObjectURL(logo))
+      }
 
-    const transformed = transformToEditBatchDto(initialBatch)
-    Object.entries(transformed).forEach(([key, value]) => {
-      setValue(key as keyof BatchFormDto, value)
+      const batchImage = value?.image
+      if (batchImage instanceof File) {
+        setBatchImageURL(URL.createObjectURL(batchImage))
+      }
     })
 
-    setSponsorLogoUrl(`${getApiBaseUrl()}${initialBatch.sponsor.logo.asset}`)
+    return () => imagePreview.unsubscribe()
+  }, [watch])
 
-    if (!initialBatch.image) return
-
-    setBatchImageURL(`${getApiBaseUrl()}${initialBatch.image.asset}`)
-  }, [initialBatch])
-
-  const onImageUpload = (file: File) => {
-    setBatch(value => ({ ...value, image: file }))
-    setBatchImageURL(URL.createObjectURL(file))
-  }
-
-  const onSponsorLogoUpload = (file: File) => {
-    setBatch(value => ({
-      ...value,
-      sponsor: {
-        ...value.sponsor,
-        logo: file,
+  useEffect(() => {
+    register('sponsor.logo', {
+      required: t('analyticsSite.batch-modal.validation.sponsor-logo-required'),
+      validate: {
+        fileSize: (file: File | undefined) =>
+          !file ||
+          file.size <= 2 * 1024 * 1024 ||
+          t('analyticsSite.batch-modal.validation.file-size-exceeds'),
+        fileType: (file: File | undefined) =>
+          !file ||
+          file.type.startsWith('image/') ||
+          t('analyticsSite.batch-modal.validation.invalid-file-type'),
       },
-    }))
-    setSponsorLogoUrl(URL.createObjectURL(file))
-  }
+    })
+
+    register('plantCount', {
+      validate: {
+        min: (value: number) =>
+          value > 0 || t('analyticsSite.batch-modal.validation.plant-count-min'),
+      },
+    })
+
+    register('image')
+  }, [register])
 
   return (
-    <>
-      <div>
+    <div className='form-container'>
+      <div className='form-group'>
         <label aria-required className='form-label' htmlFor='batch-name'>
           {t('analyticsSite.batch-modal.name-label')}
         </label>
         <input
           className='form-control'
           id='batch-name'
-          {...register('name', { required: 'Name is required' })}
+          {...register('name', {
+            required: t('analyticsSite.batch-modal.validation.name-required'),
+          })}
           type='text'
         />
-        {errors.name && <span className='text-danger'>{errors.name.message}</span>}
+        {errors.name && <span className='help-block text-danger'>{errors.name.message}</span>}
       </div>
 
-      <div>
+      <div className='form-group'>
         <label aria-required className='form-label' htmlFor='sponsor-name'>
           {t('analyticsSite.batch-modal.sponsor-name-label')}
         </label>
@@ -82,42 +93,62 @@ const BatchForm = ({ register, setValue, watch, errors, initialBatch }: Props) =
           className='form-control'
           id='sponsor-name'
           type='text'
-          {...register('sponsor.name', { required: 'Sponsor name is required' })}
+          {...register('sponsor.name', {
+            required: t('analyticsSite.batch-modal.validation.sponsor-name-required'),
+          })}
         />
-        {errors.sponsor?.name && <span className='text-danger'>{errors.sponsor.name.message}</span>}
+        {errors.sponsor?.name && (
+          <span className='help-block text-danger'>{errors.sponsor.name.message}</span>
+        )}
       </div>
 
-      <div>
+      <div className='form-group'>
         <label aria-required className='form-label' htmlFor='sponsor-website-url'>
           {t('analyticsSite.batch-modal.sponsor-website-url-label')}
         </label>
-        <input
-          className='form-control'
-          id='sponsor-website-url'
-          type='url'
-          {...register('sponsor.url', {
-            required: 'Sponsor URL is required',
-            pattern: {
-              value: /^(https?:\/\/)?([\w\d-]+\.)+\w{2,}(\/.+)*\/?$/,
-              message: 'Enter a valid URL',
-            },
-          })}
-        />
-        {errors.sponsor?.url && <span className='text-danger'>{errors.sponsor.url.message}</span>}
+        <div className='input-group'>
+          <span className='input-group-text'>https://</span>
+          <input
+            className='form-control '
+            id='sponsor-website-url'
+            {...register('sponsor.url', {
+              required: t('analyticsSite.batch-modal.validation.sponsor-url-required'),
+              pattern: {
+                value: /^([\w\d-]+\.)+\w{2,}(\/.*)?$/,
+                message: t('analyticsSite.batch-modal.validation.sponsor-url-pattern'),
+              },
+            })}
+          />
+        </div>
+        {errors.sponsor?.url && (
+          <span className='help-block text-danger'>{errors.sponsor.url.message}</span>
+        )}
       </div>
 
-      <div>
+      <div className='form-group'>
         <label aria-required className='form-label' htmlFor='sponsor-logo'>
           {t('analyticsSite.batch-modal.sponsor-logo-label')}
         </label>
         <ImageUpload
           id='batch-sponsor-logo-upload'
           imageUrl={sponsorLogoUrl}
-          onChange={onSponsorLogoUpload}
+          onChange={(file: File | null) => {
+            if (file) {
+              setValue('sponsor.logo', file, { shouldValidate: true })
+              trigger('sponsor.logo')
+              setSponsorLogoUrl(URL.createObjectURL(file))
+            } else {
+              setValue('sponsor.logo', undefined, { shouldValidate: true })
+              trigger('sponsor.logo')
+            }
+          }}
         />
+        {errors.sponsor?.logo && (
+          <span className='help-block text-danger'>{errors.sponsor.logo.message}</span>
+        )}
       </div>
 
-      <div>
+      <div className='form-group'>
         <label className='form-label' htmlFor='size'>
           {t('analyticsSite.batch-modal.size-label')}
         </label>
@@ -126,19 +157,21 @@ const BatchForm = ({ register, setValue, watch, errors, initialBatch }: Props) =
             className='form-control'
             id='size'
             type='number'
+            min={0}
+            step={1}
             {...register('size', {
               valueAsNumber: true,
-              min: { value: 0, message: 'Size must be at least 0' },
+              min: { value: 0, message: t('analyticsSite.batch-modal.validation.size-min') },
             })}
           />
           <span className='input-group-text'>
             {t('analyticsSite.batch-modal.feet-squared')}
           </span>
-          {errors.size && <span className='text-danger'>{errors.size.message}</span>}
         </div>
+        {errors.size && <span className='help-block text-danger'>{errors.size.message}</span>}
       </div>
 
-      <div>
+      <div className='form-group'>
         <TreeSpeciesSelector
           label='analyticsSite.batch-modal.number-of-trees-label'
           required
@@ -147,18 +180,15 @@ const BatchForm = ({ register, setValue, watch, errors, initialBatch }: Props) =
             const total = mapSum(species, 'quantity')
             setValue('species', species)
             setValue('plantCount', total)
+            trigger('plantCount')
           }}
         />
+        {errors.plantCount && (
+          <span className='help-block text-danger'>{errors.plantCount.message}</span>
+        )}
       </div>
 
-      <div>
-        <label className='form-label'>
-          {t('analyticsSite.batch-modal.total-number-of-plants-label')}:&nbsp;
-        </label>
-        <span>{batch.plantCount}</span>
-      </div>
-
-      <div>
+      <div className='form-group'>
         <label className='form-label' htmlFor='soil-condition'>
           {t('analyticsSite.batch-modal.soil-condition-label')}
         </label>
@@ -171,40 +201,46 @@ const BatchForm = ({ register, setValue, watch, errors, initialBatch }: Props) =
         />
       </div>
 
-      <FertilizersSelector
-        fertilizers={watch('fertilizers')}
-        onChange={fertilizers => {
-          setValue('fertilizers', fertilizers)
-          setBatch(current => ({
-            ...current,
-            fertilizers,
-          }))
-        }}
-      />
+      <div className='form-group'>
+        <FertilizersSelector
+          fertilizers={watch('fertilizers')}
+          onChange={fertilizers => {
+            setValue('fertilizers', fertilizers)
+            setBatch(current => ({
+              ...current,
+              fertilizers,
+            }))
+          }}
+        />
+      </div>
 
-      <MulchLayersSelector
-        mulchLayers={watch('mulchLayers')}
-        onChange={mulchLayers => {
-          setValue('mulchLayers', mulchLayers)
-          setBatch(current => ({
-            ...current,
-            mulchLayers,
-          }))
-        }}
-      />
+      <div className='form-group'>
+        <MulchLayersSelector
+          mulchLayers={watch('mulchLayers')}
+          onChange={mulchLayers => {
+            setValue('mulchLayers', mulchLayers)
+            setBatch(current => ({
+              ...current,
+              mulchLayers,
+            }))
+          }}
+        />
+      </div>
 
-      <SupportSpeciesSelector
-        species={watch('supportedSpecies')}
-        onChange={supportedSpecies => {
-          setValue('supportedSpecies', supportedSpecies)
-          setBatch(current => ({
-            ...current,
-            supportedSpecies,
-          }))
-        }}
-      />
+      <div className='form-group'>
+        <SupportSpeciesSelector
+          species={watch('supportedSpecies')}
+          onChange={supportedSpecies => {
+            setValue('supportedSpecies', supportedSpecies)
+            setBatch(current => ({
+              ...current,
+              supportedSpecies,
+            }))
+          }}
+        />
+      </div>
 
-      <div>
+      <div className='form-group'>
         <label className='form-label' htmlFor='survived'>
           {t('analyticsSite.batch-modal.survived-label')}
         </label>
@@ -214,14 +250,15 @@ const BatchForm = ({ register, setValue, watch, errors, initialBatch }: Props) =
           type='number'
           {...register('survivedCount', {
             valueAsNumber: true,
-            min: { value: 0, message: 'Cannot be negative' },
+            min: { value: 0, message: t('analyticsSite.batch-modal.validation.no-negative') },
           })}
         />
-        {errors.survivedCount && <span className='text-danger'>{errors.survivedCount.message}
-        </span>}
+        {errors.survivedCount && (
+          <span className='help-block text-danger'>{errors.survivedCount.message}</span>
+        )}
       </div>
 
-      <div>
+      <div className='form-group'>
         <label className='form-label' htmlFor='replaced'>
           {t('analyticsSite.batch-modal.replaced-label')}
         </label>
@@ -231,12 +268,12 @@ const BatchForm = ({ register, setValue, watch, errors, initialBatch }: Props) =
           type='number'
           {...register('replaceCount', {
             valueAsNumber: true,
-            min: { value: 0, message: 'Cannot be negative' },
+            min: { value: 0, message: t('analyticsSite.batch-modal.validation.no-negative') },
           })}
         />
       </div>
 
-      <div>
+      <div className='form-group'>
         <TreeSpeciesSelector
           label='analyticsSite.batch-modal.seeds-per-species-label'
           species={watch('seeds')}
@@ -248,14 +285,7 @@ const BatchForm = ({ register, setValue, watch, errors, initialBatch }: Props) =
         />
       </div>
 
-      <div>
-        <label className='form-label'>
-          {t('analyticsSite.batch-modal.total-seeds-label')}:&nbsp;
-        </label>
-        <span>{watch('totalNumberSeeds')}</span>
-      </div>
-
-      <div>
+      <div className='form-group'>
         <label className='form-label' htmlFor='propagation'>
           {t('analyticsSite.batch-modal.propagation-label')}
         </label>
@@ -265,21 +295,33 @@ const BatchForm = ({ register, setValue, watch, errors, initialBatch }: Props) =
           type='number'
           {...register('totalPropagation', {
             valueAsNumber: true,
-            min: { value: 0, message: 'Cannot be negative' },
+            min: { value: 0, message: t('analyticsSite.batch-modal.validation.no-negative') },
           })}
         />
         {errors.totalPropagation && (
-          <span className='text-danger'>{errors.totalPropagation.message}</span>
+          <span className='help-block text-danger'>{errors.totalPropagation.message}</span>
         )}
       </div>
 
-      <div>
+      <div className='form-group'>
         <label className='form-label' htmlFor='batch-image'>
           {t('analyticsSite.batch-modal.images-label')}
         </label>
-        <ImageUpload id='batch-image-upload' imageUrl={batchImageURL} onChange={onImageUpload} />
+        <ImageUpload
+          id='batch-image-upload'
+          imageUrl={batchImageURL}
+          onChange={(file: File) => {
+            if (file) {
+              setValue('image', file)
+              setBatchImageURL(URL.createObjectURL(file))
+            } else {
+              setValue('image', undefined)
+              setBatchImageURL(undefined)
+            }
+          }}
+        />
       </div>
-    </>
+    </div>
   )
 }
 

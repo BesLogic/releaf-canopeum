@@ -1,12 +1,10 @@
 /* eslint-disable max-lines -- disable max-lines */
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import BatchActions from '@components/analytics/BatchActions'
 import BatchSponsorLogo from '@components/batches/BatchSponsorLogo'
 import { LanguageContext } from '@components/context/LanguageContext'
-import useApiClient from '@hooks/ApiClientHook'
-import useErrorHandling from '@hooks/ErrorHandlingHook'
 import type { BatchDetail } from '@services/api'
 
 const BATCH_HEADER_CLASS =
@@ -15,6 +13,8 @@ const BATCH_HEADER_CLASS =
 type Props = {
   readonly batches: BatchDetail[],
   readonly siteId: number,
+  readonly onBatchUpdate: (batchId: number) => void,
+  readonly onBatchDelete: (batchId: number) => void,
 }
 
 const cellBorderColor = 'var(--bs-gray-400)'
@@ -22,20 +22,8 @@ const cellBorderColor = 'var(--bs-gray-400)'
 const BatchTable = (props: Props) => {
   const { t } = useTranslation()
   const { translateValue } = useContext(LanguageContext)
-  const { getApiClient } = useApiClient()
-  const { displayUnhandledAPIError } = useErrorHandling()
 
   const [batches, setBatches] = useState(props.batches)
-
-  const fetchBatch = useCallback(
-    async (siteId: number) => {
-      // TODO: Use endpoint to get specific batch directly instead of refetching site summary
-      // Also only update required batch, not the entire array
-      const siteSummary = await getApiClient().siteClient.summary(siteId)
-      setBatches(siteSummary.batches)
-    },
-    [getApiClient],
-  )
 
   useEffect(() => setBatches(props.batches), [props.batches])
 
@@ -72,14 +60,8 @@ const BatchTable = (props: Props) => {
 
                   <BatchActions
                     batchDetail={batch}
-                    onDelete={() => setBatches(previous => previous.filter(b => b.id !== batch.id))}
-                    onEdit={() =>
-                      fetchBatch(props.siteId).catch(
-                        displayUnhandledAPIError(
-                          'errors.fetch-batch-failed',
-                          { batchName: batch.name },
-                        ),
-                      )}
+                    onDelete={() => props.onBatchDelete(batch.id)}
+                    onEdit={() => props.onBatchUpdate(batch.id)}
                   />
                 </div>
               </th>
