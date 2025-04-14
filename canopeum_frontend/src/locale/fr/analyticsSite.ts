@@ -7,7 +7,7 @@ export default {
     analytics: 'Analytique',
     social: 'Page Social',
   },
-  sponsors: 'Commenditaires',
+  sponsors: 'Commanditaires',
   'add-new-batch': 'Ajouter un Nouveau Lot',
   'edit-batch': 'Modifier un Lot',
   'delete-batch': {

@@ -1,12 +1,12 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import BatchForm from '@components/analytics/batch-modal/BatchForm'
 import { type BatchFormDto, DEFAULT_BATCH_FORM_DTO, transformToEditBatchDto } from '@components/analytics/batch-modal/batchModal.model'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
-import { type BatchDetail, type SiteSummaryDetail, Species } from '@services/api'
+import { type BatchDetail, type FileParameter, type SiteSummaryDetail } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
 import { useForm } from 'react-hook-form'
 
@@ -62,15 +62,17 @@ const BatchModal = ({ open, site, handleClose, batchToEdit }: Props) => {
       totalPropagation,
       seeds,
       species,
-      image,
+      images,
     } = formData
 
     const sponsorLogoImage = sponsor?.logo
       ? await assetFormatter(sponsor.logo)
       : undefined
 
-    const batchImage = image
-      ? await assetFormatter(image)
+    const batchImages: FileParameter[] | undefined = images.length
+      ? (await Promise.all(
+        Array.from(images).map(async img => await assetFormatter(img)),
+      )).filter((img): img is FileParameter => img !== undefined)
       : undefined
 
     try {
@@ -86,6 +88,7 @@ const BatchModal = ({ open, site, handleClose, batchToEdit }: Props) => {
           survivedCount,
           replaceCount,
           totalPropagation,
+          batchImages || [],
           fertilizers.map(f => f.id),
           mulchLayers.map(m => m.id),
           seeds,
@@ -106,7 +109,7 @@ const BatchModal = ({ open, site, handleClose, batchToEdit }: Props) => {
           survivedCount,
           replaceCount,
           totalPropagation,
-          batchImage,
+          batchImages || [],
           fertilizers.map(f => f.id),
           mulchLayers.map(m => m.id),
           seeds,
@@ -117,7 +120,8 @@ const BatchModal = ({ open, site, handleClose, batchToEdit }: Props) => {
         reset()
         handleClose('create')
       }
-    } catch {
+    } catch (ex) {
+      console.log(ex)
       openAlertSnackbar(
         t(
           batchToEdit
@@ -132,16 +136,16 @@ const BatchModal = ({ open, site, handleClose, batchToEdit }: Props) => {
   const handleCancel = () => handleClose()
 
   return (
-    <form onSubmit={handleSubmit(handleSubmitBatch)}>
-      <Dialog fullWidth maxWidth='sm' onClose={handleCancel} open={open}>
-        <DialogTitle>
-          {t(
-            batchToEdit
-              ? 'analyticsSite.batch-modal.edit-title'
-              : 'analyticsSite.batch-modal.create-title',
-          )}
-        </DialogTitle>
+    <Dialog fullWidth maxWidth='sm' onClose={handleCancel} open={open}>
+      <DialogTitle>
+        {t(
+          batchToEdit
+            ? 'analyticsSite.batch-modal.edit-title'
+            : 'analyticsSite.batch-modal.create-title',
+        )}
+      </DialogTitle>
 
+      <form onSubmit={handleSubmit(handleSubmitBatch)}>
         <DialogContent>
           <BatchForm
             register={register}
@@ -160,8 +164,8 @@ const BatchModal = ({ open, site, handleClose, batchToEdit }: Props) => {
             {t('generic.submit')}
           </button>
         </DialogActions>
-      </Dialog>
-    </form>
+      </form>
+    </Dialog>
   )
 }
 

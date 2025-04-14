@@ -192,7 +192,15 @@ const Analytics = () => {
             id={`collapse-${site.id}`}
           >
             <div className='accordion-body'>
-              <BatchTable batches={site.batches} siteId={site.id} />
+              <BatchTable
+                batches={site.batches}
+                siteId={site.id}
+              />
+              {
+                /* <BatchTable
+                batches={site.batches}
+                siteId={site.id}  /> */
+              }
             </div>
           </div>
         </div>
@@ -205,8 +213,8 @@ const Analytics = () => {
         <div className='d-flex justify-content-between'>
           <h1 className='text-light'>{translate('analytics.title')}</h1>
 
-          {currentUser?.role === 'MegaAdmin'
-            && (
+          {currentUser?.role === 'MegaAdmin' &&
+            (
               <button
                 className='btn btn-secondary'
                 onClick={() => setIsModalOpen(true)}

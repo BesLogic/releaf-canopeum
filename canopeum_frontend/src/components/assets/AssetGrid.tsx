@@ -23,11 +23,10 @@ const AssetGrid = ({ medias, isEditable }: Props) => {
     <div>
       <div className='row m-0'>
         {medias.map((media, index) => (
-          <button
-            className='unstyled-button position-relative col-md-3 flex-grow-1 p-1 cursor-pointer '
+          <div
+            className='unstyled-button position-relative col-md-3 flex-grow-1 p-1 cursor-pointer'
             key={media.id}
             onClick={() => handleAssetClick(index)}
-            type='button'
           >
             <div className='w-100' style={{ height: '200px', overflow: 'hidden' }}>
               <img
@@ -36,11 +35,14 @@ const AssetGrid = ({ medias, isEditable }: Props) => {
                 src={media.asset}
               />
             </div>
-            {isEditable
-              && (
+            {isEditable &&
+              (
                 <button
                   className='unstyled-button'
-                  onClick={() => isEditable.removeFile(index)}
+                  onClick={e => {
+                    e.stopPropagation()
+                    isEditable.removeFile(index)
+                  }}
                   type='button'
                 >
                   <span className='
@@ -54,7 +56,7 @@ const AssetGrid = ({ medias, isEditable }: Props) => {
                   </span>
                 </button>
               )}
-          </button>
+          </div>
         ))}
       </div>
       <div>

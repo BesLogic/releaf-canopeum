@@ -9,7 +9,8 @@ import SupportSpeciesSelector from '@components/analytics/SupportSpeciesSelector
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { mapSum } from '@utils/arrayUtils'
 import { type FieldErrors, type UseFormRegister, type UseFormSetValue, type UseFormTrigger, type UseFormWatch } from 'react-hook-form'
-import type { Species } from '@services/api'
+import AssetGrid from '@components/assets/AssetGrid'
+import { Asset } from '@services/api'
 
 type Props = {
   initialBatch?: BatchFormDto,
@@ -24,7 +25,6 @@ const BatchForm = ({ register, setValue, watch, trigger, errors }: Props) => {
   const { t } = useTranslation()
 
   const [batch, setBatch] = useState<BatchFormDto>(DEFAULT_BATCH_FORM_DTO)
-  const [batchImageURL, setBatchImageURL] = useState<string>()
   const [sponsorLogoUrl, setSponsorLogoUrl] = useState<string>()
 
   useEffect(() => {
@@ -33,24 +33,15 @@ const BatchForm = ({ register, setValue, watch, trigger, errors }: Props) => {
       if (logo instanceof File) {
         setSponsorLogoUrl(URL.createObjectURL(logo))
       }
-
-      const batchImage = value?.image
-      if (batchImage instanceof File) {
-        setBatchImageURL(URL.createObjectURL(batchImage))
-      }
     })
 
     return () => imagePreview.unsubscribe()
-  }, [watch])
+  }, [register])
 
   useEffect(() => {
     register('sponsor.logo', {
       required: t('analyticsSite.batch-modal.validation.sponsor-logo-required'),
       validate: {
-        fileSize: (file: File | undefined) =>
-          !file ||
-          file.size <= 2 * 1024 * 1024 ||
-          t('analyticsSite.batch-modal.validation.file-size-exceeds'),
         fileType: (file: File | undefined) =>
           !file ||
           file.type.startsWith('image/') ||
@@ -64,8 +55,6 @@ const BatchForm = ({ register, setValue, watch, trigger, errors }: Props) => {
           value > 0 || t('analyticsSite.batch-modal.validation.plant-count-min'),
       },
     })
-
-    register('image')
   }, [register])
 
   return (
@@ -195,9 +184,8 @@ const BatchForm = ({ register, setValue, watch, trigger, errors }: Props) => {
         <input
           className='form-control'
           id='soil-condition'
-          onChange={event => setBatch(value => ({ ...value, soilCondition: event.target.value }))}
           type='text'
-          value={batch.soilCondition}
+          {...register('soilCondition')}
         />
       </div>
 
@@ -307,19 +295,31 @@ const BatchForm = ({ register, setValue, watch, trigger, errors }: Props) => {
         <label className='form-label' htmlFor='batch-image'>
           {t('analyticsSite.batch-modal.images-label')}
         </label>
-        <ImageUpload
-          id='batch-image-upload'
-          imageUrl={batchImageURL}
-          onChange={(file: File) => {
-            if (file) {
-              setValue('image', file)
-              setBatchImageURL(URL.createObjectURL(file))
-            } else {
-              setValue('image', undefined)
-              setBatchImageURL(undefined)
-            }
+        <input
+          type='file'
+          id='batch-image'
+          multiple
+          onChange={e => {
+            const newFiles = e.target.files ? Array.from(e.target.files) : []
+            const currentFiles = Array.isArray(watch('images')) ? watch('images') : []
+            const allFiles = [...currentFiles, ...newFiles]
+
+            setValue('images', allFiles, { shouldValidate: true })
           }}
         />
+        {Array.isArray(watch('images')) && watch('images').length > 0 && (
+          <AssetGrid
+            isEditable={{
+              removeFile: (index: number) => {
+                const updatedImages = watch('images').filter((_, i: number) => i !== index)
+                setValue('images', updatedImages, { shouldValidate: true })
+              },
+            }}
+            medias={watch('images').map(
+              (file, i) => (new Asset({ id: i, asset: URL.createObjectURL(file) })),
+            )}
+          />
+        )}
       </div>
     </div>
   )

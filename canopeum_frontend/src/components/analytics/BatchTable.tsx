@@ -5,7 +5,9 @@ import { useTranslation } from 'react-i18next'
 import BatchActions from '@components/analytics/BatchActions'
 import BatchSponsorLogo from '@components/batches/BatchSponsorLogo'
 import { LanguageContext } from '@components/context/LanguageContext'
-import type { BatchDetail } from '@services/api'
+import { Asset, type BatchDetail } from '@services/api'
+import AssetViewer from '@components/assets/AssetViewer'
+import { getApiBaseUrl } from '@services/apiSettings'
 
 const BATCH_HEADER_CLASS =
   'position-sticky start-0 table-primary border-1 border-top-0 border-primary'
@@ -13,8 +15,8 @@ const BATCH_HEADER_CLASS =
 type Props = {
   readonly batches: BatchDetail[],
   readonly siteId: number,
-  readonly onBatchUpdate: (batchId: number) => void,
-  readonly onBatchDelete: (batchId: number) => void,
+  readonly onBatchUpdate?: (batchId: number) => void,
+  readonly onBatchDelete?: (batchId: number) => void,
 }
 
 const cellBorderColor = 'var(--bs-gray-400)'
@@ -25,7 +27,12 @@ const BatchTable = (props: Props) => {
 
   const [batches, setBatches] = useState(props.batches)
 
+  const [viewModeActivated, setViewModeActivated] = useState(false)
+  const [mediasSelected, setMediasSelected] = useState<Asset[]>([])
+
   useEffect(() => setBatches(props.batches), [props.batches])
+
+  const handleCloseClick = () => setViewModeActivated(false)
 
   return (
     <div className='overflow-auto'>
@@ -58,11 +65,14 @@ const BatchTable = (props: Props) => {
                 <div className='d-flex justify-content-between align-items-center'>
                   {batch.name}
 
-                  <BatchActions
-                    batchDetail={batch}
-                    onDelete={() => props.onBatchDelete(batch.id)}
-                    onEdit={() => props.onBatchUpdate(batch.id)}
-                  />
+                  {(props.onBatchDelete && props.onBatchUpdate) &&
+                    (
+                      <BatchActions
+                        batchDetail={batch}
+                        onDelete={() => props.onBatchDelete?.(batch.id)}
+                        onEdit={() => props.onBatchUpdate?.(batch.id)}
+                      />
+                    )}
                 </div>
               </th>
             ))}
@@ -297,8 +307,53 @@ const BatchTable = (props: Props) => {
               </td>
             ))}
           </tr>
+          <tr>
+            <th
+              className={BATCH_HEADER_CLASS}
+              scope='row'
+            >
+              {t('analytics.table-row-14')}
+            </th>
+            {batches.map(batch => (
+              <td
+                className='border-top border-start border-1'
+                key={`batch-${batch.id}-images`}
+                style={{ borderColor: cellBorderColor }}
+              >
+                {batch.images.length > 0 && (
+                  <div className='d-flex align-center'>
+                    <span
+                      className='material-symbols-outlined'
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => {
+                        const images = batch.images.map(a => {
+                          return {
+                            ...a.asset,
+                            asset: getApiBaseUrl() + a.asset.asset,
+                          } as Asset
+                        })
+                        setMediasSelected(images)
+                        setViewModeActivated(true)
+                      }}
+                    >
+                      image
+                    </span>
+                    ({batch.images.length})
+                  </div>
+                )}
+              </td>
+            ))}
+          </tr>
         </tbody>
       </table>
+      <div>
+        {viewModeActivated && (
+          <AssetViewer
+            handleClose={handleCloseClick}
+            medias={mediasSelected}
+          />
+        )}
+      </div>
     </div>
   )
 }

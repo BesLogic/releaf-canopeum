@@ -61,7 +61,7 @@ const WMOCategoriesImages: WMOCategoriesImageUrls[] = [
 const getImageNameByWMOCategories = (WMOCategory: string) =>
   WMOCategoriesImages
     .find(wmoCategoriesImage => wmoCategoriesImage.WMOCategories.includes(WMOCategory))
-    ?.imageUrl
-    ?? WMOCategoriesImages[0].imageUrl
+    ?.imageUrl ??
+    WMOCategoriesImages[0].imageUrl
 
 export { getImageNameByWMOCategories }
