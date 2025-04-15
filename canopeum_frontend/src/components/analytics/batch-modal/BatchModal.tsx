@@ -121,7 +121,6 @@ const BatchModal = ({ open, site, handleClose, batchToEdit }: Props) => {
         handleClose('create')
       }
     } catch (ex) {
-      console.log(ex)
       openAlertSnackbar(
         t(
           batchToEdit
