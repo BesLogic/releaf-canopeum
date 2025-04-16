@@ -64,8 +64,8 @@ const BatchTable = (props: Props) => {
                 <div className='d-flex justify-content-between align-items-center'>
                   {batch.name}
 
-                  {(props.onBatchDelete && props.onBatchUpdate) &&
-                    (
+                  {(props.onBatchDelete && props.onBatchUpdate)
+                    && (
                       <BatchActions
                         batchDetail={batch}
                         onDelete={() => props.onBatchDelete?.(batch.id)}

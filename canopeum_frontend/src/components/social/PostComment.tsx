@@ -16,9 +16,9 @@ const PostComment = ({ comment, onDelete, siteId }: Props) => {
   const ref = createRef<HTMLDivElement>()
 
   const canDeleteComment = currentUser && (
-    currentUser.role === 'MegaAdmin' ||
-    (currentUser.role === 'ForestSteward' && currentUser.adminSiteIds.includes(siteId)) ||
-    comment.authorId === currentUser.id
+    currentUser.role === 'MegaAdmin'
+    || (currentUser.role === 'ForestSteward' && currentUser.adminSiteIds.includes(siteId))
+    || comment.authorId === currentUser.id
   )
 
   return (

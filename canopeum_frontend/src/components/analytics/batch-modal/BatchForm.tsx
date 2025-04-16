@@ -50,9 +50,9 @@ const BatchForm = ({ register, setValue, watch, errors }: Props) => {
       required: t(sponsorLogoRequiredKey),
       validate: {
         fileType: (file: File | undefined) =>
-          !file ||
-          file.type.startsWith('image/') ||
-          t('analyticsSite.batch-modal.validation.invalid-file-type'),
+          !file
+          || file.type.startsWith('image/')
+          || t('analyticsSite.batch-modal.validation.invalid-file-type'),
       },
     })
 
@@ -164,8 +164,8 @@ const BatchForm = ({ register, setValue, watch, errors }: Props) => {
         </div>
         {
           // eslint-disable-next-line unicorn/explicit-length-check -- size is a property name
-          errors.size &&
-          <span className='help-block text-danger'>{errors.size.message}</span>
+          errors.size
+          && <span className='help-block text-danger'>{errors.size.message}</span>
         }
       </div>
 
