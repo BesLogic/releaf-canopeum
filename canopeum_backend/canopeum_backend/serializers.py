@@ -262,9 +262,6 @@ class SitetreespeciesSerializer(
         model = Sitetreespecies
         fields = ("id", "quantity", *TranslatableSerializerMixin.Meta.fields)
 
-    def get_id(self, obj) -> int:
-        return TreeTypeSerializer(obj.tree_type).data.get("id", None)  # type: ignore[no-any-return]
-
 
 class AssetSerializer(serializers.ModelSerializer[Asset]):
     asset = serializers.FileField()
@@ -427,7 +424,7 @@ class BatchSpeciesSerializer(serializers.ModelSerializer[BatchSpecies]):
         return TreeTypeSerializer(obj.tree_type).data
 
 
-class BatchAssetSerializer(serializers.ModelSerializer):
+class BatchAssetSerializer(serializers.ModelSerializer[BatchAsset]):
     asset = AssetSerializer()
 
     class Meta:

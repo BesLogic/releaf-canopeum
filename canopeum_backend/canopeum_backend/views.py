@@ -1,7 +1,6 @@
 import json
 import secrets
 from copy import deepcopy
-from typing import cast
 
 from django.contrib.auth import authenticate
 from django.core.paginator import Paginator
@@ -135,7 +134,7 @@ class LoginAPIView(APIView):
         email = request.data.get("email")
         password = request.data.get("password")
 
-        user = cast(User | None, authenticate(email=email, password=password))
+        user = authenticate(email=email, password=password)
         if user is not None:
             refresh = RefreshToken.for_user(user)
 
@@ -143,7 +142,7 @@ class LoginAPIView(APIView):
                 "refresh": refresh,
                 "access": refresh.access_token,
             })
-            user_serializer = UserSerializer(user)
+            user_serializer = UserSerializer(user)  # pyright: ignore[reportArgumentType] # type: ignore
             serializer = UserTokenSerializer(
                 data={"token": refresh_serializer.data, "user": user_serializer.data}
             )
