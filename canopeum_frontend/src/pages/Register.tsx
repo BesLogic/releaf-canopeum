@@ -212,8 +212,8 @@ const Register = () => {
                 },
                 validate: {
                   mustMatch: (value, formValues) =>
-                    value === formValues.password ||
-                    translate('auth.password-error-must-match'),
+                    value === formValues.password
+                    || translate('auth.password-error-must-match'),
                 },
               })}
             />

@@ -13,8 +13,8 @@ const AssetViewer = ({ medias, handleClose, mediaSelectedIndex = 0 }: AssetViewe
     className='carousel carousel-fade asset-viewer-container'
     id='carouselFade'
   >
-    {medias.length > 1 &&
-      (
+    {medias.length > 1
+      && (
         <button
           className='carousel-control-prev'
           data-bs-slide='prev'
@@ -46,8 +46,8 @@ const AssetViewer = ({ medias, handleClose, mediaSelectedIndex = 0 }: AssetViewe
         </div>
       ))}
     </div>
-    {medias.length > 1 &&
-      (
+    {medias.length > 1
+      && (
         <button
           className='carousel-control-next'
           data-bs-slide='next'

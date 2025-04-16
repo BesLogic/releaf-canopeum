@@ -37,8 +37,8 @@ const AssetGrid = ({ medias, isEditable }: Props) => {
                 src={media.asset}
               />
             </div>
-            {isEditable &&
-              (
+            {isEditable
+              && (
                 <button
                   className='unstyled-button'
                   onClick={event => {
