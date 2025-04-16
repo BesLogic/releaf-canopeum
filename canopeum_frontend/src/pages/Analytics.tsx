@@ -194,13 +194,7 @@ const Analytics = () => {
             <div className='accordion-body'>
               <BatchTable
                 batches={site.batches}
-                siteId={site.id}
               />
-              {
-                /* <BatchTable
-                batches={site.batches}
-                siteId={site.id}  /> */
-              }
             </div>
           </div>
         </div>

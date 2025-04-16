@@ -1,19 +1,19 @@
-import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import { Dialog, DialogActions, DialogContent, DialogTitle, Divider } from '@mui/material'
 import { useContext, useEffect } from 'react'
+import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import BatchForm from '@components/analytics/batch-modal/BatchForm'
 import { type BatchFormDto, DEFAULT_BATCH_FORM_DTO, transformToEditBatchDto } from '@components/analytics/batch-modal/batchModal.model'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
-import { type BatchDetail, type FileParameter, type SiteSummaryDetail } from '@services/api'
+import type { BatchDetail, FileParameter, SiteSummaryDetail } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
-import { useForm } from 'react-hook-form'
 
 type Props = {
   readonly open: boolean,
   readonly site: SiteSummaryDetail,
-  readonly handleClose: (reason?: 'create' | 'edit') => void,
+  readonly handleClose: (hasChanged: boolean) => void,
   readonly batchToEdit?: BatchDetail,
 }
 
@@ -27,26 +27,33 @@ const BatchModal = ({ open, site, handleClose, batchToEdit }: Props) => {
     handleSubmit,
     setValue,
     watch,
-    trigger,
     reset,
     formState: { errors },
   } = useForm<BatchFormDto>({
     mode: 'onTouched',
     defaultValues: DEFAULT_BATCH_FORM_DTO,
+    shouldFocusError: true,
   })
 
-  useEffect(() => {
-    const initForm = async () => {
-      if (batchToEdit && batchToEdit !== null) {
-        const batch = await transformToEditBatchDto(batchToEdit)
-        reset(batch)
-      } else {
-        reset(DEFAULT_BATCH_FORM_DTO)
-      }
-    }
+  useEffect(
+    () =>
+      void initForm().catch(() =>
+        console.error('Oops an error occured during initialization the form')
+      ),
+    [
+      batchToEdit,
+      reset,
+    ],
+  )
 
-    initForm()
-  }, [batchToEdit, reset])
+  const initForm = async () => {
+    if (batchToEdit) {
+      const batch = await transformToEditBatchDto(batchToEdit)
+      reset(batch)
+    } else {
+      reset(DEFAULT_BATCH_FORM_DTO)
+    }
+  }
 
   const handleSubmitBatch = async (formData: BatchFormDto) => {
     const {
@@ -69,11 +76,14 @@ const BatchModal = ({ open, site, handleClose, batchToEdit }: Props) => {
       ? await assetFormatter(sponsor.logo)
       : undefined
 
-    const batchImages: FileParameter[] | undefined = images.length
-      ? (await Promise.all(
-        Array.from(images).map(async img => await assetFormatter(img)),
-      )).filter((img): img is FileParameter => img !== undefined)
-      : undefined
+    let batchImages: FileParameter[] | undefined
+
+    if (images.length > 0) {
+      const assets = await Promise.all(
+        [...images].map(async img => assetFormatter(img)),
+      )
+      batchImages = assets.filter((img): img is FileParameter => img !== undefined)
+    }
 
     try {
       if (batchToEdit) {
@@ -88,18 +98,17 @@ const BatchModal = ({ open, site, handleClose, batchToEdit }: Props) => {
           survivedCount,
           replaceCount,
           totalPropagation,
-          batchImages || [],
-          fertilizers.map(f => f.id),
-          mulchLayers.map(m => m.id),
+          batchImages ?? [],
+          fertilizers.map(fertilizer => fertilizer.id),
+          mulchLayers.map(mulchLayer => mulchLayer.id),
           seeds,
           species,
-          supportedSpecies.map(s => s.id),
+          supportedSpecies.map(supportedSpecie => supportedSpecie.id),
         )
         openAlertSnackbar(t('analyticsSite.batch-modal.feedback.edit-success'))
-        handleClose('edit')
       } else {
         await getApiClient().batchClient.create(
-          site!.id,
+          site.id,
           name,
           sponsor?.name,
           sponsor?.url,
@@ -109,18 +118,18 @@ const BatchModal = ({ open, site, handleClose, batchToEdit }: Props) => {
           survivedCount,
           replaceCount,
           totalPropagation,
-          batchImages || [],
-          fertilizers.map(f => f.id),
-          mulchLayers.map(m => m.id),
+          batchImages ?? [],
+          fertilizers.map(fertilizer => fertilizer.id),
+          mulchLayers.map(mulchLayer => mulchLayer.id),
           seeds,
           species,
-          supportedSpecies.map(s => s.id),
+          supportedSpecies.map(supportedSpecie => supportedSpecie.id),
         )
         openAlertSnackbar(t('analyticsSite.batch-modal.feedback.create-success'))
         reset()
-        handleClose('create')
       }
-    } catch (ex) {
+      handleClose(true)
+    } catch {
       openAlertSnackbar(
         t(
           batchToEdit
@@ -132,7 +141,7 @@ const BatchModal = ({ open, site, handleClose, batchToEdit }: Props) => {
     }
   }
 
-  const handleCancel = () => handleClose()
+  const handleCancel = () => handleClose(false)
 
   return (
     <Dialog fullWidth maxWidth='sm' onClose={handleCancel} open={open}>
@@ -144,14 +153,15 @@ const BatchModal = ({ open, site, handleClose, batchToEdit }: Props) => {
         )}
       </DialogTitle>
 
+      <Divider />
+
       <form onSubmit={handleSubmit(handleSubmitBatch)}>
         <DialogContent>
           <BatchForm
+            errors={errors}
             register={register}
             setValue={setValue}
             watch={watch}
-            trigger={trigger}
-            errors={errors}
           />
         </DialogContent>
 

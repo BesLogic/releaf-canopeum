@@ -1,3 +1,6 @@
+import { useContext, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
 import BatchModal from '@components/analytics/batch-modal/BatchModal'
 import BatchTable from '@components/analytics/BatchTable'
 import { LanguageContext } from '@components/context/LanguageContext'
@@ -5,12 +8,10 @@ import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
 import useErrorHandling from '@hooks/ErrorHandlingHook'
 import type { BatchDetail, SiteSummaryDetail } from '@services/api'
-import { useContext, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 
 type Props = {
-  siteSummary: SiteSummaryDetail,
-  fetchSite: (siteId: number) => Promise<void>,
+  readonly siteSummary: SiteSummaryDetail,
+  readonly fetchSite: (siteId: number) => Promise<void>,
 }
 
 const AnalyticsSiteBatches = ({ siteSummary, fetchSite }: Props) => {
@@ -23,10 +24,10 @@ const AnalyticsSiteBatches = ({ siteSummary, fetchSite }: Props) => {
   const [isModalBatchOpen, setIsModalBatchOpen] = useState(false)
 
   const [lastModifiedBatchDate, setLastModifiedBatchDate] = useState<Date | undefined>()
-  const [batchToEdit, setBatchToEdit] = useState<BatchDetail | undefined>(undefined)
+  const [batchToEdit, setBatchToEdit] = useState<BatchDetail | undefined>()
 
   useEffect(() => {
-    if (!siteSummary || siteSummary.batches.length === 0) {
+    if (siteSummary.batches.length === 0) {
       setLastModifiedBatchDate(undefined)
     } else {
       const lastModifiedBatch = siteSummary
@@ -45,24 +46,23 @@ const AnalyticsSiteBatches = ({ siteSummary, fetchSite }: Props) => {
     }
   }, [siteSummary])
 
-  const handleBatchDelete = (batchId: number) => {
-    getApiClient().batchClient.delete(batchId).then(() => {
+  const handleBatchDelete = async (batchId: number) =>
+    getApiClient().batchClient.delete(batchId).then(async () => {
       openAlertSnackbar(
         translate('analyticsSite.delete-batch.success', {
           batchName: siteSummary.batches.find(batch => batch.id === batchId)?.name,
         }),
       )
 
-      fetchSite(siteSummary.id).catch(
-        displayUnhandledAPIError('analyticsSite.batch-modal.feedback.delete-error'),
+      await fetchSite(siteSummary.id).catch(() =>
+        displayUnhandledAPIError('errors.fetch-site-data-failed')
       )
-    }).catch(_ => {
+    }).catch(() =>
       displayUnhandledAPIError(
         'analyticsSite.delete-batch.error',
         { batchName: siteSummary.batches.find(batch => batch.id === batchId)?.name },
-      ), displayUnhandledAPIError('analyticsSite.batch-modal.feedback.delete-error')
-    })
-  }
+      )
+    )
 
   return (
     <>
@@ -94,36 +94,26 @@ const AnalyticsSiteBatches = ({ siteSummary, fetchSite }: Props) => {
 
         <BatchTable
           batches={siteSummary.batches}
-          siteId={siteSummary.id}
+          onBatchDelete={(batchId: number) => void handleBatchDelete(batchId)}
           onBatchUpdate={(batchId: number) => {
             setBatchToEdit(siteSummary.batches.find(batch => batch.id === batchId))
             setIsModalBatchOpen(true)
-          }}
-          onBatchDelete={(batchId: number) => {
-            handleBatchDelete(batchId)
           }}
         />
       </div>
 
       <BatchModal
-        handleClose={reason => {
+        batchToEdit={batchToEdit}
+        handleClose={hasChanged => {
           setIsModalBatchOpen(false)
-          switch (reason) {
-            case 'create':
-              fetchSite(siteSummary.id).catch(
-                displayUnhandledAPIError('analyticsSite.batch-modal.feedback.create-error'),
-              )
-              break
-            case 'edit':
-              fetchSite(siteSummary.id).catch(
-                displayUnhandledAPIError('analyticsSite.batch-modal.feedback.edit-error'),
-              )
-              break
+          if (hasChanged) {
+            fetchSite(siteSummary.id).catch(
+              displayUnhandledAPIError('analyticsSite.batch-modal.feedback.create-error'),
+            )
           }
         }}
         open={isModalBatchOpen}
         site={siteSummary}
-        batchToEdit={batchToEdit}
       />
     </>
   )

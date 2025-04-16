@@ -61,5 +61,5 @@ export const transformToEditBatchDto = async (batchDetail: BatchDetail): Promise
     url: batchDetail.sponsor.url,
     logo: await fileFormatter(batchDetail.sponsor.logo),
   },
-  images: await Promise.all(batchDetail.images.map(i => fileFormatter(i.asset))),
+  images: await Promise.all(batchDetail.images.map(index => fileFormatter(index.asset))),
 })

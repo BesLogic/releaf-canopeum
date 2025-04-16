@@ -3,10 +3,10 @@ import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import BatchActions from '@components/analytics/BatchActions'
+import AssetViewer from '@components/assets/AssetViewer'
 import BatchSponsorLogo from '@components/batches/BatchSponsorLogo'
 import { LanguageContext } from '@components/context/LanguageContext'
 import { Asset, type BatchDetail } from '@services/api'
-import AssetViewer from '@components/assets/AssetViewer'
 import { getApiBaseUrl } from '@services/apiSettings'
 
 const BATCH_HEADER_CLASS =
@@ -14,7 +14,6 @@ const BATCH_HEADER_CLASS =
 
 type Props = {
   readonly batches: BatchDetail[],
-  readonly siteId: number,
   readonly onBatchUpdate?: (batchId: number) => void,
   readonly onBatchDelete?: (batchId: number) => void,
 }
@@ -130,7 +129,7 @@ const BatchTable = (props: Props) => {
                 key={`batch-${batch.id}-size`}
                 style={{ borderColor: cellBorderColor }}
               >
-                {batch.size} ft²
+                {batch.size} {t('analyticsSite.batch-modal.feet-squared')}
               </td>
             ))}
           </tr>
@@ -321,25 +320,27 @@ const BatchTable = (props: Props) => {
                 style={{ borderColor: cellBorderColor }}
               >
                 {batch.images.length > 0 && (
-                  <div className='d-flex align-center'>
-                    <span
-                      className='material-symbols-outlined'
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => {
-                        const images = batch.images.map(a => {
-                          return {
-                            ...a.asset,
-                            asset: getApiBaseUrl() + a.asset.asset,
-                          } as Asset
+                  <button
+                    className='unstyled-button d-flex align-center'
+                    onClick={() => {
+                      const images: Asset[] = batch.images.map(a => {
+                        const asset = new Asset({
+                          ...a.asset,
+                          asset: getApiBaseUrl() + a.asset.asset,
                         })
-                        setMediasSelected(images)
-                        setViewModeActivated(true)
-                      }}
-                    >
+
+                        return asset
+                      })
+                      setMediasSelected(images)
+                      setViewModeActivated(true)
+                    }}
+                    type='button'
+                  >
+                    <span className='material-symbols-outlined'>
                       image
                     </span>
                     ({batch.images.length})
-                  </div>
+                  </button>
                 )}
               </td>
             ))}

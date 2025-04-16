@@ -1,35 +1,42 @@
 import { useEffect, useState } from 'react'
+import type { FieldErrors, UseFormRegister, UseFormSetValue, UseFormWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
-import { type BatchFormDto, DEFAULT_BATCH_FORM_DTO } from '@components/analytics/batch-modal/batchModal.model'
+import type { BatchFormDto } from '@components/analytics/batch-modal/batchModal.model'
 import FertilizersSelector from '@components/analytics/FertilizersSelector'
 import ImageUpload from '@components/analytics/ImageUpload'
 import MulchLayersSelector from '@components/analytics/MulchLayersSelector'
 import SupportSpeciesSelector from '@components/analytics/SupportSpeciesSelector'
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
-import { mapSum } from '@utils/arrayUtils'
-import { type FieldErrors, type UseFormRegister, type UseFormSetValue, type UseFormTrigger, type UseFormWatch } from 'react-hook-form'
 import AssetGrid from '@components/assets/AssetGrid'
 import { Asset } from '@services/api'
+import { mapSum } from '@utils/arrayUtils'
+
+/* eslint react/jsx-props-no-spreading: 0 --
+use of register spreadability from 'react-hook-form'  */
+
+const sponsorLogoRequiredKey = 'analyticsSite.batch-modal.validation.sponsor-logo-required'
+const sponsorUrlPatternKey = 'analyticsSite.batch-modal.validation.sponsor-url-pattern'
+const noNegative = 'analyticsSite.batch-modal.validation.no-negative'
+const sponsorUrlPrefix = 'https://'
+const sponsorLogoProperty = 'sponsor.logo'
 
 type Props = {
-  initialBatch?: BatchFormDto,
-  register: UseFormRegister<BatchFormDto>,
-  setValue: UseFormSetValue<BatchFormDto>,
-  watch: UseFormWatch<BatchFormDto>,
-  trigger: UseFormTrigger<BatchFormDto>,
-  errors: FieldErrors<BatchFormDto>,
+  readonly initialBatch?: BatchFormDto,
+  readonly register: UseFormRegister<BatchFormDto>,
+  readonly setValue: UseFormSetValue<BatchFormDto>,
+  readonly watch: UseFormWatch<BatchFormDto>,
+  readonly errors: FieldErrors<BatchFormDto>,
 }
 
-const BatchForm = ({ register, setValue, watch, trigger, errors }: Props) => {
+const BatchForm = ({ register, setValue, watch, errors }: Props) => {
   const { t } = useTranslation()
 
-  const [batch, setBatch] = useState<BatchFormDto>(DEFAULT_BATCH_FORM_DTO)
   const [sponsorLogoUrl, setSponsorLogoUrl] = useState<string>()
 
   useEffect(() => {
     const imagePreview = watch(value => {
-      const logo = value?.sponsor?.logo
+      const logo = value.sponsor?.logo
       if (logo instanceof File) {
         setSponsorLogoUrl(URL.createObjectURL(logo))
       }
@@ -39,8 +46,8 @@ const BatchForm = ({ register, setValue, watch, trigger, errors }: Props) => {
   }, [register])
 
   useEffect(() => {
-    register('sponsor.logo', {
-      required: t('analyticsSite.batch-modal.validation.sponsor-logo-required'),
+    register(sponsorLogoProperty, {
+      required: t(sponsorLogoRequiredKey),
       validate: {
         fileType: (file: File | undefined) =>
           !file ||
@@ -96,15 +103,15 @@ const BatchForm = ({ register, setValue, watch, trigger, errors }: Props) => {
           {t('analyticsSite.batch-modal.sponsor-website-url-label')}
         </label>
         <div className='input-group'>
-          <span className='input-group-text'>https://</span>
+          <span className='input-group-text'>{sponsorUrlPrefix}</span>
           <input
             className='form-control '
             id='sponsor-website-url'
             {...register('sponsor.url', {
               required: t('analyticsSite.batch-modal.validation.sponsor-url-required'),
               pattern: {
-                value: /^([\w\d-]+\.)+\w{2,}(\/.*)?$/,
-                message: t('analyticsSite.batch-modal.validation.sponsor-url-pattern'),
+                value: /^([\w-]+\.)+\w{2,}(\/.*)?$/u,
+                message: t(sponsorUrlPatternKey),
               },
             })}
           />
@@ -123,12 +130,10 @@ const BatchForm = ({ register, setValue, watch, trigger, errors }: Props) => {
           imageUrl={sponsorLogoUrl}
           onChange={(file: File | null) => {
             if (file) {
-              setValue('sponsor.logo', file, { shouldValidate: true })
-              trigger('sponsor.logo')
+              setValue(sponsorLogoProperty, file, { shouldValidate: true })
               setSponsorLogoUrl(URL.createObjectURL(file))
             } else {
-              setValue('sponsor.logo', undefined, { shouldValidate: true })
-              trigger('sponsor.logo')
+              setValue(sponsorLogoProperty, undefined, { shouldValidate: true })
             }
           }}
         />
@@ -138,18 +143,18 @@ const BatchForm = ({ register, setValue, watch, trigger, errors }: Props) => {
       </div>
 
       <div className='form-group'>
-        <label className='form-label' htmlFor='size'>
+        <label aria-required className='form-label' htmlFor='size'>
           {t('analyticsSite.batch-modal.size-label')}
         </label>
         <div className='input-group'>
           <input
             className='form-control'
             id='size'
-            type='number'
             min={0}
             step={1}
+            type='number'
             {...register('size', {
-              valueAsNumber: true,
+              required: t('analyticsSite.batch-modal.validation.size-min'),
               min: { value: 0, message: t('analyticsSite.batch-modal.validation.size-min') },
             })}
           />
@@ -157,20 +162,23 @@ const BatchForm = ({ register, setValue, watch, trigger, errors }: Props) => {
             {t('analyticsSite.batch-modal.feet-squared')}
           </span>
         </div>
-        {errors.size && <span className='help-block text-danger'>{errors.size.message}</span>}
+        {
+          // eslint-disable-next-line unicorn/explicit-length-check -- size is a property name
+          errors.size &&
+          <span className='help-block text-danger'>{errors.size.message}</span>
+        }
       </div>
 
       <div className='form-group'>
         <TreeSpeciesSelector
           label='analyticsSite.batch-modal.number-of-trees-label'
-          required
-          species={watch('species')}
           onChange={species => {
             const total = mapSum(species, 'quantity')
             setValue('species', species)
             setValue('plantCount', total)
-            trigger('plantCount')
           }}
+          required
+          species={watch('species')}
         />
         {errors.plantCount && (
           <span className='help-block text-danger'>{errors.plantCount.message}</span>
@@ -192,39 +200,21 @@ const BatchForm = ({ register, setValue, watch, trigger, errors }: Props) => {
       <div className='form-group'>
         <FertilizersSelector
           fertilizers={watch('fertilizers')}
-          onChange={fertilizers => {
-            setValue('fertilizers', fertilizers)
-            setBatch(current => ({
-              ...current,
-              fertilizers,
-            }))
-          }}
+          onChange={fertilizers => setValue('fertilizers', fertilizers)}
         />
       </div>
 
       <div className='form-group'>
         <MulchLayersSelector
           mulchLayers={watch('mulchLayers')}
-          onChange={mulchLayers => {
-            setValue('mulchLayers', mulchLayers)
-            setBatch(current => ({
-              ...current,
-              mulchLayers,
-            }))
-          }}
+          onChange={mulchLayers => setValue('mulchLayers', mulchLayers)}
         />
       </div>
 
       <div className='form-group'>
         <SupportSpeciesSelector
+          onChange={supportedSpecies => setValue('supportedSpecies', supportedSpecies)}
           species={watch('supportedSpecies')}
-          onChange={supportedSpecies => {
-            setValue('supportedSpecies', supportedSpecies)
-            setBatch(current => ({
-              ...current,
-              supportedSpecies,
-            }))
-          }}
         />
       </div>
 
@@ -237,8 +227,7 @@ const BatchForm = ({ register, setValue, watch, trigger, errors }: Props) => {
           id='survived'
           type='number'
           {...register('survivedCount', {
-            valueAsNumber: true,
-            min: { value: 0, message: t('analyticsSite.batch-modal.validation.no-negative') },
+            min: { value: 0, message: t(noNegative) },
           })}
         />
         {errors.survivedCount && (
@@ -255,8 +244,7 @@ const BatchForm = ({ register, setValue, watch, trigger, errors }: Props) => {
           id='replaced'
           type='number'
           {...register('replaceCount', {
-            valueAsNumber: true,
-            min: { value: 0, message: t('analyticsSite.batch-modal.validation.no-negative') },
+            min: { value: 0, message: t(noNegative) },
           })}
         />
       </div>
@@ -264,12 +252,12 @@ const BatchForm = ({ register, setValue, watch, trigger, errors }: Props) => {
       <div className='form-group'>
         <TreeSpeciesSelector
           label='analyticsSite.batch-modal.seeds-per-species-label'
-          species={watch('seeds')}
           onChange={species => {
             const total = mapSum(species, 'quantity')
             setValue('seeds', species)
             setValue('totalNumberSeeds', total)
           }}
+          species={watch('seeds')}
         />
       </div>
 
@@ -282,8 +270,7 @@ const BatchForm = ({ register, setValue, watch, trigger, errors }: Props) => {
           id='propagation'
           type='number'
           {...register('totalPropagation', {
-            valueAsNumber: true,
-            min: { value: 0, message: t('analyticsSite.batch-modal.validation.no-negative') },
+            min: { value: 0, message: t(noNegative) },
           })}
         />
         {errors.totalPropagation && (
@@ -296,27 +283,32 @@ const BatchForm = ({ register, setValue, watch, trigger, errors }: Props) => {
           {t('analyticsSite.batch-modal.images-label')}
         </label>
         <input
-          type='file'
           id='batch-image'
           multiple
-          onChange={e => {
-            const newFiles = e.target.files ? Array.from(e.target.files) : []
-            const currentFiles = Array.isArray(watch('images')) ? watch('images') : []
+          onChange={event => {
+            const newFiles = event.target.files
+              ? [...event.target.files]
+              : []
+            const currentFiles = Array.isArray(watch('images'))
+              ? watch('images')
+              : []
             const allFiles = [...currentFiles, ...newFiles]
 
             setValue('images', allFiles, { shouldValidate: true })
           }}
+          type='file'
         />
         {Array.isArray(watch('images')) && watch('images').length > 0 && (
           <AssetGrid
             isEditable={{
               removeFile: (index: number) => {
-                const updatedImages = watch('images').filter((_, i: number) => i !== index)
+                const updatedImages = watch('images')
+                  .filter((_, index_: number) => index_ !== index)
                 setValue('images', updatedImages, { shouldValidate: true })
               },
             }}
             medias={watch('images').map(
-              (file, i) => (new Asset({ id: i, asset: URL.createObjectURL(file) })),
+              (file, index) => (new Asset({ id: index, asset: URL.createObjectURL(file) })),
             )}
           />
         )}
