@@ -1,20 +1,21 @@
 /* eslint-disable max-lines -- disable max-lines */
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import BatchActions from '@components/analytics/BatchActions'
+import AssetViewer from '@components/assets/AssetViewer'
 import BatchSponsorLogo from '@components/batches/BatchSponsorLogo'
 import { LanguageContext } from '@components/context/LanguageContext'
-import useApiClient from '@hooks/ApiClientHook'
-import useErrorHandling from '@hooks/ErrorHandlingHook'
-import type { BatchDetail } from '@services/api'
+import { Asset, type BatchDetail } from '@services/api'
+import { getApiBaseUrl } from '@services/apiSettings'
 
 const BATCH_HEADER_CLASS =
   'position-sticky start-0 table-primary border-1 border-top-0 border-primary'
 
 type Props = {
   readonly batches: BatchDetail[],
-  readonly siteId: number,
+  readonly onBatchUpdate?: (batchId: number) => void,
+  readonly onBatchDelete?: (batchId: number) => void,
 }
 
 const cellBorderColor = 'var(--bs-gray-400)'
@@ -22,22 +23,15 @@ const cellBorderColor = 'var(--bs-gray-400)'
 const BatchTable = (props: Props) => {
   const { t } = useTranslation()
   const { translateValue } = useContext(LanguageContext)
-  const { getApiClient } = useApiClient()
-  const { displayUnhandledAPIError } = useErrorHandling()
 
   const [batches, setBatches] = useState(props.batches)
 
-  const fetchBatch = useCallback(
-    async (siteId: number) => {
-      // TODO: Use endpoint to get specific batch directly instead of refetching site summary
-      // Also only update required batch, not the entire array
-      const siteSummary = await getApiClient().siteClient.summary(siteId)
-      setBatches(siteSummary.batches)
-    },
-    [getApiClient],
-  )
+  const [viewModeActivated, setViewModeActivated] = useState(false)
+  const [mediasSelected, setMediasSelected] = useState<Asset[]>([])
 
   useEffect(() => setBatches(props.batches), [props.batches])
+
+  const handleCloseClick = () => setViewModeActivated(false)
 
   return (
     <div className='overflow-auto'>
@@ -70,17 +64,14 @@ const BatchTable = (props: Props) => {
                 <div className='d-flex justify-content-between align-items-center'>
                   {batch.name}
 
-                  <BatchActions
-                    batchDetail={batch}
-                    onDelete={() => setBatches(previous => previous.filter(b => b.id !== batch.id))}
-                    onEdit={() =>
-                      fetchBatch(props.siteId).catch(
-                        displayUnhandledAPIError(
-                          'errors.fetch-batch-failed',
-                          { batchName: batch.name },
-                        ),
-                      )}
-                  />
+                  {(props.onBatchDelete && props.onBatchUpdate)
+                    && (
+                      <BatchActions
+                        batchDetail={batch}
+                        onDelete={() => props.onBatchDelete?.(batch.id)}
+                        onEdit={() => props.onBatchUpdate?.(batch.id)}
+                      />
+                    )}
                 </div>
               </th>
             ))}
@@ -138,7 +129,7 @@ const BatchTable = (props: Props) => {
                 key={`batch-${batch.id}-size`}
                 style={{ borderColor: cellBorderColor }}
               >
-                {batch.size} ft²
+                {batch.size} {t('analyticsSite.batch-modal.feet-squared')}
               </td>
             ))}
           </tr>
@@ -315,8 +306,55 @@ const BatchTable = (props: Props) => {
               </td>
             ))}
           </tr>
+          <tr>
+            <th
+              className={BATCH_HEADER_CLASS}
+              scope='row'
+            >
+              {t('analytics.table-row-14')}
+            </th>
+            {batches.map(batch => (
+              <td
+                className='border-top border-start border-1'
+                key={`batch-${batch.id}-images`}
+                style={{ borderColor: cellBorderColor }}
+              >
+                {batch.images.length > 0 && (
+                  <button
+                    className='unstyled-button d-flex align-center'
+                    onClick={() => {
+                      const images: Asset[] = batch.images.map(a => {
+                        const asset = new Asset({
+                          ...a.asset,
+                          asset: getApiBaseUrl() + a.asset.asset,
+                        })
+
+                        return asset
+                      })
+                      setMediasSelected(images)
+                      setViewModeActivated(true)
+                    }}
+                    type='button'
+                  >
+                    <span className='material-symbols-outlined'>
+                      image
+                    </span>
+                    ({batch.images.length})
+                  </button>
+                )}
+              </td>
+            ))}
+          </tr>
         </tbody>
       </table>
+      <div>
+        {viewModeActivated && (
+          <AssetViewer
+            handleClose={handleCloseClick}
+            medias={mediasSelected}
+          />
+        )}
+      </div>
     </div>
   )
 }

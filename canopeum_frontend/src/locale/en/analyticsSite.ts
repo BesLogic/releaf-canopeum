@@ -41,5 +41,17 @@ export default {
       'edit-success': 'Batch edited successfully',
       'edit-error': 'Error editing batch',
     },
+    validation: {
+      'name-required': 'Batch name is required',
+      'sponsor-name-required': 'Sponsor name is required',
+      'sponsor-url-required': 'Sponsor URL is required',
+      'sponsor-url-pattern': 'Enter a valid URL',
+      'sponsor-logo-required': 'Sponsor logo is required',
+      'file-size-exceeds': 'File size exceeds 2MB',
+      'invalid-file-type': 'Invalid file type',
+      'size-min': 'Size must be at least 0',
+      'no-negative': 'Cannot be negative',
+      'plant-count-min': 'Plant count must be at least 1',
+    },
   },
 }
