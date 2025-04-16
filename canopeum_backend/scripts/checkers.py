@@ -14,7 +14,7 @@ os.chdir(backend_root)
 
 
 def run_command(command: Sequence["StrOrBytesPath"]):
-    print(f"\nRunning: {' '.join(str(arg) for arg in command)}")
+    print(f"\nRunning: {" ".join(str(arg) for arg in command)}")
     run(command, check=False)
 
 
