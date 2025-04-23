@@ -46,8 +46,8 @@ const SiteSummaryCard = ({ site, admins, onSiteChange, onSiteEdit }: Props) => {
               <h5 className='mb-0 text-ellipsis'>{site.name}</h5>
             </Link>
 
-            {currentUser?.role === 'MegaAdmin'
-              && (
+            {currentUser?.role === 'MegaAdmin' &&
+              (
                 <SiteSummaryActions
                   admins={admins}
                   onSiteChange={onSiteChange}

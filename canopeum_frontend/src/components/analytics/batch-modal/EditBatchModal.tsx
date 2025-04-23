@@ -6,7 +6,7 @@ import BatchForm from '@components/analytics/batch-modal/BatchForm'
 import { type BatchFormDto, DEFAULT_BATCH_FORM_DTO } from '@components/analytics/batch-modal/batchModal.model'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
-import type { BatchDetail } from '@services/api'
+import type { BatchDetail, FileParameter } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
 
 type Props = {
@@ -37,12 +37,21 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
       totalPropagation,
       seeds,
       species,
-      // image,
+      images,
     } = batch
 
     const sponsorLogoImage = sponsor?.logo
       ? await assetFormatter(sponsor.logo)
       : undefined
+
+    let batchImages: FileParameter[] | undefined
+
+    if (images.length > 0) {
+      const assets = await Promise.all(
+        [...images].map(async img => assetFormatter(img)),
+      )
+      batchImages = assets.filter((img): img is FileParameter => img !== undefined)
+    }
 
     try {
       await getApiClient().batchClient.update(
@@ -56,12 +65,12 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
         survivedCount,
         replaceCount,
         totalPropagation,
+        batchImages ?? [],
         fertilizers.map(fertilizer => fertilizer.id),
         mulchLayers.map(layer => layer.id),
         seeds,
         species,
         supportedSpecies.map(specie => specie.id),
-        // image,
       )
     } catch {
       openAlertSnackbar(

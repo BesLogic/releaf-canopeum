@@ -179,14 +179,14 @@ const CreatePostWidget = ({ siteId, addNewPost }: Props) => {
             </span>
           )}
         </div>
-        {files.length > 0
-          && (
+        {files.length > 0 &&
+          (
             <AssetGrid
               isEditable={{ removeFile }}
               medias={files.map(
                 // Find the best way to type file data
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- See above
-                file => (new Asset({ id: 0, asset: URL.createObjectURL(file.data) })),
+                (file, index) => (new Asset({ id: index, asset: URL.createObjectURL(file.data) })),
               )}
             />
           )}

@@ -5,16 +5,16 @@ import type { Asset } from '@services/api'
 type AssetViewerProps = {
   readonly medias: Asset[],
   readonly handleClose: () => void,
-  readonly mediaSelectedIndex: number,
+  readonly mediaSelectedIndex?: number,
 }
 
-const AssetViewer = ({ medias, handleClose, mediaSelectedIndex }: AssetViewerProps) => (
+const AssetViewer = ({ medias, handleClose, mediaSelectedIndex = 0 }: AssetViewerProps) => (
   <div
     className='carousel carousel-fade asset-viewer-container'
     id='carouselFade'
   >
-    {medias.length > 1
-      && (
+    {medias.length > 1 &&
+      (
         <button
           className='carousel-control-prev'
           data-bs-slide='prev'
@@ -46,8 +46,8 @@ const AssetViewer = ({ medias, handleClose, mediaSelectedIndex }: AssetViewerPro
         </div>
       ))}
     </div>
-    {medias.length > 1
-      && (
+    {medias.length > 1 &&
+      (
         <button
           className='carousel-control-next'
           data-bs-slide='next'
