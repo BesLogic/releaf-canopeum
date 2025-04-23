@@ -1,16 +1,17 @@
+import { useContext, useEffect, useState } from 'react'
+import { type UseFormReturn, useWatch } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+
 import ImageUpload from '@components/analytics/ImageUpload'
 import SiteCoordinates from '@components/analytics/site-modal/SiteCoordinates'
 import type { SiteFormDto } from '@components/analytics/site-modal/siteModal.model'
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { LanguageContext } from '@components/context/LanguageContext'
 import type { SiteType } from '@services/api'
-import { useContext, useEffect, useState } from 'react'
-import { type UseFormReturn, useWatch } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 
 type Props = {
   readonly availableSiteTypes: SiteType[],
-  readonly form: UseFormReturn<SiteFormDto, any, undefined>,
+  readonly form: UseFormReturn<SiteFormDto>,
   // readonly register: UseFormRegister<SiteFormDto>,
   // readonly getValues: UseFormGetValues<SiteFormDto>,
   // readonly setValue: UseFormSetValue<SiteFormDto>,

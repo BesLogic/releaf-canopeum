@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import BatchTable from '@components/analytics/BatchTable'
 import SiteModal from '@components/analytics/site-modal/SiteModal'
+import type { SiteFormDto } from '@components/analytics/site-modal/siteModal.model'
 import SiteSuccessRatesChart from '@components/analytics/SiteSuccessRatesChart'
 import SiteSummaryCard from '@components/analytics/SiteSummaryCard'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
@@ -13,7 +14,6 @@ import useErrorHandling from '@hooks/ErrorHandlingHook'
 import { type Coordinate, coordinateToString } from '@models/Coordinate'
 import type { SiteSummary, User } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
-import type { SiteFormDto } from '@components/analytics/site-modal/siteModal.model'
 
 const Analytics = () => {
   const { t: translate } = useTranslation()
