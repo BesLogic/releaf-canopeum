@@ -1,22 +1,20 @@
+import { useContext, useEffect, useState } from 'react'
+import { type UseFormReturn, useWatch } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+
 import ImageUpload from '@components/analytics/ImageUpload'
 import SiteCoordinates from '@components/analytics/site-modal/SiteCoordinates'
 import type { SiteFormDto } from '@components/analytics/site-modal/siteModal.model'
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { LanguageContext } from '@components/context/LanguageContext'
 import type { SiteType } from '@services/api'
-import { useContext, useEffect, useState } from 'react'
-import { type UseFormReturn, useWatch } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
+
+/* eslint react/jsx-props-no-spreading: 0 --
+use of register spreadability from 'react-hook-form'  */
 
 type Props = {
   readonly availableSiteTypes: SiteType[],
-  readonly form: UseFormReturn<SiteFormDto, any, undefined>,
-  // readonly register: UseFormRegister<SiteFormDto>,
-  // readonly getValues: UseFormGetValues<SiteFormDto>,
-  // readonly setValue: UseFormSetValue<SiteFormDto>,
-  // readonly watch: UseFormWatch<SiteFormDto>,
-  // readonly errors: FieldErrors<SiteFormDto>,
-  // readonly control: Control<SiteFormDto>,
+  readonly form: UseFormReturn<SiteFormDto>,
 }
 
 const SiteForm = (
@@ -44,9 +42,9 @@ const SiteForm = (
   }, [siteImage])
 
   useEffect(() => {
-    const siteImage = getValues('siteImage')
-    if (siteImage instanceof File) {
-      setSiteImageUrl(URL.createObjectURL(siteImage))
+    const image = getValues('siteImage')
+    if (image instanceof File) {
+      setSiteImageUrl(URL.createObjectURL(image))
     }
 
     register('siteImage', {
@@ -61,7 +59,7 @@ const SiteForm = (
 
     register('species', {
       validate: species =>
-        (species && species.length > 0) ||
+        species.length > 0 ||
         t('analytics.site-modal.validation.tree-species-required'),
     })
   }, [register, watch, getValues])
@@ -166,15 +164,17 @@ const SiteForm = (
           />
           <span className='input-group-text'>{t('analytics.site-modal.feet-squared')}</span>
         </div>
-        {errors.size && <span className='help-block text-danger'>{errors.size.message}</span>}
+        {
+          // eslint-disable-next-line unicorn/explicit-length-check -- size is a property name
+          errors.size &&
+          <span className='help-block text-danger'>{errors.size.message}</span>
+        }
       </div>
 
       <div className='form-group'>
         <TreeSpeciesSelector
           label='analytics.site-modal.site-tree-species'
-          onChange={species => {
-            setValue('species', species, { shouldValidate: true })
-          }}
+          onChange={species => setValue('species', species, { shouldValidate: true })}
           required
           species={watch('species')}
         />

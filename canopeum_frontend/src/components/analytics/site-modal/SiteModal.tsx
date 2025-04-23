@@ -1,14 +1,14 @@
 import { CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
+import SiteForm from '@components/analytics/site-modal/SiteForm'
+import { DEFAULT_SITE_FORM_DTO, transformToEditSiteDto } from '@components/analytics/site-modal/siteModal.model'
 import useApiClient from '@hooks/ApiClientHook'
 import useErrorHandling from '@hooks/ErrorHandlingHook'
 import { type DefaultCoordinate, defaultLatitude, defaultLongitude } from '@models/Coordinate'
-import { Site, SiteType, Species } from '@services/api'
-import { useForm } from 'react-hook-form'
-import { DEFAULT_SITE_FORM_DTO, transformToEditSiteDto } from '@components/analytics/site-modal/siteModal.model'
-import SiteForm from '@components/analytics/site-modal/SiteForm'
+import type { Site, SiteType, Species } from '@services/api'
 
 type Props = {
   readonly open: boolean,
@@ -54,16 +54,13 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
     shouldFocusError: true,
   })
 
-  useEffect(() => {
-    void fetchSiteTypes()
-  }, [])
+  useEffect(() => void fetchSiteTypes(), [])
 
   useEffect(
-    () => {
+    () =>
       void initForm().catch(() =>
         console.error('Oops an error occured during initialization of the form')
-      )
-    },
+      ),
     [open, form.reset],
   )
 
@@ -73,11 +70,11 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
       await getApiClient().siteClient.detail(siteId).then(async (site: Site) => {
         const siteForm = await transformToEditSiteDto(site)
         form.reset(siteForm)
-      }).catch(() => {
+      }).catch(() =>
         displayUnhandledAPIError(
           'errors.fetch-site-failed',
         )
-      })
+      )
       setLoading(false)
     } else {
       setLoading(false)
@@ -85,9 +82,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
     }
   }
 
-  const handleSubmitSite = () => {
-    handleClose('save', form.watch())
-  }
+  const handleSubmitSite = () => handleClose('save', form.watch())
 
   const fetchSiteTypes = async () => {
     try {
@@ -102,16 +97,14 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
   }
 
   if (loading) {
-    return <CircularProgress color='secondary'></CircularProgress>
+    return <CircularProgress color='secondary' />
   }
 
   return (
     <Dialog
       fullWidth
       maxWidth='sm'
-      onClose={(_, reason) => {
-        handleClose(reason)
-      }}
+      onClose={(_, reason) => handleClose(reason)}
       open={open}
     >
       <DialogTitle>
