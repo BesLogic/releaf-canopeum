@@ -19,7 +19,7 @@ export const defaultLatitude: DefaultCoordinate = {
   minutes: 0,
   seconds: 0,
   miliseconds: 0,
-  cardinal: undefined,
+  cardinal: 'N',
 }
 
 export const defaultLongitude: DefaultCoordinate = {
@@ -27,7 +27,7 @@ export const defaultLongitude: DefaultCoordinate = {
   minutes: 0,
   seconds: 0,
   miliseconds: 0,
-  cardinal: undefined,
+  cardinal: 'W',
 }
 
 export const coordinateToString = (coord: Coordinate) =>

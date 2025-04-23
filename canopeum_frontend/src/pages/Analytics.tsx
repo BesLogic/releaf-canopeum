@@ -2,7 +2,6 @@ import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import BatchTable from '@components/analytics/BatchTable'
-import type { SiteDto } from '@components/analytics/site-modal/SiteModal'
 import SiteModal from '@components/analytics/site-modal/SiteModal'
 import SiteSuccessRatesChart from '@components/analytics/SiteSuccessRatesChart'
 import SiteSummaryCard from '@components/analytics/SiteSummaryCard'
@@ -14,6 +13,7 @@ import useErrorHandling from '@hooks/ErrorHandlingHook'
 import { type Coordinate, coordinateToString } from '@models/Coordinate'
 import type { SiteSummary, User } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
+import type { SiteFormDto } from '@components/analytics/site-modal/siteModal.model'
 
 const Analytics = () => {
   const { t: translate } = useTranslation()
@@ -36,7 +36,7 @@ const Analytics = () => {
 
   const handleModalClose = async (
     reason: 'backdropClick' | 'escapeKeyDown' | 'save' | 'cancel',
-    data?: SiteDto,
+    data?: SiteFormDto,
   ) => {
     if (reason !== 'save') {
       setIsModalOpen(false)
@@ -61,22 +61,6 @@ const Analytics = () => {
         species,
         visibleOnMap,
       } = data
-
-      // TODO: In-form errors that are translated. To do with the validation refactoring
-      if (dmsLatitude.cardinal == null) {
-        openAlertSnackbar(
-          'Latitude must be specified',
-          { severity: 'error' },
-        )
-        return
-      }
-      if (dmsLongitude.cardinal == null) {
-        openAlertSnackbar(
-          'Longitude must be specified',
-          { severity: 'error' },
-        )
-        return
-      }
 
       // @typescript-eslint/no-unsafe-type-assertion
       // NOTE: Casting here isn't great (despite knowing that we just validated),
@@ -205,11 +189,13 @@ const Analytics = () => {
         <div className='d-flex justify-content-between'>
           <h1 className='text-light'>{translate('analytics.title')}</h1>
 
-          {currentUser?.role === 'MegaAdmin'
-            && (
+          {currentUser?.role === 'MegaAdmin' &&
+            (
               <button
                 className='btn btn-secondary'
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => {
+                  setIsModalOpen(true)
+                }}
                 type='button'
               >
                 {translate('analytics.create-site')}
