@@ -51,16 +51,16 @@ const SiteForm = (
       required: t('analytics.site-modal.validation.image-required'),
       validate: {
         fileType: (file: File | undefined) =>
-          !file ||
-          file.type.startsWith('image/') ||
-          t('analytics.site-modal.validation.invalid-file-type'),
+          !file
+          || file.type.startsWith('image/')
+          || t('analytics.site-modal.validation.invalid-file-type'),
       },
     })
 
     register('species', {
       validate: species =>
-        species.length > 0 ||
-        t('analytics.site-modal.validation.tree-species-required'),
+        species.length > 0
+        || t('analytics.site-modal.validation.tree-species-required'),
     })
   }, [register, watch, getValues])
 
@@ -166,8 +166,8 @@ const SiteForm = (
         </div>
         {
           // eslint-disable-next-line unicorn/explicit-length-check -- size is a property name
-          errors.size &&
-          <span className='help-block text-danger'>{errors.size.message}</span>
+          errors.size
+          && <span className='help-block text-danger'>{errors.size.message}</span>
         }
       </div>
 

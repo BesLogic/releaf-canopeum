@@ -1,5 +1,5 @@
 import { type DefaultCoordinate, defaultLatitude, defaultLongitude, extractCoordinate } from '@models/Coordinate'
-import type { Site} from '@services/api';
+import type { Site } from '@services/api'
 import { Species } from '@services/api'
 import { fileFormatter } from '@utils/assetFormatter'
 
