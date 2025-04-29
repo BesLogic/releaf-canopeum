@@ -1,6 +1,6 @@
 # Canopeum
 
-![Alt text](canopeum_frontend/public/Canopeum_Logo.jpg?raw=true "Logo")
+![Alt text](canopeum_frontend/public/Canopeum_Logo.jpg)
 
 This project integrates Django backend with React Vite frontend template to create a full-stack web application.
 
