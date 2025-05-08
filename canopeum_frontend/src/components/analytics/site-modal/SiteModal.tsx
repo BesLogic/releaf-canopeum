@@ -100,6 +100,8 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
     return <CircularProgress color='secondary' />
   }
 
+  const formId = `site-form-${String(siteId)}`
+
   return (
     <Dialog
       fullWidth
@@ -115,30 +117,36 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
         )}
       </DialogTitle>
 
-      <form className='d-flex flex-column gap-3' onSubmit={form.handleSubmit(handleSubmitSite)}>
-        <DialogContent>
+      <DialogContent>
+        <form
+          className='d-flex flex-column gap-3'
+          id={formId}
+          onSubmit={form.handleSubmit(handleSubmitSite)}
+        >
           <SiteForm
             availableSiteTypes={availableSiteTypes}
             form={form}
           />
-        </DialogContent>
+        </form>
+      </DialogContent>
 
-        <DialogActions>
-          <button
-            className='btn btn-outline-primary'
-            onClick={() => handleClose('cancel')}
-            type='button'
-          >
-            {t('generic.cancel')}
-          </button>
-          <button
-            className='btn btn-primary'
-            type='submit'
-          >
-            {t('generic.submit')}
-          </button>
-        </DialogActions>
-      </form>
+      <DialogActions>
+        <button
+          className='btn btn-outline-primary'
+          form={formId}
+          onClick={() => handleClose('cancel')}
+          type='button'
+        >
+          {t('generic.cancel')}
+        </button>
+        <button
+          className='btn btn-primary'
+          form={formId}
+          type='submit'
+        >
+          {t('generic.submit')}
+        </button>
+      </DialogActions>
     </Dialog>
   )
 }
