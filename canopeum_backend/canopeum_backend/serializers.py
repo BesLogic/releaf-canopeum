@@ -15,6 +15,7 @@ from .models import (
     Announcement,
     Asset,
     Batch,
+    BatchAsset,
     Batchfertilizer,
     Batchmulchlayer,
     BatchSeed,
@@ -261,9 +262,6 @@ class SitetreespeciesSerializer(
         model = Sitetreespecies
         fields = ("id", "quantity", *TranslatableSerializerMixin.Meta.fields)
 
-    def get_id(self, obj) -> int:
-        return TreeTypeSerializer(obj.tree_type).data.get("id", None)  # type: ignore[no-any-return]
-
 
 class AssetSerializer(serializers.ModelSerializer[Asset]):
     asset = serializers.FileField()
@@ -426,6 +424,14 @@ class BatchSpeciesSerializer(serializers.ModelSerializer[BatchSpecies]):
         return TreeTypeSerializer(obj.tree_type).data
 
 
+class BatchAssetSerializer(serializers.ModelSerializer[BatchAsset]):
+    asset = AssetSerializer()
+
+    class Meta:
+        model = BatchAsset
+        fields = ("id", "asset")
+
+
 class BatchDetailSerializer(serializers.ModelSerializer[Batch]):
     fertilizers = serializers.SerializerMethodField()
     mulch_layers = serializers.SerializerMethodField()
@@ -435,9 +441,7 @@ class BatchDetailSerializer(serializers.ModelSerializer[Batch]):
     species = serializers.SerializerMethodField()
     plant_count = serializers.SerializerMethodField()
     sponsor = serializers.SerializerMethodField()
-    # HACK to allow handling the image with a AssetSerializer separately
-    # TODO: Figure out how to feed the image directly to BatchDetailSerializer
-    image = AssetSerializer(required=False)
+    images = serializers.SerializerMethodField()
 
     class Meta:
         model = Batch
@@ -486,6 +490,11 @@ class BatchDetailSerializer(serializers.ModelSerializer[Batch]):
     @extend_schema_field(BatchSponsorSerializer)
     def get_sponsor(self, obj: Batch):
         return BatchSponsorSerializer(BatchSponsor.objects.get(batch=obj)).data
+
+    @extend_schema_field(BatchAssetSerializer(many=True))
+    def get_images(self, obj: Batch):
+        batch_assets = BatchAsset.objects.filter(batch=obj)
+        return BatchAssetSerializer(batch_assets, many=True).data
 
 
 class SiteAdminSerializer(serializers.ModelSerializer[Siteadmin]):

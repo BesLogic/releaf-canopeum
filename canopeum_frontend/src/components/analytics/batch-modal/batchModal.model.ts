@@ -1,4 +1,5 @@
 import { type BatchDetail, type FertilizerType, type MulchLayerType, Seeds, Species, type TreeType } from '@services/api'
+import { fileFormatter } from '@utils/assetFormatter'
 
 export type BatchFormDto = {
   siteId: number,
@@ -15,12 +16,12 @@ export type BatchFormDto = {
   replaceCount?: number,
   totalNumberSeeds: number,
   totalPropagation?: number,
-  image?: File,
   fertilizers: FertilizerType[],
   mulchLayers: MulchLayerType[],
   seeds: Seeds[],
   species: Species[],
   supportedSpecies: TreeType[],
+  images: File[],
 }
 
 export const DEFAULT_BATCH_FORM_DTO: BatchFormDto = {
@@ -39,14 +40,14 @@ export const DEFAULT_BATCH_FORM_DTO: BatchFormDto = {
   replaceCount: undefined,
   totalNumberSeeds: 0,
   totalPropagation: undefined,
-  image: undefined,
   fertilizers: [],
   mulchLayers: [],
   seeds: [],
   species: [],
+  images: [],
 }
 
-export const transformToEditBatchDto = (batchDetail: BatchDetail): BatchFormDto => ({
+export const transformToEditBatchDto = async (batchDetail: BatchDetail): Promise<BatchFormDto> => ({
   ...batchDetail,
   siteId: batchDetail.site,
   seeds: batchDetail.seeds.map(batchSeed =>
@@ -58,6 +59,7 @@ export const transformToEditBatchDto = (batchDetail: BatchDetail): BatchFormDto 
   sponsor: {
     name: batchDetail.sponsor.name,
     url: batchDetail.sponsor.url,
+    logo: await fileFormatter(batchDetail.sponsor.logo),
   },
-  image: undefined,
+  images: await Promise.all(batchDetail.images.map(index => fileFormatter(index.asset))),
 })

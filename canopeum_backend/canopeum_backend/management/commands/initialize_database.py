@@ -265,7 +265,7 @@ def create_sponsor_for_batch():
 
         return BatchSponsor.objects.create(
             name=sponsor_names.pop(random.randint(0, len(sponsor_names) - 1)),
-            url="https://uilogos.co/",
+            url="uilogos.co/",
             logo=asset,
         )
 

@@ -5,10 +5,10 @@ import type { Asset } from '@services/api'
 type AssetViewerProps = {
   readonly medias: Asset[],
   readonly handleClose: () => void,
-  readonly mediaSelectedIndex: number,
+  readonly mediaSelectedIndex?: number,
 }
 
-const AssetViewer = ({ medias, handleClose, mediaSelectedIndex }: AssetViewerProps) => (
+const AssetViewer = ({ medias, handleClose, mediaSelectedIndex = 0 }: AssetViewerProps) => (
   <div
     className='carousel carousel-fade asset-viewer-container'
     id='carouselFade'
