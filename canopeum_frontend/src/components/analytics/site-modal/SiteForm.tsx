@@ -66,7 +66,7 @@ const SiteForm = (
 
   return (
     <>
-      <div className='form-group'>
+      <div>
         <label aria-required className='form-label' htmlFor='site-name'>
           {t('analytics.site-modal.site-name')}
         </label>
@@ -83,7 +83,7 @@ const SiteForm = (
         )}
       </div>
 
-      <div className='form-group'>
+      <div>
         <label aria-required className='form-label' htmlFor='site-type'>
           {t('analytics.site-modal.site-type')}
         </label>
@@ -102,7 +102,7 @@ const SiteForm = (
         </select>
       </div>
 
-      <div className='form-group'>
+      <div>
         <label aria-required className='form-label' htmlFor='site-image'>
           {t('analytics.site-modal.site-image')}
         </label>
@@ -132,7 +132,7 @@ const SiteForm = (
         }}
       />
 
-      <div className='form-group'>
+      <div>
         <label className='form-label' htmlFor='site-presentation'>
           {t('analytics.site-modal.site-presentation')}
         </label>
@@ -149,7 +149,7 @@ const SiteForm = (
         />
       </div>
 
-      <div className='form-group'>
+      <div>
         <label aria-required className='form-label' htmlFor='site-size'>
           {t('analytics.site-modal.site-size')}
         </label>
@@ -171,7 +171,7 @@ const SiteForm = (
         }
       </div>
 
-      <div className='form-group'>
+      <div>
         <TreeSpeciesSelector
           label='analytics.site-modal.site-tree-species'
           onChange={species => setValue('species', species, { shouldValidate: true })}
@@ -181,7 +181,7 @@ const SiteForm = (
         {errors.species && <span className='help-block text-danger'>{errors.species.message}</span>}
       </div>
 
-      <div className='form-group'>
+      <div>
         <label className='form-label' htmlFor='site-research-partner'>
           {t('analytics.site-modal.site-research-partner')}
         </label>
@@ -220,7 +220,7 @@ const SiteForm = (
         </div>
       </div>
 
-      <div className='form-group'>
+      <div>
         <label className='form-label' htmlFor='site-map-visibility'>
           {t('analytics.site-modal.site-map-visibility')}
         </label>
