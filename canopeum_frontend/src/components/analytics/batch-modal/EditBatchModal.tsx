@@ -44,14 +44,9 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
       ? await assetFormatter(sponsor.logo)
       : undefined
 
-    let batchImages: FileParameter[] | undefined
-
-    if (images.length > 0) {
-      const assets = await Promise.all(
-        [...images].map(async img => assetFormatter(img)),
-      )
-      batchImages = assets.filter((img): img is FileParameter => img !== undefined)
-    }
+    const batchImages = await Promise
+      .all(images.map(async img => assetFormatter(img)))
+      .then(assets => assets.filter(img => img != null))
 
     try {
       await getApiClient().batchClient.update(
@@ -65,7 +60,7 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
         survivedCount,
         replaceCount,
         totalPropagation,
-        batchImages ?? [],
+        batchImages,
         fertilizers.map(fertilizer => fertilizer.id),
         mulchLayers.map(layer => layer.id),
         seeds,

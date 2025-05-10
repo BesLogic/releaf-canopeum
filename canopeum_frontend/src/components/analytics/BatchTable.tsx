@@ -339,22 +339,18 @@ const BatchTable = (props: Props) => {
                   <button
                     className='unstyled-button d-flex align-center'
                     onClick={() => {
-                      const images: Asset[] = batch.images.map(a => {
-                        const asset = new Asset({
-                          ...a.asset,
-                          asset: getApiBaseUrl() + a.asset.asset,
+                      const images = batch.images.map(batchAsset =>
+                        new Asset({
+                          ...batchAsset.asset,
+                          asset: getApiBaseUrl() + batchAsset.asset.asset,
                         })
-
-                        return asset
-                      })
+                      )
                       setMediasSelected(images)
                       setViewModeActivated(true)
                     }}
                     type='button'
                   >
-                    <span className='material-symbols-outlined'>
-                      image
-                    </span>
+                    <span className='material-symbols-outlined'>image</span>
                     ({batch.images.length})
                   </button>
                 )}
