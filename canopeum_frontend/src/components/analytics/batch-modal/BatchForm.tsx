@@ -284,21 +284,18 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
       </div>
 
       <div className='d-flex flex-column'>
-        <label className='form-label' htmlFor='batch-image'>
+        <label className='form-label' htmlFor='batch-images'>
           {t('analyticsSite.batch-modal.images-label')}
         </label>
         <input
-          id='batch-image'
+          className='form-control'
+          id='batch-images'
           multiple
-          onChange={event => {
-            const newFiles = [...event.target.files ?? []]
-            const allFiles = [...batch.images, ...newFiles]
-
+          onChange={event =>
             setBatch(value => ({
               ...value,
-              images: allFiles,
-            }))
-          }}
+              images: [...batch.images, ...event.target.files ?? []],
+            }))}
           type='file'
         />
         {batch.images.length > 0 && (
