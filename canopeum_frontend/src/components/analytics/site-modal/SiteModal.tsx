@@ -96,10 +96,6 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
     }
   }
 
-  if (loading) {
-    return <CircularProgress color='secondary' />
-  }
-
   const formId = `site-form-${String(siteId)}`
 
   return (
@@ -109,44 +105,50 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
       onClose={(_, reason) => handleClose(reason)}
       open={open}
     >
-      <DialogTitle>
-        {t(
-          siteId
-            ? 'analytics.edit-site-info'
-            : 'analytics.create-site',
+      {loading
+        ? <CircularProgress color='secondary' sx={{ margin: 'auto' }} />
+        : (
+          <>
+            <DialogTitle>
+              {t(
+                siteId
+                  ? 'analytics.edit-site-info'
+                  : 'analytics.create-site',
+              )}
+            </DialogTitle>
+
+            <DialogContent>
+              <form
+                className='d-flex flex-column gap-3'
+                id={formId}
+                onSubmit={form.handleSubmit(handleSubmitSite)}
+              >
+                <SiteForm
+                  availableSiteTypes={availableSiteTypes}
+                  form={form}
+                />
+              </form>
+            </DialogContent>
+
+            <DialogActions>
+              <button
+                className='btn btn-outline-primary'
+                form={formId}
+                onClick={() => handleClose('cancel')}
+                type='button'
+              >
+                {t('generic.cancel')}
+              </button>
+              <button
+                className='btn btn-primary'
+                form={formId}
+                type='submit'
+              >
+                {t('generic.submit')}
+              </button>
+            </DialogActions>
+          </>
         )}
-      </DialogTitle>
-
-      <DialogContent>
-        <form
-          className='d-flex flex-column gap-3'
-          id={formId}
-          onSubmit={form.handleSubmit(handleSubmitSite)}
-        >
-          <SiteForm
-            availableSiteTypes={availableSiteTypes}
-            form={form}
-          />
-        </form>
-      </DialogContent>
-
-      <DialogActions>
-        <button
-          className='btn btn-outline-primary'
-          form={formId}
-          onClick={() => handleClose('cancel')}
-          type='button'
-        >
-          {t('generic.cancel')}
-        </button>
-        <button
-          className='btn btn-primary'
-          form={formId}
-          type='submit'
-        >
-          {t('generic.submit')}
-        </button>
-      </DialogActions>
     </Dialog>
   )
 }
