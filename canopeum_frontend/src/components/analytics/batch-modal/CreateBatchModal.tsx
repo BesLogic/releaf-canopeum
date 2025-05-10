@@ -6,7 +6,7 @@ import BatchForm from '@components/analytics/batch-modal/BatchForm'
 import { type BatchFormDto, DEFAULT_BATCH_FORM_DTO } from '@components/analytics/batch-modal/batchModal.model'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
-import type { FileParameter, SiteSummaryDetail } from '@services/api'
+import type { SiteSummaryDetail } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
 
 type Props = {
