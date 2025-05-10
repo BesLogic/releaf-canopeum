@@ -56,31 +56,28 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
 
   useEffect(() => void fetchSiteTypes(), [])
 
+  // init form
   useEffect(
-    () =>
-      void initForm().catch(() =>
-        console.error('Oops an error occured during initialization of the form')
-      ),
-    [open, form.reset],
+    () => {
+      if (siteId) {
+        setLoading(true)
+        getApiClient()
+          .siteClient
+          .detail(siteId)
+          .then(async (site: Site) => form.reset(await transformToEditSiteDto(site)))
+          .catch(() => displayUnhandledAPIError('errors.fetch-site-failed'))
+          .finally(() => setLoading(false))
+      } else {
+        setLoading(false)
+        form.reset(DEFAULT_SITE_FORM_DTO)
+      }
+    },
+    /* eslint-disable-next-line react-hooks/exhaustive-deps
+    -- You'd think we'd want to re-run this hook on siteId change.
+    But somewhow siteId is updated on modal closing and that doesn't update the form fields.
+    */
+    [open],
   )
-
-  const initForm = async () => {
-    if (siteId) {
-      setLoading(true)
-      await getApiClient().siteClient.detail(siteId).then(async (site: Site) => {
-        const siteForm = await transformToEditSiteDto(site)
-        form.reset(siteForm)
-      }).catch(() =>
-        displayUnhandledAPIError(
-          'errors.fetch-site-failed',
-        )
-      )
-      setLoading(false)
-    } else {
-      setLoading(false)
-      form.reset(DEFAULT_SITE_FORM_DTO)
-    }
-  }
 
   const handleSubmitSite = () => handleClose('save', form.watch())
 
