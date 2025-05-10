@@ -3,11 +3,13 @@ import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import BatchActions from '@components/analytics/BatchActions'
+import AssetViewer from '@components/assets/AssetViewer'
 import BatchSponsorLogo from '@components/batches/BatchSponsorLogo'
 import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
 import useErrorHandling from '@hooks/ErrorHandlingHook'
-import type { BatchDetail } from '@services/api'
+import { Asset, type BatchDetail } from '@services/api'
+import { getApiBaseUrl } from '@services/apiSettings'
 
 const BATCH_HEADER_CLASS =
   'position-sticky start-0 table-primary border-1 border-top-0 border-primary'
@@ -27,6 +29,9 @@ const BatchTable = (props: Props) => {
 
   const [batches, setBatches] = useState(props.batches)
 
+  const [viewModeActivated, setViewModeActivated] = useState(false)
+  const [mediasSelected, setMediasSelected] = useState<Asset[]>([])
+
   const fetchBatch = useCallback(
     async (siteId: number) => {
       // TODO: Use endpoint to get specific batch directly instead of refetching site summary
@@ -36,6 +41,8 @@ const BatchTable = (props: Props) => {
     },
     [getApiClient],
   )
+
+  const handleCloseClick = () => setViewModeActivated(false)
 
   useEffect(() => setBatches(props.batches), [props.batches])
 
@@ -315,8 +322,55 @@ const BatchTable = (props: Props) => {
               </td>
             ))}
           </tr>
+          <tr>
+            <th
+              className={BATCH_HEADER_CLASS}
+              scope='row'
+            >
+              {t('analytics.table-row-14')}
+            </th>
+            {batches.map(batch => (
+              <td
+                className='border-top border-start border-1'
+                key={`batch-${batch.id}-images`}
+                style={{ borderColor: cellBorderColor }}
+              >
+                {batch.images.length > 0 && (
+                  <button
+                    className='unstyled-button d-flex align-center'
+                    onClick={() => {
+                      const images: Asset[] = batch.images.map(a => {
+                        const asset = new Asset({
+                          ...a.asset,
+                          asset: getApiBaseUrl() + a.asset.asset,
+                        })
+
+                        return asset
+                      })
+                      setMediasSelected(images)
+                      setViewModeActivated(true)
+                    }}
+                    type='button'
+                  >
+                    <span className='material-symbols-outlined'>
+                      image
+                    </span>
+                    ({batch.images.length})
+                  </button>
+                )}
+              </td>
+            ))}
+          </tr>
         </tbody>
       </table>
+      <div>
+        {viewModeActivated && (
+          <AssetViewer
+            handleClose={handleCloseClick}
+            medias={mediasSelected}
+          />
+        )}
+      </div>
     </div>
   )
 }

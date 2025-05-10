@@ -7,8 +7,8 @@ import ImageUpload from '@components/analytics/ImageUpload'
 import MulchLayersSelector from '@components/analytics/MulchLayersSelector'
 import SupportSpeciesSelector from '@components/analytics/SupportSpeciesSelector'
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
-import type { BatchDetail } from '@services/api'
-import { getApiBaseUrl } from '@services/apiSettings'
+import AssetGrid from '@components/assets/AssetGrid'
+import { Asset, type BatchDetail } from '@services/api'
 import { mapSum } from '@utils/arrayUtils'
 import { floorNumberValue } from '@utils/formUtils'
 
@@ -21,26 +21,26 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
   const { t } = useTranslation()
 
   const [batch, setBatch] = useState<BatchFormDto>(DEFAULT_BATCH_FORM_DTO)
-  const [batchImageURL, setBatchImageURL] = useState<string>()
   const [sponsorLogoUrl, setSponsorLogoUrl] = useState<string>()
 
-  useEffect(() => {
+  useEffect(
+    () =>
+      void initBatch().catch(() =>
+        console.error('Oops an error occured during initialization the batch')
+      ),
+    [initialBatch],
+  )
+
+  const initBatch = async () => {
     if (!initialBatch) return
-
-    setBatch(transformToEditBatchDto(initialBatch))
-    setSponsorLogoUrl(`${getApiBaseUrl()}${initialBatch.sponsor.logo.asset}`)
-
-    if (!initialBatch.image) return
-
-    setBatchImageURL(`${getApiBaseUrl()}${initialBatch.image.asset}`)
-  }, [initialBatch])
+    const batchDto = await transformToEditBatchDto(initialBatch)
+    setBatch(batchDto)
+    if (batchDto.sponsor?.logo) {
+      setSponsorLogoUrl(URL.createObjectURL(batchDto.sponsor.logo))
+    }
+  }
 
   useEffect(() => handleBatchChange(batch), [batch, handleBatchChange])
-
-  const onImageUpload = (file: File) => {
-    setBatch(value => ({ ...value, image: file }))
-    setBatchImageURL(URL.createObjectURL(file))
-  }
 
   const onSponsorLogoUpload = (file: File) => {
     setBatch(value => ({
@@ -64,7 +64,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
           id='batch-name'
           onChange={event => setBatch(value => ({ ...value, name: event.target.value }))}
           type='text'
-          value={batch.name}
+          value={batch.name ?? ''}
         />
       </div>
 
@@ -81,7 +81,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
               sponsor: { ...value.sponsor, name: event.target.value },
             }))}
           type='text'
-          value={batch.sponsor?.name}
+          value={batch.sponsor?.name ?? ''}
         />
       </div>
 
@@ -98,7 +98,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
               sponsor: { ...value.sponsor, url: event.target.value },
             }))}
           type='text'
-          value={batch.sponsor?.url}
+          value={batch.sponsor?.url ?? ''}
         />
       </div>
 
@@ -169,7 +169,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
           id='soil-condition'
           onChange={event => setBatch(value => ({ ...value, soilCondition: event.target.value }))}
           type='text'
-          value={batch.soilCondition}
+          value={batch.soilCondition ?? ''}
         />
       </div>
 
@@ -283,11 +283,42 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
         />
       </div>
 
-      <div>
+      <div className='d-flex flex-column'>
         <label className='form-label' htmlFor='batch-image'>
           {t('analyticsSite.batch-modal.images-label')}
         </label>
-        <ImageUpload id='batch-image-upload' imageUrl={batchImageURL} onChange={onImageUpload} />
+        <input
+          id='batch-image'
+          multiple
+          onChange={event => {
+            const newFiles = [...event.target.files ?? []]
+            const allFiles = [...batch.images, ...newFiles]
+
+            setBatch(value => ({
+              ...value,
+              images: allFiles,
+            }))
+          }}
+          type='file'
+        />
+        {batch.images.length > 0 && (
+          <AssetGrid
+            isEditable={{
+              removeFile: (id: number) => {
+                const updatedImages = batch.images
+                  .filter((_, index_: number) => index_ !== id)
+
+                setBatch(value => ({
+                  ...value,
+                  images: updatedImages,
+                }))
+              },
+            }}
+            medias={batch.images.map(
+              (file, index) => (new Asset({ id: index, asset: URL.createObjectURL(file) })),
+            )}
+          />
+        )}
       </div>
     </form>
   )

@@ -6,7 +6,7 @@ import BatchForm from '@components/analytics/batch-modal/BatchForm'
 import { type BatchFormDto, DEFAULT_BATCH_FORM_DTO } from '@components/analytics/batch-modal/batchModal.model'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
-import type { SiteSummaryDetail } from '@services/api'
+import type { FileParameter, SiteSummaryDetail } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
 
 type Props = {
@@ -38,16 +38,21 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
       totalPropagation,
       seeds,
       species,
-      image,
+      images,
     } = batch
 
     const sponsorLogoImage = sponsor?.logo
       ? await assetFormatter(sponsor.logo)
       : undefined
 
-    const batchImage = image
-      ? await assetFormatter(image)
-      : undefined
+    let batchImages: FileParameter[] | undefined
+
+    if (images.length > 0) {
+      const assets = await Promise.all(
+        [...images].map(async img => assetFormatter(img)),
+      )
+      batchImages = assets.filter((img): img is FileParameter => img !== undefined)
+    }
 
     try {
       await getApiClient().batchClient.create(
@@ -61,7 +66,7 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
         survivedCount,
         replaceCount,
         totalPropagation,
-        batchImage,
+        batchImages ?? [],
         fertilizers.map(fertilizer => fertilizer.id),
         mulchLayers.map(mulchLayer => mulchLayer.id),
         seeds,
