@@ -304,9 +304,8 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
         {batch.images.length > 0 && (
           <AssetGrid
             isEditable={{
-              removeFile: (id: number) => {
-                const updatedImages = batch.images
-                  .filter((_, index_: number) => index_ !== id)
+              removeFile: id => {
+                const updatedImages = batch.images.filter((_, index_) => index_ !== id)
 
                 setBatch(value => ({
                   ...value,

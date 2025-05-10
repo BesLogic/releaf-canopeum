@@ -45,14 +45,9 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
       ? await assetFormatter(sponsor.logo)
       : undefined
 
-    let batchImages: FileParameter[] | undefined
-
-    if (images.length > 0) {
-      const assets = await Promise.all(
-        [...images].map(async img => assetFormatter(img)),
-      )
-      batchImages = assets.filter((img): img is FileParameter => img !== undefined)
-    }
+    const batchImages = await Promise
+      .all(images.map(async img => assetFormatter(img)))
+      .then(assets => assets.filter(img => img != null))
 
     try {
       await getApiClient().batchClient.create(
@@ -66,7 +61,7 @@ const CreateBatchModal = ({ open, site, handleClose }: Props) => {
         survivedCount,
         replaceCount,
         totalPropagation,
-        batchImages ?? [],
+        batchImages,
         fertilizers.map(fertilizer => fertilizer.id),
         mulchLayers.map(mulchLayer => mulchLayer.id),
         seeds,
