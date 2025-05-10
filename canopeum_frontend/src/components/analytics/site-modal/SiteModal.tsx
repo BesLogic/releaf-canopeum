@@ -115,6 +115,12 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
             </DialogTitle>
 
             <DialogContent>
+              {
+                //
+                /* TODO: It feels odd to have <form> outside <SiteForm>,
+                but otherwise the submit button isn't properly linked to our form hooks.
+                To investigate. */
+              }
               <form
                 className='d-flex flex-column gap-3'
                 id={formId}
