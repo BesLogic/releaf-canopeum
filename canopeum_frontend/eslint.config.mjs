@@ -46,8 +46,7 @@ export default tseslint.config(
           { from: 'package', package: 'i18next', name: 'changeLanguage' },
         ],
       }],
-      // FIXME: These started failing from a recent typescript-eslint update
-      '@typescript-eslint/no-unsafe-type-assertion': 'warn',
+      // FIXME: This started failing from a recent typescript-eslint update
       '@typescript-eslint/no-misused-spread': 'warn',
     },
   },

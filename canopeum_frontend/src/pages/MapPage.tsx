@@ -14,7 +14,6 @@ import SiteTypeIcon from '@components/icons/SiteTypeIcon'
 import { appRoutes } from '@constants/routes.constant'
 import useApiClient from '@hooks/ApiClientHook'
 import type { SiteMap } from '@services/api'
-import { getApiBaseUrl } from '@services/apiSettings'
 
 const PIN_FOCUS_ZOOM_LEVEL = 12
 const MAP_DISTANCE_ZOOM_MULTIPLIER = 20
@@ -226,6 +225,8 @@ const MapPage = () => {
                 }`}
                 id={`site-card-${site.id}`}
                 key={site.id}
+                /* eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+                -- Can't use module augmentation to fix this :/ */
                 style={{ '--bs-box-shadow': '0 0 0 0.25rem var(--bs-secondary)' } as CSSProperties}
               >
                 <button
@@ -238,7 +239,7 @@ const MapPage = () => {
                       <img
                         alt=''
                         className='h-100 mw-100 map-site-image'
-                        src={getApiBaseUrl() + site.image.asset}
+                        src={import.meta.env.VITE_API_URL + site.image.asset}
                       />
                     </div>
 
