@@ -6,6 +6,7 @@ import LoadingPage from './LoadingPage'
 import PostCard from '@components/social/PostCard'
 import { appRoutes } from '@constants/routes.constant'
 import useApiClient from '@hooks/ApiClientHook'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
 import type { Post } from '@services/api'
 import usePostsStore from '@store/postsStore'
 
@@ -14,6 +15,7 @@ const PostDetailsPage = () => {
   const { postId: postIdFromParams } = useParams()
   const { posts, setPosts } = usePostsStore()
   const { getApiClient } = useApiClient()
+  const { displayUnhandledAPIError } = useErrorHandling()
 
   const [postId, setPostId] = useState<number>()
   const [postDetail, setPostDetail] = useState<Post>()
@@ -54,7 +56,7 @@ const PostDetailsPage = () => {
       return
     }
 
-    void fetchPost(postIdNumber)
+    fetchPost(postIdNumber).catch(displayUnhandledAPIError('errors.fetch-post-failed'))
     setPostId(postIdNumber)
   }, [fetchPost, postIdFromParams])
 

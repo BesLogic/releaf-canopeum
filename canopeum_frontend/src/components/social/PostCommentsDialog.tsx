@@ -8,6 +8,7 @@ import { SnackbarContext } from '@components/context/SnackbarContext'
 import ConfirmationDialog from '@components/dialogs/ConfirmationDialog'
 import PostComment from '@components/social/PostComment'
 import useApiClient from '@hooks/ApiClientHook'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
 import { type Comment, CreateComment } from '@services/api'
 import usePostsStore from '@store/postsStore'
 import type { InputValidationError } from '@utils/validators'
@@ -27,6 +28,7 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose }: Props) => {
   const { currentUser } = useContext(AuthenticationContext)
   const { commentChange } = usePostsStore()
   const { getApiClient } = useApiClient()
+  const { displayUnhandledAPIError } = useErrorHandling()
 
   const [comments, setComments] = useState<Comment[]>([])
   const [commentsLoaded, setCommentsLoaded] = useState(false)
@@ -40,12 +42,21 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose }: Props) => {
 
   useEffect(() => {
     // Since this is a dialog, we only want to fetch the comments once it is opened
-    if (!open || commentsLoaded) return
+    if (!open || commentsLoaded) {
+      setCommentBody('')
+      setCommentBodyNumberOfChars(0)
+      setCommentBodyError(undefined)
+      return
+    }
 
     const fetchComments = async () => setComments(await getApiClient().commentClient.all(postId))
 
-    void fetchComments()
-    setCommentsLoaded(true)
+    fetchComments()
+      .then(() => setCommentsLoaded(true))
+      .catch((error: unknown) => {
+        displayUnhandledAPIError('errors.fetch-comments-failed')(error)
+        setCommentsLoaded(false)
+      })
   }, [postId, open, commentsLoaded, getApiClient])
 
   useEffect(() => {
@@ -129,7 +140,7 @@ const PostCommentsDialog = ({ open, postId, siteId, handleClose }: Props) => {
 
     if (!proceedWithDelete || !commentToDelete) return
 
-    void deleteComment(commentToDelete)
+    deleteComment(commentToDelete).catch(displayUnhandledAPIError('errors.delete-comment-failed'))
   }
 
   return (

@@ -38,6 +38,14 @@ export default tseslint.config(
       },
     },
     rules: {
+      '@typescript-eslint/no-floating-promises': ['error', {
+        // Don't even ignore voided promises. Force a comment explaining.
+        ignoreVoid: false, // TODO: This could be added to Beslogic's extra-strict preset
+        allowForKnownSafeCalls: [ // TODO: This could be added to Beslogic's presets
+          // Doesn't throw and already console.warn itself
+          { from: 'package', package: 'i18next', name: 'changeLanguage' },
+        ],
+      }],
       // FIXME: These started failing from a recent typescript-eslint update
       '@typescript-eslint/no-unsafe-type-assertion': 'warn',
       '@typescript-eslint/no-misused-spread': 'warn',

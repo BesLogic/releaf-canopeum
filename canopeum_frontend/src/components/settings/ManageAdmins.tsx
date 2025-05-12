@@ -1,31 +1,35 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import AdminCard from '@components/settings/AdminCard'
 import AdminInvitationDialog from '@components/settings/AdminInvitationDialog'
 import useApiClient from '@hooks/ApiClientHook'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
 import LoadingPage from '@pages/LoadingPage'
 import type { SiteAdmins } from '@services/api'
 
 const ManageAdmins = () => {
   const { t: translate } = useTranslation()
   const { getApiClient } = useApiClient()
+  const { displayUnhandledAPIError } = useErrorHandling()
 
   const [isLoadingAdmins, setIsLoadingAdmins] = useState(true)
   const [siteAdminList, setSiteAdminList] = useState<SiteAdmins[]>([])
   const [showAdminInviteDialog, setShowAdminInviteDialog] = useState(false)
 
-  const fetchSiteAdmins = useCallback(async () => {
-    try {
-      const adminsList = await getApiClient().adminUserSitesClient.all()
-      setSiteAdminList(adminsList)
-      setIsLoadingAdmins(false)
-    } catch {
-      setIsLoadingAdmins(false)
+  useEffect(() => {
+    const fetchSiteAdmins = async () => {
+      try {
+        const adminsList = await getApiClient().adminUserSitesClient.all()
+        setSiteAdminList(adminsList)
+        setIsLoadingAdmins(false)
+      } catch {
+        setIsLoadingAdmins(false)
+      }
     }
-  }, [getApiClient])
 
-  useEffect(() => void fetchSiteAdmins(), [fetchSiteAdmins])
+    fetchSiteAdmins().catch(displayUnhandledAPIError('errors.fetch-support-species-failed'))
+  }, [setSiteAdminList, setIsLoadingAdmins])
 
   if (isLoadingAdmins) {
     return <LoadingPage />

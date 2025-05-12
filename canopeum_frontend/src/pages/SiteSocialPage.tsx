@@ -14,6 +14,7 @@ import SiteSocialHeader from '@components/social/SiteSocialHeader'
 import WidgetCard from '@components/social/WidgetCard'
 import WidgetDialog from '@components/social/WidgetDialog'
 import useApiClient from '@hooks/ApiClientHook'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
 import usePostsInfiniteScrolling from '@hooks/PostsInfiniteScrollingHook'
 import type { PageViewMode } from '@models/PageViewMode.type'
 import { type IWidget, PatchedWidget, type Post, type SiteSocial, Widget } from '@services/api'
@@ -21,12 +22,15 @@ import { ensureError } from '@services/errors'
 import usePostsStore from '@store/postsStore'
 import type { ExcludeFunctions } from '@utils/types'
 
+const fetchSiteDataError = 'errors.fetch-site-data-failed'
+
 const SiteSocialPage = () => {
   const { t } = useTranslation()
   const { siteId: siteIdParam } = useParams()
   const { currentUser } = useContext(AuthenticationContext)
   const { posts, addPost } = usePostsStore()
   const { getApiClient } = useApiClient()
+  const { displayUnhandledAPIError } = useErrorHandling()
   const scrollableContainerRef = useRef<HTMLDivElement>(null)
 
   const {
@@ -80,8 +84,8 @@ const SiteSocialPage = () => {
 
     if (reason === 'delete' && data) {
       getApiClient().widgetClient.delete(siteId, data.id)
-        .then(() => void fetchSiteData(siteId))
-        .catch(() => {/* empty */})
+        .then(() => fetchSiteData(siteId))
+        .catch(displayUnhandledAPIError(fetchSiteDataError))
     }
 
     if (reason === 'save' && data) {
@@ -90,8 +94,8 @@ const SiteSocialPage = () => {
         : getApiClient().widgetClient.update(siteId, data.id, new PatchedWidget(data))
 
       response
-        .then(() => void fetchSiteData(siteId))
-        .catch(() => {/* empty */})
+        .then(() => fetchSiteData(siteId))
+        .catch(displayUnhandledAPIError(fetchSiteDataError))
     }
 
     setIsWidgetModalOpen([false, undefined])
@@ -99,8 +103,8 @@ const SiteSocialPage = () => {
 
   const addNewPost = (newPost: Post) => addPost(newPost)
 
-  useEffect(() => {
-    void fetchSiteData(siteId)
+  useEffect((): void => {
+    fetchSiteData(siteId).catch(displayUnhandledAPIError(fetchSiteDataError))
     setSiteIds([siteId])
   }, [siteId, fetchSiteData, setSiteIds])
 

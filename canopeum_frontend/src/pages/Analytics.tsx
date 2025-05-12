@@ -10,6 +10,7 @@ import { AuthenticationContext } from '@components/context/AuthenticationContext
 import { LanguageContext } from '@components/context/LanguageContext'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
 import { type Coordinate, coordinateToString } from '@models/Coordinate'
 import type { SiteSummary, User } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
@@ -20,17 +21,13 @@ const Analytics = () => {
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const { currentUser } = useContext(AuthenticationContext)
   const { getApiClient } = useApiClient()
+  const { displayUnhandledAPIError } = useErrorHandling()
 
   const [siteSummaries, setSiteSummaries] = useState<SiteSummary[]>([])
   const [adminList, setAdminList] = useState<User[]>([])
   const [siteId, setSiteId] = useState<number>()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
-
-  const fetchSites = useCallback(
-    async () => setSiteSummaries(await getApiClient().summaryClient.all()),
-    [getApiClient],
-  )
 
   const fetchAdmins = useCallback(
     async () => setAdminList(await getApiClient().userClient.allForestStewards()),
@@ -138,13 +135,14 @@ const Analytics = () => {
   useEffect(() => {
     if (currentUser?.role !== 'MegaAdmin') return
 
-    void fetchAdmins()
+    fetchAdmins().catch(displayUnhandledAPIError('errors.fetch-admins-failed'))
   }, [currentUser?.role, fetchAdmins])
 
-  useEffect(
-    () => void fetchSites(),
-    [fetchSites],
-  )
+  useEffect(() => {
+    const fetchSites = async () => setSiteSummaries(await getApiClient().summaryClient.all())
+
+    fetchSites().catch(displayUnhandledAPIError('errors.fetch-fertilizers-failed'))
+  }, [getApiClient, setSiteSummaries])
 
   const renderBatches = () =>
     siteSummaries.map(site => {
