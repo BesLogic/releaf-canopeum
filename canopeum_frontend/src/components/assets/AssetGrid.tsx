@@ -23,38 +23,38 @@ const AssetGrid = ({ medias, isEditable }: Props) => {
     <div>
       <div className='row m-0'>
         {medias.map((media, index) => (
-          <button
-            className='unstyled-button position-relative col-md-3 flex-grow-1 p-1 cursor-pointer '
-            key={media.id}
-            onClick={() => handleAssetClick(index)}
-            type='button'
-          >
-            <div className='w-100' style={{ height: '200px', overflow: 'hidden' }}>
-              <img
-                alt='New site asset'
-                className='object-fit-cover w-100 h-100'
-                src={media.asset}
-              />
-            </div>
-            {isEditable
-              && (
-                <button
-                  className='unstyled-button'
-                  onClick={() => isEditable.removeFile(index)}
-                  type='button'
-                >
-                  <span className='
-                      material-symbols-outlined
-                      fill-icon
-                      position-absolute
-                      top-0
-                      end-0
-                    '>
-                    cancel
-                  </span>
-                </button>
-              )}
-          </button>
+          <div className='position-relative col-md-3 flex-grow-1 p-1' key={media.id}>
+            <button
+              className='unstyled-button w-100 h-100'
+              onClick={() =>
+                handleAssetClick(index)}
+              type='button'
+            >
+              <div className='w-100' style={{ height: '200px', overflow: 'hidden' }}>
+                <img
+                  alt='New site asset'
+                  className='object-fit-cover w-100 h-100'
+                  src={media.asset}
+                />
+              </div>
+            </button>
+
+            {isEditable && (
+              <button
+                className='unstyled-button position-absolute top-0 end-0'
+                onClick={event => {
+                  event.stopPropagation()
+                  isEditable.removeFile(media.id)
+                }}
+                style={{ zIndex: 1 }}
+                type='button'
+              >
+                <span className='material-symbols-outlined fill-icon'>
+                  cancel
+                </span>
+              </button>
+            )}
+          </div>
         ))}
       </div>
       <div>
