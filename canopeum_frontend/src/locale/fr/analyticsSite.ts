@@ -7,7 +7,7 @@ export default {
     analytics: 'Analytique',
     social: 'Page Social',
   },
-  sponsors: 'Commenditaires',
+  sponsors: 'Commanditaires',
   'add-new-batch': 'Ajouter un Nouveau Lot',
   'edit-batch': 'Modifier un Lot',
   'delete-batch': {
@@ -42,6 +42,18 @@ export default {
       'create-error': 'Échec de la création du lot',
       'edit-success': 'Lot modifié avec succès',
       'edit-error': 'Échec de la modification du lot',
+    },
+    validation: {
+      'name-required': 'Le nom du lot est requis',
+      'sponsor-name-required': 'Le nom du sponsor est requis',
+      'sponsor-url-required': "L'URL du sponsor est requise",
+      'sponsor-url-pattern': 'Veuillez entrer une URL valide',
+      'sponsor-logo-required': 'Le logo du sponsor est requis',
+      'file-size-exceeds': 'La taille du fichier dépasse 2 Mo',
+      'invalid-file-type': 'Type de fichier invalide',
+      'size-min': 'La taille doit être au minimum de 0',
+      'no-negative': 'Ne peut pas être négatif',
+      'plant-count-min': 'Le nombre de plantes doit être au minimum de 1',
     },
   },
 } satisfies typeof Shape

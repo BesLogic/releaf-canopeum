@@ -23,6 +23,7 @@ export default {
   'table-row-11': 'Combien ont été remplacés',
   'table-row-12': 'Quantité de graines collectées dans la zone',
   'table-row-13': 'Types de graines collectées',
+  'table-row-14': 'Images',
   'last-update': 'Dernière Mise à Jour',
   visitors: 'Visiteurs',
   'unnamed-site': 'Site sans nom',

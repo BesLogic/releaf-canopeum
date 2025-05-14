@@ -1,13 +1,9 @@
-import { useContext, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Dropdown, Popover, Whisper } from 'rsuite'
 import type { OverlayTriggerHandle } from 'rsuite/esm/internals/Picker'
 
-import EditBatchModal from '@components/analytics/batch-modal/EditBatchModal'
-import { SnackbarContext } from '@components/context/SnackbarContext'
 import ConfirmationDialog from '@components/dialogs/ConfirmationDialog'
-import useApiClient from '@hooks/ApiClientHook'
-import useErrorHandling from '@hooks/ErrorHandlingHook'
 import type { BatchDetail } from '@services/api'
 
 type Props = {
@@ -18,34 +14,16 @@ type Props = {
 
 const BatchActions = ({ onEdit, onDelete, batchDetail }: Props) => {
   const { t: translate } = useTranslation()
-  const { openAlertSnackbar } = useContext(SnackbarContext)
-  const { getApiClient } = useApiClient()
-  const { displayUnhandledAPIError } = useErrorHandling()
 
   const whisperRef = useRef<OverlayTriggerHandle>(null)
 
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
-  const [batchToEdit, setBatchToEdit] = useState<BatchDetail | null>(null)
-
-  const deleteBatch = async () => {
-    whisperRef.current?.close()
-
-    await getApiClient().batchClient.delete(batchDetail.id)
-    openAlertSnackbar(
-      translate('analyticsSite.delete-batch.success', { batchName: batchDetail.name }),
-    )
-    onDelete()
-  }
 
   const handleConfirmDeleteClose = (proceed: boolean) => {
     setConfirmDeleteOpen(false)
     if (proceed) {
-      deleteBatch().catch(
-        displayUnhandledAPIError(
-          'analyticsSite.delete-batch.error',
-          { batchName: batchDetail.name },
-        ),
-      )
+      whisperRef.current?.close()
+      onDelete()
     }
   }
 
@@ -57,7 +35,7 @@ const BatchActions = ({ onEdit, onDelete, batchDetail }: Props) => {
         speaker={
           <Popover full>
             <Dropdown.Menu>
-              <Dropdown.Item onClick={() => setBatchToEdit(batchDetail)}>
+              <Dropdown.Item onClick={() => onEdit()}>
                 {translate('analyticsSite.edit-batch')}
               </Dropdown.Item>
               <Dropdown.Item onClick={() => setConfirmDeleteOpen(true)}>
@@ -77,15 +55,6 @@ const BatchActions = ({ onEdit, onDelete, batchDetail }: Props) => {
           </span>
         </button>
       </Whisper>
-      {batchToEdit && (
-        <EditBatchModal
-          batchToEdit={batchToEdit}
-          handleClose={reason => {
-            setBatchToEdit(null)
-            if (reason === 'edit') onEdit()
-          }}
-        />
-      )}
       <ConfirmationDialog
         actions={['cancel', 'delete']}
         onClose={handleConfirmDeleteClose}
