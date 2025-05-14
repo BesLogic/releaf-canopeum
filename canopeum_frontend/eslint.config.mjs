@@ -1,14 +1,8 @@
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
-
 import beslogicExtraStrict from 'eslint-config-beslogic/extra-strict.mjs'
 import beslogicReact from 'eslint-config-beslogic/react.mjs'
 import beslogicTypeScript from 'eslint-config-beslogic/typescript.mjs'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 
 export default tseslint.config(
   beslogicReact,
@@ -21,33 +15,6 @@ export default tseslint.config(
       // Auto-generated
       'src/services/api.ts',
     ],
-  },
-  {
-    files: [
-      '**/*.ts',
-      '**/*.tsx',
-    ],
-    languageOptions: {
-      parserOptions: {
-        useProjectService: true,
-        // Still needed for plugins that haven't updated to typescript-eslint@8 yet
-        // Namely: eslint-plugin-sonarjs
-        EXPERIMENTAL_useProjectService: true,
-        // eslint-disable-next-line no-undef -- false-positive
-        tsconfigRootDir: __dirname,
-      },
-    },
-    rules: {
-      // TODO: These are properly configured in eslint-config-beslogic 4.2.0
-      '@typescript-eslint/no-floating-promises': ['error', {
-        ignoreVoid: false, // Don't even ignore voided promises. Force a comment explaining.
-        allowForKnownSafeCalls: [
-          // Doesn't throw and already console.warn itself
-          { from: 'package', package: 'i18next', name: 'changeLanguage' },
-        ],
-      }],
-      '@typescript-eslint/no-misused-spread': 'off',
-    },
   },
   {
     plugins: { 'react-refresh': reactRefresh },
