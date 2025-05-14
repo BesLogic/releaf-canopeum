@@ -68,6 +68,8 @@ On Linux you must instal the mysql dev binaries to be able to build the `mysqlcl
    GOOGLE_API_KEY_CANOPEUM=<your Google Geocoding API key, leave empty if none>
    ```
 
+   Management for the Google API Key can be accessed here: <https://console.cloud.google.com/google/maps-apis/credentials?project=canopeum-dev-api-key>
+
    4.2. Then run:
 
    ```shell

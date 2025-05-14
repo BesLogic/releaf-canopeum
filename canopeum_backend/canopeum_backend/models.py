@@ -1,6 +1,7 @@
 import re
 from datetime import UTC, datetime, timedelta
 from enum import auto
+from logging import getLogger
 from typing import TYPE_CHECKING, Any, ClassVar, Literal, TypeVar, cast, override
 
 import googlemaps
@@ -12,6 +13,8 @@ from googlemaps.geocoding import reverse_geocode
 from rest_framework.request import Request as drf_Request
 
 from .settings import GOOGLE_API_KEY
+
+logger = getLogger(__name__)
 
 # Pyright won't be able to infer all types here, see:
 # https://github.com/typeddjango/django-stubs/issues/579
@@ -113,27 +116,36 @@ class Coordinate(models.Model):
             dd_longitude *= -1
 
         if gmaps is not None:
-            data_retrieved: list[dict[str, Any]] = reverse_geocode(
-                gmaps,
-                (dd_latitude, dd_longitude),
-                # https://developers.google.com/maps/documentation/geocoding/requests-reverse-geocoding
-                result_type=[
-                    # Gives lots of good civil administrations polygons,
-                    # automatically includes many administrative_area_level
-                    "political",
-                    # Direct address, if possible
-                    "street_address",
-                ],
-            )
-            # Naive way to get the location we want, longer name usually means more precise
-            data_retrieved = sorted(
-                data_retrieved, key=lambda location: len(location["formatted_address"])
-            )
-            formatted_address = (
-                data_retrieved[0]["formatted_address"]
-                if data_retrieved
-                else "Unretrievable location"
-            )
+            try:
+                data_retrieved: list[dict[str, Any]] = reverse_geocode(
+                    gmaps,
+                    (dd_latitude, dd_longitude),
+                    # https://developers.google.com/maps/documentation/geocoding/requests-reverse-geocoding
+                    result_type=[
+                        # Gives lots of good civil administrations polygons,
+                        # automatically includes many administrative_area_level
+                        "political",
+                        # Direct address, if possible
+                        "street_address",
+                    ],
+                )
+            except googlemaps.exceptions.ApiError:
+                # This is ugly, but allows a graceful fallback from anywhere
+                # rather than specialising this error per call location to display it in the UI
+                formatted_address = "⚠️Issue with Google API, contact an admin"
+                logger.exception("Issue with Google API")
+            else:
+                # Naive way to get the location we want, longer name usually means more precise
+                data_retrieved = sorted(
+                    data_retrieved,
+                    key=lambda location: len(location["formatted_address"]),
+                    reverse=True,
+                )
+                formatted_address = (
+                    data_retrieved[0]["formatted_address"]
+                    if data_retrieved
+                    else "Unretrievable location"
+                )
         else:
             formatted_address = "Missing Google API Key"
 
