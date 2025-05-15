@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading -- Needed for react hook forms */
 import { useContext, useState } from 'react'
 import { type SubmitHandler, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'

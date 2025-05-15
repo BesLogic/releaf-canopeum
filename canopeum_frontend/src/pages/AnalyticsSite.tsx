@@ -53,9 +53,7 @@ const AnalyticsSite = () => {
       setLastModifiedBatchDate(lastModifiedBatch[0])
     }
 
-    return (): void => {
-      setLastModifiedBatchDate(undefined)
-    }
+    return () => setLastModifiedBatchDate(undefined)
   }, [siteSummary])
 
   if (!siteSummary) {

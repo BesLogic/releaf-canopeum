@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "eslint": "eslint ./ --ignore-path .gitignore",
+    "eslint": "eslint .",
     "lint": "cd .. && dprint check && cd canopeum_frontend && npm run eslint",
     "lint:fix": "npm run eslint -- --fix && cd .. && dprint fmt",
     "preview": "vite preview",
@@ -46,14 +46,14 @@
     "@types/react-transition-group": "^4.4.10",
     "@vitejs/plugin-react": "^4.2.1",
     "dprint": "^0.47.2",
-    "eslint-config-beslogic": "^3.1.2",
+    "eslint-config-beslogic": "^4.2.1",
     "eslint-plugin-jsx-a11y": "^6.8.0",
-    "eslint-plugin-react": "^7.34.1",
-    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react": "^7.37.1",
+    "eslint-plugin-react-hooks": "^5.0",
     "eslint-plugin-react-prefer-function-component": "^3.3.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "sass": "1.77.6",
-    "typescript": "~5.5.4",
+    "typescript": "~5.7",
     "vite": "^5.4.6"
   }
 }
