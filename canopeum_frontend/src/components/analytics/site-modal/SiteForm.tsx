@@ -15,10 +15,11 @@ use of register spreadability from 'react-hook-form'  */
 type Props = {
   readonly availableSiteTypes: SiteType[],
   readonly form: UseFormReturn<SiteFormDto>,
+  readonly formId: string,
 }
 
 const SiteForm = (
-  { availableSiteTypes, form }: Props,
+  { availableSiteTypes, form, formId }: Props,
 ) => {
   const { t } = useTranslation()
   const { translateValue } = useContext(LanguageContext)
@@ -51,21 +52,24 @@ const SiteForm = (
       required: t('analytics.site-modal.validation.image-required'),
       validate: {
         fileType: (file: File | undefined) =>
-          !file
-          || file.type.startsWith('image/')
-          || t('analytics.site-modal.validation.invalid-file-type'),
+          !file ||
+          file.type.startsWith('image/') ||
+          t('analytics.site-modal.validation.invalid-file-type'),
       },
     })
 
     register('species', {
       validate: species =>
-        species.length > 0
-        || t('analytics.site-modal.validation.tree-species-required'),
+        species.length > 0 ||
+        t('analytics.site-modal.validation.tree-species-required'),
     })
   }, [register, watch, getValues])
 
   return (
-    <>
+    <form
+      className='d-flex flex-column gap-3'
+      id={formId}
+    >
       <div>
         <label aria-required className='form-label' htmlFor='site-name'>
           {t('analytics.site-modal.site-name')}
@@ -166,8 +170,8 @@ const SiteForm = (
         </div>
         {
           // eslint-disable-next-line unicorn/explicit-length-check -- size is a property name
-          errors.size
-          && <span className='help-block text-danger'>{errors.size.message}</span>
+          errors.size &&
+          <span className='help-block text-danger'>{errors.size.message}</span>
         }
       </div>
 
@@ -259,7 +263,7 @@ const SiteForm = (
           <div className='col' /> {/* spacer */}
         </div>
       </div>
-    </>
+    </form>
   )
 }
 
