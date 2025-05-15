@@ -45,8 +45,8 @@ const SupportSpeciesSelector = ({ onChange, species }: Props) => {
   }, [])
 
   useEffect(() =>
-    species
-    && setSelected(
+    species &&
+    setSelected(
       species.map(specie => {
         const matchingSpecie = availableSpecies.get(specie.id)
         if (!matchingSpecie) return null
