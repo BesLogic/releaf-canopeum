@@ -188,6 +188,8 @@ const SiteSummaryActionsPopup = (
             <>
               <MenuItem {...bindHover(adminSelectionPopupState)}>
                 {translate('analytics.select-admin')}
+                {/* TODO: This Right Arrow should have the rounded style */}
+                <span className='material-symbols-outlined'>arrow_right</span>
               </MenuItem>
               <HoverPopover
                 {...bindPopover(adminSelectionPopupState)}
