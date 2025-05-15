@@ -12,7 +12,7 @@ import PhoneTextField from '@components/inputs/PhoneTextField'
 import UrlTextField from '@components/inputs/UrlTextField'
 import useApiClient from '@hooks/ApiClientHook'
 import useErrorHandling from '@hooks/ErrorHandlingHook'
-import type { Contact, PatchedContact } from '@services/api'
+import { Contact, type IContact, PatchedContact } from '@services/api'
 
 type Props = {
   readonly contact: Contact,
@@ -20,19 +20,9 @@ type Props = {
   readonly handleClose: (contact: Contact | null) => void,
 }
 
-type EditSiteContactDto = {
-  address?: string,
-  email?: string,
-  phone?: string,
-  facebookLink?: string,
-  xLink?: string,
-  instagramLink?: string,
-  linkedinLink?: string,
-}
-
 const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
   const { t } = useTranslation()
-  const [editedContact, setEditedContact] = useState<EditSiteContactDto>(contact)
+  const [editedContact, setEditedContact] = useState<IContact>(contact)
   const [isFormValid, setIsFormValid] = useState<boolean>(true)
   const { getApiClient } = useApiClient()
   const { openAlertSnackbar } = useContext(SnackbarContext)
@@ -45,10 +35,10 @@ const SiteContactModal = ({ contact, isOpen, handleClose }: Props) => {
   const handleSubmitSiteContact = () =>
     getApiClient()
       .contactClient
-      .update(contact.id, editedContact as PatchedContact)
+      .update(contact.id, new PatchedContact(editedContact))
       .then(() => {
         openAlertSnackbar(t('social.contact.feedback.edit-success'))
-        handleClose(editedContact as Contact)
+        handleClose(new Contact(editedContact))
       })
       .catch(displayUnhandledAPIError('social.contact.feedback.edit-error'))
 
