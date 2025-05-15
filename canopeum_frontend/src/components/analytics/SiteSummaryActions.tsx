@@ -1,10 +1,10 @@
-import Menu from '@mui/material/Menu/Menu'
-import MenuItem from '@mui/material/MenuItem/MenuItem'
-import Popover from '@mui/material/Popover/Popover'
-import { type Dispatch, type SetStateAction, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import PopupState from 'material-ui-popup-state'
+import { bindHover, bindMenu, bindPopover, bindTrigger, type PopupState as PopupStateType } from 'material-ui-popup-state/hooks'
+import HoverPopover from 'material-ui-popup-state/HoverPopover'
+import { type Dispatch, type SetStateAction, useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Dropdown, Popover as RPopover, Whisper } from 'rsuite'
-import type { OverlayTriggerHandle } from 'rsuite/esm/internals/Overlay/OverlayTrigger'
 
 import Checkbox from '@components/Checkbox'
 import { SnackbarContext } from '@components/context/SnackbarContext'
@@ -22,19 +22,15 @@ type Props = {
   readonly onSiteEdit: (siteId: number) => void,
 }
 
-const SiteSummaryActions = ({ siteSummary, admins, onSiteChange, onSiteEdit }: Props) => {
+const SiteSummaryActionsPopup = (
+  { popupState, siteSummary, admins, onSiteChange, onSiteEdit }: Props & {
+    readonly popupState: PopupStateType,
+  },
+) => {
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const { getApiClient } = useApiClient()
   const { displayUnhandledAPIError } = useErrorHandling()
-  const [anchorElement, setAnchorElement] = useState<null | HTMLElement>(null)
-  const open = Boolean(anchorElement)
-
-  const [adminSelectionAnchorElement, setAdminSelectionAnchorElement] = useState<
-    null | HTMLElement
-  >(null)
-  const adminSelectionOpen = Boolean(adminSelectionAnchorElement)
-  const whisperRef = useRef<OverlayTriggerHandle>(null)
 
   const [filteredAdmins, setFilteredAdmins] = useState(admins)
   const [selectedAdmins, setSelectedAdmins] = useState(siteSummary.admins.map(admin => admin.user))
@@ -71,6 +67,7 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange, onSiteEdit }: P
   }
 
   const onSaveAdmins = async () => {
+    popupState.close()
     const body = new PatchedSiteAdminUpdateRequest({ ids: selectedAdmins.map(admin => admin.id) })
 
     const updatedAdmins = await getApiClient()
@@ -86,25 +83,21 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange, onSiteEdit }: P
         return site
       })
     )
-    whisperRef.current?.close()
-    setAnchorElement(null)
     openAlertSnackbar(
       translate('analytics.site-summary.admins-saved', { siteName: siteSummary.name }),
     )
   }
 
   const onSelectAdminsCancel = () => {
+    popupState.close()
     setFilteredAdmins([...admins])
     setSelectedAdmins(siteSummary.admins.map(admin => admin.user))
-    whisperRef.current?.close()
-    setAnchorElement(null)
   }
 
   const onDeleteSiteClick = () => setConfirmCommentDeleteOpen(true)
 
   const deleteSite = async () => {
-    whisperRef.current?.close()
-    setAnchorElement(null)
+    popupState.close()
     try {
       await getApiClient().siteClient.delete(siteSummary.id)
       openAlertSnackbar(
@@ -173,47 +166,15 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange, onSiteEdit }: P
     </div>
   )
 
-  const actionsPopover = (
-    <RPopover full>
-      <Dropdown.Menu>
-        <Dropdown.Menu title={translate('analytics.select-admin')}>
-          {administratorsSelection}
-        </Dropdown.Menu>
-        <Dropdown.Item onClick={() => onSiteEdit(siteSummary.id)}>
-          {translate('analytics.edit-site-info')}
-        </Dropdown.Item>
-        <Dropdown.Item onClick={onDeleteSiteClick}>{translate('generic.delete')}</Dropdown.Item>
-      </Dropdown.Menu>
-    </RPopover>
-  )
-
   return (
     <>
-      <Whisper
-        placement='auto'
-        ref={whisperRef}
-        speaker={actionsPopover}
-        trigger='click'
-      >
-        <button
-          className='bg-lightgreen text-center rounded-circle unstyled-button'
-          type='button'
-        >
-          <span
-            className='material-symbols-outlined text-primary align-middle'
-            style={{ fontSize: 24 }}
-          >
-            more_horiz
-          </span>
-        </button>
-      </Whisper>
-
+      {/* eslint-disable react/jsx-props-no-spreading -- Needed for MUI trigger */}
       <button
         className='bg-lightgreen text-center rounded-circle unstyled-button'
-        id={`site-summary-actions-${siteSummary.id}`}
-        onClick={event => setAnchorElement(event.currentTarget)}
         type='button'
+        {...bindTrigger(popupState)}
       >
+        {/* eslint-enable react/jsx-props-no-spreading */}
         <span
           className='material-symbols-outlined text-primary align-middle'
           style={{ fontSize: 24 }}
@@ -221,50 +182,41 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange, onSiteEdit }: P
           more_horiz
         </span>
       </button>
-      <Menu
-        MenuListProps={{ 'aria-labelledby': `site-summary-actions-${siteSummary.id}` }}
-        anchorEl={anchorElement}
-        onClose={() => setAnchorElement(null)}
-        open={open}
-      >
-        <MenuItem
-          onMouseEnter={event => setAdminSelectionAnchorElement(event.currentTarget)}
-          onMouseLeave={() => setAdminSelectionAnchorElement(null)}
-        >
-          {translate('analytics.select-admin')}
-        </MenuItem>
+      <Menu {...bindMenu(popupState)}>
+        <PopupState popupId={`site-admin-selection-${siteSummary.id}`} variant='popover'>
+          {adminSelectionPopupState => (
+            <>
+              <MenuItem {...bindHover(adminSelectionPopupState)}>
+                {translate('analytics.select-admin')}
+              </MenuItem>
+              <HoverPopover
+                {...bindPopover(adminSelectionPopupState)}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+              >
+                {administratorsSelection}
+              </HoverPopover>
+            </>
+          )}
+        </PopupState>
+
         <MenuItem onClick={() => onSiteEdit(siteSummary.id)}>
           {translate('analytics.edit-site-info')}
         </MenuItem>
+
         <MenuItem onClick={onDeleteSiteClick}>
           {translate('generic.delete')}
         </MenuItem>
       </Menu>
-      <Popover
-        PaperProps={{
-          onMouseEnter: event => setAdminSelectionAnchorElement(event.currentTarget),
-          onMouseLeave: () => setAdminSelectionAnchorElement(null),
-        }}
-        anchorEl={adminSelectionAnchorElement}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        disableRestoreFocus
-        onClose={() => setAdminSelectionAnchorElement(null)}
-        open={adminSelectionOpen}
-        sx={{ pointerEvents: 'auto' }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-      >
-        {administratorsSelection}
-      </Popover>
-
       <ConfirmationDialog
         actions={['cancel', 'delete']}
-        onClose={(proceed: boolean) => onDeleteSiteConfirmation(proceed)}
+        onClose={onDeleteSiteConfirmation}
         open={!!confirmCommentDeleteOpen}
         title={translate('analytics.site-summary.delete-site-confirmation-title')}
       >
@@ -276,5 +228,11 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange, onSiteEdit }: P
     </>
   )
 }
+
+const SiteSummaryActions = (props: Props) => (
+  <PopupState popupId={`site-summary-actions-${props.siteSummary.id}`} variant='popover'>
+    {popupState => <SiteSummaryActionsPopup {...props} popupState={popupState} />}
+  </PopupState>
+)
 
 export default SiteSummaryActions
