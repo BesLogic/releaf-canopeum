@@ -21,7 +21,7 @@ export const fileFormatter = async (asset: Asset): Promise<File> => {
   const response = await fetch(`${getApiBaseUrl()}${asset.asset}`)
   const blob = await response.blob()
   const fileName = asset.asset.split('/').pop() ?? 'file'
-  const type = blob.type || 'image/png'
+  const type = blob.type
 
   return new File([blob], fileName, { type })
 }
