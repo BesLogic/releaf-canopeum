@@ -28,7 +28,6 @@ const UrlTextField = (props: Props) => {
 
   return (
     <div className='d-flex flex-column flex-grow-1'>
-      {/* eslint-disable react/jsx-props-no-spreading -- Needed for custom input */}
       <input
         {...props.attributes}
         className='form-control'
@@ -36,7 +35,6 @@ const UrlTextField = (props: Props) => {
         type='url'
         value={props.value}
       />
-      {/* eslint-enable react/jsx-props-no-spreading */}
       {error && <span className='help-block text-danger'>{error}</span>}
     </div>
   )

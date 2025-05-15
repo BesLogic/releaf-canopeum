@@ -1,9 +1,3 @@
-// Load rsuite CSS first because we don't want it to have priority over bootstrap
-// We can also later override its css vars
-// TODO: Strongly consider to stop using rsuite, we have too many co-existing design systems !
-// (rsuite + mui + bootstrap)
-@use '../node_modules/rsuite/dist/rsuite.min.css';
-
 // Load variables before Bootsrap so it generates the right theme colors
 @forward './assets/styles/Variables.scss';
 @use './assets/styles/Variables.scss' as *;

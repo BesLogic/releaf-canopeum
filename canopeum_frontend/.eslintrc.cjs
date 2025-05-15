@@ -25,6 +25,16 @@ module.exports = {
     'src/services/api.ts',
   ],
   rules: {
+    // TODO: Remove this config after updating to eslint-config-beslogic@4.2.1
+    'react/jsx-props-no-spreading': [
+      'error',
+      {
+        explicitSpread: 'ignore',
+        custom: 'ignore',
+        // Very often needed for custom inputs and validation using Higher Order Components
+        exceptions: ['input'],
+      },
+    ],
     '@typescript-eslint/no-floating-promises': ['error', {
       // Don't even ignore voided promises. Force a comment explaining.
       ignoreVoid: false, // TODO: This could be added to Beslogic's extra-strict preset

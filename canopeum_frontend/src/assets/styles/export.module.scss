@@ -6,8 +6,10 @@
   primary: $primary;
   secondary: $secondary;
   success: $success;
+  primaryFaded: $lightgreen;
   // Would prefer using $card-bg from bootstrap,
   // but that causes it to load first before App.scss somehow
   cardBackground: $white;
   mediumWidth: $medium-width;
+  borderRadius: $border-radius;
 }
