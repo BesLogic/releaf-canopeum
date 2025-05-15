@@ -18,7 +18,7 @@ import UserManagement from '@pages/UserManagement'
 import Utilities from '@pages/Utilities'
 
 const NavbarLayout = () => (
-  <div className='d-flex flex-column vh-100'>
+  <div className='d-flex flex-column vh-100 overflow-hidden'>
     <Navbar />
     {/* TODO: Can we do better than hardcode a number relating to the expected header size here? */}
     <div className='' style={{ height: 'calc(100vh - 62px)' }}>
