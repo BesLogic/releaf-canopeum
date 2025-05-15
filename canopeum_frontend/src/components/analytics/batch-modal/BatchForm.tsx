@@ -8,7 +8,6 @@ import MulchLayersSelector from '@components/analytics/MulchLayersSelector'
 import SupportSpeciesSelector from '@components/analytics/SupportSpeciesSelector'
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import type { BatchDetail } from '@services/api'
-import { getApiBaseUrl } from '@services/apiSettings'
 import { mapSum } from '@utils/arrayUtils'
 import { floorNumberValue } from '@utils/formUtils'
 
@@ -28,11 +27,11 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
     if (!initialBatch) return
 
     setBatch(transformToEditBatchDto(initialBatch))
-    setSponsorLogoUrl(`${getApiBaseUrl()}${initialBatch.sponsor.logo.asset}`)
+    setSponsorLogoUrl(`${import.meta.env.VITE_API_URL}${initialBatch.sponsor.logo.asset}`)
 
     if (!initialBatch.image) return
 
-    setBatchImageURL(`${getApiBaseUrl()}${initialBatch.image.asset}`)
+    setBatchImageURL(`${import.meta.env.VITE_API_URL}${initialBatch.image.asset}`)
   }, [initialBatch])
 
   useEffect(() => handleBatchChange(batch), [batch, handleBatchChange])

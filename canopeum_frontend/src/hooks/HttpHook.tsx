@@ -3,12 +3,11 @@ import { useCallback, useContext } from 'react'
 
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
 import { RefreshClient, TokenRefresh } from '@services/api'
-import { getApiBaseUrl } from '@services/apiSettings'
 import { STORAGE_ACCESS_TOKEN_KEY, STORAGE_REFRESH_TOKEN_KEY } from '@utils/auth.utils'
 
 const MILLISECONDS_IN_SECOND = 1000
 
-const refreshClient = () => new RefreshClient(getApiBaseUrl())
+const refreshClient = () => new RefreshClient(import.meta.env.VITE_API_URL)
 
 const useHttp = () => {
   const { logout } = useContext(AuthenticationContext)

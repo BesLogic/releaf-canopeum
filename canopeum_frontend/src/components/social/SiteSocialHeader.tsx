@@ -14,7 +14,6 @@ import { appRoutes } from '@constants/routes.constant'
 import useApiClient from '@hooks/ApiClientHook'
 import type { PageViewMode } from '@models/PageViewMode.type'
 import { PatchedUpdateSitePublicStatus, type SiteSocial, User } from '@services/api'
-import { getApiBaseUrl } from '@services/apiSettings'
 import type { ExcludeFunctions } from '@utils/types'
 
 type Props = {
@@ -82,7 +81,7 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
         <div
           className='site-social-image'
           style={{
-            backgroundImage: `url('${getApiBaseUrl()}${site.image.asset}')`,
+            backgroundImage: `url('${import.meta.env.VITE_API_URL}${site.image.asset}')`,
           }}
         />
 
