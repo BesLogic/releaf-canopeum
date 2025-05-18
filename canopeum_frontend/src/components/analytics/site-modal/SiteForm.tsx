@@ -9,9 +9,6 @@ import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import { LanguageContext } from '@components/context/LanguageContext'
 import type { SiteType } from '@services/api'
 
-/* eslint react/jsx-props-no-spreading: 0 --
-use of register spreadability from 'react-hook-form'  */
-
 type Props = {
   readonly availableSiteTypes: SiteType[],
   readonly form: UseFormReturn<SiteFormDto>,
@@ -51,19 +48,19 @@ const SiteForm = (
     register('siteImage', {
       required: t('analytics.site-modal.validation.image-required'),
       validate: {
-        fileType: (file: File | undefined) =>
-          !file ||
-          file.type.startsWith('image/') ||
-          t('analytics.site-modal.validation.invalid-file-type'),
+        fileType: file =>
+          !file
+          || file.type.startsWith('image/')
+          || t('analytics.site-modal.validation.invalid-file-type'),
       },
     })
 
     register('species', {
       validate: species =>
-        species.length > 0 ||
-        t('analytics.site-modal.validation.tree-species-required'),
+        species.length > 0
+        || t('analytics.site-modal.validation.tree-species-required'),
     })
-  }, [register, watch, getValues])
+  }, [register, watch, getValues, t])
 
   return (
     <form
@@ -170,8 +167,8 @@ const SiteForm = (
         </div>
         {
           // eslint-disable-next-line unicorn/explicit-length-check -- size is a property name
-          errors.size &&
-          <span className='help-block text-danger'>{errors.size.message}</span>
+          errors.size
+          && <span className='help-block text-danger'>{errors.size.message}</span>
         }
       </div>
 
