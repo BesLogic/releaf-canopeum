@@ -134,6 +134,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
               <button
                 className='btn btn-primary'
                 onClick={form.handleSubmit(handleSubmitSite)}
+                type='button'
               >
                 {t('generic.submit')}
               </button>

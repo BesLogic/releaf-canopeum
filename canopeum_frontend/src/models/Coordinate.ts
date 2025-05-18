@@ -39,8 +39,8 @@ export const extractCoordinate = (coordinates: string) => {
   const char3 = coordinates.indexOf('.')
   const char4 = coordinates.indexOf('"')
 
-  /* @typescript-eslint/no-unsafe-type-assertion --
-  NOTE: It should be impossible for the nullish coalescence to happen here,
+  /* eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+  -- NOTE: It should be impossible for the nullish coalescence to happen here,
   We're also type-guarding the string union immediatly after */
   const cardinal = coordinates.at(-1) as Cardinal
   if (!(VALID_CARDINALS.includes(cardinal))) {

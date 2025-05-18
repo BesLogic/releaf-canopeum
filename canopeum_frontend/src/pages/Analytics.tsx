@@ -62,10 +62,11 @@ const Analytics = () => {
         visibleOnMap,
       } = data
 
-      // @typescript-eslint/no-unsafe-type-assertion
-      // NOTE: Casting here isn't great (despite knowing that we just validated),
+      // TODO: Casting here isn't great (despite knowing that we just validated),
       // but we need to refactor how we validate forms anyway
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- see TODO
       const latitude = coordinateToString(dmsLatitude as Coordinate)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- see TODO
       const longitude = coordinateToString(dmsLongitude as Coordinate)
 
       const response = siteId
@@ -116,7 +117,7 @@ const Analytics = () => {
     setIsModalOpen(true)
   }
 
-  useEffect((): void => {
+  useEffect(() => {
     if (currentUser?.role !== 'MegaAdmin') return
 
     fetchAdmins().catch(displayUnhandledAPIError('errors.fetch-admins-failed'))
