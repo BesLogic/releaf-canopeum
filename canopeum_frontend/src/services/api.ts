@@ -3167,7 +3167,7 @@ export interface IAsset {
 
 export class BatchAsset implements IBatchAsset {
   readonly id!: number
-  asset!: Asset;
+  asset!: string;
 
   [key: string]: unknown
 
@@ -3179,9 +3179,6 @@ export class BatchAsset implements IBatchAsset {
         }
       }
     }
-    if (!data) {
-      this.asset = new Asset()
-    }
   }
 
   init(_data?: any) {
@@ -3192,7 +3189,7 @@ export class BatchAsset implements IBatchAsset {
         }
       }
       ;(<any> this).id = _data['id']
-      this.asset = _data['asset'] ? Asset.fromJS(_data['asset']) : new Asset()
+      this.asset = _data['asset']
     }
   }
 
@@ -3211,14 +3208,14 @@ export class BatchAsset implements IBatchAsset {
       }
     }
     data['id'] = this.id
-    data['asset'] = this.asset ? this.asset.toJSON() : <any> undefined
+    data['asset'] = this.asset
     return data
   }
 }
 
 export interface IBatchAsset {
   id: number
-  asset: Asset
+  asset: string
 
   [key: string]: unknown
 }

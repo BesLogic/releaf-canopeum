@@ -279,7 +279,8 @@ class AssetSerializer(serializers.ModelSerializer[Asset]):
         if "image" in data:
             data["asset"] = data["image"]
             del data["image"]
-        return super().to_internal_value(data)
+        # Not using "super" because we assign this method to other Asset serializers
+        return serializers.ModelSerializer.to_internal_value(self, data)
 
 
 class SitePostSerializer(serializers.ModelSerializer[Site]):
@@ -428,11 +429,11 @@ class BatchSpeciesSerializer(serializers.ModelSerializer[BatchSpecies]):
 
 
 class BatchAssetSerializer(serializers.ModelSerializer[BatchAsset]):
-    asset = AssetSerializer()
-
     class Meta:
         model = BatchAsset
-        fields = ("id", "asset")
+        fields = "__all__"
+
+    # to_internal_value = AssetSerializer.to_internal_value
 
 
 class BatchDetailSerializer(serializers.ModelSerializer[Batch]):
@@ -496,8 +497,7 @@ class BatchDetailSerializer(serializers.ModelSerializer[Batch]):
 
     @extend_schema_field(BatchAssetSerializer(many=True))
     def get_images(self, obj: Batch):
-        batch_assets = BatchAsset.objects.filter(batch=obj)
-        return BatchAssetSerializer(batch_assets, many=True).data
+        return BatchAssetSerializer(obj.get_images(), many=True).data
 
 
 class SiteAdminSerializer(serializers.ModelSerializer[Siteadmin]):
