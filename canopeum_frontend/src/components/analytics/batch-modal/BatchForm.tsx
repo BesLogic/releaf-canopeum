@@ -8,7 +8,7 @@ import MulchLayersSelector from '@components/analytics/MulchLayersSelector'
 import SupportSpeciesSelector from '@components/analytics/SupportSpeciesSelector'
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import AssetGrid from '@components/assets/AssetGrid'
-import type { Asset, type BatchDetail,BatchDetail  } from '@services/api'
+import { Asset, type BatchDetail } from '@services/api'
 import { mapSum } from '@utils/arrayUtils'
 import { floorNumberValue } from '@utils/formUtils'
 

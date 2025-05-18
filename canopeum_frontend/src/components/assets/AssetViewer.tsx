@@ -13,9 +13,7 @@ type AssetViewerProps = {
 const AssetViewer = ({ medias, handleClose, mediaSelectedIndex = 0 }: AssetViewerProps) => {
   useEffect(() => {
     document.body.classList.add('overflow-hidden')
-    return () => {
-      document.body.classList.remove('overflow-hidden')
-    }
+    return () => document.body.classList.remove('overflow-hidden')
   }, [])
 
   return (
@@ -23,8 +21,8 @@ const AssetViewer = ({ medias, handleClose, mediaSelectedIndex = 0 }: AssetViewe
       className='carousel carousel-fade asset-viewer-container'
       id='carouselFade'
     >
-      {medias.length > 1 &&
-        (
+      {medias.length > 1
+        && (
           <button
             className='carousel-control-prev'
             data-bs-slide='prev'
@@ -56,8 +54,8 @@ const AssetViewer = ({ medias, handleClose, mediaSelectedIndex = 0 }: AssetViewe
           </div>
         ))}
       </div>
-      {medias.length > 1 &&
-        (
+      {medias.length > 1
+        && (
           <button
             className='carousel-control-next'
             data-bs-slide='next'
