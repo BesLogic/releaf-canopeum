@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import UrlTextField from '@components/inputs/UrlTextField'
 import useApiClient from '@hooks/ApiClientHook'
-import type { Announcement, PatchedAnnouncement } from '@services/api'
+import { Announcement, type IAnnouncement, PatchedAnnouncement } from '@services/api'
 
 type Props = {
   readonly announcement: Announcement,
@@ -13,14 +13,9 @@ type Props = {
   readonly handleClose: (contact: Announcement | null) => void,
 }
 
-type EditSiteAnnouncementDto = {
-  body?: string,
-  link?: string,
-}
-
 const SiteAnnouncementModal = ({ announcement, isOpen, handleClose }: Props) => {
   const { t } = useTranslation()
-  const [editedAnnouncement, setEditedAnnouncement] = useState<EditSiteAnnouncementDto>(
+  const [editedAnnouncement, setEditedAnnouncement] = useState<IAnnouncement>(
     announcement,
   )
   const [isFormValid, setIsFormValid] = useState<boolean>(true)
@@ -35,7 +30,7 @@ const SiteAnnouncementModal = ({ announcement, isOpen, handleClose }: Props) => 
     try {
       await getApiClient().announcementClient.update(
         announcement.id,
-        editedAnnouncement as PatchedAnnouncement,
+        new PatchedAnnouncement(editedAnnouncement),
       )
     } catch {
       openAlertSnackbar(
@@ -48,7 +43,7 @@ const SiteAnnouncementModal = ({ announcement, isOpen, handleClose }: Props) => 
     openAlertSnackbar(
       t('social.announcement.feedback.edit-success'),
     )
-    handleClose(editedAnnouncement as Announcement)
+    handleClose(new Announcement(editedAnnouncement))
   }
 
   return (
