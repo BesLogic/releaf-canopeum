@@ -1,5 +1,6 @@
-import { useEffect } from 'react'
 import './AssetViewer.scss'
+
+import { useEffect } from 'react'
 
 import type { Asset } from '@services/api'
 
