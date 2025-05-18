@@ -10,7 +10,6 @@ import useApiClient from '@hooks/ApiClientHook'
 import useErrorHandling from '@hooks/ErrorHandlingHook'
 import { type DefaultCoordinate, defaultLatitude, defaultLongitude, extractCoordinate } from '@models/Coordinate'
 import { type SiteType, Species } from '@services/api'
-import { getApiBaseUrl } from '@services/apiSettings'
 import { mapSum } from '@utils/arrayUtils'
 
 type Props = {
@@ -67,7 +66,7 @@ const SiteModal = ({ open, handleClose, siteId }: Props) => {
     const siteDetail = await getApiClient().siteClient.detail(siteId)
     const { dmsLatitude, dmsLongitude } = siteDetail.coordinate
 
-    const imgResponse = await fetch(`${getApiBaseUrl()}${siteDetail.image.asset}`)
+    const imgResponse = await fetch(`${import.meta.env.VITE_API_URL}${siteDetail.image.asset}`)
     const blob = await imgResponse.blob()
 
     setSite({
