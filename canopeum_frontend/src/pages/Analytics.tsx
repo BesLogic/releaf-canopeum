@@ -2,8 +2,8 @@ import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import BatchTable from '@components/analytics/BatchTable'
-import type { SiteDto } from '@components/analytics/site-modal/SiteModal'
 import SiteModal from '@components/analytics/site-modal/SiteModal'
+import type { SiteFormDto } from '@components/analytics/site-modal/siteModal.model'
 import SiteSuccessRatesChart from '@components/analytics/SiteSuccessRatesChart'
 import SiteSummaryCard from '@components/analytics/SiteSummaryCard'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
@@ -36,7 +36,7 @@ const Analytics = () => {
 
   const handleModalClose = async (
     reason: 'backdropClick' | 'escapeKeyDown' | 'save' | 'cancel',
-    data?: SiteDto,
+    data?: SiteFormDto,
   ) => {
     if (reason !== 'save') {
       setIsModalOpen(false)
@@ -61,22 +61,6 @@ const Analytics = () => {
         species,
         visibleOnMap,
       } = data
-
-      // TODO: In-form errors that are translated. To do with the validation refactoring
-      if (dmsLatitude.cardinal == null) {
-        openAlertSnackbar(
-          'Latitude must be specified',
-          { severity: 'error' },
-        )
-        return
-      }
-      if (dmsLongitude.cardinal == null) {
-        openAlertSnackbar(
-          'Longitude must be specified',
-          { severity: 'error' },
-        )
-        return
-      }
 
       // TODO: Casting here isn't great (despite knowing that we just validated),
       // but we need to refactor how we validate forms anyway
