@@ -83,7 +83,7 @@ export class BatchClient {
     survivedCount?: number | null | undefined,
     replaceCount?: number | null | undefined,
     totalPropagation?: number | null | undefined,
-    image?: FileParameter | null | undefined,
+    images?: FileParameter[] | undefined,
     fertilizerIds?: number[] | undefined,
     mulchLayerIds?: number[] | undefined,
     seeds?: Seeds[] | undefined,
@@ -130,8 +130,12 @@ export class BatchClient {
     if (totalPropagation !== null && totalPropagation !== undefined) {
       content_.append('totalPropagation', totalPropagation.toString())
     }
-    if (image !== null && image !== undefined) {
-      content_.append('image', image.data, image.fileName ? image.fileName : 'image')
+    if (images === null || images === undefined) {
+      throw new Error("The parameter 'images' cannot be null.")
+    } else {
+      images.forEach(item_ =>
+        content_.append('images', item_.data, item_.fileName ? item_.fileName : 'images')
+      )
     }
     if (fertilizerIds === null || fertilizerIds === undefined) {
       throw new Error("The parameter 'fertilizerIds' cannot be null.")
@@ -211,6 +215,7 @@ export class BatchClient {
     survivedCount?: number | null | undefined,
     replaceCount?: number | null | undefined,
     totalPropagation?: number | null | undefined,
+    images?: FileParameter[] | undefined,
     fertilizerIds?: number[] | undefined,
     mulchLayerIds?: number[] | undefined,
     seeds?: Seeds2[] | undefined,
@@ -255,6 +260,13 @@ export class BatchClient {
     }
     if (totalPropagation !== null && totalPropagation !== undefined) {
       content_.append('totalPropagation', totalPropagation.toString())
+    }
+    if (images === null || images === undefined) {
+      throw new Error("The parameter 'images' cannot be null.")
+    } else {
+      images.forEach(item_ =>
+        content_.append('images', item_.data, item_.fileName ? item_.fileName : 'images')
+      )
     }
     if (fertilizerIds === null || fertilizerIds === undefined) {
       throw new Error("The parameter 'fertilizerIds' cannot be null.")
@@ -3153,6 +3165,64 @@ export interface IAsset {
   [key: string]: unknown
 }
 
+export class BatchAsset implements IBatchAsset {
+  readonly id!: number
+  asset!: Asset;
+
+  [key: string]: unknown
+
+  constructor(data?: IBatchAsset) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property)) {
+          ;(<any> this)[property] = (<any> data)[property]
+        }
+      }
+    }
+    if (!data) {
+      this.asset = new Asset()
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      for (var property in _data) {
+        if (_data.hasOwnProperty(property)) {
+          this[property] = _data[property]
+        }
+      }
+      ;(<any> this).id = _data['id']
+      this.asset = _data['asset'] ? Asset.fromJS(_data['asset']) : new Asset()
+    }
+  }
+
+  static fromJS(data: any): BatchAsset {
+    data = typeof data === 'object' ? data : {}
+    let result = new BatchAsset()
+    result.init(data)
+    return result
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {}
+    for (var property in this) {
+      if (this.hasOwnProperty(property)) {
+        data[property] = this[property]
+      }
+    }
+    data['id'] = this.id
+    data['asset'] = this.asset ? this.asset.toJSON() : <any> undefined
+    return data
+  }
+}
+
+export interface IBatchAsset {
+  id: number
+  asset: Asset
+
+  [key: string]: unknown
+}
+
 export class BatchDetail implements IBatchDetail {
   readonly id!: number
   readonly fertilizers!: FertilizerType[]
@@ -3163,7 +3233,7 @@ export class BatchDetail implements IBatchDetail {
   readonly species!: BatchSpecies[]
   readonly plantCount!: number
   readonly sponsor!: BatchSponsor
-  image?: Asset
+  readonly images!: BatchAsset[]
   readonly createdAt!: Date | undefined
   readonly updatedAt!: Date | undefined
   name?: string | undefined
@@ -3191,6 +3261,7 @@ export class BatchDetail implements IBatchDetail {
       this.seeds = []
       this.species = []
       this.sponsor = new BatchSponsor()
+      this.images = []
     }
   }
 
@@ -3237,7 +3308,12 @@ export class BatchDetail implements IBatchDetail {
       ;(<any> this).sponsor = _data['sponsor']
         ? BatchSponsor.fromJS(_data['sponsor'])
         : new BatchSponsor()
-      this.image = _data['image'] ? Asset.fromJS(_data['image']) : <any> undefined
+      if (Array.isArray(_data['images'])) {
+        ;(<any> this).images = [] as any
+        for (let item of _data['images']) {
+          ;(<any> this).images!.push(BatchAsset.fromJS(item))
+        }
+      }
       ;(<any> this).createdAt = _data['createdAt']
         ? new Date(_data['createdAt'].toString())
         : <any> undefined
@@ -3302,7 +3378,12 @@ export class BatchDetail implements IBatchDetail {
     }
     data['plantCount'] = this.plantCount
     data['sponsor'] = this.sponsor ? this.sponsor.toJSON() : <any> undefined
-    data['image'] = this.image ? this.image.toJSON() : <any> undefined
+    if (Array.isArray(this.images)) {
+      data['images'] = []
+      for (let item of this.images) {
+        data['images'].push(item.toJSON())
+      }
+    }
     data['createdAt'] = this.createdAt ? this.createdAt.toISOString() : <any> undefined
     data['updatedAt'] = this.updatedAt ? this.updatedAt.toISOString() : <any> undefined
     data['name'] = this.name
@@ -3326,7 +3407,7 @@ export interface IBatchDetail {
   species: BatchSpecies[]
   plantCount: number
   sponsor: BatchSponsor
-  image?: Asset
+  images: BatchAsset[]
   createdAt: Date | undefined
   updatedAt: Date | undefined
   name?: string | undefined
