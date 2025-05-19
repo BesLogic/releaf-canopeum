@@ -4,6 +4,7 @@ import variables from './export.module.scss'
 
 const muiCustomTheme = createTheme({
   palette: {
+    text: { primary: 'var(--bs-body-color);' },
     success: {
       light: variables.success,
       main: variables.success,

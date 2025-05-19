@@ -184,28 +184,38 @@ const SiteSummaryActionsPopup = (
       </button>
       <Menu {...bindMenu(popupState)}>
         <PopupState popupId={`site-admin-selection-${siteSummary.id}`} variant='popover'>
-          {adminSelectionPopupState => (
-            <>
-              <MenuItem {...bindHover(adminSelectionPopupState)}>
-                {translate('analytics.select-admin')}
-                {/* TODO: This Right Arrow should have the rounded style */}
-                <span className='material-symbols-outlined'>arrow_right</span>
-              </MenuItem>
-              <HoverPopover
-                {...bindPopover(adminSelectionPopupState)}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'left',
-                }}
-              >
-                {administratorsSelection}
-              </HoverPopover>
-            </>
-          )}
+          {adminSelectionPopupState => {
+            const menuLeftPos = adminSelectionPopupState.anchorEl?.getBoundingClientRect().left ?? 0
+            const halfPageWidth = window.innerWidth / 2
+
+            return (
+              <>
+                <MenuItem {...bindHover(adminSelectionPopupState)}>
+                  {translate('analytics.select-admin')}
+                  <span className='material-symbols-rounded text-muted'>arrow_right</span>
+                </MenuItem>
+                <HoverPopover
+                  {...bindPopover(adminSelectionPopupState)}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: menuLeftPos < halfPageWidth
+                      ? 'right'
+                      : 'left',
+                  }}
+                  // Align to the menu container rather than the list item that's being hovered
+                  sx={theme => ({ marginTop: theme.spacing(-1) })}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: menuLeftPos < halfPageWidth
+                      ? 'left'
+                      : 'right',
+                  }}
+                >
+                  {administratorsSelection}
+                </HoverPopover>
+              </>
+            )
+          }}
         </PopupState>
 
         <MenuItem onClick={() => onSiteEdit(siteSummary.id)}>
