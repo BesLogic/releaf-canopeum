@@ -1,7 +1,9 @@
-import { useContext, useRef, useState } from 'react'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import PopupState from 'material-ui-popup-state'
+import { bindMenu, bindTrigger, type PopupState as PopupStateType } from 'material-ui-popup-state/hooks'
+import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Dropdown, Popover, Whisper } from 'rsuite'
-import type { OverlayTriggerHandle } from 'rsuite/esm/internals/Picker'
 
 import EditBatchModal from '@components/analytics/batch-modal/EditBatchModal'
 import { SnackbarContext } from '@components/context/SnackbarContext'
@@ -16,20 +18,19 @@ type Props = {
   readonly batchDetail: BatchDetail,
 }
 
-const BatchActions = ({ onEdit, onDelete, batchDetail }: Props) => {
+const BatchActionsPopup = (
+  { popupState, onEdit, onDelete, batchDetail }: Props & { readonly popupState: PopupStateType },
+) => {
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const { getApiClient } = useApiClient()
   const { displayUnhandledAPIError } = useErrorHandling()
 
-  const whisperRef = useRef<OverlayTriggerHandle>(null)
-
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
   const [batchToEdit, setBatchToEdit] = useState<BatchDetail | null>(null)
 
   const deleteBatch = async () => {
-    whisperRef.current?.close()
-
+    popupState.close()
     await getApiClient().batchClient.delete(batchDetail.id)
     openAlertSnackbar(
       translate('analyticsSite.delete-batch.success', { batchName: batchDetail.name }),
@@ -51,32 +52,41 @@ const BatchActions = ({ onEdit, onDelete, batchDetail }: Props) => {
 
   return (
     <>
-      <Whisper
-        placement='auto'
-        ref={whisperRef}
-        speaker={
-          <Popover full>
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={() => setBatchToEdit(batchDetail)}>
-                {translate('analyticsSite.edit-batch')}
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => setConfirmDeleteOpen(true)}>
-                {translate('analyticsSite.delete-batch.title')}
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Popover>
-        }
-        trigger='click'
+      {/* eslint-disable react/jsx-props-no-spreading -- Needed for MUI trigger */}
+      <button
+        className='bg-lightgreen text-center rounded-circle unstyled-button'
+        type='button'
+        {...bindTrigger(popupState)}
       >
-        <button
-          className='bg-lightgreen text-center rounded-circle unstyled-button'
-          type='button'
+        {/* eslint-enable react/jsx-props-no-spreading */}
+        <span className='material-symbols-outlined text-primary align-middle'>
+          more_horiz
+        </span>
+      </button>
+      <Menu
+        {...bindMenu(popupState)}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        <MenuItem
+          onClick={() => {
+            popupState.close()
+            setBatchToEdit(batchDetail)
+          }}
         >
-          <span className='material-symbols-outlined text-primary align-middle'>
-            more_horiz
-          </span>
-        </button>
-      </Whisper>
+          {translate('analyticsSite.edit-batch')}
+        </MenuItem>
+        <MenuItem onClick={() => setConfirmDeleteOpen(true)}>
+          {translate('analyticsSite.delete-batch.title')}
+        </MenuItem>
+      </Menu>
+
       {batchToEdit && (
         <EditBatchModal
           batchToEdit={batchToEdit}
@@ -86,6 +96,7 @@ const BatchActions = ({ onEdit, onDelete, batchDetail }: Props) => {
           }}
         />
       )}
+
       <ConfirmationDialog
         actions={['cancel', 'delete']}
         onClose={handleConfirmDeleteClose}
@@ -99,5 +110,11 @@ const BatchActions = ({ onEdit, onDelete, batchDetail }: Props) => {
     </>
   )
 }
+
+const BatchActions = (props: Props) => (
+  <PopupState popupId={`batch-actions-${props.batchDetail.id}`} variant='popover'>
+    {popupState => <BatchActionsPopup popupState={popupState} {...props} />}
+  </PopupState>
+)
 
 export default BatchActions

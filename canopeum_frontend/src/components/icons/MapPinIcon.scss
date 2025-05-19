@@ -3,7 +3,8 @@
   bottom: 0;
   left: 0;
   transform: translate(-50%, -80%);
-  .material-symbols-outlined {
+  .material-symbols-outlined,
+  .material-symbols-rounded {
     // Material icons look too big compared to custom icons,
     // it may be this is better handled by changing default icon weigh globally,
     // or thickening the custom site icons

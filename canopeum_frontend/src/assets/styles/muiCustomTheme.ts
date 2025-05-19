@@ -4,11 +4,18 @@ import variables from './export.module.scss'
 
 const muiCustomTheme = createTheme({
   palette: {
+    text: { primary: 'var(--bs-body-color);' },
     success: {
       light: variables.success,
       main: variables.success,
       dark: variables.success,
       contrastText: variables.success,
+    },
+    primary: {
+      light: variables.primary,
+      main: variables.primary,
+      dark: variables.primary,
+      contrastText: variables.primary,
     },
     secondary: {
       light: variables.secondary,
@@ -19,6 +26,10 @@ const muiCustomTheme = createTheme({
     background: {
       default: variables.cardBackground,
       paper: variables.cardBackground,
+    },
+    action: {
+      hover: variables.primaryFaded,
+      focus: variables.primaryFaded,
     },
   },
   components: {
@@ -41,6 +52,11 @@ const muiCustomTheme = createTheme({
         root: {
           textAlign: 'center',
         },
+      },
+    },
+    MuiMenu: {
+      styleOverrides: {
+        paper: { borderRadius: variables.borderRadius },
       },
     },
   },

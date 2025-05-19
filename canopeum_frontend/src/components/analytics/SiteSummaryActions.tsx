@@ -1,7 +1,10 @@
-import { type Dispatch, type SetStateAction, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import PopupState from 'material-ui-popup-state'
+import { bindHover, bindMenu, bindPopover, bindTrigger, type PopupState as PopupStateType } from 'material-ui-popup-state/hooks'
+import HoverPopover from 'material-ui-popup-state/HoverPopover'
+import { type Dispatch, type SetStateAction, useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Dropdown, Popover, Whisper } from 'rsuite'
-import type { OverlayTriggerHandle } from 'rsuite/esm/internals/Overlay/OverlayTrigger'
 
 import Checkbox from '@components/Checkbox'
 import { SnackbarContext } from '@components/context/SnackbarContext'
@@ -19,12 +22,15 @@ type Props = {
   readonly onSiteEdit: (siteId: number) => void,
 }
 
-const SiteSummaryActions = ({ siteSummary, admins, onSiteChange, onSiteEdit }: Props) => {
+const SiteSummaryActionsPopup = (
+  { popupState, siteSummary, admins, onSiteChange, onSiteEdit }: Props & {
+    readonly popupState: PopupStateType,
+  },
+) => {
   const { t: translate } = useTranslation()
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const { getApiClient } = useApiClient()
   const { displayUnhandledAPIError } = useErrorHandling()
-  const whisperRef = useRef<OverlayTriggerHandle>(null)
 
   const [filteredAdmins, setFilteredAdmins] = useState(admins)
   const [selectedAdmins, setSelectedAdmins] = useState(siteSummary.admins.map(admin => admin.user))
@@ -61,6 +67,7 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange, onSiteEdit }: P
   }
 
   const onSaveAdmins = async () => {
+    popupState.close()
     const body = new PatchedSiteAdminUpdateRequest({ ids: selectedAdmins.map(admin => admin.id) })
 
     const updatedAdmins = await getApiClient()
@@ -76,22 +83,21 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange, onSiteEdit }: P
         return site
       })
     )
-    whisperRef.current?.close()
     openAlertSnackbar(
       translate('analytics.site-summary.admins-saved', { siteName: siteSummary.name }),
     )
   }
 
   const onSelectAdminsCancel = () => {
+    popupState.close()
     setFilteredAdmins([...admins])
     setSelectedAdmins(siteSummary.admins.map(admin => admin.user))
-    whisperRef.current?.close()
   }
 
   const onDeleteSiteClick = () => setConfirmCommentDeleteOpen(true)
 
   const deleteSite = async () => {
-    whisperRef.current?.close()
+    popupState.close()
     try {
       await getApiClient().siteClient.delete(siteSummary.id)
       openAlertSnackbar(
@@ -160,53 +166,85 @@ const SiteSummaryActions = ({ siteSummary, admins, onSiteChange, onSiteEdit }: P
     </div>
   )
 
-  const actionsPopover = (
-    <Popover full>
-      <Dropdown.Menu>
-        <Dropdown.Menu title={translate('analytics.select-admin')}>
-          {administratorsSelection}
-        </Dropdown.Menu>
-        <Dropdown.Item onClick={() => onSiteEdit(siteSummary.id)}>
-          {translate('analytics.edit-site-info')}
-        </Dropdown.Item>
-        <Dropdown.Item onClick={onDeleteSiteClick}>{translate('generic.delete')}</Dropdown.Item>
-      </Dropdown.Menu>
-    </Popover>
-  )
-
   return (
     <>
-      <Whisper
-        placement='auto'
-        ref={whisperRef}
-        speaker={actionsPopover}
-        trigger='click'
+      {/* eslint-disable react/jsx-props-no-spreading -- Needed for MUI trigger */}
+      <button
+        className='bg-lightgreen text-center rounded-circle unstyled-button'
+        type='button'
+        {...bindTrigger(popupState)}
       >
-        <button
-          className='bg-lightgreen text-center rounded-circle unstyled-button'
-          type='button'
+        {/* eslint-enable react/jsx-props-no-spreading */}
+        <span
+          className='material-symbols-outlined text-primary align-middle'
+          style={{ fontSize: 24 }}
         >
-          <span
-            className='material-symbols-outlined text-primary align-middle'
-            style={{ fontSize: 24 }}
-          >
-            more_horiz
-          </span>
-        </button>
-      </Whisper>
+          more_horiz
+        </span>
+      </button>
+      <Menu {...bindMenu(popupState)}>
+        <PopupState popupId={`site-admin-selection-${siteSummary.id}`} variant='popover'>
+          {adminSelectionPopupState => {
+            const menuLeftPos = adminSelectionPopupState.anchorEl?.getBoundingClientRect().left ?? 0
+            const halfPageWidth = window.innerWidth / 2
 
+            return (
+              <>
+                <MenuItem {...bindHover(adminSelectionPopupState)}>
+                  {translate('analytics.select-admin')}
+                  <span className='material-symbols-rounded text-muted'>arrow_right</span>
+                </MenuItem>
+                <HoverPopover
+                  {...bindPopover(adminSelectionPopupState)}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: menuLeftPos < halfPageWidth
+                      ? 'right'
+                      : 'left',
+                  }}
+                  // Align to the menu container rather than the list item that's being hovered
+                  sx={theme => ({ marginTop: theme.spacing(-1) })}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: menuLeftPos < halfPageWidth
+                      ? 'left'
+                      : 'right',
+                  }}
+                >
+                  {administratorsSelection}
+                </HoverPopover>
+              </>
+            )
+          }}
+        </PopupState>
+
+        <MenuItem onClick={() => onSiteEdit(siteSummary.id)}>
+          {translate('analytics.edit-site-info')}
+        </MenuItem>
+
+        <MenuItem onClick={onDeleteSiteClick}>
+          {translate('generic.delete')}
+        </MenuItem>
+      </Menu>
       <ConfirmationDialog
         actions={['cancel', 'delete']}
-        onClose={(proceed: boolean) => onDeleteSiteConfirmation(proceed)}
+        onClose={onDeleteSiteConfirmation}
         open={!!confirmCommentDeleteOpen}
         title={translate('analytics.site-summary.delete-site-confirmation-title')}
       >
-        {translate('analytics.site-summary.delete-site-confirmation-message', {
-          siteName: siteSummary.name,
-        })}
+        {translate(
+          'analytics.site-summary.delete-site-confirmation-message',
+          { siteName: siteSummary.name },
+        )}
       </ConfirmationDialog>
     </>
   )
 }
+
+const SiteSummaryActions = (props: Props) => (
+  <PopupState popupId={`site-summary-actions-${props.siteSummary.id}`} variant='popover'>
+    {popupState => <SiteSummaryActionsPopup {...props} popupState={popupState} />}
+  </PopupState>
+)
 
 export default SiteSummaryActions
