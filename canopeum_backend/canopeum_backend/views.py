@@ -1,9 +1,11 @@
 import json
 import secrets
+from collections.abc import Iterable
 from copy import deepcopy
 from typing import cast
 
 from django.contrib.auth import authenticate
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import QueryDict
@@ -67,6 +69,7 @@ from .models import (
 from .serializers import (
     AnnouncementSerializer,
     AssetSerializer,
+    BatchAssetSerializer,
     BatchDetailSerializer,
     BatchSponsorSerializer,
     ChangePasswordSerializer,
@@ -906,15 +909,6 @@ class BatchListAPIView(APIView):
         except json.JSONDecodeError as e:
             return Response(data={"error": e}, status=status.HTTP_400_BAD_REQUEST)
 
-        uploaded_images = request.FILES.getlist("images", [])
-        asset_instances = []
-        for file in uploaded_images:
-            asset_serializer = AssetSerializer(data={"asset": file})
-            if not asset_serializer.is_valid():
-                errors.append(asset_serializer.errors)
-            else:
-                asset_instances.append(asset_serializer.save())
-
         sponsor_data = {
             "name": request.data.get("sponsor_name"),
             "url": request.data.get("sponsor_website_url"),
@@ -936,8 +930,15 @@ class BatchListAPIView(APIView):
             site = Site.objects.get(pk=request.data.get("site", ""))
             batch = batch_serializer.save(site=site, sponsor=sponsor)
 
-            for asset in asset_instances:
-                BatchAsset.objects.create(batch=batch, asset=asset)
+            # HACK to allow handling the image with a AssetSerializer separately
+            # TODO: Figure out how to feed the image directly to BatchDetailSerializer
+            uploaded_images = request.FILES.getlist("images", [])
+            for file in uploaded_images:
+                asset_serializer = BatchAssetSerializer(data={"asset": file, "batch": batch.pk})
+                if not asset_serializer.is_valid():
+                    errors.append(asset_serializer.errors)
+                else:
+                    asset_serializer.save()
 
             for fertilizer_id in parsed_fertilizer_ids:
                 batch.add_fertilizer_by_id(fertilizer_id)
@@ -983,9 +984,7 @@ class BatchDetailAPIView(APIView):
         if parse_errors:
             return Response(data={"error": parse_errors}, status=status.HTTP_400_BAD_REQUEST)
 
-        asset_instances, asset_errors = self._handle_assets(
-            request.FILES.getlist("images", []), batch
-        )
+        asset_errors = self._handle_assets(request.FILES.getlist("images", []), batch)
         errors.extend(asset_errors)
 
         sponsor, sponsor_errors = self._handle_sponsor(request, batch)
@@ -996,7 +995,7 @@ class BatchDetailAPIView(APIView):
             errors.append(batch_serializer.errors)
         else:
             batch = batch_serializer.save(sponsor=sponsor)
-            self._update_batch_mappings(batch, parsed_data, asset_instances)
+            self._update_batch_mappings(batch, parsed_data)
 
         if errors:
             return Response(data={"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
@@ -1015,32 +1014,30 @@ class BatchDetailAPIView(APIView):
         except json.JSONDecodeError as e:
             return None, str(e)
 
-    def _handle_assets(self, uploaded_files, batch):
+    def _handle_assets(self, uploaded_files: Iterable[InMemoryUploadedFile], batch: Batch):
         asset_errors = []
-        asset_instances = []
 
-        existing_assets = list(BatchAsset.objects.filter(batch=batch).select_related("asset"))
+        existing_assets = list(BatchAsset.objects.filter(batch=batch))
         new_file_names = {file.name for file in uploaded_files}
 
-        for ba in existing_assets:
-            if ba.asset.asset.name not in new_file_names:
-                ba.delete()
+        for existing_asset in existing_assets:
+            if existing_asset.asset.name not in new_file_names:
+                existing_asset.delete()
 
         for file in uploaded_files:
-            matching_existing = next(
-                (ba.asset for ba in existing_assets if ba.asset.asset.name == file.name), None
+            already_exists = any(
+                True for existing_asset in existing_assets if existing_asset.asset.name == file.name
             )
-            if matching_existing:
-                asset_instances.append(matching_existing)
+            if already_exists:
                 continue
 
-            asset_serializer = AssetSerializer(data={"asset": file})
+            asset_serializer = BatchAssetSerializer(data={"asset": file, "batch": batch.pk})
             if not asset_serializer.is_valid():
                 asset_errors.append(asset_serializer.errors)
             else:
-                asset_instances.append(asset_serializer.save())
+                asset_serializer.save()
 
-        return asset_instances, asset_errors
+        return asset_errors
 
     def _handle_sponsor(self, request, batch):
         sponsor_data = {
@@ -1055,9 +1052,9 @@ class BatchDetailAPIView(APIView):
             return None, sponsor_serializer.errors
         return sponsor_serializer.save(), []
 
-    def _update_batch_mappings(self, batch, parsed_data, asset_instances):
-        for asset in asset_instances:
-            BatchAsset.objects.create(batch=batch, asset=asset)
+    def _update_batch_mappings(self, batch: Batch, parsed_data):
+        # for asset in asset_instances:
+        #     BatchAsset.objects.create(batch=batch, asset=asset)
 
         Batchfertilizer.objects.filter(batch=batch).delete()
         Batchmulchlayer.objects.filter(batch=batch).delete()

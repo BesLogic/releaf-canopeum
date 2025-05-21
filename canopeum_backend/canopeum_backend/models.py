@@ -211,14 +211,8 @@ class BatchSponsor(models.Model):
     logo = models.ForeignKey(Asset, models.CASCADE)
 
 
-class BatchAsset(models.Model):
+class BatchAsset(Asset):
     batch = models.ForeignKey("Batch", models.CASCADE, null=False)
-    asset = models.ForeignKey(Asset, models.CASCADE, null=False)
-
-    @override
-    def delete(self, using=None, keep_parents=False):
-        self.asset.delete()
-        return super().delete(using, keep_parents)
 
 
 class Batch(models.Model):
@@ -232,14 +226,6 @@ class Batch(models.Model):
     survived_count = models.IntegerField(blank=True, null=True)
     replace_count = models.IntegerField(blank=True, null=True)
     total_propagation = models.IntegerField(blank=True, null=True)
-
-    @property
-    def total_number_seeds(self):
-        return 100
-
-    @property
-    def images(self):
-        return Asset.objects.filter(batchasset__batch=self)
 
     def add_fertilizer_by_id(self, pk: int):
         fertilizer_type = Fertilizertype.objects.get(pk=pk)
@@ -268,6 +254,9 @@ class Batch(models.Model):
     def get_plant_count(self) -> int:
         batch_species = BatchSpecies.objects.filter(batch=self)
         return sum(specie.quantity for specie in batch_species)
+
+    def get_images(self):
+        return BatchAsset.objects.filter(batch=self)
 
 
 class Fertilizertype(models.Model):
