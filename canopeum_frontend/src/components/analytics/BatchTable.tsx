@@ -9,7 +9,6 @@ import { LanguageContext } from '@components/context/LanguageContext'
 import useApiClient from '@hooks/ApiClientHook'
 import useErrorHandling from '@hooks/ErrorHandlingHook'
 import { Asset, type BatchDetail } from '@services/api'
-import { getApiBaseUrl } from '@services/apiSettings'
 
 const BATCH_HEADER_CLASS =
   'position-sticky start-0 table-primary border-1 border-top-0 border-primary'
@@ -339,13 +338,13 @@ const BatchTable = (props: Props) => {
                   <button
                     className='unstyled-button d-flex align-center'
                     onClick={() => {
-                      // const images = batch.images.map(batchAsset =>
-                      //   new Asset({
-                      //     ...batchAsset.asset,
-                      //     asset: getApiBaseUrl() + batchAsset.asset.asset,
-                      //   })
-                      // )
-                      setMediasSelected(batch.images)
+                      const images = batch.images.map(batchAsset =>
+                        new Asset({
+                          ...batchAsset.asset,
+                          asset: import.meta.env.VITE_API_URL + batchAsset.asset.asset,
+                        })
+                      )
+                      setMediasSelected(images)
                       setViewModeActivated(true)
                     }}
                     type='button'

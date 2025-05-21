@@ -1,5 +1,6 @@
-import { useEffect } from 'react'
 import './AssetViewer.scss'
+
+import { useEffect } from 'react'
 
 import type { Asset } from '@services/api'
 
@@ -12,9 +13,7 @@ type AssetViewerProps = {
 const AssetViewer = ({ medias, handleClose, mediaSelectedIndex = 0 }: AssetViewerProps) => {
   useEffect(() => {
     document.body.classList.add('overflow-hidden')
-    return () => {
-      document.body.classList.remove('overflow-hidden')
-    }
+    return () => document.body.classList.remove('overflow-hidden')
   }, [])
 
   return (

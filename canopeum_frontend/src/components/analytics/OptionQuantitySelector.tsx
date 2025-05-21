@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading -- Needed for MUI custom input */
 import './OptionQuantitySelector.scss'
 
 import { Autocomplete } from '@mui/material'
