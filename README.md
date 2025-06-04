@@ -27,7 +27,6 @@ with the docker-compose.yml from this repository.
 
 #### For backend
 
-- [Python 3.12](https://www.python.org/downloads/)
 - [UV](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer)
 - [Docker](https://www.docker.com/get-started/)
 
