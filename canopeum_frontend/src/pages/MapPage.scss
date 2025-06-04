@@ -15,6 +15,17 @@
   height: calc(100vh - $nav-height);
 }
 
+#map-sites-list-container {
+  height: 100%;
+  overflow: auto;
+}
+
+.map-site-image {
+  object-fit: cover;
+  width: 100%;
+  border-radius: $border-radius 0 0 $border-radius;
+}
+
 @media screen and (max-width: $large-width) {
   #map-sites-list-container,
   #map-container {
@@ -22,7 +33,7 @@
   }
 }
 
-@media screen and (max-width: $medium-width) {
+@media screen and (max-width: $large-width) {
   #map-page-row-container {
     position: relative;
   }
@@ -45,10 +56,5 @@
     width: 100%;
     height: calc(100vh - $nav-height);
     padding: 0 0;
-  }
-  .map-site-image {
-    object-fit: cover;
-    width: 100%;
-    border-radius: $border-radius 0 0 $border-radius;
   }
 }
