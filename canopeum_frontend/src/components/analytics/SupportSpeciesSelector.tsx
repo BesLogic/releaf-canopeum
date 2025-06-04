@@ -1,8 +1,8 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import OptionQuantitySelector, { type SelectorOption, type SelectorOptionQuantity } from '@components/inputs/OptionQuantitySelector'
 import { LanguageContext } from '@components/context/LanguageContext'
+import OptionQuantitySelector, { type SelectorOption, type SelectorOptionQuantity } from '@components/inputs/OptionQuantitySelector'
 import useApiClient from '@hooks/ApiClientHook'
 import useErrorHandling from '@hooks/ErrorHandlingHook'
 import { TreeType } from '@services/api'

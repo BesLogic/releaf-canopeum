@@ -1,6 +1,6 @@
 {
   "extends": [
-    "eslint-config-beslogic/tsconfig.5.0.json"
+    "eslint-config-beslogic/tsconfig.5.0.json",
   ],
   "compilerOptions": {
     "target": "ES2020",
@@ -9,32 +9,32 @@
     "paths": {
       // KEEP IN SYNC WITH canopeum_frontend/.eslintrc.cjs AND canopeum_frontend/vite.config.ts
       "@assets/*": [
-        "./src/assets/*"
+        "./src/assets/*",
       ],
       "@components/*": [
-        "./src/components/*"
+        "./src/components/*",
       ],
       "@constants/*": [
-        "./src/constants/*"
+        "./src/constants/*",
       ],
       "@hooks/*": [
-        "./src/hooks/*"
+        "./src/hooks/*",
       ],
       "@models/*": [
-        "./src/models/*"
+        "./src/models/*",
       ],
       "@pages/*": [
-        "./src/pages/*"
+        "./src/pages/*",
       ],
       "@services/*": [
-        "./src/services/*"
+        "./src/services/*",
       ],
       "@store/*": [
-        "./src/store/*"
+        "./src/store/*",
       ],
       "@utils/*": [
-        "./src/utils/*"
-      ]
+        "./src/utils/*",
+      ],
     },
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -52,14 +52,14 @@
     // TODO: Raise this issue upstream
     "noImplicitOverride": false,
     // This makes index accesses even stricter. Let's avoid it for this project.
-    "noUncheckedIndexedAccess": false
+    "noUncheckedIndexedAccess": false,
   },
   "include": [
-    "src"
+    "src",
   ],
   "references": [
     {
-      "path": "./tsconfig.node.json"
-    }
-  ]
+      "path": "./tsconfig.node.json",
+    },
+  ],
 }

@@ -109,9 +109,10 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
 
   const handleSiteChange = (selectedOptions: SelectorOptionQuantity<number>[]) => {
     const filtered = availableSiteOptions.filter(
-      availableSiteOption => !selectedOptions.some(
-        selectedOption => selectedOption.option.value === availableSiteOption.value
-      )
+      availableSiteOption =>
+        !selectedOptions.some(
+          selectedOption => selectedOption.option.value === availableSiteOption.value,
+        ),
     )
 
     setSiteOptions(filtered)
@@ -156,7 +157,7 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
             </span>
           )}
 
-          <div className="mt-4">
+          <div className='mt-4'>
             <OptionQuantitySelector
               id='sites-selector'
               label={`${translate('settings.manage-admins.assign-to-label')} *`}
