@@ -1,6 +1,6 @@
 import imageCompression, { type Options } from 'browser-image-compression'
 
-import type { FileParameter } from '@services/api'
+import type { Asset, FileParameter } from '@services/api'
 
 export const assetFormatter = async (file: File): Promise<FileParameter | undefined> => {
   const options: Options = {
@@ -14,4 +14,12 @@ export const assetFormatter = async (file: File): Promise<FileParameter | undefi
   const imageCompressed = await imageCompression(file, options)
 
   return { fileName: imageCompressed.name, data: imageCompressed }
+}
+
+export const fileFormatter = async (asset: Asset): Promise<File> => {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}${asset.asset}`)
+  const blob = await response.blob()
+  const fileName = asset.asset.split('/').pop() ?? 'file'
+
+  return new File([blob], fileName, { type: blob.type })
 }

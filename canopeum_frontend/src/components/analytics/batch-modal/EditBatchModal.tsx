@@ -37,12 +37,16 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
       totalPropagation,
       seeds,
       species,
-      // image,
+      images,
     } = batch
 
     const sponsorLogoImage = sponsor?.logo
       ? await assetFormatter(sponsor.logo)
       : undefined
+
+    const batchImages = await Promise
+      .all(images.map(async img => assetFormatter(img)))
+      .then(assets => assets.filter(img => img != null))
 
     try {
       await getApiClient().batchClient.update(
@@ -56,12 +60,12 @@ const BatchModal = ({ batchToEdit, handleClose }: Props) => {
         survivedCount,
         replaceCount,
         totalPropagation,
+        batchImages,
         fertilizers.map(fertilizer => fertilizer.id),
         mulchLayers.map(layer => layer.id),
         seeds,
         species,
         supportedSpecies.map(specie => specie.id),
-        // image,
       )
     } catch {
       openAlertSnackbar(
