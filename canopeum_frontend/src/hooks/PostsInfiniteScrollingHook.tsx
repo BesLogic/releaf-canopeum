@@ -46,7 +46,7 @@ const usePostsInfiniteScrolling = () => {
         morePostsLoaded(response.results)
       }
 
-      setCurrentPage(previous => previous + 1)
+      setCurrentPage(currentPage + 1)
       setLoadingError(undefined)
     } catch (error: unknown) {
       setLoadingError(getErrorMessage(error, translate('posts.error-loading-posts')))
