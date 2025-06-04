@@ -1,27 +1,25 @@
-import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
-import ImageUpload from '@components/analytics/ImageUpload'
-import SiteCoordinates from '@components/analytics/site-modal/SiteCoordinates'
-import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
-import { LanguageContext } from '@components/context/LanguageContext'
+import SiteForm from '@components/analytics/site-modal/SiteForm'
+import { DEFAULT_SITE_FORM_DTO, transformToEditSiteDto } from '@components/analytics/site-modal/siteModal.model'
 import useApiClient from '@hooks/ApiClientHook'
 import useErrorHandling from '@hooks/ErrorHandlingHook'
-import { type DefaultCoordinate, defaultLatitude, defaultLongitude, extractCoordinate } from '@models/Coordinate'
-import { type SiteType, Species } from '@services/api'
-import { mapSum } from '@utils/arrayUtils'
+import { type DefaultCoordinate, defaultLatitude, defaultLongitude } from '@models/Coordinate'
+import type { Site, SiteType, Species } from '@services/api'
 
 type Props = {
   readonly open: boolean,
   readonly handleClose: (
     reason: 'backdropClick' | 'escapeKeyDown' | 'save' | 'cancel',
-    data?: SiteDto,
+    data?: SiteFormDto,
   ) => void,
   readonly siteId: number | undefined,
 }
 
-export type SiteDto = {
+export type SiteFormDto = {
   siteName?: string,
   siteType?: number,
   siteImage?: File,
@@ -34,7 +32,7 @@ export type SiteDto = {
   visibleOnMap?: boolean,
 }
 
-const defaultSiteDto: SiteDto = {
+const defaultSiteFormDto: SiteFormDto = {
   dmsLatitude: defaultLatitude,
   dmsLongitude: defaultLongitude,
   species: [],
@@ -45,283 +43,104 @@ const defaultSiteDto: SiteDto = {
 const SiteModal = ({ open, handleClose, siteId }: Props) => {
   const { t } = useTranslation()
   const { getApiClient } = useApiClient()
-  const { translateValue } = useContext(LanguageContext)
   const { displayUnhandledAPIError } = useErrorHandling()
 
-  const [site, setSite] = useState(defaultSiteDto)
-  const [availableSiteTypes, setAvailableSiteTypes] = useState<SiteType[]>([])
-  const [siteImageURL, setSiteImageURL] = useState<string>()
   const [loading, setLoading] = useState(true)
+  const [availableSiteTypes, setAvailableSiteTypes] = useState<SiteType[]>([])
 
-  const fetchSite = useCallback(async () => {
-    if (!siteId) {
-      // Clear the image that could come from having opened the modal with a previous site
-      setSiteImageURL(undefined)
+  const form = useForm<SiteFormDto>({
+    mode: 'onTouched',
+    defaultValues: defaultSiteFormDto,
+    shouldFocusError: true,
+  })
 
-      return
-    }
+  useEffect(() => void fetchSiteTypes(), [])
 
-    setLoading(true)
+  // init form
+  useEffect(
+    () => {
+      if (siteId) {
+        setLoading(true)
+        getApiClient()
+          .siteClient
+          .detail(siteId)
+          .then(async (site: Site) => form.reset(await transformToEditSiteDto(site)))
+          .catch(() => displayUnhandledAPIError('errors.fetch-site-failed'))
+          .finally(() => setLoading(false))
+      } else {
+        setLoading(false)
+        form.reset(DEFAULT_SITE_FORM_DTO)
+      }
+    },
+    /* eslint-disable-next-line react-hooks/exhaustive-deps
+    -- You'd think we'd want to re-run this hook on siteId change.
+    But somewhow siteId is updated on modal closing and that doesn't update the form fields.
+    */
+    [open],
+  )
 
-    const siteDetail = await getApiClient().siteClient.detail(siteId)
-    const { dmsLatitude, dmsLongitude } = siteDetail.coordinate
+  const handleSubmitSite = () => handleClose('save', form.watch())
 
-    const imgResponse = await fetch(`${import.meta.env.VITE_API_URL}${siteDetail.image.asset}`)
-    const blob = await imgResponse.blob()
-
-    setSite({
-      siteName: siteDetail.name,
-      siteType: siteDetail.siteType.id,
-      siteImage: new File([blob], 'temp', { type: blob.type }),
-      dmsLatitude: dmsLatitude
-        ? extractCoordinate(dmsLatitude)
-        : defaultLatitude,
-      dmsLongitude: dmsLongitude
-        ? extractCoordinate(dmsLongitude)
-        : defaultLongitude,
-      presentation: siteDetail.description,
-      size: Number(siteDetail.size),
-      species: siteDetail.siteTreeSpecies.map(specie => new Species(specie)),
-      researchPartner: siteDetail.researchPartnership,
-      visibleOnMap: siteDetail.visibleMap,
-    })
-    setSiteImageURL(URL.createObjectURL(blob))
-    setLoading(false)
-  }, [siteId, getApiClient])
-
-  const onImageUpload = (file: File) => {
-    setSite(value => ({ ...value, siteImage: file }))
-    setSiteImageURL(URL.createObjectURL(file))
-  }
-
-  useEffect(() => {
-    const fetchSiteTypes = async () => {
+  const fetchSiteTypes = async () => {
+    try {
       setLoading(true)
-      setAvailableSiteTypes(await getApiClient().siteClient.types())
+      const siteTypes = await getApiClient().siteClient.types()
+      setAvailableSiteTypes(siteTypes)
+    } catch {
+      displayUnhandledAPIError('errors.fetch-site-types-failed')
+    } finally {
       setLoading(false)
     }
+  }
 
-    fetchSiteTypes().catch(displayUnhandledAPIError('errors.fetch-site-types-failed'))
-  }, [])
-
-  useEffect(() => {
-    if (!open) {
-      if (!siteId) setSite(defaultSiteDto)
-
-      return
-    }
-
-    fetchSite().catch(displayUnhandledAPIError('errors.fetch-site-failed'))
-  }, [siteId])
-
-  useEffect(() => setSite(defaultSiteDto), [siteId])
-
-  if (loading) return null
+  const formId = `site-form-${String(siteId)}`
 
   return (
-    <Dialog fullWidth maxWidth='sm' onClose={(_, reason) => handleClose(reason)} open={open}>
-      <DialogTitle>
-        {t(
-          siteId
-            ? 'analytics.edit-site-info'
-            : 'analytics.create-site',
-        )}
-      </DialogTitle>
+    <Dialog
+      fullWidth
+      maxWidth='sm'
+      onClose={(_, reason) => handleClose(reason)}
+      open={open}
+    >
+      {loading
+        ? <CircularProgress color='secondary' sx={{ margin: 'auto' }} />
+        : (
+          <>
+            <DialogTitle>
+              {t(
+                siteId
+                  ? 'analytics.edit-site-info'
+                  : 'analytics.create-site',
+              )}
+            </DialogTitle>
 
-      <DialogContent>
-        <form className='d-flex flex-column gap-3'>
-          <div>
-            <label aria-required className='form-label' htmlFor='site-name'>
-              {t('analytics.site-modal.site-name')}
-            </label>
-            <input
-              className='form-control'
-              id='site-name'
-              onChange={event => setSite(value => ({ ...value, siteName: event.target.value }))}
-              type='text'
-              value={site.siteName}
-            />
-          </div>
-
-          <div>
-            <label aria-required className='form-label' htmlFor='site-type'>
-              {t('analytics.site-modal.site-type')}
-            </label>
-            <select
-              className='form-select'
-              id='site-type'
-              onChange={event =>
-                setSite(current => ({ ...current, siteType: Number(event.target.value) }))}
-              value={site.siteType ?? availableSiteTypes[0]?.id}
-            >
-              {availableSiteTypes.map(value => (
-                <option key={`available-specie-${value.id}`} value={value.id}>
-                  {translateValue(value)}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label aria-required className='form-label' htmlFor='site-image'>
-              {t('analytics.site-modal.site-image')}
-            </label>
-            <ImageUpload id='site-image-upload' imageUrl={siteImageURL} onChange={onImageUpload} />
-          </div>
-
-          <SiteCoordinates
-            latitude={site.dmsLatitude}
-            longitude={site.dmsLongitude}
-            onChange={(latitude, longitude) =>
-              setSite(current => ({
-                ...current,
-                dmsLatitude: latitude,
-                dmsLongitude: longitude,
-              }))}
-          />
-
-          <div>
-            <label className='form-label' htmlFor='site-presentation'>
-              {t('analytics.site-modal.site-presentation')}
-            </label>
-            <textarea
-              className='form-control'
-              id='site-presentation'
-              maxLength={1000}
-              onChange={event => setSite(value => ({ ...value, presentation: event.target.value }))}
-              value={site.presentation}
-            />
-          </div>
-
-          <div>
-            <label aria-required className='form-label' htmlFor='site-size'>
-              {t('analytics.site-modal.site-size')}
-            </label>
-            <div className='input-group'>
-              <input
-                className='form-control'
-                id='site-size'
-                onChange={event =>
-                  setSite(value => ({ ...value, size: Number(event.target.value) }))}
-                type='number'
-                value={site.size}
+            <DialogContent>
+              <SiteForm
+                availableSiteTypes={availableSiteTypes}
+                form={form}
+                formId={formId}
               />
-              <span className='input-group-text'>ft²</span>
-            </div>
-          </div>
+            </DialogContent>
 
-          <TreeSpeciesSelector
-            label='analytics.site-modal.site-tree-species'
-            onChange={species =>
-              setSite(current => ({
-                ...current,
-                species,
-              }))}
-            required
-            species={site.species}
-          />
-
-          <div>
-            <label className='form-label'>
-              {t('analyticsSite.batch-modal.total-number-of-plants-label')}:&nbsp;
-            </label>
-            <span>{mapSum(site.species, 'quantity')}</span>
-          </div>
-
-          <div>
-            <label className='form-label' htmlFor='site-research-partner'>
-              {t('analytics.site-modal.site-research-partner')}
-            </label>
-            <div
-              className='d-flex'
-              id='site-research-partner'
-            >
-              <div className='col form-check form-check-inline'>
-                <input
-                  checked={!!site.researchPartner}
-                  className='form-check-input'
-                  id='research-partner-yes'
-                  name='research-partner'
-                  onChange={() => setSite(current => ({ ...current, researchPartner: true }))}
-                  type='radio'
-                />
-                <label className='form-check-label' htmlFor='research-partner-yes'>
-                  {t('analytics.site-modal.yes')}
-                </label>
-              </div>
-
-              <div className='col form-check form-check-inline'>
-                <input
-                  checked={!site.researchPartner}
-                  className='form-check-input'
-                  id='research-partner-no'
-                  name='research-partner'
-                  onChange={() => setSite(current => ({ ...current, researchPartner: false }))}
-                  type='radio'
-                />
-                <label className='form-check-label' htmlFor='research-partner-no'>
-                  {t('analytics.site-modal.no')}
-                </label>
-              </div>
-
-              <div className='col' /> {/* spacer */}
-            </div>
-          </div>
-
-          <div>
-            <label className='form-label' htmlFor='site-map-visibility'>
-              {t('analytics.site-modal.site-map-visibility')}
-            </label>
-            <div
-              className='d-flex'
-              id='site-map-visibility'
-            >
-              <div className='col form-check form-check-inline'>
-                <input
-                  checked={!!site.visibleOnMap}
-                  className='form-check-input'
-                  id='map-visible'
-                  name='map-visibility'
-                  onChange={() => setSite(current => ({ ...current, visibleOnMap: true }))}
-                  type='radio'
-                />
-                <label className='form-check-label' htmlFor='map-visible'>
-                  {t('analytics.site-modal.visible')}
-                </label>
-              </div>
-
-              <div className='col form-check form-check-inline'>
-                <input
-                  checked={!site.visibleOnMap}
-                  className='form-check-input'
-                  id='map-invisible'
-                  name='map-visibility'
-                  onChange={() => setSite(current => ({ ...current, visibleOnMap: false }))}
-                  type='radio'
-                />
-                <label className='form-check-label' htmlFor='map-invisible'>
-                  {t('analytics.site-modal.invisible')}
-                </label>
-              </div>
-
-              <div className='col' /> {/* spacer */}
-            </div>
-          </div>
-        </form>
-      </DialogContent>
-
-      <DialogActions>
-        <button
-          className='btn btn-outline-primary'
-          onClick={() => handleClose('cancel')}
-          type='button'
-        >
-          {t('generic.cancel')}
-        </button>
-        <button className='btn btn-primary' onClick={() => handleClose('save', site)} type='button'>
-          {t('generic.submit')}
-        </button>
-      </DialogActions>
+            <DialogActions>
+              <button
+                className='btn btn-outline-primary'
+                form={formId}
+                onClick={() => handleClose('cancel')}
+                type='button'
+              >
+                {t('generic.cancel')}
+              </button>
+              <button
+                className='btn btn-primary'
+                onClick={form.handleSubmit(handleSubmitSite)}
+                type='button'
+              >
+                {t('generic.submit')}
+              </button>
+            </DialogActions>
+          </>
+        )}
     </Dialog>
   )
 }
