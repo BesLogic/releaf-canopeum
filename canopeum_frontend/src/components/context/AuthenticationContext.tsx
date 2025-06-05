@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import ConfirmationDialog from '@components/dialogs/ConfirmationDialog'
 import useApiClient from '@hooks/ApiClientHook'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
 import type { User } from '@services/api'
 import { STORAGE_ACCESS_TOKEN_KEY, STORAGE_REFRESH_TOKEN_KEY } from '@utils/auth.utils'
 
@@ -41,6 +42,7 @@ const AuthenticationContextProvider = memo(
     const isInitiatedRef = useRef(isInitiated)
     const { getApiClient } = useApiClient()
     const { t } = useTranslation()
+    const { displayUnhandledAPIError } = useErrorHandling()
 
     const handleLogoutModalClose = (proceed: boolean) => {
       if (proceed) logout()
@@ -73,8 +75,8 @@ const AuthenticationContextProvider = memo(
 
         const currentUser = await getApiClient().userClient.current()
         authenticate(currentUser)
-      } catch {
-        /* empty */
+      } catch (fetchUserError) {
+        displayUnhandledAPIError('errors.fetch-current-user-failed')(fetchUserError)
       } finally {
         loadSession()
         setIsInitiated(true)

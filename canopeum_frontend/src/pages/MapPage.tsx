@@ -13,6 +13,7 @@ import MapPin from '@components/icons/MapPinIcon'
 import SiteTypeIcon from '@components/icons/SiteTypeIcon'
 import { appRoutes } from '@constants/routes.constant'
 import useApiClient from '@hooks/ApiClientHook'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
 import type { SiteMap } from '@services/api'
 
 const PIN_FOCUS_ZOOM_LEVEL = 12
@@ -60,6 +61,7 @@ const MapPage = () => {
   const isMobileView = window.innerWidth <= MOBILE_WIDTH
   const { getApiClient } = useApiClient()
   const { t } = useTranslation()
+  const { displayUnhandledAPIError } = useErrorHandling()
   const [sites, setSites] = useState<SiteMap[]>([])
   const [searchParams, setSearchParams] = useSearchParams()
   const [selectedSiteId, setSelectedSiteId] = useState(
@@ -73,9 +75,14 @@ const MapPage = () => {
   })
 
   const fetchData = useCallback(async () => {
-    const response = await getApiClient().siteClient.map()
-    setSites(response)
-    return response
+    try {
+      const response = await getApiClient().siteClient.map()
+      setSites(response)
+      return response
+    } catch (mapError) {
+      displayUnhandledAPIError('errors.fetch-map-failed')(mapError)
+      return []
+    }
   }, [getApiClient])
 
   const onSelectSite = (
