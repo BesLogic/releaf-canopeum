@@ -1,7 +1,6 @@
 import json
 import secrets
 from copy import deepcopy
-from typing import cast
 
 from django.contrib.auth import authenticate
 from django.core.paginator import Paginator
@@ -134,7 +133,8 @@ class LoginAPIView(APIView):
         email = request.data.get("email")
         password = request.data.get("password")
 
-        user = cast(User | None, authenticate(email=email, password=password))
+        # Correct in mypy, not pyright, difference due to plugin ?
+        user: User | None = authenticate(email=email, password=password)  # pyright: ignore[reportAssignmentType]
         if user is not None:
             refresh = RefreshToken.for_user(user)
 
