@@ -12,6 +12,7 @@ import ToggleSwitch from '@components/inputs/ToggleSwitch'
 import SiteHeaderSponsors from '@components/SiteHeaderSponsors'
 import { appRoutes } from '@constants/routes.constant'
 import useApiClient from '@hooks/ApiClientHook'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
 import type { PageViewMode } from '@models/PageViewMode.type'
 import { PatchedUpdateSitePublicStatus, type SiteSocial, User } from '@services/api'
 import type { ExcludeFunctions } from '@utils/types'
@@ -26,6 +27,7 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
   const { translateValue } = useContext(LanguageContext)
   const { currentUser, updateUser } = useContext(AuthenticationContext)
   const { getApiClient } = useApiClient()
+  const { displayUnhandledAPIError } = useErrorHandling()
 
   const [isFollowing, setIsFollowing] = useState<boolean | undefined>()
   const [isPublic, setIsPublic] = useState(!!site.isPublic)
@@ -42,6 +44,7 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
 
     if (isFollowing) {
       await getApiClient().siteClient.unfollow(site.id)
+        .catch(displayUnhandledAPIError('errors.unfollow-failed'))
       setIsFollowing(false)
       updateUser(
         new User({
@@ -51,6 +54,7 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
       )
     } else {
       await getApiClient().siteClient.follow(site.id)
+        .catch(displayUnhandledAPIError('errors.follow-failed'))
       setIsFollowing(true)
       updateUser(
         new User({
@@ -70,7 +74,7 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
     const updatedPublicStatus = await getApiClient().socialClient.updatePublicStatus(
       site.id,
       patchPublicStatusRequest,
-    )
+    ).catch(displayUnhandledAPIError('errors.update-site-status-failed'))
 
     setIsPublic(updatedPublicStatus.isPublic)
   }
