@@ -261,8 +261,8 @@ class SitetreespeciesSerializer(
         model = Sitetreespecies
         fields = ("id", "quantity", *TranslatableSerializerMixin.Meta.fields)
 
-    def get_id(self, obj) -> int:
-        return TreeTypeSerializer(obj.tree_type).data.get("id", None)  # type: ignore[no-any-return]
+    def get_id(self, obj: Sitetreespecies) -> int:
+        return TreeTypeSerializer(obj.tree_type).data.get("id", None)  # type: ignore[no-any-return] # pyright: ignore[reportReturnType]
 
 
 class AssetSerializer(serializers.ModelSerializer[Asset]):
@@ -357,10 +357,9 @@ class BatchSponsorSerializer(serializers.ModelSerializer[BatchSponsor]):
             logo_serializer.is_valid()
             old_logo_asset_to_delete = Asset.objects.get(pk=instance.logo.pk)
             instance.logo = logo_serializer.save()
-            if old_logo_asset_to_delete is not None:
-                # TODO(NicolasDontigny): The old image file is not deleted from the media folder;
-                # Figure out if that is something we want to do
-                old_logo_asset_to_delete.delete()
+            # TODO(NicolasDontigny): The old image file is not deleted from the media folder;
+            # Figure out if that is something we want to do
+            old_logo_asset_to_delete.delete()
 
         instance.save()
         return instance

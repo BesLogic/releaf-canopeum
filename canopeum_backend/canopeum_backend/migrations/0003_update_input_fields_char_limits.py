@@ -4,40 +4,39 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('canopeum_backend', '0002_remove_post_share_count'),
+        ("canopeum_backend", "0002_remove_post_share_count"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='announcement',
-            name='body',
+            model_name="announcement",
+            name="body",
             field=models.TextField(blank=True, max_length=1000, null=True),
         ),
         migrations.AlterField(
-            model_name='comment',
-            name='body',
+            model_name="comment",
+            name="body",
             field=models.TextField(max_length=500),
         ),
         migrations.AlterField(
-            model_name='post',
-            name='body',
+            model_name="post",
+            name="body",
             field=models.TextField(max_length=3000),
         ),
         migrations.AlterField(
-            model_name='site',
-            name='description',
+            model_name="site",
+            name="description",
             field=models.TextField(blank=True, max_length=1000, null=True),
         ),
         migrations.AlterField(
-            model_name='widget',
-            name='body',
+            model_name="widget",
+            name="body",
             field=models.TextField(blank=True, max_length=1000, null=True),
         ),
         migrations.AlterField(
-            model_name='widget',
-            name='title',
+            model_name="widget",
+            name="title",
             field=models.TextField(blank=True, max_length=20, null=True),
         ),
     ]

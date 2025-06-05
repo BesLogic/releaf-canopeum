@@ -45,7 +45,7 @@ class Role(models.Model):
     )
 
 
-class User(AbstractUser):  # type: ignore[explicit-override] # False-positive
+class User(AbstractUser):
     email = models.EmailField(verbose_name="email address", max_length=255, unique=True)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS: ClassVar[list[str]] = []
@@ -58,7 +58,7 @@ class User(AbstractUser):  # type: ignore[explicit-override] # False-positive
     )
     if TYPE_CHECKING:
         # Missing "id" in "Model" or some base "User" class?
-        id: int
+        id: int  # pyright: ignore [reportUninitializedInstanceVariable]
 
 
 class Announcement(models.Model):

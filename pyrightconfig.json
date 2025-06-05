@@ -1,12 +1,46 @@
-// Must be set at root for pylance to pickup. Can't be in canopeum_backend/pyproject.toml. bleh
-// https://github.com/microsoft/pyright/blob/main/docs/configuration.md#sample-pyprojecttoml-file
+// Must be set at workspace root for Pylance to pickup. Can't be directly in backend folder. bleh
+//
+// https://github.com/microsoft/pyright/blob/main/docs/configuration.md#diagnostic-settings-defaults
 {
   "pythonVersion": "3.12",
   "include": ["canopeum_backend/canopeum_backend/"],
   "typeCheckingMode": "standard",
+
+  // Prefer `pyright: ignore`, leave `type: ignore` to mypy
+  "enableTypeIgnoreComments": false,
+
+  /*
+  * Downgraded diagnostics from strict
+  */
+  // Inform about untyped libraries, but this may not be actionable
+  "reportMissingTypeStubs": "information",
+  // Extra runtime safety
+  "reportUnnecessaryComparison": "warning",
+  // Using Ruff instead. Name is already grayed out and red squiggle looks like a mistyped import
+  "reportUnusedImport": "none",
+
+  /*
+  * Off by default even in strict mode
+  */
+  "deprecateTypingAliases": true,
+  "enableExperimentalFeatures": true,
+  "reportCallInDefaultInitializer": "error",
+  "reportImplicitOverride": "error",
+  "reportImplicitStringConcatenation": "error",
+  // False positives with TYPE_CHECKING
+  "reportImportCycles": "information",
+  // Too strict. False positives on base classes
+  "reportMissingSuperCall": "none",
+  "reportPropertyTypeMismatch": "error",
+  "reportShadowedImports": "error",
+  "reportUninitializedInstanceVariable": "error",
   "reportUnnecessaryTypeIgnoreComment": "error",
-  // Leave type: ignore to mypy
-  "enableTypeIgnoreComments": false
-  // django-specific mypy plugin does a better job getting serializers data type of dict vs list
-  // "reportAttributeAccessIssue": "none"
+  "reportUnusedCallResult": "none",
+
+  // Exclude from scanning when running pyright
+  "exclude": [
+    ".git/", // Avoid accidentally scanning branch names ending in .py
+    ".venv*/",
+    ".venv/"
+  ]
 }

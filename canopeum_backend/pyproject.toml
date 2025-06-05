@@ -25,9 +25,9 @@ dependencies = [
 [dependency-groups]
 dev = [
   # Tools
-  "mypy[faster-cache]", # version taken from [compatible-mypy],
-  "pyright>=1.1.374",
-  "ruff~=0.7.4",
+  "mypy[faster-cache] >=1.13", # Exact version taken from [compatible-mypy]
+  "pyright ==1.1.400", # typeshed errors in 1.1.401
+  "ruff ~=0.11.0",
   # Stubs
   "django-stubs[compatible-mypy]>=5.0.0",
   "djangorestframework-stubs[compatible-mypy]>=3.15.0",

@@ -1,7 +1,6 @@
 import json
 import secrets
 from copy import deepcopy
-from typing import cast
 
 from django.contrib.auth import authenticate
 from django.core.paginator import Paginator
@@ -134,7 +133,8 @@ class LoginAPIView(APIView):
         email = request.data.get("email")
         password = request.data.get("password")
 
-        user = cast(User | None, authenticate(email=email, password=password))
+        # Correct in mypy, not pyright, difference due to plugin ?
+        user: User | None = authenticate(email=email, password=password)  # pyright: ignore[reportAssignmentType]
         if user is not None:
             refresh = RefreshToken.for_user(user)
 
@@ -165,19 +165,18 @@ class RegisterAPIView(APIView):
 
         if register_user_serializer.is_valid():
             user = register_user_serializer.create_user()
-            if user is not None:
-                refresh = RefreshToken.for_user(user)
+            refresh = RefreshToken.for_user(user)
 
-                token_refresh_serializer = TokenRefreshSerializer({
-                    "refresh": refresh,
-                    "access": refresh.access_token,
-                })
-                user_serializer = UserSerializer(user)
-                user_token_serializer = UserTokenSerializer(
-                    data={"token": token_refresh_serializer.data, "user": user_serializer.data}
-                )
-                user_token_serializer.is_valid()
-                return Response(user_token_serializer.data, status=status.HTTP_201_CREATED)
+            token_refresh_serializer = TokenRefreshSerializer({
+                "refresh": refresh,
+                "access": refresh.access_token,
+            })
+            user_serializer = UserSerializer(user)
+            user_token_serializer = UserTokenSerializer(
+                data={"token": token_refresh_serializer.data, "user": user_serializer.data}
+            )
+            user_token_serializer.is_valid()
+            return Response(user_token_serializer.data, status=status.HTTP_201_CREATED)
         return Response(register_user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
