@@ -66,17 +66,21 @@ const SiteSocialHeader = ({ site, viewMode }: Props) => {
   }
 
   const toggleSitePublicStatus = async () => {
-    const newPublicStatus = !isPublic
+    try {
+      const newPublicStatus = !isPublic
 
-    const patchPublicStatusRequest = new PatchedUpdateSitePublicStatus({
-      isPublic: newPublicStatus,
-    })
-    const updatedPublicStatus = await getApiClient().socialClient.updatePublicStatus(
-      site.id,
-      patchPublicStatusRequest,
-    ).catch(displayUnhandledAPIError('errors.update-site-status-failed'))
+      const patchPublicStatusRequest = new PatchedUpdateSitePublicStatus({
+        isPublic: newPublicStatus,
+      })
+      const updatedPublicStatus = await getApiClient().socialClient.updatePublicStatus(
+        site.id,
+        patchPublicStatusRequest,
+      )
 
-    setIsPublic(updatedPublicStatus.isPublic)
+      setIsPublic(updatedPublicStatus.isPublic)
+    } catch (updateStatusError) {
+      displayUnhandledAPIError('errors.update-site-status-failed')(updateStatusError)
+    }
   }
 
   return (
