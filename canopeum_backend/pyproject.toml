@@ -29,3 +29,6 @@ dev = [
   "djangorestframework-stubs[compatible-mypy]>=3.16.0",
   "types-jsonschema",
 ]
+
+[tool.uv-secure.maintainability_criteria]
+forbid_yanked = true
