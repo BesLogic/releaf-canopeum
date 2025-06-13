@@ -19,52 +19,62 @@ env:
   # Since the Django mypy extention RUNS the config file, we need a non-empty secret to avoid
   # ImproperlyConfigured("The SECRET_KEY setting must not be empty.")
   SECRET_KEY_DJANGO_CANOPEUM: mypy-ext
+  # Avoid accidentally pulling in dependency-groups with uv run
+  UV_NO_SYNC: true
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: canopeum_backend
 
 jobs:
   django-test:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: canopeum_backend
     steps:
       - uses: actions/checkout@v4
       - name: Install uv
-        uses: astral-sh/setup-uv@v3
+        uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
-          cache-dependency-glob: "canopeum_backend/uv.lock"
-      - run: uv sync --locked
+      - run: uv sync --locked --no-dev
       - name: Run Django Tests
         run: uv run manage.py test
+
+  uv-secure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          working-directory: canopeum_backend
+      - run: uvx uv-secure[faster-async]
+
   mypy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: canopeum_backend
     steps:
       - uses: actions/checkout@v4
       - name: Install uv
-        uses: astral-sh/setup-uv@v3
+        uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
-          cache-dependency-glob: "canopeum_backend/uv.lock"
+          working-directory: canopeum_backend
       - run: uv sync --locked
       - run: uv run mypy .
 
   pyright:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: canopeum_backend
     steps:
       - uses: actions/checkout@v4
       - name: Install uv
-        uses: astral-sh/setup-uv@v3
+        uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
-          cache-dependency-glob: "canopeum_backend/uv.lock"
+          working-directory: canopeum_backend
+          activate-environment: true
       - run: uv sync --locked
-      - run: echo "$PWD/.venv/bin" >> $GITHUB_PATH
       - uses: jakebailey/pyright-action@v2
         with:
           version: PATH
@@ -72,9 +82,6 @@ jobs:
 
   Ruff-Autofixes:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: canopeum_backend
     # Only run autofixes on PRs
     if: ${{ github.event_name == 'pull_request' }}
     steps:
@@ -84,24 +91,13 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           # Token with Contents permissions to allow retriggering workflow
           token: ${{ secrets.PR_AUTOFIX_PAT }}
-      - name: Get Ruff version
-        id: ruff_version
-        # We need an exact value, feature request for any valid range specifier
-        # https://github.com/astral-sh/ruff-action/issues/11
-        run: |
-          $Env:RUFF_VERSION=Select-String -path pyproject.toml -pattern 'ruff ?[=<>~]?= ?(.+?)"' | %{ $_.Matches[0].Groups[1].Value }
-          echo $Env:RUFF_VERSION
-          echo "RUFF_VERSION=$Env:RUFF_VERSION" >> $Env:GITHUB_OUTPUT
-        shell: pwsh
-      - uses: astral-sh/ruff-action@v1
+      - uses: astral-sh/ruff-action@v3
         with:
-          version: ${{ steps.ruff_version.outputs.RUFF_VERSION }}
           args: check --fix
       - uses: astral-sh/ruff-action@v1
         # Format even on lint failure
         if: ${{ !cancelled() }}
         with:
-          version: ${{ steps.ruff_version.outputs.RUFF_VERSION }}
           args: format
       - name: Commit autofixes
         uses: EndBug/add-and-commit@v9
