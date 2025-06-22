@@ -20,12 +20,13 @@ env:
   # ImproperlyConfigured("The SECRET_KEY setting must not be empty.")
   SECRET_KEY_DJANGO_CANOPEUM: mypy-ext
 
+defaults:
+  run:
+    working-directory: canopeum_backend
+
 jobs:
   django-test:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: canopeum_backend
     steps:
       - uses: actions/checkout@v4
       - name: Install uv
@@ -36,11 +37,18 @@ jobs:
       - run: uv sync --locked
       - name: Run Django Tests
         run: uv run manage.py test
+
+  uv-secure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          working-directory: canopeum_backend
+      - run: uvx uv-secure[faster-async]
+
   mypy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: canopeum_backend
     steps:
       - uses: actions/checkout@v4
       - name: Install uv
@@ -53,9 +61,6 @@ jobs:
 
   pyright:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: canopeum_backend
     steps:
       - uses: actions/checkout@v4
       - name: Install uv
@@ -73,9 +78,6 @@ jobs:
 
   Ruff-Autofixes:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: canopeum_backend
     # Only run autofixes on PRs
     if: ${{ github.event_name == 'pull_request' }}
     steps:
