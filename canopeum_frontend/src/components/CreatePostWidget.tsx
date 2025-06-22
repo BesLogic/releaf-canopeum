@@ -190,7 +190,7 @@ const CreatePostWidget = ({ siteId, addNewPost }: Props) => {
               medias={files.map(
                 /* eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                 -- Find the best way to type file data */
-                file => (new Asset({ id: 0, asset: URL.createObjectURL(file.data) })),
+                (file, index) => (new Asset({ id: index, asset: URL.createObjectURL(file.data) })),
               )}
             />
           )}

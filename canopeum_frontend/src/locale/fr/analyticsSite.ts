@@ -36,7 +36,7 @@ export default {
     'seeds-per-species-label': 'Nombre de graines collectées par espèce',
     'total-seeds-label': 'Nombre total de graines collectées',
     'propagation-label': 'Propagation totale',
-    'images-label': 'Image du lot',
+    'images-label': 'Images du lot',
     feedback: {
       'create-success': 'Lot créé avec succès',
       'create-error': 'Échec de la création du lot',
