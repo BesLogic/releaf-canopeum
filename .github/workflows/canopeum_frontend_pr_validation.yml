@@ -15,12 +15,13 @@ on:
       - "canopeum_frontend/**"
       - ".github/workflows/canopeum_frontend_pr_validation.yml"
 
+defaults:
+  run:
+    working-directory: canopeum_frontend
+
 jobs:
   Lint-Autofixes:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: canopeum_frontend
     # Only run autofixes on PRs
     if: ${{ github.event_name == 'pull_request' }}
     steps:
@@ -44,9 +45,6 @@ jobs:
 
   Build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: canopeum_frontend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
