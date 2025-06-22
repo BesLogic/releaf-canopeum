@@ -1,5 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="30" height="30">
   <path
     d="M128 15.36C65.792 15.36 15.36 65.792 15.36 128c0 56.474 41.6 103.101 95.805 111.247v-81.392H83.297v-29.61h27.868v-19.701c0-32.62 15.893-46.94 43.003-46.94 12.985 0 19.85.962 23.102 1.403v25.845h-18.494c-11.51 0-15.529 10.911-15.529 23.21v16.184h33.73l-4.576 29.609h-29.154v81.633c54.979-7.46 97.393-54.467 97.393-111.488 0-62.208-50.432-112.64-112.64-112.64z"
-    fill="#007e51" stroke-miterlimit="10" font-family="none" font-weight="none" font-size="none" text-anchor="none" />
+    fill="#007e51"
+    stroke-miterlimit="10"
+    font-family="none"
+    font-weight="none"
+    font-size="none"
+    text-anchor="none"
+  />
 </svg>

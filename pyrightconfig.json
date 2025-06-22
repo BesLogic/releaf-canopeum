@@ -5,7 +5,7 @@
   "typeCheckingMode": "standard",
   "reportUnnecessaryTypeIgnoreComment": "error",
   // Leave type: ignore to mypy
-  "enableTypeIgnoreComments": false
+  "enableTypeIgnoreComments": false,
   // django-specific mypy plugin does a better job getting serializers data type of dict vs list
   // "reportAttributeAccessIssue": "none"
 }

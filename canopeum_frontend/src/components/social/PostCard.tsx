@@ -16,6 +16,7 @@ import PostCommentsDialog from '@components/social/PostCommentsDialog'
 import SharePostDialog from '@components/social/SharePostDialog'
 import { appRoutes } from '@constants/routes.constant'
 import useApiClient from '@hooks/ApiClientHook'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
 import type { PageViewMode } from '@models/PageViewMode.type'
 import type { Post } from '@services/api'
 import usePostsStore from '@store/postsStore'
@@ -30,6 +31,7 @@ const PostCard = ({ post, showActions }: Props) => {
   const { formatDate } = useContext(LanguageContext)
   const { toggleLike, deletePost } = usePostsStore()
   const { getApiClient } = useApiClient()
+  const { displayUnhandledAPIError } = useErrorHandling()
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const { currentUser } = useContext(AuthenticationContext)
 
@@ -52,20 +54,26 @@ const PostCard = ({ post, showActions }: Props) => {
   const handleShareModalClose = () => setShareModalOpen(false)
 
   const onDeletePostConfirmation = async (proceed: boolean) => {
-    if (proceed) {
-      await getApiClient().postClient.delete(post.id)
-      deletePost(post.id)
-      openAlertSnackbar('Post deleted successfully', { severity: 'success' })
+    try {
+      if (proceed) {
+        await getApiClient().postClient.delete(post.id)
+        deletePost(post.id)
+        openAlertSnackbar('Post deleted successfully', { severity: 'success' })
+      }
+      setConfirmPostDeleteOpen(false)
+    } catch (deletePostError) {
+      displayUnhandledAPIError('errors.delete-post-failed')(deletePostError)
     }
-    setConfirmPostDeleteOpen(false)
   }
 
   const likePost = async () => {
     if (post.hasLiked) {
       await getApiClient().likeClient.delete(post.id)
+        .catch(displayUnhandledAPIError('errors.delete-like-failed'))
       toggleLike(post.id)
     } else {
       await getApiClient().likeClient.likePost(post.id, {})
+        .catch(displayUnhandledAPIError('errors.post-like-failed'))
       toggleLike(post.id)
     }
   }
