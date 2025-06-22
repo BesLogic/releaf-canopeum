@@ -45,6 +45,15 @@ $gray-600: #969696; // aka map-get($colors, gray)
 $gray-800: #616161; // aka map-get($colors, dark-gray)
 $gray-900: #433a2e; // Used for $dark and $body-color: Body text color
 
+$grid-breakpoints: (
+  xs: 0,
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px,
+  xxl: 1600px
+);
+
 /*
 * Custom variables
 */
