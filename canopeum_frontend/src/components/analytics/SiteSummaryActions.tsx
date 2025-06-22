@@ -70,22 +70,29 @@ const SiteSummaryActionsPopup = (
     popupState.close()
     const body = new PatchedSiteAdminUpdateRequest({ ids: selectedAdmins.map(admin => admin.id) })
 
-    const updatedAdmins = await getApiClient()
-      .siteClient
-      .updateAdmins(siteSummary.id, body)
-    // Update the parent model
-    onSiteChange(previous =>
-      previous.map(site => {
-        if (site.id === siteSummary.id) {
-          site.admins = updatedAdmins
-        }
+    try {
+      const updatedAdmins = await getApiClient()
+        .siteClient
+        .updateAdmins(siteSummary.id, body)
+      // Update the parent model
+      onSiteChange(previous =>
+        previous.map(site => {
+          if (site.id === siteSummary.id) {
+            site.admins = updatedAdmins
+          }
 
-        return site
-      })
-    )
-    openAlertSnackbar(
-      translate('analytics.site-summary.admins-saved', { siteName: siteSummary.name }),
-    )
+          return site
+        })
+      )
+      openAlertSnackbar(
+        translate('analytics.site-summary.admins-saved', { siteName: siteSummary.name }),
+      )
+    } catch (updateAdminsError) {
+      displayUnhandledAPIError(
+        'errors.update-admins-failed',
+        { siteName: siteSummary.name },
+      )(updateAdminsError)
+    }
   }
 
   const onSelectAdminsCancel = () => {
@@ -104,11 +111,11 @@ const SiteSummaryActionsPopup = (
         translate('analytics.site-summary.site-deleted', { siteName: siteSummary.name }),
       )
       onSiteChange(previous => previous.filter(site => site.id !== siteSummary.id))
-    } catch {
-      openAlertSnackbar(
-        translate('analytics.site-summary.site-deleted-error', { siteName: siteSummary.name }),
-        { severity: 'error' },
-      )
+    } catch (deleteSiteError) {
+      displayUnhandledAPIError(
+        'analytics.site-summary.site-deleted-error',
+        { siteName: siteSummary.name },
+      )(deleteSiteError)
     }
   }
 
