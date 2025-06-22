@@ -46,6 +46,10 @@ const usePostsInfiniteScrolling = () => {
         morePostsLoaded(response.results)
       }
 
+      // There's currently an issue where this is triggered multiple times and sending multiple requests.
+      // If we "correctly" re-use the previous state using `previous => previous + 1`,
+      // this number will rapidly increase past the intended pagination.
+      // TODO: Fix the server calls spam
       setCurrentPage(currentPage + 1)
       setLoadingError(undefined)
     } catch (error: unknown) {
