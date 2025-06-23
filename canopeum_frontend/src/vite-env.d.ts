@@ -1,16 +1,17 @@
-/// <reference types="vite/client" />
+// https://github.com/pd4d10/vite-plugin-svgr#usage
 /// <reference types="vite-plugin-svgr/client" />
 
-declare const VITE_BUILD_DATE: Date
+// https://vite.dev/guide/env-and-mode.html#intellisense-for-typescript
+
+/// <reference types="vite/client" />
+
+interface ViteTypeOptions {
+  // By adding this line, you can make the type of ImportMetaEnv strict to disallow unknown keys.
+  strictImportMetaEnv: unknown
+}
 
 interface ImportMetaEnv {
   readonly VITE_API_URL: string
 }
 
-// TODO: Add these to Beslogic.Libraries and make public
-type Falsy = '' | 0 | 0n | false | null | undefined
-
-// Allows usage of Array.filter(Boolean)
-interface Array<T> {
-  filter<S extends T>(predicate: BooleanConstructor, thisArgument?: unknown): Exclude<S, Falsy>[]
-}
+declare const VITE_BUILD_DATE: Date

@@ -1,3 +1,4 @@
+import type { ExcludeFunctions } from '@beslogic/utils'
 import { CircularProgress } from '@mui/material'
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -20,7 +21,6 @@ import type { PageViewMode } from '@models/PageViewMode.type'
 import { type IWidget, PatchedWidget, type Post, type SiteSocial, Widget } from '@services/api'
 import { ensureError } from '@services/errors'
 import usePostsStore from '@store/postsStore'
-import type { ExcludeFunctions } from '@utils/types'
 
 const fetchSiteDataError = 'errors.fetch-site-data-failed'
 

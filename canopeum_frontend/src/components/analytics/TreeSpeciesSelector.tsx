@@ -1,3 +1,4 @@
+import { isNonNullish } from '@beslogic/utils'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -6,7 +7,6 @@ import OptionQuantitySelector, { type SelectorOption, type SelectorOptionQuantit
 import useApiClient from '@hooks/ApiClientHook'
 import useErrorHandling from '@hooks/ErrorHandlingHook'
 import { Species, type TreeType } from '@services/api'
-import { notEmpty } from '@utils/arrayUtils'
 
 type Props = {
   readonly species?: Species[],
@@ -62,7 +62,7 @@ const TreeSpeciesSelector = (
           },
           quantity: specie.quantity,
         }
-      }).filter(notEmpty),
+      }).filter(isNonNullish),
     ), [availableSpecies, species, translateValue])
 
   const handleChange = useCallback((selectedOptions: SelectorOptionQuantity<number>[]) => {
@@ -73,7 +73,7 @@ const TreeSpeciesSelector = (
 
         return new Species({ ...matchingSpecie, quantity: optionQuantity.quantity ?? 0 })
       })
-      .filter(notEmpty)
+      .filter(isNonNullish)
 
     onChange(selectedSpecies)
   }, [availableSpecies, onChange])

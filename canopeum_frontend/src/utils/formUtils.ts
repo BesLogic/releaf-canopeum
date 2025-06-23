@@ -1,3 +1,3 @@
-export const floorNumberValue = (value?: number) => (!value || value <= 0
+export const clearNonPositiveValue = (value?: number) => (!value || value <= 0
   ? ''
   : value)

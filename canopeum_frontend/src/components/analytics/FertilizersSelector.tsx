@@ -1,3 +1,4 @@
+import { isNonNullish } from '@beslogic/utils'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -6,7 +7,6 @@ import OptionQuantitySelector, { type SelectorOption, type SelectorOptionQuantit
 import useApiClient from '@hooks/ApiClientHook'
 import useErrorHandling from '@hooks/ErrorHandlingHook'
 import { FertilizerType } from '@services/api'
-import { notEmpty } from '@utils/arrayUtils'
 
 type Props = {
   readonly fertilizers?: FertilizerType[],
@@ -61,7 +61,7 @@ const FertilizersSelector = ({ onChange, fertilizers }: Props) => {
             value: matchingFertilizer.id,
           },
         }
-      }).filter(notEmpty),
+      }).filter(isNonNullish),
     ), [availableFertilizers, fertilizers, translateValue])
 
   const handleChange = useCallback((selectedOptions: SelectorOptionQuantity<number>[]) => {
@@ -70,11 +70,9 @@ const FertilizersSelector = ({ onChange, fertilizers }: Props) => {
         const matchingFertilizer = availableFertilizers.get(optionQuantity.option.value)
         if (!matchingFertilizer) return null
 
-        return new FertilizerType({
-          ...matchingFertilizer,
-        })
+        return new FertilizerType({ ...matchingFertilizer })
       })
-      .filter(notEmpty)
+      .filter(isNonNullish)
 
     onChange(selectedFertilizers)
   }, [availableFertilizers, onChange])

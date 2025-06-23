@@ -1,3 +1,4 @@
+import { mapSum } from '@beslogic/utils'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -10,7 +11,6 @@ import useApiClient from '@hooks/ApiClientHook'
 import useErrorHandling from '@hooks/ErrorHandlingHook'
 import { type DefaultCoordinate, defaultLatitude, defaultLongitude, extractCoordinate } from '@models/Coordinate'
 import { type SiteType, Species } from '@services/api'
-import { mapSum } from '@utils/arrayUtils'
 
 type Props = {
   readonly open: boolean,

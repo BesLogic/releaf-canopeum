@@ -1,3 +1,4 @@
+import { isNonNullish } from '@beslogic/utils'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -6,7 +7,6 @@ import OptionQuantitySelector, { type SelectorOption, type SelectorOptionQuantit
 import useApiClient from '@hooks/ApiClientHook'
 import useErrorHandling from '@hooks/ErrorHandlingHook'
 import { MulchLayerType } from '@services/api'
-import { notEmpty } from '@utils/arrayUtils'
 
 type Props = {
   readonly mulchLayers?: MulchLayerType[],
@@ -61,7 +61,7 @@ const MulchLayersSelector = ({ onChange, mulchLayers }: Props) => {
             value: matchingMulchLayer.id,
           },
         }
-      }).filter(notEmpty),
+      }).filter(isNonNullish),
     ), [availableMulchLayers, mulchLayers, translateValue])
 
   const handleChange = useCallback((selectedOptions: SelectorOptionQuantity<number>[]) => {
@@ -70,11 +70,9 @@ const MulchLayersSelector = ({ onChange, mulchLayers }: Props) => {
         const matchingMulchLayer = availableMulchLayers.get(optionQuantity.option.value)
         if (!matchingMulchLayer) return null
 
-        return new MulchLayerType({
-          ...matchingMulchLayer,
-        })
+        return new MulchLayerType({ ...matchingMulchLayer })
       })
-      .filter(notEmpty)
+      .filter(isNonNullish)
 
     onChange(selectedMulchLayers)
   }, [availableMulchLayers, onChange])

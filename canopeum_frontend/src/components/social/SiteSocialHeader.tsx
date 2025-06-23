@@ -1,5 +1,6 @@
 import './SiteSocialHeader.scss'
 
+import type { ExcludeFunctions } from '@beslogic/utils'
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -15,7 +16,6 @@ import useApiClient from '@hooks/ApiClientHook'
 import useErrorHandling from '@hooks/ErrorHandlingHook'
 import type { PageViewMode } from '@models/PageViewMode.type'
 import { PatchedUpdateSitePublicStatus, type SiteSocial, User } from '@services/api'
-import type { ExcludeFunctions } from '@utils/types'
 
 type Props = {
   readonly viewMode: PageViewMode,

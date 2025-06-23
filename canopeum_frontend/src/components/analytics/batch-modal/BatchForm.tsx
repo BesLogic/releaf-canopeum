@@ -1,3 +1,4 @@
+import { mapSum } from '@beslogic/utils'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -8,8 +9,7 @@ import MulchLayersSelector from '@components/analytics/MulchLayersSelector'
 import SupportSpeciesSelector from '@components/analytics/SupportSpeciesSelector'
 import TreeSpeciesSelector from '@components/analytics/TreeSpeciesSelector'
 import type { BatchDetail } from '@services/api'
-import { mapSum } from '@utils/arrayUtils'
-import { floorNumberValue } from '@utils/formUtils'
+import { clearNonPositiveValue } from '@utils/formUtils'
 
 type Props = {
   readonly initialBatch?: BatchDetail,
@@ -127,7 +127,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
                 size: Number.parseInt(event.target.value, 10),
               }))}
             type='number'
-            value={floorNumberValue(batch.size)}
+            value={clearNonPositiveValue(batch.size)}
           />
           <span className='input-group-text'>
             {t('analyticsSite.batch-modal.feet-squared')}
@@ -221,7 +221,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
               survivedCount: Number.parseInt(event.target.value, 10),
             }))}
           type='number'
-          value={floorNumberValue(batch.survivedCount)}
+          value={clearNonPositiveValue(batch.survivedCount)}
         />
       </div>
 
@@ -238,7 +238,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
               replaceCount: Number.parseInt(event.target.value, 10),
             }))}
           type='number'
-          value={floorNumberValue(batch.replaceCount)}
+          value={clearNonPositiveValue(batch.replaceCount)}
         />
       </div>
 
@@ -278,7 +278,7 @@ const BatchForm = ({ handleBatchChange, initialBatch }: Props) => {
               totalPropagation: Number.parseInt(event.target.value, 10),
             }))}
           type='number'
-          value={floorNumberValue(batch.totalPropagation)}
+          value={clearNonPositiveValue(batch.totalPropagation)}
         />
       </div>
 

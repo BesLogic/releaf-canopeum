@@ -1,3 +1,4 @@
+import { mapSum } from '@beslogic/utils'
 import type { ChartsAxisContentProps } from '@mui/x-charts'
 import { BarChart, type BarChartProps } from '@mui/x-charts/BarChart'
 import { useTranslation } from 'react-i18next'
@@ -20,10 +21,7 @@ const buildChartOptions = (siteSummaries: SiteSummary[]) => {
   }
   if (siteSummaries.length === 0) return options
 
-  options.average = siteSummaries.reduce(
-    (accumulator, current) => accumulator + current.sponsorProgress,
-    0,
-  ) / siteSummaries.length
+  options.average = mapSum(siteSummaries, 'sponsorProgress') / siteSummaries.length
 
   let siteIndex = 0
   for (const site of siteSummaries) {
