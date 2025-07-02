@@ -39,6 +39,7 @@ from canopeum_backend.permissions import (
 from .models import (
     Announcement,
     Batch,
+    BatchAsset,
     Batchfertilizer,
     Batchmulchlayer,
     BatchSeed,
@@ -845,7 +846,10 @@ BATCH_CREATE_SCHEMA = {
             "survivedCount": {"type": "number", "nullable": True},
             "replaceCount": {"type": "number", "nullable": True},
             "totalPropagation": {"type": "number", "nullable": True},
-            "image": {"type": "string", "format": "binary", "nullable": True},
+            "images": {
+                "type": "array",
+                "items": {"type": "string", "format": "binary", "nullable": True},
+            },
             "fertilizerIds": {"type": "array", "items": {"type": "number"}},
             "mulchLayerIds": {"type": "array", "items": {"type": "number"}},
             "seeds": {
@@ -904,13 +908,14 @@ class BatchListAPIView(APIView):
 
         # HACK to allow handling the image with a AssetSerializer separately
         # TODO: Figure out how to feed the image directly to BatchDetailSerializer
-        image = None
-        if request.data.get("image"):
-            asset_serializer = AssetSerializer(data=request.data)
+        uploaded_images = request.FILES.getlist("images", [])
+        asset_instances = []
+        for file in uploaded_images:
+            asset_serializer = AssetSerializer(data={"asset": file})
             if not asset_serializer.is_valid():
                 errors.append(asset_serializer.errors)
             else:
-                image = asset_serializer.save()
+                asset_instances.append(asset_serializer.save())
 
         sponsor_data = {
             "name": request.data.get("sponsor_name"),
@@ -931,7 +936,10 @@ class BatchListAPIView(APIView):
             errors.append(batch_serializer.errors)
         else:
             site = Site.objects.get(pk=request.data.get("site", ""))
-            batch = batch_serializer.save(site=site, image=image, sponsor=sponsor)
+            batch = batch_serializer.save(site=site, sponsor=sponsor)
+
+            for asset in asset_instances:
+                BatchAsset.objects.create(batch=batch, asset=asset)
 
             for fertilizer_id in parsed_fertilizer_ids:
                 batch.add_fertilizer_by_id(fertilizer_id)
@@ -953,7 +961,6 @@ class BatchListAPIView(APIView):
 BATCH_EDIT_SCHEMA = deepcopy(BATCH_CREATE_SCHEMA)
 # type ignore: not gonna do a TypedDict for that, inline TypedDict are still experimental
 del BATCH_EDIT_SCHEMA["multipart/form-data"]["properties"]["site"]  # type: ignore[attr-defined]
-del BATCH_EDIT_SCHEMA["multipart/form-data"]["properties"]["image"]  # type: ignore[attr-defined]
 
 
 class BatchDetailAPIView(APIView):
@@ -974,70 +981,103 @@ class BatchDetailAPIView(APIView):
 
         errors = []
 
-        try:
-            parsed_fertilizer_ids = request.data.getlist("fertilizer_ids", [])
-            parsed_mulch_layer_ids = request.data.getlist("mulch_layer_ids", [])
-            parsed_seeds = [json.loads(seed) for seed in request.data.getlist("seeds", [])]
-            parsed_species = [json.loads(specie) for specie in request.data.getlist("species", [])]
-            parsed_supported_species_ids = request.data.getlist("supported_specie_ids", [])
-        except json.JSONDecodeError as e:
-            return Response(data={"error": e}, status=status.HTTP_400_BAD_REQUEST)
+        parsed_data, parse_errors = self._parse_request_data(request)
+        if parse_errors:
+            return Response(data={"error": parse_errors}, status=status.HTTP_400_BAD_REQUEST)
 
-        # TODO: On updating an image, we need to delete it too
-        # image = None
-        # if request.data.get("image"):
-        #     asset_serializer = AssetSerializer(data=request.data)
-        #     if not asset_serializer.is_valid():
-        #         errors.append(asset_serializer.errors)
-        #     else:
-        #         image = asset_serializer.save()
-
-        sponsor = None
-        sponsor_data = {
-            "name": request.data.get("sponsor_name"),
-            "url": request.data.get("sponsor_website_url"),
-        }
-        if request.data.get("sponsor_logo") is not None:
-            sponsor_data["logo"] = {
-                "asset": request.data.get("sponsor_logo"),
-            }
-        sponsor_serializer = BatchSponsorSerializer(
-            batch.sponsor,
-            data=sponsor_data,
-            partial=True,
+        asset_instances, asset_errors = self._handle_assets(
+            request.FILES.getlist("images", []), batch
         )
-        if not sponsor_serializer.is_valid():
-            errors.append(sponsor_serializer.errors)
-        else:
-            sponsor = sponsor_serializer.save()
+        errors.extend(asset_errors)
+
+        sponsor, sponsor_errors = self._handle_sponsor(request, batch)
+        errors.extend(sponsor_errors)
 
         batch_serializer = BatchDetailSerializer(batch, data=request.data, partial=True)
         if not batch_serializer.is_valid():
             errors.append(batch_serializer.errors)
         else:
             batch = batch_serializer.save(sponsor=sponsor)
-
-            # Less efficient, but so much easier to just remove all then recreate mappings.
-            Batchfertilizer.objects.filter(batch=batch).delete()
-            Batchmulchlayer.objects.filter(batch=batch).delete()
-            BatchSeed.objects.filter(batch=batch).delete()
-            BatchSpecies.objects.filter(batch=batch).delete()
-            BatchSupportedSpecies.objects.filter(batch=batch).delete()
-            for fertilizer_id in parsed_fertilizer_ids:
-                batch.add_fertilizer_by_id(fertilizer_id)
-            for mulch_layer_id in parsed_mulch_layer_ids:
-                batch.add_mulch_by_id(mulch_layer_id)
-            for seed in parsed_seeds:
-                batch.add_seed_by_id(seed["id"], seed.get("quantity", 0))
-            for specie in parsed_species:
-                batch.add_specie_by_id(specie["id"], specie.get("quantity", 0))
-            for supported_specie_id in parsed_supported_species_ids:
-                batch.add_supported_specie_by_id(supported_specie_id)
+            self._update_batch_mappings(batch, parsed_data, asset_instances)
 
         if errors:
             return Response(data={"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(batch_serializer.data)
+
+    def _parse_request_data(self, request):
+        try:
+            return {
+                "fertilizer_ids": request.data.getlist("fertilizer_ids", []),
+                "mulch_layer_ids": request.data.getlist("mulch_layer_ids", []),
+                "seeds": [json.loads(seed) for seed in request.data.getlist("seeds", [])],
+                "species": [json.loads(specie) for specie in request.data.getlist("species", [])],
+                "supported_specie_ids": request.data.getlist("supported_specie_ids", []),
+            }, None
+        except json.JSONDecodeError as e:
+            return None, str(e)
+
+    def _handle_assets(self, uploaded_files, batch):
+        asset_errors = []
+        asset_instances = []
+
+        existing_assets = list(BatchAsset.objects.filter(batch=batch).select_related("asset"))
+        new_file_names = {file.name for file in uploaded_files}
+
+        for ba in existing_assets:
+            if ba.asset.asset.name not in new_file_names:
+                ba.delete()
+
+        for file in uploaded_files:
+            matching_existing = next(
+                (ba.asset for ba in existing_assets if ba.asset.asset.name == file.name), None
+            )
+            if matching_existing:
+                asset_instances.append(matching_existing)
+                continue
+
+            asset_serializer = AssetSerializer(data={"asset": file})
+            if not asset_serializer.is_valid():
+                asset_errors.append(asset_serializer.errors)
+            else:
+                asset_instances.append(asset_serializer.save())
+
+        return asset_instances, asset_errors
+
+    def _handle_sponsor(self, request, batch):
+        sponsor_data = {
+            "name": request.data.get("sponsor_name"),
+            "url": request.data.get("sponsor_website_url"),
+        }
+        if request.data.get("sponsor_logo") is not None:
+            sponsor_data["logo"] = {"asset": request.data.get("sponsor_logo")}
+
+        sponsor_serializer = BatchSponsorSerializer(batch.sponsor, data=sponsor_data, partial=True)
+        if not sponsor_serializer.is_valid():
+            return None, sponsor_serializer.errors
+        return sponsor_serializer.save(), []
+
+    def _update_batch_mappings(self, batch, parsed_data, asset_instances):
+        for asset in asset_instances:
+            BatchAsset.objects.create(batch=batch, asset=asset)
+
+        # Less efficient, but so much easier to just remove all then recreate mappings.
+        Batchfertilizer.objects.filter(batch=batch).delete()
+        Batchmulchlayer.objects.filter(batch=batch).delete()
+        BatchSeed.objects.filter(batch=batch).delete()
+        BatchSpecies.objects.filter(batch=batch).delete()
+        BatchSupportedSpecies.objects.filter(batch=batch).delete()
+
+        for fertilizer_id in parsed_data["fertilizer_ids"]:
+            batch.add_fertilizer_by_id(fertilizer_id)
+        for mulch_layer_id in parsed_data["mulch_layer_ids"]:
+            batch.add_mulch_by_id(mulch_layer_id)
+        for seed in parsed_data["seeds"]:
+            batch.add_seed_by_id(seed["id"], seed.get("quantity", 0))
+        for specie in parsed_data["species"]:
+            batch.add_specie_by_id(specie["id"], specie.get("quantity", 0))
+        for supported_specie_id in parsed_data["supported_specie_ids"]:
+            batch.add_supported_specie_by_id(supported_specie_id)
 
     @extend_schema(operation_id="batch_delete")
     def delete(self, request: Request, batchId):

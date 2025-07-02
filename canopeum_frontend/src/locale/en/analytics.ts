@@ -21,6 +21,7 @@ export default {
   'table-row-11': 'How many replaced',
   'table-row-12': 'Amount of seeds collected in area',
   'table-row-13': 'Types of seeds collected',
+  'table-row-14': 'Images',
   'last-update': 'Last Update',
   visitors: 'Visitors',
   'unnamed-site': 'Unnamed site',
