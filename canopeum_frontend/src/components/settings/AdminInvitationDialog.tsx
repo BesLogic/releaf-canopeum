@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { SnackbarContext } from '@components/context/SnackbarContext'
-import MultipleSelectChip, { type SelectionItem } from '@components/inputs/MultipleSelectChip'
+import OptionQuantitySelector, { type SelectorOption, type SelectorOptionQuantity } from '@components/inputs/OptionQuantitySelector'
 import useApiClient from '@hooks/ApiClientHook'
 import useErrorHandling from '@hooks/ErrorHandlingHook'
 import { CreateUserInvitation } from '@services/api'
@@ -20,7 +20,10 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
   const { getErrorMessage, displayUnhandledAPIError } = useErrorHandling()
   const { getApiClient } = useApiClient()
 
-  const [siteOptions, setSiteOptions] = useState<SelectionItem<number>[]>([])
+  const [availableSiteOptions, setAvailableSiteOptions] = useState<SelectorOption<number>[]>([])
+  const [siteOptions, setSiteOptions] = useState<SelectorOption<number>[]>([])
+  const [selected, setSelected] = useState<SelectorOptionQuantity<number>[]>([])
+
   const [invitationLink, setInvitationLink] = useState<string>()
 
   const [email, setEmail] = useState('')
@@ -32,12 +35,15 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
   useEffect(() => {
     const fetchAllSites = async () => {
       const sites = await getApiClient().siteClient.all()
+      const mappedSites = sites.map(site => ({ displayText: site.name, value: site.id }))
 
-      setSiteOptions(sites.map(site => ({ displayText: site.name, value: site.id })))
+      setAvailableSiteOptions(mappedSites)
+      setSiteOptions(mappedSites)
     }
 
     fetchAllSites().catch(displayUnhandledAPIError('errors.fetch-all-sites-failed'))
   }, [])
+
   const validateEmail = () => {
     if (!email) {
       setEmailError('required')
@@ -101,6 +107,18 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
     handleClose()
   }
 
+  const handleSiteChange = (selectedOptions: SelectorOptionQuantity<number>[]) => {
+    const filtered = availableSiteOptions.filter(
+      availableSiteOption =>
+        !selectedOptions.some(
+          selectedOption => selectedOption.option.value === availableSiteOption.value,
+        ),
+    )
+
+    setSiteOptions(filtered)
+    setSelected(selectedOptions)
+  }
+
   const renderInvitationContent = () =>
     invitationLink
       ? (
@@ -139,12 +157,15 @@ const AdminInvitationDialog = ({ open, handleClose }: Props) => {
             </span>
           )}
 
-          <MultipleSelectChip
-            classes='mt-4'
-            label={`${translate('settings.manage-admins.assign-to-label')}*`}
-            onChange={ids => setSiteIds(ids)}
-            options={siteOptions}
-          />
+          <div className='mt-4'>
+            <OptionQuantitySelector
+              id='sites-selector'
+              label={`${translate('settings.manage-admins.assign-to-label')} *`}
+              onChange={handleSiteChange}
+              options={siteOptions}
+              selected={selected}
+            />
+          </div>
 
           {generateLinkError && (
             <div className='mt-3'>

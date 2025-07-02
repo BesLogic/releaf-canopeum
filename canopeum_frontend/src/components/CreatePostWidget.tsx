@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import AssetGrid from './assets/AssetGrid'
 import { SnackbarContext } from '@components/context/SnackbarContext'
 import useApiClient from '@hooks/ApiClientHook'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
 import { Asset, type FileParameter, type Post } from '@services/api'
 import { assetFormatter } from '@utils/assetFormatter'
 import textAreaAutoGrow from '@utils/textAreaAutoGrow'
@@ -32,6 +33,8 @@ const CreatePostWidget = ({ siteId, addNewPost }: Props) => {
   const [postBodyError, setPostBodyError] = useState<InputValidationError | undefined>()
   const [files, setFiles] = useState<FileParameter[]>([])
 
+  const { displayUnhandledAPIError } = useErrorHandling()
+
   const postSitePost = async (body: string) => {
     setIsSendingPost(true)
     try {
@@ -43,7 +46,8 @@ const CreatePostWidget = ({ siteId, addNewPost }: Props) => {
       const newPost = await getApiClient().postClient.create(siteId, body, files)
       setFiles([])
       addNewPost(newPost)
-    } catch {
+    } catch (newPostError) {
+      displayUnhandledAPIError('errors.new-post-failed')(newPostError)
       setIsSendingPost(false)
     } finally {
       setIsSendingPost(false)

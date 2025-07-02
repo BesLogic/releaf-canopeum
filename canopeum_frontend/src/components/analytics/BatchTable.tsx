@@ -35,8 +35,12 @@ const BatchTable = (props: Props) => {
     async (siteId: number) => {
       // TODO: Use endpoint to get specific batch directly instead of refetching site summary
       // Also only update required batch, not the entire array
-      const siteSummary = await getApiClient().siteClient.summary(siteId)
-      setBatches(siteSummary.batches)
+      try {
+        const siteSummary = await getApiClient().siteClient.summary(siteId)
+        setBatches(siteSummary.batches)
+      } catch (fetchBatchesError) {
+        displayUnhandledAPIError('errors.fetch-batches-failed')(fetchBatchesError)
+      }
     },
     [getApiClient],
   )

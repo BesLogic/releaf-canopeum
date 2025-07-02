@@ -1,10 +1,10 @@
-import { useContext, useRef, useState } from 'react'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import PopupState from 'material-ui-popup-state'
+import { bindMenu, bindTrigger } from 'material-ui-popup-state/hooks'
+import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { Dropdown, Popover } from 'rsuite'
-import DropdownMenu from 'rsuite/esm/Dropdown/DropdownMenu'
-import type { OverlayTriggerHandle } from 'rsuite/esm/internals/Picker'
-import Whisper from 'rsuite/esm/Whisper'
 
 import AssetGrid from '@components/assets/AssetGrid'
 import { AuthenticationContext } from '@components/context/AuthenticationContext'
@@ -16,6 +16,7 @@ import PostCommentsDialog from '@components/social/PostCommentsDialog'
 import SharePostDialog from '@components/social/SharePostDialog'
 import { appRoutes } from '@constants/routes.constant'
 import useApiClient from '@hooks/ApiClientHook'
+import useErrorHandling from '@hooks/ErrorHandlingHook'
 import type { PageViewMode } from '@models/PageViewMode.type'
 import type { Post } from '@services/api'
 import usePostsStore from '@store/postsStore'
@@ -30,13 +31,13 @@ const PostCard = ({ post, showActions }: Props) => {
   const { formatDate } = useContext(LanguageContext)
   const { toggleLike, deletePost } = usePostsStore()
   const { getApiClient } = useApiClient()
+  const { displayUnhandledAPIError } = useErrorHandling()
   const { openAlertSnackbar } = useContext(SnackbarContext)
   const { currentUser } = useContext(AuthenticationContext)
 
   const [commentsModalOpen, setCommentsModalOpen] = useState(false)
   const [shareModalOpen, setShareModalOpen] = useState(false)
   const [confirmPostDeleteOpen, setConfirmPostDeleteOpen] = useState(false)
-  const whisperRef = useRef<OverlayTriggerHandle>(null)
 
   const viewMode: PageViewMode = currentUser
     ? ((currentUser.role === 'MegaAdmin' || currentUser.adminSiteIds.includes(post.site.id))
@@ -53,38 +54,29 @@ const PostCard = ({ post, showActions }: Props) => {
   const handleShareModalClose = () => setShareModalOpen(false)
 
   const onDeletePostConfirmation = async (proceed: boolean) => {
-    if (proceed) {
-      await getApiClient().postClient.delete(post.id)
-      deletePost(post.id)
-      openAlertSnackbar('Post deleted successfully', { severity: 'success' })
+    try {
+      if (proceed) {
+        await getApiClient().postClient.delete(post.id)
+        deletePost(post.id)
+        openAlertSnackbar('Post deleted successfully', { severity: 'success' })
+      }
+      setConfirmPostDeleteOpen(false)
+    } catch (deletePostError) {
+      displayUnhandledAPIError('errors.delete-post-failed')(deletePostError)
     }
-    setConfirmPostDeleteOpen(false)
   }
 
   const likePost = async () => {
     if (post.hasLiked) {
       await getApiClient().likeClient.delete(post.id)
+        .catch(displayUnhandledAPIError('errors.delete-like-failed'))
       toggleLike(post.id)
     } else {
       await getApiClient().likeClient.likePost(post.id, {})
+        .catch(displayUnhandledAPIError('errors.post-like-failed'))
       toggleLike(post.id)
     }
   }
-
-  const actionsPopover = (
-    <Popover style={{ width: 'fit-content' }}>
-      <DropdownMenu>
-        <Dropdown.Item>
-          <span className='material-symbols-outlined align-middle'>edit_square</span>{' '}
-          {t('generic.edit')} (Not yet implemented)
-        </Dropdown.Item>
-        <Dropdown.Item className='' onClick={() => setConfirmPostDeleteOpen(true)}>
-          <span className='material-symbols-outlined align-middle text-danger'>delete</span>
-          <span className='text-danger'>{' '}{t('generic.delete')}</span>
-        </Dropdown.Item>
-      </DropdownMenu>
-    </Popover>
-  )
 
   return (
     <div className='card'>
@@ -108,18 +100,41 @@ const PostCard = ({ post, showActions }: Props) => {
           </div>
           {showActions && viewMode === 'admin' && (
             <>
-              <div className='d-flex flex-grow-1 justify-content-end'>
-                <Whisper
-                  placement='bottomEnd'
-                  ref={whisperRef}
-                  speaker={actionsPopover}
-                  trigger='click'
-                >
-                  <button className='unstyled-button' type='button'>
-                    <span className='material-symbols-outlined text-primary'>more_vert</span>
-                  </button>
-                </Whisper>
-              </div>
+              <PopupState popupId={`post-card-actions-${post.id}`} variant='popover'>
+                {popupState => (
+                  <div className='d-flex flex-grow-1 justify-content-end'>
+                    {/* eslint-disable react/jsx-props-no-spreading -- Needed for MUI trigger */}
+                    <button className='unstyled-button' type='button' {...bindTrigger(popupState)}>
+                      {/* eslint-enable react/jsx-props-no-spreading */}
+                      <span className='material-symbols-outlined text-primary'>more_vert</span>
+                    </button>
+                    <Menu
+                      {...bindMenu(popupState)}
+                      anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                      }}
+                      transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                      }}
+                    >
+                      <MenuItem disabled>
+                        <span className='material-symbols-outlined align-middle'>edit_square</span>
+                        {' '}
+                        {t('generic.edit')} (Not yet implemented)
+                      </MenuItem>
+                      <MenuItem className='' onClick={() => setConfirmPostDeleteOpen(true)}>
+                        <span className='material-symbols-outlined align-middle text-danger'>
+                          delete
+                        </span>
+                        <span className='text-danger'>{' '}{t('generic.delete')}</span>
+                      </MenuItem>
+                    </Menu>
+                  </div>
+                )}
+              </PopupState>
+
               <ConfirmationDialog
                 actions={['cancel', 'delete']}
                 onClose={(proceed: boolean) => onDeletePostConfirmation(proceed)}
