@@ -906,6 +906,8 @@ class BatchListAPIView(APIView):
         except json.JSONDecodeError as e:
             return Response(data={"error": e}, status=status.HTTP_400_BAD_REQUEST)
 
+        # HACK to allow handling the image with a AssetSerializer separately
+        # TODO: Figure out how to feed the image directly to BatchDetailSerializer
         uploaded_images = request.FILES.getlist("images", [])
         asset_instances = []
         for file in uploaded_images:
