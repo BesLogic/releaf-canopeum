@@ -10,14 +10,14 @@
       "request": "launch",
       "program": "canopeum_backend/manage.py",
       "args": ["runserver"],
-      "console": "integratedTerminal"
+      "console": "integratedTerminal",
     },
     {
       "name": "Python Debugger: Current File",
       "type": "debugpy",
       "request": "launch",
       "program": "${file}",
-      "console": "integratedTerminal"
-    }
-  ]
+      "console": "integratedTerminal",
+    },
+  ],
 }
