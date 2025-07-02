@@ -1059,6 +1059,7 @@ class BatchDetailAPIView(APIView):
         for asset in asset_instances:
             BatchAsset.objects.create(batch=batch, asset=asset)
 
+        # Less efficient, but so much easier to just remove all then recreate mappings.
         Batchfertilizer.objects.filter(batch=batch).delete()
         Batchmulchlayer.objects.filter(batch=batch).delete()
         BatchSeed.objects.filter(batch=batch).delete()
